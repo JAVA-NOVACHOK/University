@@ -21,5 +21,4 @@ public class Group{
         this.groupName = groupName;
     }
     
-    
 }

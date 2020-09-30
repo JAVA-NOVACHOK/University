@@ -26,5 +26,4 @@ public class Room {
         this.name = name;
     }
     
-
 }
