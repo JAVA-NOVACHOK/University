@@ -6,13 +6,14 @@ import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.Timetable;
 
-public class Teacher {
+public class Teacher extends Person{
 
     private Subject teachersSubject;
     private List<Group> assignedGroups;
     private Timetable timetable;
 
-    public Teacher(Subject teachersSubject) {
+    public Teacher(int id, String firstName, String lastName,Subject teachersSubject) {
+        super(id, firstName, lastName);
         this.teachersSubject = teachersSubject;
         assignedGroups = new ArrayList<>();
         timetable = new Timetable();
