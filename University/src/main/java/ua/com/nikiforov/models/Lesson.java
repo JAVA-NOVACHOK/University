@@ -48,7 +48,4 @@ public class Lesson {
         this.group = group;
     }
     
-    
-
-    
 }
