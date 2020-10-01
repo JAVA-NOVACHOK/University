@@ -4,42 +4,32 @@ import java.sql.Date;
 
 public class Lesson {
 
-    private Date starTime;
-    private Date endTime;
-    private Room lessonRoom;
+    private int id;
+    private Date lessonTime;
     private Subject subjectOfLesson;
     private Group group;
-
-    public Lesson(Date starTime, Date endTime, Room lessonRoom, Subject subjectOfLesson, Group group) {
-        this.starTime = starTime;
-        this.endTime = endTime;
-        this.lessonRoom = lessonRoom;
+    
+    public Lesson(int id, Date lessonTime, Subject subjectOfLesson, Group group) {
+        this.id = id;
+        this.lessonTime = lessonTime;
         this.subjectOfLesson = subjectOfLesson;
         this.group = group;
     }
 
-    public Date getStarTime() {
-        return starTime;
+    public int getId() {
+        return id;
     }
 
-    public void setStarTime(Date starTime) {
-        this.starTime = starTime;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Date getLessonTime() {
+        return lessonTime;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public Room getLessonRoom() {
-        return lessonRoom;
-    }
-
-    public void setLessonRoom(Room lessonRoom) {
-        this.lessonRoom = lessonRoom;
+    public void setLessonTime(Date lessonTime) {
+        this.lessonTime = lessonTime;
     }
 
     public Subject getSubjectOfLesson() {
@@ -57,5 +47,8 @@ public class Lesson {
     public void setGroup(Group group) {
         this.group = group;
     }
+    
+    
 
+    
 }

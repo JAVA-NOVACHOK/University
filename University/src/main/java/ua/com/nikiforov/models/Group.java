@@ -1,24 +1,29 @@
 package ua.com.nikiforov.models;
 
-public class Group{
-    
-    private int groupId;
+public class Group {
+
+    private int id;
     private String groupName;
-    public Group(int groupId, String groupName) {
-        this.groupId = groupId;
+    
+    public Group(int id, String groupName) {
+        this.id = id;
         this.groupName = groupName;
     }
-    public int getGroupId() {
-        return groupId;
+
+    public int getId() {
+        return id;
     }
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+
+    public void setId(int id) {
+        this.id = id;
     }
+
     public String getGroupName() {
         return groupName;
     }
+
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
-    
+
 }
