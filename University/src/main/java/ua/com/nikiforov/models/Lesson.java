@@ -8,7 +8,7 @@ public class Lesson {
     private Date lessonTime;
     private Subject subjectOfLesson;
     private Group group;
-    
+
     public Lesson(int id, Date lessonTime, Subject subjectOfLesson, Group group) {
         this.id = id;
         this.lessonTime = lessonTime;
@@ -47,5 +47,5 @@ public class Lesson {
     public void setGroup(Group group) {
         this.group = group;
     }
-    
+
 }

@@ -6,14 +6,24 @@ import ua.com.nikiforov.models.person.Teacher;
 
 public class Subject {
 
+    private int id;
     private String name;
     private String description;
     private List<Teacher> teachers;
 
-    public Subject(String name, String description) {
+    public Subject(int id, String name, String description) {
+        this.id = id;
         this.name = name;
         this.description = description;
         teachers = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -39,5 +49,5 @@ public class Subject {
     public void setTeachers(List<Teacher> teachers) {
         this.teachers = teachers;
     }
-    
+
 }
