@@ -3,10 +3,11 @@ package ua.com.nikiforov.models.person;
 import java.util.ArrayList;
 import java.util.List;
 import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.models.Lesson;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.Timetable;
 
-public class Teacher extends Person{
+public class Teacher extends Person {
 
     private int subjectId;
     private List<Group> assignedGroups;
@@ -42,5 +43,15 @@ public class Teacher extends Person{
     public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
     }
-    
+
+    @Override
+    public List<Lesson> getDayTimetable() {
+        return timetable.getTeachersDayTimetable(id);
+    }
+
+    @Override
+    public List<Lesson> getMonthTimetables() {
+        return timetable.getTeachersMonthTimetable(id);
+    }
+
 }

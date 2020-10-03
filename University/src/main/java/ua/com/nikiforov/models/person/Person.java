@@ -1,16 +1,24 @@
 package ua.com.nikiforov.models.person;
 
-public class Person {
-    
-    private int id;
+import java.util.List;
+
+import ua.com.nikiforov.models.Lesson;
+
+public abstract class Person {
+
+    protected int id;
     private String firstName;
     private String lastName;
-    
+
     public Person(int id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
+    public abstract List<Lesson> getDayTimetable();
+
+    public abstract List<Lesson> getMonthTimetables();
 
     public int getId() {
         return id;
@@ -35,5 +43,5 @@ public class Person {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
+
 }

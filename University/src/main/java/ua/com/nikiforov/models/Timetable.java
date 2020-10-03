@@ -5,18 +5,17 @@ import java.util.List;
 
 public class Timetable {
     
-    private List<Lesson> lessons;
-    
-    public Timetable() {
-        lessons = new ArrayList<>();
+    public List<Lesson> getStudentsDayTimetable(int studentId){
+        return new ArrayList<>();
     }
-
-    public List<Lesson> getLessons() {
-        return lessons;
+    public List<Lesson> getStudentsMonthTimetable(int studentId){
+        return new ArrayList<>();
     }
-
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+    public List<Lesson> getTeachersDayTimetable(int teacherId){
+        return new ArrayList<>();
+    }
+    public List<Lesson> getTeachersMonthTimetable(int teacherId){
+        return new ArrayList<>();
     }
     
 }

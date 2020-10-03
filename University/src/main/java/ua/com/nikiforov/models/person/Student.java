@@ -1,5 +1,8 @@
 package ua.com.nikiforov.models.person;
 
+import java.util.List;
+
+import ua.com.nikiforov.models.Lesson;
 import ua.com.nikiforov.models.Timetable;
 
 public class Student extends Person {
@@ -26,6 +29,14 @@ public class Student extends Person {
 
     public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
+    }
+    
+    public List<Lesson> getDayTimetable(){
+        return timetable.getStudentsDayTimetable(id);
+    }
+    
+    public List<Lesson> getMonthTimetables(){
+        return timetable.getStudentsMonthTimetable(id);
     }
 
 }
