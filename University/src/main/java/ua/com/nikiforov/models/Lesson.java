@@ -6,14 +6,17 @@ public class Lesson {
 
     private int id;
     private Date lessonTime;
-    private Subject subjectOfLesson;
-    private Group group;
+    private int teacherId;
+    private int groupId;
+    private int roomId;
 
-    public Lesson(int id, Date lessonTime, Subject subjectOfLesson, Group group) {
+    
+    public Lesson(int id, Date lessonTime, int teacherId, int groupId, int roomId) {
         this.id = id;
         this.lessonTime = lessonTime;
-        this.subjectOfLesson = subjectOfLesson;
-        this.group = group;
+        this.teacherId = teacherId;
+        this.groupId = groupId;
+        this.roomId = roomId;
     }
 
     public int getId() {
@@ -32,20 +35,34 @@ public class Lesson {
         this.lessonTime = lessonTime;
     }
 
-    public Subject getSubjectOfLesson() {
-        return subjectOfLesson;
+    public int getTeacherId() {
+        return teacherId;
     }
 
-    public void setSubjectOfLesson(Subject subjectOfLesson) {
-        this.subjectOfLesson = subjectOfLesson;
+    public void setSubjectId(int teacherId) {
+        this.teacherId = teacherId;
     }
 
-    public Group getGroup() {
-        return group;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroup(Group group) {
-        this.group = group;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
+    }
+
+   
 
 }

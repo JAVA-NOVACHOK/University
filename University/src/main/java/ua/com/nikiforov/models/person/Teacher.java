@@ -8,23 +8,23 @@ import ua.com.nikiforov.models.Timetable;
 
 public class Teacher extends Person{
 
-    private Subject teachersSubject;
+    private int subjectId;
     private List<Group> assignedGroups;
     private Timetable timetable;
 
-    public Teacher(int id, String firstName, String lastName,Subject teachersSubject) {
+    public Teacher(int id, String firstName, String lastName, int subjectId) {
         super(id, firstName, lastName);
-        this.teachersSubject = teachersSubject;
+        this.subjectId = subjectId;
         assignedGroups = new ArrayList<>();
         timetable = new Timetable();
     }
 
-    public Subject getTeachersSubject() {
-        return teachersSubject;
+    public int getSubjectId() {
+        return subjectId;
     }
 
-    public void setTeachersSubject(Subject teachersSubject) {
-        this.teachersSubject = teachersSubject;
+    public void setSubjectId(int subjectId) {
+        this.subjectId = subjectId;
     }
 
     public List<Group> getAssignedGroups() {

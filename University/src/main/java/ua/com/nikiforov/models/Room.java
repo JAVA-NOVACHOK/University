@@ -4,12 +4,9 @@ public class Room {
 
     private int id;
     private int number;
-    private String name;
 
-    public Room(int id, int number, String name) {
         this.id = id;
         this.number = number;
-        this.name = name;
     }
 
     public int getId() {
@@ -26,14 +23,6 @@ public class Room {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
 }

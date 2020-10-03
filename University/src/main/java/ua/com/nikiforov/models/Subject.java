@@ -8,13 +8,11 @@ public class Subject {
 
     private int id;
     private String name;
-    private String description;
     private List<Teacher> teachers;
 
-    public Subject(int id, String name, String description) {
+    public Subject(int id, String name) {
         this.id = id;
         this.name = name;
-        this.description = description;
         teachers = new ArrayList<>();
     }
 
@@ -32,14 +30,6 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List<Teacher> getTeachers() {
