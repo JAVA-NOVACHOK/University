@@ -5,6 +5,7 @@ public class Room {
     private int id;
     private int number;
 
+    public Room(int id, int number) {
         this.id = id;
         this.number = number;
     }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Lesson;
-import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.Timetable;
 
 public class Teacher extends Person {
