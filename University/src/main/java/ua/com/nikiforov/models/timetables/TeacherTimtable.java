@@ -12,12 +12,12 @@ public class TeacherTimtable extends Timetable {
 
     @Override
     public void setDayTimtable() {
-        timetableService.getTeachersDayTimetable(teacher);
+        dayTimetable = timetableService.getTeachersDayTimetable(teacher);
     }
 
     @Override
     public void setMonthTimetable() {
-        timetableService.getTeachersMonthTimetable(teacher);
+        monthTimetable = timetableService.getTeachersMonthTimetable(teacher);
     }
 
 }

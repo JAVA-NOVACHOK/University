@@ -1,13 +1,8 @@
 package ua.com.nikiforov.models.persons;
 
-import java.util.List;
-import ua.com.nikiforov.models.Lesson;
-import ua.com.nikiforov.models.timetables.Timetable;
-
 public abstract class Person {
 
     protected int id;
-    protected Timetable timetable;
     private String firstName;
     private String lastName;
 
@@ -41,12 +36,5 @@ public abstract class Person {
         this.lastName = lastName;
     }
 
-    public List<Lesson> getDayTimetable() {
-        return timetable.getDayTimetable();
-    }
-
-    public List<Lesson> getMonthTimetable() {
-        return timetable.getMonthTimetable();
-    }
 
 }

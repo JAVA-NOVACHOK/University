@@ -18,10 +18,12 @@ public abstract class Timetable {
     }
 
     public List<Lesson> getDayTimetable() {
+        setDayTimtable();
         return dayTimetable;
     }
 
     public List<Lesson> getMonthTimetable() {
+        setMonthTimetable();
         return monthTimetable;
     }
 

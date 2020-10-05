@@ -1,7 +1,5 @@
 package ua.com.nikiforov.models.persons;
 
-import ua.com.nikiforov.models.timetables.StudentsTimtable;
-
 public class Student extends Person {
 
     private int groupId;
@@ -9,7 +7,6 @@ public class Student extends Person {
     public Student(int id, String firstName, String lastName,int groupId) {
         super(id, firstName, lastName);
         this.groupId = groupId;
-        timetable = new StudentsTimtable(this);
     }
 
     public int getGroupId() {
