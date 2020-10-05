@@ -2,8 +2,8 @@ package ua.com.nikiforov.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import ua.com.nikiforov.models.person.Student;
-import ua.com.nikiforov.models.person.Teacher;
+import ua.com.nikiforov.models.persons.Student;
+import ua.com.nikiforov.models.persons.Teacher;
 
 public class University {
     

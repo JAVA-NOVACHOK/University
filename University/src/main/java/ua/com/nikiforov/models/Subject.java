@@ -2,18 +2,17 @@ package ua.com.nikiforov.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import ua.com.nikiforov.models.person.Teacher;
 
 public class Subject {
 
     private int id;
     private String name;
-    private List<Teacher> teachers;
+    private List<Integer> subjectTeacherIds;
 
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;
-        teachers = new ArrayList<>();
+        subjectTeacherIds = new ArrayList<>();
     }
 
     public int getId() {
@@ -32,12 +31,12 @@ public class Subject {
         this.name = name;
     }
 
-    public List<Teacher> getTeachers() {
-        return teachers;
+    public List<Integer> getSubjectTeachersIds() {
+        return subjectTeacherIds;
     }
 
-    public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
+    public void addSubjectTeacherId(int subjectTeacherId) {
+        subjectTeacherIds.add(subjectTeacherId);
     }
 
 }
