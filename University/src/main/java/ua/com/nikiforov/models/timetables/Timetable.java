@@ -1,34 +1,29 @@
 package ua.com.nikiforov.models.timetables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ua.com.nikiforov.models.Lesson;
-import ua.com.nikiforov.services.TimetableService;
-
 public abstract class Timetable {
 
-    protected TimetableService timetableService;
-    protected List<Lesson> dayTimetable;
-    protected List<Lesson> monthTimetable;
-
-    public Timetable() {
-        dayTimetable = new ArrayList<>();
-        monthTimetable = new ArrayList<>();
+    protected long id;
+    protected long subjectId;
+    
+    public Timetable(long id, long subjectId) {
+        this.id = id;
+        this.subjectId = subjectId;
     }
 
-    public List<Lesson> getDayTimetable() {
-        setDayTimtable();
-        return dayTimetable;
+    public long getId() {
+        return id;
     }
 
-    public List<Lesson> getMonthTimetable() {
-        setMonthTimetable();
-        return monthTimetable;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public abstract void setDayTimtable();
+    public long getSubjectId() {
+        return subjectId;
+    }
 
-    public abstract void setMonthTimetable();
-
+    public void setSubjectId(long subjectId) {
+        this.subjectId = subjectId;
+    }
+    
 }

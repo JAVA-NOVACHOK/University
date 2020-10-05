@@ -1,23 +1,20 @@
 package ua.com.nikiforov.models.timetables;
 
-import ua.com.nikiforov.models.persons.Teacher;
-
 public class TeacherTimtable extends Timetable {
 
-    private Teacher teacher;
+    private long teacherId;
 
-    public TeacherTimtable(Teacher teacher) {
-        this.teacher = teacher;
+    public TeacherTimtable(long id, long subjectId, long teacherId) {
+        super(id, subjectId);
+        this.teacherId = teacherId;
     }
 
-    @Override
-    public void setDayTimtable() {
-        dayTimetable = timetableService.getTeachersDayTimetable(teacher);
+    public long getTeacherId() {
+        return teacherId;
     }
 
-    @Override
-    public void setMonthTimetable() {
-        monthTimetable = timetableService.getTeachersMonthTimetable(teacher);
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
     }
 
 }

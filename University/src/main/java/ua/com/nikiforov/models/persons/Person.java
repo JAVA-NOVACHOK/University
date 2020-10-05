@@ -2,21 +2,21 @@ package ua.com.nikiforov.models.persons;
 
 public abstract class Person {
 
-    protected int id;
+    protected long id;
     private String firstName;
     private String lastName;
 
-    public Person(int id, String firstName, String lastName) {
+    public Person(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

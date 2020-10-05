@@ -2,14 +2,14 @@ package ua.com.nikiforov.models.persons;
 
 public class Teacher extends Person {
 
-    private int subjectId;
+    private long subjectId;
 
-    public Teacher(int id, String firstName, String lastName, int subjectId) {
+    public Teacher(long id, String firstName, String lastName, int subjectId) {
         super(id, firstName, lastName);
         this.subjectId = subjectId;
     }
 
-    public int getSubjectId() {
+    public long getSubjectId() {
         return subjectId;
     }
 

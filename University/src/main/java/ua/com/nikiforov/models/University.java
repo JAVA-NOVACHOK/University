@@ -1,54 +1,30 @@
 package ua.com.nikiforov.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import ua.com.nikiforov.models.persons.Student;
-import ua.com.nikiforov.models.persons.Teacher;
-
 public class University {
-    
-    private List<Student> allStudents;
-    private List<Teacher> allTeachers;
-    private List<Subject> allSubjects;
-    private List<Group> allGroups;
-    
-    public University() {
-        allStudents = new ArrayList<>();
-        allTeachers = new ArrayList<>();
-        allSubjects = new ArrayList<>();
-        allGroups = new ArrayList<>();
+
+    private int id;
+    private String name;
+
+    public University(int id, String name) {
+        this.id = id;
+        this.name = name;
+
     }
 
-    public List<Student> getAllStudents() {
-        return allStudents;
+    public int getId() {
+        return id;
     }
 
-    public void setAllStudents(List<Student> allStudents) {
-        this.allStudents = allStudents;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public List<Teacher> getAllTeachers() {
-        return allTeachers;
+    public String getName() {
+        return name;
     }
 
-    public void setAllTeachers(List<Teacher> allTeachers) {
-        this.allTeachers = allTeachers;
-    }
-
-    public List<Subject> getAllSubjects() {
-        return allSubjects;
-    }
-
-    public void setAllSubjects(List<Subject> allSubjects) {
-        this.allSubjects = allSubjects;
-    }
-
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

@@ -1,17 +1,18 @@
 package ua.com.nikiforov.models;
 
 import java.sql.Date;
+import java.time.Instant;
 
 public class Lesson {
 
     private int id;
-    private Date lessonTime;
+    private Instant lessonTime;
     private int teacherId;
     private int groupId;
     private int roomId;
 
     
-    public Lesson(int id, Date lessonTime, int teacherId, int groupId, int roomId) {
+    public Lesson(int id, Instant lessonTime, int teacherId, int groupId, int roomId) {
         this.id = id;
         this.lessonTime = lessonTime;
         this.teacherId = teacherId;
@@ -27,20 +28,16 @@ public class Lesson {
         this.id = id;
     }
 
-    public Date getLessonTime() {
+    public Instant getLessonTime() {
         return lessonTime;
     }
 
-    public void setLessonTime(Date lessonTime) {
+    public void setLessonTime(Instant lessonTime) {
         this.lessonTime = lessonTime;
     }
 
     public int getTeacherId() {
         return teacherId;
-    }
-
-    public void setSubjectId(int teacherId) {
-        this.teacherId = teacherId;
     }
 
     public int getGroupId() {
