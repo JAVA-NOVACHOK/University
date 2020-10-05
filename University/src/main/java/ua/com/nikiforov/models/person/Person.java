@@ -1,7 +1,6 @@
 package ua.com.nikiforov.models.person;
 
 import java.util.List;
-
 import ua.com.nikiforov.models.Lesson;
 
 public abstract class Person {
