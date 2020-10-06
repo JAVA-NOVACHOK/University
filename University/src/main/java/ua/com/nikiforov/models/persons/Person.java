@@ -36,5 +36,4 @@ public abstract class Person {
         this.lastName = lastName;
     }
 
-
 }
