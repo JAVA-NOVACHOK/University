@@ -6,8 +6,8 @@ public class TeacherTimtable extends Timetable {
 
     private long teacherId;
 
-    public TeacherTimtable(long id, long subjectId, Instant time, long teacherId) {
-        super(id, subjectId, time);
+    public TeacherTimtable(long id, long lessonId, Instant time, long teacherId) {
+        super(id, lessonId, time);
         this.teacherId = teacherId;
     }
 

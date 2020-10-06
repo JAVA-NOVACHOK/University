@@ -4,11 +4,13 @@ public class Lesson {
 
     private int id;
     private int groupId;
+    protected long subjectId;
     private int roomId;
 
-    public Lesson(int id, int groupId, int roomId) {
+    public Lesson(int id, int groupId, long subjectId, int roomId) {
         this.id = id;
         this.groupId = groupId;
+        this.subjectId = subjectId;
         this.roomId = roomId;
     }
 
@@ -26,6 +28,14 @@ public class Lesson {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public long getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(long subjectId) {
+        this.subjectId = subjectId;
     }
 
     public int getRoomId() {

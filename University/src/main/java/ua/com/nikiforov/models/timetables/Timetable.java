@@ -5,12 +5,12 @@ import java.time.Instant;
 public abstract class Timetable {
 
     protected long id;
-    protected long subjectId;
+    protected long lessonId;
     protected Instant time;
 
-    public Timetable(long id, long subjectId, Instant time) {
+    public Timetable(long id, long lessonId, Instant time) {
         this.id = id;
-        this.subjectId = subjectId;
+        this.lessonId = lessonId;
         this.time = time;
     }
 
@@ -22,12 +22,12 @@ public abstract class Timetable {
         this.id = id;
     }
 
-    public long getSubjectId() {
-        return subjectId;
+    public long getLessonId() {
+        return lessonId;
     }
 
-    public void setSubjectId(long subjectId) {
-        this.subjectId = subjectId;
+    public void setLessonId(long lessonId) {
+        this.lessonId = lessonId;
     }
 
     public Instant getTime() {
