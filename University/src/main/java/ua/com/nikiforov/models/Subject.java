@@ -7,7 +7,7 @@ public class Subject {
 
     private int id;
     private String name;
-    private List<Integer> subjectTeacherIds;
+    private List<Long> subjectTeacherIds;
 
     public Subject(int id, String name) {
         this.id = id;
@@ -31,11 +31,11 @@ public class Subject {
         this.name = name;
     }
 
-    public List<Integer> getSubjectTeachersIds() {
+    public List<Long> getSubjectTeachersIds() {
         return subjectTeacherIds;
     }
 
-    public void addSubjectTeacherId(int subjectTeacherId) {
+    public void addSubjectTeacherId(long subjectTeacherId) {
         subjectTeacherIds.add(subjectTeacherId);
     }
 

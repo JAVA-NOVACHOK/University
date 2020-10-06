@@ -2,19 +2,19 @@ package ua.com.nikiforov.models;
 
 public class Group {
 
-    private int id;
+    private long id;
     private String groupName;
 
-    public Group(int id, String groupName) {
+    public Group(long id, String groupName) {
         this.id = id;
         this.groupName = groupName;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

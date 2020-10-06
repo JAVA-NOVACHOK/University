@@ -2,39 +2,39 @@ package ua.com.nikiforov.models;
 
 public class Lesson {
 
-    private int id;
-    private int groupId;
-    protected long subjectId;
+    private long id;
+    private long groupId;
+    protected int subjectId;
     private int roomId;
 
-    public Lesson(int id, int groupId, long subjectId, int roomId) {
+    public Lesson(long id, long groupId, int subjectId, int roomId) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
         this.roomId = roomId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 
-    public long getSubjectId() {
+    public int getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(long subjectId) {
+    public void setSubjectId(int subjectId) {
         this.subjectId = subjectId;
     }
 
