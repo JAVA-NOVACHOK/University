@@ -2,14 +2,14 @@ package ua.com.nikiforov.models.timetables;
 
 import java.time.Instant;
 
-public class TeacherTimetable extends Timetable {
+public class TeachersTimetable extends Timetable {
 
     private long teacherId;
 
-    public TeacherTimetable() {
+    public TeachersTimetable() {
     }
 
-    public TeacherTimetable(long id, long lessonId, Instant time, long teacherId) {
+    public TeachersTimetable(long id, long lessonId, Instant time, long teacherId) {
         super(id, lessonId, time);
         this.teacherId = teacherId;
     }

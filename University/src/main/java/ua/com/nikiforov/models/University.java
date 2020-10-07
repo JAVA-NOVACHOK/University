@@ -5,6 +5,9 @@ public class University {
     private int id;
     private String universityName;
 
+    public University() {
+    }
+
     public University(int id, String universityName) {
         this.id = id;
         this.universityName = universityName;

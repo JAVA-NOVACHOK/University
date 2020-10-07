@@ -12,7 +12,7 @@ public class TeacherDAO {
 
     private static final String ADD_TEACHER = INSERT + TABLE_TEACHERS + L_BRACKET + COLUMN_TEACHER_FIRST_NAME + COMA
             + COLUMN_TEACHER_LAST_NAME + COMA + COLUMN_TEACHER_SUBJECT_ID + VALUES_3_QMARK;
-    private static final String GET_TEACHER_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
+    private static final String FIND_TEACHER_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
             + COLUMN_TEACHER_ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_TEACHERS = SELECT + ASTERISK + FROM + TABLE_TEACHERS;
     private static final String UPDATE_TEACHER = UPDATE + TABLE_TEACHERS + SET + COLUMN_TEACHER_FIRST_NAME + EQUALS_M
@@ -33,7 +33,7 @@ public class TeacherDAO {
     }
 
     public Teacher getTeacherById(long id) {
-        return jdbcTemplate.queryForObject(GET_TEACHER_BY_ID, new Object[] { id }, new TeacherMapper());
+        return jdbcTemplate.queryForObject(FIND_TEACHER_BY_ID, new Object[] { id }, new TeacherMapper());
     }
 
     public List<Teacher> getAllTeachers() {

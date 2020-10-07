@@ -12,7 +12,7 @@ public class StudentDAO {
 
     private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + COLUMN_STUDENT_FIRST_NAME + COMA
             + COLUMN_STUDENT_LAST_NAME + COMA + COLUMN_STUDENT_GROUP_ID + VALUES_3_QMARK;
-    private static final String GET_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
+    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
             + COLUMN_STUDENT_ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
     private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + COLUMN_STUDENT_FIRST_NAME + EQUALS_M
@@ -33,7 +33,7 @@ public class StudentDAO {
     }
 
     public Student getStudentById(long id) {
-        return jdbcTemplate.queryForObject(GET_STUDENT_BY_ID, new Object[] { id }, new StudentMapper());
+        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { id }, new StudentMapper());
     }
 
     public List<Student> getAllStudents() {

@@ -63,16 +63,16 @@ public class SqlKeyWords {
     public static final String COLUMN_STUDENT_GROUP_ID = "teachers";
     
     public static final String TABLE_STUDENTS_TIMETABLE = "students_timetable";
-    public static final String COLUMN_STUDENT_TIMETABLE_ID = "id";
-    public static final String COLUMN_STUDENT_TIMETABLE_LESSON_ID = "lesson_id";
-    public static final String COLUMN_STUDENT_TIMETABLE_TIME = "time"; 
-    public static final String COLUMN_STUDENT_TIMETABLE_STUDENT_ID = "student_id";
+    public static final String COLUMN_STUDENTS_TIMETABLE_ID = "id";
+    public static final String COLUMN_STUDENTS_TIMETABLE_LESSON_ID = "lesson_id";
+    public static final String COLUMN_STUDENTS_TIMETABLE_TIME = "time"; 
+    public static final String COLUMN_STUDENTS_TIMETABLE_STUDENT_ID = "student_id";
     
-    public static final String TABLE_TEACHER_TIMETABLE = "teachers_timetable";
-    public static final String COLUMN_TEACHER_TIMETABLE_ID = "id";
-    public static final String COLUMN_TEACHER_TIMETABLE_LESSON_ID = "lesson_id";
-    public static final String COLUMN_TEACHER_TIMETABLE_TIME = "time"; 
-    public static final String COLUMN_TEACHER_TIMETABLE_TEACHER_ID = "teacher_id";
+    public static final String TABLE_TEACHERS_TIMETABLE = "teachers_timetable";
+    public static final String COLUMN_TEACHERS_TIMETABLE_ID = "id";
+    public static final String COLUMN_TEACHERS_TIMETABLE_LESSON_ID = "lesson_id";
+    public static final String COLUMN_TEACHERS_TIMETABLE_TIME = "time"; 
+    public static final String COLUMN_TEACHERS_TIMETABLE_TEACHER_ID = "teacher_id";
     
 
 }
