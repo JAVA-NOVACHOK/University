@@ -8,6 +8,9 @@ public abstract class Timetable {
     protected long lessonId;
     protected Instant time;
 
+    public Timetable() {
+    }
+
     public Timetable(long id, long lessonId, Instant time) {
         this.id = id;
         this.lessonId = lessonId;
