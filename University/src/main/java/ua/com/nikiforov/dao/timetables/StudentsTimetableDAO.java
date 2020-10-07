@@ -1,15 +1,11 @@
 package ua.com.nikiforov.dao.timetables;
 
 import static ua.com.nikiforov.dao.SqlKeyWords.*;
-
 import java.time.Instant;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import ua.com.nikiforov.mappers.timetables.StudentsTimetableMapper;
 import ua.com.nikiforov.models.timetables.StudentsTimetable;
 

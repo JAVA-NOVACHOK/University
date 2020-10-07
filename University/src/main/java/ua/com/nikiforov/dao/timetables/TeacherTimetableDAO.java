@@ -30,8 +30,8 @@ public class TeacherTimetableDAO {
             jdbcTemplate = new JdbcTemplate(dataSource);
         }
 
-    public boolean addTeacherTimetable(long lessonId, long TEACHERId, Instant time) {
-        return jdbcTemplate.update(ADD_TEACHERS_TIMETABLE, lessonId, TEACHERId, time) > 0;
+    public boolean addTeacherTimetable(long lessonId, long teacherId, Instant time) {
+        return jdbcTemplate.update(ADD_TEACHERS_TIMETABLE, lessonId, teacherId, time) > 0;
     }
 
     public TeachersTimetable getTEACHERTimetableById(long id) {
@@ -52,5 +52,3 @@ public class TeacherTimetableDAO {
     }
 
 }
-
-

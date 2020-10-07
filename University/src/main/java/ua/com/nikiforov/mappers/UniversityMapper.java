@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import ua.com.nikiforov.models.University;
 import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_UNIVERSITY_ID;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_UNIVERSITY_NAME;;
+import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_UNIVERSITY_NAME;
 
 public class UniversityMapper implements RowMapper<University> {
 

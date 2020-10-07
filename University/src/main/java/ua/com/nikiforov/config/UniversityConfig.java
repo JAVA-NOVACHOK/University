@@ -31,7 +31,5 @@ public class UniversityConfig {
         driverManagerDataSource.setPassword(environment.getProperty(PASSWORD));
         return driverManagerDataSource;
     }
-    
-    
 
 }

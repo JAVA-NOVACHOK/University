@@ -7,7 +7,7 @@ import ua.com.nikiforov.models.persons.Student;
 import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENT_ID;
 import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENT_FIRST_NAME;
 import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENT_LAST_NAME;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENT_GROUP_ID;;
+import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENT_GROUP_ID;
 
 public class StudentMapper implements RowMapper<Student> {
 
