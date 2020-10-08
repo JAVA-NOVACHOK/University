@@ -1,32 +1,36 @@
 package ua.com.nikiforov.dao.timetables;
 
-import static ua.com.nikiforov.dao.SqlKeyWords.*;
+import static ua.com.nikiforov.dao.SqlConstants.*;
+import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.*;
 import java.time.Instant;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import ua.com.nikiforov.mappers.timetables.StudentsTimetableMapper;
 import ua.com.nikiforov.models.timetables.StudentsTimetable;
 
-public class StudentsTimetableDAO {
+@Repository
+public class StudentsTimetableDAOImpl {
 
     private static final String ADD_STUDENTS_TIMETABLE = INSERT + TABLE_STUDENTS_TIMETABLE + L_BRACKET
-            + COLUMN_STUDENTS_TIMETABLE_LESSON_ID + EQUALS_M + Q_MARK + COMA + COLUMN_STUDENTS_TIMETABLE_STUDENT_ID
-            + EQUALS_M + Q_MARK + COMA + COLUMN_STUDENTS_TIMETABLE_TIME + EQUALS_M + Q_MARK + VALUES_3_QMARK;
+            + LESSON_ID + EQUALS_M + Q_MARK + COMA + STUDENT_ID
+            + EQUALS_M + Q_MARK + COMA + TIME + EQUALS_M + Q_MARK + VALUES_3_QMARK;
     private static final String FIND_STUDENTS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE
-            + WHERE + COLUMN_STUDENTS_TIMETABLE_ID + EQUALS_M + Q_MARK;
+            + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE;
     private static final String UPDATE_STUDENTS_TIMETABLE = UPDATE + TABLE_STUDENTS_TIMETABLE + SET
-            + COLUMN_STUDENTS_TIMETABLE_LESSON_ID + EQUALS_M + Q_MARK + COMA + COLUMN_STUDENTS_TIMETABLE_STUDENT_ID
-            + EQUALS_M + Q_MARK + COMA + COLUMN_STUDENTS_TIMETABLE_TIME + EQUALS_M + Q_MARK + VALUES_3_QMARK;
+            + LESSON_ID + EQUALS_M + Q_MARK + COMA + STUDENT_ID
+            + EQUALS_M + Q_MARK + COMA + TIME + EQUALS_M + Q_MARK + VALUES_3_QMARK;
     private static final String DELETE_STUDENTS_TIMETABLE_BY_ID = DELETE + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE
-            + WHERE + COLUMN_STUDENTS_TIMETABLE_ID + EQUALS_M + Q_MARK;
+            + WHERE + ID + EQUALS_M + Q_MARK;
 
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public StudentsTimetableDAO(DataSource dataSource) {
+    public StudentsTimetableDAOImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

@@ -16,7 +16,7 @@ public class Student extends Person {
         return groupId;
     }
 
-    public void setGroup(int groupId) {
+    public void setGroup(long groupId) {
         this.groupId = groupId;
     }
 

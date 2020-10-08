@@ -5,20 +5,18 @@ import java.sql.SQLException;
 import java.time.Instant;
 import org.springframework.jdbc.core.RowMapper;
 import ua.com.nikiforov.models.timetables.StudentsTimetable;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENTS_TIMETABLE_ID;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENTS_TIMETABLE_LESSON_ID;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENTS_TIMETABLE_STUDENT_ID;
-import static ua.com.nikiforov.dao.SqlKeyWords.COLUMN_STUDENTS_TIMETABLE_TIME;
+import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.*;
+
 
 public class StudentsTimetableMapper implements RowMapper<StudentsTimetable> {
 
     @Override
     public StudentsTimetable mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         StudentsTimetable studentsTimetable = new StudentsTimetable();
-        studentsTimetable.setId(resultSet.getLong(COLUMN_STUDENTS_TIMETABLE_ID));
-        studentsTimetable.setLessonId(resultSet.getLong(COLUMN_STUDENTS_TIMETABLE_LESSON_ID));
-        studentsTimetable.setStudentId(resultSet.getLong(COLUMN_STUDENTS_TIMETABLE_STUDENT_ID));
-        studentsTimetable.setTime(resultSet.getObject(COLUMN_STUDENTS_TIMETABLE_TIME, Instant.class));
+        studentsTimetable.setId(resultSet.getLong(ID));
+        studentsTimetable.setLessonId(resultSet.getLong(LESSON_ID));
+        studentsTimetable.setStudentId(resultSet.getLong(STUDENT_ID));
+        studentsTimetable.setTime(resultSet.getObject(TIME, Instant.class));
         return studentsTimetable;
     }
 

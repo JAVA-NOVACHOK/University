@@ -13,7 +13,7 @@
 		<postgres.version>42.2.16</postgres.version>
 		<jacoco.version>0.8.2</jacoco.version>
 		<surfire.version>2.22.1</surfire.version>
-		<h2.version>1.4.195</h2.version>
+		<h2.version>1.4.200</h2.version>
 		<spring.version>5.2.9.RELEASE</spring.version>
 	</properties>
 

@@ -1,7 +1,6 @@
  package ua.com.nikiforov.config;
 
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,16 +13,13 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @PropertySource("classpath:university.properties")
 public class UniversityConfig {
 
-    @Autowired
-    Environment environment;
-
     private static final String URL = "url";
     private static final String USER = "user";
     private static final String DRIVER = "driver";
     private static final String PASSWORD = "password";
 
     @Bean
-    DataSource dataSource() {
+    DataSource dataSource(Environment environment) {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
         driverManagerDataSource.setUrl(environment.getProperty(URL));
         driverManagerDataSource.setDriverClassName(environment.getProperty(DRIVER));
