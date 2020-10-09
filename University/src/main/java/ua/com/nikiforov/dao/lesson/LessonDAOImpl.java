@@ -38,7 +38,7 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public Lesson findLessonById(long id) {
+    public Lesson getLessonById(long id) {
         return jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, new LessonMapper());
     }
 

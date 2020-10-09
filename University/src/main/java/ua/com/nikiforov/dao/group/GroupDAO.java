@@ -12,8 +12,8 @@ public interface GroupDAO {
 
     public List<Group> getAllGroups();
 
-    public boolean addGroup(Long groupNumber);
+    public boolean addGroup(String groupName);
 
-    public boolean updateGroup(Long groupNumber, Long id);
+    public boolean updateGroup(String groupName, Long id);
 
 }

@@ -1,9 +1,10 @@
-package ua.com.nikiforov.dao.room;
+package ua.com.nikiforov.services.room;
 
 import java.util.List;
+
 import ua.com.nikiforov.models.Room;
 
-public interface RoomDAO {
+public interface RoomService {
     
     public boolean addRoom(int groupNumber);
 
@@ -14,5 +15,4 @@ public interface RoomDAO {
     public boolean updateRoom(int number, int id);
 
     public boolean deleteRoomById(int id);
-
 }

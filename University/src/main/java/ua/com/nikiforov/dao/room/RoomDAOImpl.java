@@ -38,7 +38,7 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public Room findRoomById(int id) {
+    public Room getRoomById(int id) {
         return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, new RoomMapper());
     }
 
