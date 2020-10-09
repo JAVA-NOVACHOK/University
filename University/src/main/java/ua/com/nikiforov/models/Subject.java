@@ -9,6 +9,9 @@ public class Subject {
     private String name;
     private List<Long> subjectTeacherIds;
 
+    public Subject() {
+    }
+
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;

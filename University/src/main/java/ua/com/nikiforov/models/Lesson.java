@@ -7,6 +7,9 @@ public class Lesson {
     protected int subjectId;
     private int roomId;
 
+    public Lesson() {
+    }
+
     public Lesson(long id, long groupId, int subjectId, int roomId) {
         this.id = id;
         this.groupId = groupId;

@@ -4,6 +4,9 @@ public class Teacher extends Person {
 
     private int subjectId;
 
+    public Teacher() {
+    }
+
     public Teacher(long id, String firstName, String lastName, int subjectId) {
         super(id, firstName, lastName);
         this.subjectId = subjectId;

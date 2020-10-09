@@ -3,11 +3,14 @@ package ua.com.nikiforov.models;
 public class Room {
 
     private int id;
-    private int number;
+    private int roomNumber;
+
+    public Room() {
+    }
 
     public Room(int id, int number) {
         this.id = id;
-        this.number = number;
+        this.roomNumber = number;
     }
 
     public int getId() {
@@ -19,11 +22,11 @@ public class Room {
     }
 
     public int getNumber() {
-        return number;
+        return roomNumber;
     }
 
     public void setNumber(int number) {
-        this.number = number;
+        this.roomNumber = number;
     }
 
 }

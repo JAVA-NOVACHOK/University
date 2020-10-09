@@ -3,11 +3,14 @@ package ua.com.nikiforov.models;
 public class University {
 
     private int id;
-    private String name;
+    private String universityName;
 
-    public University(int id, String name) {
+    public University() {
+    }
+
+    public University(int id, String universityName) {
         this.id = id;
-        this.name = name;
+        this.universityName = universityName;
     }
 
     public int getId() {
@@ -19,11 +22,11 @@ public class University {
     }
 
     public String getName() {
-        return name;
+        return universityName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.universityName = name;
     }
 
 }

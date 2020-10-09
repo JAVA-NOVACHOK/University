@@ -13,10 +13,31 @@
 		<postgres.version>42.2.16</postgres.version>
 		<jacoco.version>0.8.2</jacoco.version>
 		<surfire.version>2.22.1</surfire.version>
-		<h2.version>1.4.195</h2.version>
+		<h2.version>1.4.200</h2.version>
+		<spring.version>5.2.9.RELEASE</spring.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
