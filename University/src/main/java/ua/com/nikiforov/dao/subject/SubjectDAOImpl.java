@@ -6,6 +6,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.mappers.SubjectMapper;
@@ -35,20 +36,20 @@ public class SubjectDAOImpl {
         return jdbcTemplate.update(ADD_SUBJECT, subjectName) > 0;
     }
 
-    public Subject getSubjectById(int id) {
-        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { id }, new SubjectMapper());
+    public Subject getSubjectById(int subjectId) {
+        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { subjectId }, new SubjectMapper());
     }
 
     public List<Subject> getAllSubjects() {
         return jdbcTemplate.query(GET_ALL_SUBJECTS, new SubjectMapper());
     }
 
-    public boolean updateSubject(String subjectName, int id) {
-        return jdbcTemplate.update(UPDATE_SUBJECT, subjectName, id) > 0;
+    public boolean updateSubject(String subjectName, int subjectId) {
+        return jdbcTemplate.update(UPDATE_SUBJECT, subjectName, subjectId) > 0;
     }
 
-    public boolean deleteSubjectById(int id) {
-        return jdbcTemplate.update(DELETE_SUBJECT_BY_ID, id) > 0;
+    public boolean deleteSubjectById(int subjectId) {
+        return jdbcTemplate.update(DELETE_SUBJECT_BY_ID, subjectId) > 0;
     }
 
 }

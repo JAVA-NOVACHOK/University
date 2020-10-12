@@ -7,7 +7,7 @@ public class Subject {
 
     private int id;
     private String name;
-    private List<Long> subjectTeacherIds;
+    private List<Long> teachersIds;
 
     public Subject() {
     }
@@ -15,7 +15,7 @@ public class Subject {
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;
-        subjectTeacherIds = new ArrayList<>();
+        teachersIds = new ArrayList<>();
     }
 
     public int getId() {
@@ -35,11 +35,13 @@ public class Subject {
     }
 
     public List<Long> getSubjectTeachersIds() {
-        return subjectTeacherIds;
+        return teachersIds;
     }
 
-    public void addSubjectTeacherId(long subjectTeacherId) {
-        subjectTeacherIds.add(subjectTeacherId);
+    public void setSubjectTeacherIds(List<Long> subjectTeacherIds) {
+        this.teachersIds = subjectTeacherIds;
     }
+
+    
 
 }

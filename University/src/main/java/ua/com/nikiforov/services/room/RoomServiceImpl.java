@@ -5,38 +5,43 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.dao.room.RoomDAO;
 import ua.com.nikiforov.dao.room.RoomDAOImpl;
 import ua.com.nikiforov.models.Room;
 
 @Service
 public class RoomServiceImpl implements RoomService {
+
+    private RoomDAO roomDAO;
     
     @Autowired
-    private RoomDAOImpl roomDAOImpl;
+    public RoomServiceImpl(RoomDAO roomDAO) {
+        this.roomDAO = roomDAO;
+    }
 
     @Override
     public boolean addRoom(int groupNumber) {
-       return roomDAOImpl.addRoom(groupNumber);
+        return roomDAO.addRoom(groupNumber);
     }
 
     @Override
     public Room getRoomById(int id) {
-        return roomDAOImpl.getRoomById(id);
+        return roomDAO.getRoomById(id);
     }
 
     @Override
     public List<Room> getAllRooms() {
-        return roomDAOImpl.getAllRooms();
+        return roomDAO.getAllRooms();
     }
 
     @Override
     public boolean updateRoom(int number, int id) {
-        return roomDAOImpl.updateRoom(number, id);
+        return roomDAO.updateRoom(number, id);
     }
 
     @Override
     public boolean deleteRoomById(int id) {
-        return roomDAOImpl.deleteRoomById(id);
+        return roomDAO.deleteRoomById(id);
     }
 
 }

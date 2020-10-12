@@ -5,7 +5,7 @@ import java.util.List;
 import ua.com.nikiforov.models.Room;
 
 public interface RoomService {
-    
+
     public boolean addRoom(int groupNumber);
 
     public Room getRoomById(int id);

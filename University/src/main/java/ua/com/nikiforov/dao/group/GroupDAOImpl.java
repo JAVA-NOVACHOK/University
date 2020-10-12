@@ -25,6 +25,11 @@ public class GroupDAOImpl implements GroupDAO {
             + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M
             + Q_MARK;
+    
+    private String sql = "DROP TABLE IF EXISTS groups; CREATE TABLE groups("+
+           " group_id serial PRIMARY KEY,"+
+            "group_name varchar(255)"+
+        ")";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -32,9 +37,12 @@ public class GroupDAOImpl implements GroupDAO {
     public GroupDAOImpl(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
+    
+    
 
     @Override
     public Group getGroupById(Long id) {
+        
         return jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, new GroupMapper());
     }
 
@@ -56,6 +64,12 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public boolean updateGroup(String groupName, Long id) {
         return jdbcTemplate.update(UPDATE_GROUP, groupName, id) > 0;
+    }
+
+    @Override
+    public void createTable() {
+        jdbcTemplate.execute(sql);
+        
     }
 
 }

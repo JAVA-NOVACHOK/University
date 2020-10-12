@@ -6,6 +6,8 @@ import ua.com.nikiforov.models.Group;
 
 public interface GroupDAO {
     
+    public void createTable();
+    
     public Group getGroupById(Long id);
 
     public boolean deleteGroupById(Long id);

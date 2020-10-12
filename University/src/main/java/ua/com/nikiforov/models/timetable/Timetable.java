@@ -1,18 +1,20 @@
-package ua.com.nikiforov.models.timetables;
+package ua.com.nikiforov.models.timetable;
 
 import java.time.Instant;
 
-public abstract class Timetable {
+public class Timetable {
 
-    protected long id;
-    protected long lessonId;
-    protected Instant time;
+    private long id;
+    private long personId;
+    private long lessonId;
+    private Instant time;
 
     public Timetable() {
     }
 
-    public Timetable(long id, long lessonId, Instant time) {
+    public Timetable(long id, long personId, long lessonId, Instant time) {
         this.id = id;
+        this.personId = personId;
         this.lessonId = lessonId;
         this.time = time;
     }
@@ -23,6 +25,14 @@ public abstract class Timetable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(long personId) {
+        this.personId = personId;
     }
 
     public long getLessonId() {

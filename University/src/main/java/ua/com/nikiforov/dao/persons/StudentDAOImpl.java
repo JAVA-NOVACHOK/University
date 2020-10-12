@@ -14,16 +14,15 @@ import ua.com.nikiforov.models.persons.Student;
 @Repository
 public class StudentDAOImpl implements StudentDAO {
 
-    private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + FIRST_NAME + COMA
-            + LAST_NAME + COMA + GROUP_ID + VALUES_3_QMARK;
-    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
-            + ID + EQUALS_M + Q_MARK;
+    private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + FIRST_NAME + COMA + LAST_NAME + COMA
+            + GROUP_ID + VALUES_3_QMARK;
+    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
+            + Q_MARK;
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
-    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M
-            + Q_MARK + COMA + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + WHERE
-            + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_STUDENT_BY_ID = DELETE + ASTERISK + FROM + TABLE_STUDENTS + WHERE
-            + ID + EQUALS_M + Q_MARK;
+    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M + Q_MARK + COMA
+            + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_STUDENT_BY_ID = DELETE + ASTERISK + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
+            + Q_MARK;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -38,8 +37,8 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public Student getStudentById(long id) {
-        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { id }, new StudentMapper());
+    public Student getStudentById(long studentId) {
+        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, new StudentMapper());
     }
 
     @Override
@@ -48,12 +47,12 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public boolean updateStudent(String firstName, String lastName, long groupId) {
-        return jdbcTemplate.update(UPDATE_STUDENT, firstName, lastName, groupId) > 0;
+    public boolean updateStudent(String firstName, String lastName, long groupId, long studentId) {
+        return jdbcTemplate.update(UPDATE_STUDENT, firstName, lastName, groupId, studentId) > 0;
     }
 
     @Override
-    public boolean deleteStudentById(long id) {
-        return jdbcTemplate.update(DELETE_STUDENT_BY_ID, id) > 0;
+    public boolean deleteStudentById(long studentId) {
+        return jdbcTemplate.update(DELETE_STUDENT_BY_ID, studentId) > 0;
     }
 }

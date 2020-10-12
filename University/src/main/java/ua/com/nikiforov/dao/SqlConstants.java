@@ -72,7 +72,7 @@ public class SqlConstants {
         private SubjectTable() {
         }
 
-        public static final String TABLE_SUBJECTS = "subject";
+        public static final String TABLE_SUBJECTS = "subjects";
         public static final String SUBJECT_ID = "subject_id";
         public static final String SUBJECT_NAME = "subject_name";
     }
@@ -82,7 +82,7 @@ public class SqlConstants {
         }
 
         public static final String TABLE_TEACHERS = "teachers";
-        public static final String ID = "id";
+        public static final String ID = "teacher_id";
         public static final String FIRST_NAME = "first_name";
         public static final String LAST_NAME = "last_name";
         public static final String SUBJECT_ID = "subject_id";
@@ -93,10 +93,10 @@ public class SqlConstants {
         }
 
         public static final String TABLE_STUDENTS = "students";
-        public static final String ID = "id";
+        public static final String ID = "student_id";
         public static final String FIRST_NAME = "first_name";
         public static final String LAST_NAME = "last_name";
-        public static final String GROUP_ID = "teachers";
+        public static final String GROUP_ID = "group_id";
     }
 
     public static class StudentsTimetableTable {
@@ -107,7 +107,7 @@ public class SqlConstants {
         public static final String ID = "id";
         public static final String LESSON_ID = "lesson_id";
         public static final String TIME = "time";
-        public static final String STUDENT_ID = "student_id";
+        public static final String PERSON_ID = "person_id";
     }
 
     public static class TeachersTimetableTable {
@@ -118,7 +118,16 @@ public class SqlConstants {
         public static final String ID = "id";
         public static final String LESSON_ID = "lesson_id";
         public static final String TIME = "time";
+        public static final String PERSON_ID = "person_id";
+    }
+
+    public static class TeachersSubjectsTable {
+        private TeachersSubjectsTable() {
+        }
+
+        public static final String TEACHERS_SUBJECTS_TABLE = "teachers_subjects";
         public static final String TEACHER_ID = "teacher_id";
+        public static final String SUBJECT_ID = "subject_id";
     }
 
 }
