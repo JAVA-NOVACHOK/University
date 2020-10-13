@@ -70,19 +70,19 @@ class LessonServiceImplTest {
         lessonService.addLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
         lessonService.addLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2);
         lessonService.addLesson(TEST_GROUP_ID_3, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3);
-        StringBuilder expected = new StringBuilder();
-        expected.append(TEST_GROUP_ID_1).append(SPACE).append(TEST_SUBJECT_ID_1).append(SPACE).append(TEST_ROOM_ID_1)
+        StringBuilder expectedGroupSubjectRoomIds = new StringBuilder();
+        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_1).append(SPACE).append(TEST_SUBJECT_ID_1).append(SPACE).append(TEST_ROOM_ID_1)
                 .append(SPACE);
-        expected.append(TEST_GROUP_ID_2).append(SPACE).append(TEST_SUBJECT_ID_2).append(SPACE).append(TEST_ROOM_ID_2)
+        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_2).append(SPACE).append(TEST_SUBJECT_ID_2).append(SPACE).append(TEST_ROOM_ID_2)
                 .append(SPACE);
-        expected.append(TEST_GROUP_ID_3).append(SPACE).append(TEST_SUBJECT_ID_3).append(SPACE).append(TEST_ROOM_ID_3)
+        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_3).append(SPACE).append(TEST_SUBJECT_ID_3).append(SPACE).append(TEST_ROOM_ID_3)
                 .append(SPACE);
-        StringBuilder actual = new StringBuilder();
+        StringBuilder actualGroupSubjectRoomIds = new StringBuilder();
         List<Lesson> lessons = lessonService.getAllLessons();
-        long count = lessons.stream().map(l -> actual.append(l.getGroupId()).append(SPACE).append(l.getSubjectId())
+        long countLessons = lessons.stream().map(l -> actualGroupSubjectRoomIds.append(l.getGroupId()).append(SPACE).append(l.getSubjectId())
                 .append(SPACE).append(l.getRoomId()).append(SPACE)).count();
-        assertEquals(TEST_LESSON_COUNT, count);
-        assertEquals(expected.toString(), actual.toString());
+        assertEquals(TEST_LESSON_COUNT, countLessons);
+        assertEquals(expectedGroupSubjectRoomIds.toString(), actualGroupSubjectRoomIds.toString());
     }
 
     @Test

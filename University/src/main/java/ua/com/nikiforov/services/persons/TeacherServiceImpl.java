@@ -59,7 +59,12 @@ public class TeacherServiceImpl implements TeachersService {
 
     @Override
     public boolean assignSubjectToTeacher(int subjectId, long teacherId) {
-        return techersSubjectsDAO.addSubjectForTeacher(teacherId, subjectId);
+        return techersSubjectsDAO.assignSubjectToTeacher(teacherId, subjectId);
+    }
+
+    @Override
+    public boolean unassignSubjectFromTeacher(int subjectId, long teacherId) {
+        return techersSubjectsDAO.unassignSubjectFromTeacher(teacherId, subjectId);
     }
 
 }

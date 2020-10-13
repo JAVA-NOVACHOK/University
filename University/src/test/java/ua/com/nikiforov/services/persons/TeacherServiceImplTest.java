@@ -12,7 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.services.subject.SubjectService;
 
 @SpringJUnitConfig(UniversityConfig.class)
 class TeacherServiceImplTest {
@@ -24,13 +26,22 @@ class TeacherServiceImplTest {
     private static final String LAST_NAME_1 = "Hanks";
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
+
+    private static final String SUBJECT_NAME_1 = "Math";
+    private static final String SUBJECT_NAME_2 = "Programming";
+    private static final String SUBJECT_NAME_3 = "Cybersecurity";
+
     private static final String SPACE = " ";
     private static final String NEW_LINE = System.lineSeparator();
 
     private static final int TEACHER_TEST_COUNT = 3;
+    private static final int TEACHERS_SUBJECTS_COUNT = 3;
 
     @Autowired
     private TeachersService teacherService;
+
+    @Autowired
+    private SubjectService subjectService;
 
     @Autowired
     private TableCreator tableCreator;
@@ -47,8 +58,8 @@ class TeacherServiceImplTest {
 
     @Test
     void whenGetTeacherByNameReturnCorrectTeacherObject() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         assertEquals(FIRST_NAME_1, teacher.getFirstName());
         assertEquals(LAST_NAME_1, teacher.getLastName());
     }
@@ -72,24 +83,21 @@ class TeacherServiceImplTest {
 
     @Test
     void whenUpdateTeachersFirstNameIfSuccessThenReturnTrue() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         assertTrue(teacherService.updateTeacher(FIRST_NAME_2, LAST_NAME_1, teacherId));
     }
 
     @Test
     void whenUpdateTeachersLastNameIfSuccessThenReturnTrue() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         assertTrue(teacherService.updateTeacher(FIRST_NAME_1, LAST_NAME_2, teacherId));
     }
 
     @Test
     void afterUpdateTeachersFirstNameIfSuccessThenGetTeacherByIdReturnChangedFirstName() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         teacherService.updateTeacher(FIRST_NAME_2, LAST_NAME_1, teacherId);
         assertEquals(FIRST_NAME_2, teacherService.getTeacherById(teacherId).getFirstName());
@@ -97,27 +105,62 @@ class TeacherServiceImplTest {
 
     @Test
     void afterUpdateTeachersLastNameIfSuccessThenGetTeacherByIdReturnChangedLastName() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         teacherService.updateTeacher(FIRST_NAME_1, LAST_NAME_2, teacherId);
         assertEquals(LAST_NAME_2, teacherService.getTeacherById(teacherId).getLastName());
     }
-    
+
     @Test
     void whenDeleteTeacherByIdIfSuccessThenReturnTrue() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         assertTrue(teacherService.deleteTeacherById(teacher.getId()));
     }
-    
+
     @Test
     void afterDeleteTeacherByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher = teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         teacherService.deleteTeacherById(teacherId);
         assertThrows(EmptyResultDataAccessException.class, () -> teacherService.getTeacherById(teacherId));
+    }
+
+    @Test
+    void whenAssignSubjectToTeacherIfSuccessReturnTrue() {
+        teacherService.addTeacher(FIRST_NAME_1, LAST_NAME_1);
+        subjectService.addSubject(SUBJECT_NAME_1);
+        assertTrue(teacherService.assignSubjectToTeacher(1, 1));
+    }
+
+    @Test
+    void afterAssignSubjectsToTeacherTeacherHasListOfSubjectIds() {
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        long teacherId = teacher.getId();
+        Subject subjectOne = insertSubject(SUBJECT_NAME_1);
+        int subjectOneId = subjectOne.getId();
+        Subject subjectTwo = insertSubject(SUBJECT_NAME_2);
+        int subjectTwoId = subjectTwo.getId();
+        Subject subjectThree = insertSubject(SUBJECT_NAME_3);
+        int subjectThreeId = subjectThree.getId();
+        teacherService.assignSubjectToTeacher(subjectOneId, teacherId);
+        teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
+        teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
+        teacher = teacherService.getTeacherById(teacherId);
+        String expectedIds = subjectOneId + SPACE + subjectTwoId + SPACE + subjectThreeId + SPACE;
+        StringBuilder actualIds = new StringBuilder();
+        long countSubjects = teacher.getSubjectIds().stream().map(i -> actualIds.append(i).append(SPACE)).count();
+        assertEquals(expectedIds, actualIds.toString());
+        assertEquals(TEACHERS_SUBJECTS_COUNT, countSubjects);
+    }
+
+    private Subject insertSubject(String subjectName) {
+        subjectService.addSubject(subjectName);
+        return subjectService.getSubjectByName(subjectName);
+    }
+
+    private Teacher insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(firstName, lastName);
+        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }

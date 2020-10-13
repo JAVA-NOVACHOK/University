@@ -1,16 +1,18 @@
 package ua.com.nikiforov.dao.teachers_subjects;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import static ua.com.nikiforov.dao.SqlConstants.*;
+
+import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.SUBJECT_ID;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.TEACHERS_SUBJECTS_TABLE;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.TEACHER_ID;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.mappers.TeachersSubjectsMapper;
@@ -24,6 +26,8 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
     private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
             + TEACHER_ID + EQUALS_M + Q_MARK;
     private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
+            + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
             + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
 
     private static final int PREPARE_STATEMENT_FIRST_INDEX = 1;
@@ -50,8 +54,13 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
     }
 
     @Override
-    public boolean addSubjectForTeacher(long teacherId, int subjectId) {
+    public boolean assignSubjectToTeacher(long teacherId, int subjectId) {
         return jdbcTemplate.update(ADD_SUBJECT_FOR_TEACHER, teacherId, subjectId) > 0;
+    }
+
+    @Override
+    public boolean unassignSubjectFromTeacher(long teacherId, int subjectId) {
+         return jdbcTemplate.update(DELETE_SUBJECT_FROM_TEACHER,teacherId, subjectId) > 0;
     }
 
 }

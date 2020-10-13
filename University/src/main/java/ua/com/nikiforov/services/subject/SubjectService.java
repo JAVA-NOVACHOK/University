@@ -12,6 +12,8 @@ public interface SubjectService {
 
     public Subject getSubjectById(int subjectId);
 
+    public Subject getSubjectByName(String subjectName);
+
     public List<Subject> getAllSubjects();
 
     public boolean updateSubject(String subjectName, int subjectId);

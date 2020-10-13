@@ -60,18 +60,18 @@ class StudentsServiseImplTest {
         studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
         studentService.addStudent(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_1);
         studentService.addStudent(FIRST_NAME_3, LAST_NAME_3, TEST_GROUP_ID_1);
-        StringBuilder expected = new StringBuilder();
-        expected.append(FIRST_NAME_1).append(SPACE).append(LAST_NAME_1).append(SPACE).append(TEST_GROUP_ID_1)
+        StringBuilder expectedNames = new StringBuilder();
+        expectedNames.append(FIRST_NAME_1).append(SPACE).append(LAST_NAME_1).append(SPACE).append(TEST_GROUP_ID_1)
                 .append(NEW_LINE);
-        expected.append(FIRST_NAME_2).append(SPACE).append(LAST_NAME_2).append(SPACE).append(TEST_GROUP_ID_1)
+        expectedNames.append(FIRST_NAME_2).append(SPACE).append(LAST_NAME_2).append(SPACE).append(TEST_GROUP_ID_1)
                 .append(NEW_LINE);
-        expected.append(FIRST_NAME_3).append(SPACE).append(LAST_NAME_3).append(SPACE).append(TEST_GROUP_ID_1)
+        expectedNames.append(FIRST_NAME_3).append(SPACE).append(LAST_NAME_3).append(SPACE).append(TEST_GROUP_ID_1)
                 .append(NEW_LINE);
-        StringBuilder actual = new StringBuilder();
-        long count = studentService.getAllStudents().stream().map(s -> actual.append(s.getFirstName()).append(SPACE)
+        StringBuilder actualNames = new StringBuilder();
+        long countNames = studentService.getAllStudents().stream().map(s -> actualNames.append(s.getFirstName()).append(SPACE)
                 .append(s.getLastName()).append(SPACE).append(s.getGroupId()).append(NEW_LINE)).count();
-        assertEquals(expected.toString(), actual.toString());
-        assertEquals(STUDENT_TEST_COUNT, count);
+        assertEquals(expectedNames.toString(), actualNames.toString());
+        assertEquals(STUDENT_TEST_COUNT, countNames);
     }
 
     @Test

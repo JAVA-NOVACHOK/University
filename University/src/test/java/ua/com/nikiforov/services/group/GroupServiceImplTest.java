@@ -52,14 +52,14 @@ class GroupServiceImplTest {
         groupService.addGroup(TEST_GROUP_NAME_1);
         groupService.addGroup(TEST_GROUP_NAME_2);
         groupService.addGroup(TEST_GROUP_NAME_3);
-        StringBuilder expected = new StringBuilder();
-        expected.append(TEST_GROUP_NAME_1).append(SPACE).append(TEST_GROUP_NAME_2).append(SPACE)
+        StringBuilder expectedGroupNames = new StringBuilder();
+        expectedGroupNames.append(TEST_GROUP_NAME_1).append(SPACE).append(TEST_GROUP_NAME_2).append(SPACE)
                 .append(TEST_GROUP_NAME_3).append(SPACE);
-        StringBuilder actual = new StringBuilder();
-        long count = groupService.getAllGroups().stream().map(g -> actual.append(g.getGroupName()).append(SPACE))
+        StringBuilder actualGroupNames = new StringBuilder();
+        long countGroups = groupService.getAllGroups().stream().map(g -> actualGroupNames.append(g.getGroupName()).append(SPACE))
                 .count();
-        assertEquals(expected.toString(), actual.toString());
-        assertEquals(GROUP_TEST_COUNT_3, count);
+        assertEquals(expectedGroupNames.toString(), actualGroupNames.toString());
+        assertEquals(GROUP_TEST_COUNT_3, countGroups);
     }
 
     @Test

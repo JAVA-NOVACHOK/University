@@ -11,6 +11,8 @@ public interface SubjectDAO {
     public boolean addSubject(String subjectName);
 
     public Subject getSubjectById(int subjectId);
+    
+    public Subject getSubjectByName(String subjectName);
 
     public List<Subject> getAllSubjects();
 

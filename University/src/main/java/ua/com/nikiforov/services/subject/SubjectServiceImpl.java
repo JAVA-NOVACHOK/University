@@ -33,7 +33,13 @@ public class SubjectServiceImpl implements SubjectService {
         subject.setSubjectTeacherIds(techersSubjectsDAO.getTeachersIds(subjectId));
         return subject;
     }
-
+    @Override
+    public Subject getSubjectByName(String subjectName){
+        Subject subject = subjectDAO.getSubjectByName(subjectName);
+        subject.setSubjectTeacherIds(techersSubjectsDAO.getTeachersIds(subject.getId()));
+        return subject;
+    }
+    
     @Override
     public List<Subject> getAllSubjects() {
         List<Subject> subjects = subjectDAO.getAllSubjects();

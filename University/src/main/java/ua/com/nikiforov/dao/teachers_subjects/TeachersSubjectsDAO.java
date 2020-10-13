@@ -8,6 +8,9 @@ public interface TeachersSubjectsDAO {
     
     public List<Integer> getSubjectsIds(long teacherId);
     
-    public boolean addSubjectForTeacher(long teacherId, int subjectId);
+    public boolean assignSubjectToTeacher(long teacherId, int subjectId);
+
+    public boolean unassignSubjectFromTeacher(long teacherId, int subjectId);    
+    
     
 }

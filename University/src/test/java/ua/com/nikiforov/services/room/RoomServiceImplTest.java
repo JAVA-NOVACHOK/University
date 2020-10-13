@@ -42,17 +42,14 @@ class RoomServiceImplTest {
 
     @Test
     void whenAddRoomCanGetRoomByNumber() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         assertEquals(TEST_ROOM_NUMBER_1, room.getNumber());
     }
 
     @Test
     void whenQueryRoomByIdThenReturnSearchingRoom() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
-        System.out.println(room.getId() + SPACE + room.getNumber());
         assertEquals(roomId, roomService.getRoomById(roomId).getId());
     }
 
@@ -61,43 +58,46 @@ class RoomServiceImplTest {
         roomService.addRoom(TEST_ROOM_NUMBER_1);
         roomService.addRoom(TEST_ROOM_NUMBER_2);
         roomService.addRoom(TEST_ROOM_NUMBER_3);
-        StringBuilder expected = new StringBuilder();
-        expected.append(TEST_ROOM_NUMBER_1).append(SPACE).append(TEST_ROOM_NUMBER_2).append(SPACE)
+        StringBuilder expectedRoomNumbers = new StringBuilder();
+        expectedRoomNumbers.append(TEST_ROOM_NUMBER_1).append(SPACE).append(TEST_ROOM_NUMBER_2).append(SPACE)
                 .append(TEST_ROOM_NUMBER_3).append(SPACE);
-        StringBuilder actual = new StringBuilder();
-        long count = roomService.getAllRooms().stream().map(r -> actual.append(r.getNumber()).append(SPACE)).count();
-        assertEquals(expected.toString(), actual.toString());
-        assertEquals(TEST_ROOM_COUNT, count);
+        StringBuilder actualRoomNumbers = new StringBuilder();
+        long countRoom = roomService.getAllRooms().stream()
+                .map(r -> actualRoomNumbers.append(r.getNumber()).append(SPACE)).count();
+        assertEquals(expectedRoomNumbers.toString(), actualRoomNumbers.toString());
+        assertEquals(TEST_ROOM_COUNT, countRoom);
     }
 
     @Test
     void whenUpdateRoomByIdIfSuccessThenReturnTrue() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         assertTrue(roomService.updateRoom(TEST_ROOM_NUMBER_2, room.getId()));
     }
 
     @Test
     void whenUpdateRoomIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
+        roomService.updateRoom(TEST_ROOM_NUMBER_2, roomId);
         assertEquals(TEST_ROOM_NUMBER_2, roomService.getRoomById(roomId).getNumber());
     }
 
     @Test
     void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         assertTrue(roomService.deleteRoomById(room.getId()));
     }
 
     @Test
     void afterDeleteRoomByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        Room room = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
         roomService.deleteRoomById(roomId);
         assertThrows(EmptyResultDataAccessException.class, () -> roomService.getRoomById(roomId));
+    }
+
+    private Room insertRoom(int roomNumber) {
+        roomService.addRoom(TEST_ROOM_NUMBER_1);
+        return roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
     }
 }

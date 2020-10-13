@@ -20,4 +20,6 @@ public interface TeachersService {
     
     public boolean assignSubjectToTeacher(int subjectId, long teacherId);
 
+    public boolean unassignSubjectFromTeacher(int subjectId, long teacherId);
+
 }
