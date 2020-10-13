@@ -11,7 +11,7 @@ public class RoomMapper implements RowMapper<Room> {
     @Override
     public Room mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Room room = new Room();
-        room.setNumber(resultSet.getInt(ID));
+        room.setId(resultSet.getInt(ID));
         room.setNumber(resultSet.getInt(ROOM_NUMBER));
         return room;
     }

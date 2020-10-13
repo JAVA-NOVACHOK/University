@@ -20,8 +20,12 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public Lesson findLessonById(long id) {
+    public Lesson getLessonById(long id) {
         return lessonDAO.getLessonById(id);
+    }
+
+    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId) {
+        return lessonDAO.getLessonByGroupRoomSubjectIds(groupId, roomId, subjectId);
     }
 
     @Override

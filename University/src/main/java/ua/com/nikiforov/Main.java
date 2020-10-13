@@ -22,23 +22,26 @@ public class Main {
 
     public static void main(String[] args) {
 
+        
         ApplicationContext context = new AnnotationConfigApplicationContext(UniversityConfig.class);
 //        GroupService groupService = context.getBean(GroupService.class);
 //        groupService.createTable();
 //        groupService.addGroup("BB-11");
 //        System.out.println(groupService.getGroupById(1).getGroupName());
-//        TableCreator tableCreator = context.getBean(TableCreator.class);
-//        tableCreator.createTables();
-        RoomService roomService = context.getBean(RoomService.class);
-        roomService.addRoom(221);
+        TableCreator tableCreator = context.getBean(TableCreator.class);
+        tableCreator.createTables();
+//        RoomService roomService = context.getBean(RoomService.class);
+//        roomService.addRoom(221);
         GroupService groupService = context.getBean(GroupService.class);
         groupService.addGroup("AA-10");
-        SubjectService subjectService = context.getBean(SubjectService.class);
-        subjectService.addSubject("math");
-        StudentsService studentDAO = context.getBean(StudentsService.class);
-        studentDAO.addStudent("Olena", "Nikiforova", 1);
-        TeachersService teachersService = context.getBean(TeachersService.class);
-        teachersService.addTeacher("Artem", "Nikiforov");
+        System.out.println(groupService.getGroupByName("AA-10").getId());
+//        SubjectService subjectService = context.getBean(SubjectService.class);
+//        subjectService.addSubject("math");
+//        subjectService.addSubject("math");
+//        StudentsService studentDAO = context.getBean(StudentsService.class);
+//        studentDAO.addStudent("Olena", "Nikiforova", 1);
+//        TeachersService teachersService = context.getBean(TeachersService.class);
+//        teachersService.addTeacher("Artem", "Nikiforov");
 //        TeachersTimetableService teachersTimetableService = context.getBean(TeachersTimetableService.class);
 //        Date date = new  Date();
 //        Instant time = date.toInstant();

@@ -6,14 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.room.RoomDAO;
-import ua.com.nikiforov.dao.room.RoomDAOImpl;
 import ua.com.nikiforov.models.Room;
 
 @Service
 public class RoomServiceImpl implements RoomService {
 
     private RoomDAO roomDAO;
-    
+
     @Autowired
     public RoomServiceImpl(RoomDAO roomDAO) {
         this.roomDAO = roomDAO;
@@ -27,6 +26,11 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room getRoomById(int id) {
         return roomDAO.getRoomById(id);
+    }
+
+    @Override
+    public Room getRoomByRoomNumber(int roomNumber) {
+        return roomDAO.getRoomByRoomNumber(roomNumber);
     }
 
     @Override

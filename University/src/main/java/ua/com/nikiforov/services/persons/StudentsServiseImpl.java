@@ -11,8 +11,12 @@ import ua.com.nikiforov.models.persons.Student;
 @Service
 public class StudentsServiseImpl implements StudentsService {
     
-    @Autowired
     private StudentDAO studentDAO;
+
+    @Autowired
+    public StudentsServiseImpl(StudentDAO studentDAO) {
+        this.studentDAO = studentDAO;
+    }
 
     @Override
     public boolean addStudent(String firstName, String lastName, long groupId) {
@@ -22,6 +26,10 @@ public class StudentsServiseImpl implements StudentsService {
     @Override
     public Student getStudentById(long studentId) {
        return studentDAO.getStudentById(studentId);
+    }
+    
+    public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
+        return studentDAO.getStudentByNameGroupId(firstName, lastName, groupId);
     }
 
     @Override

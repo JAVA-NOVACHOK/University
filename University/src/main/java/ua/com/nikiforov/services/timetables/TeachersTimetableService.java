@@ -14,9 +14,12 @@ import ua.com.nikiforov.models.timetable.Timetable;
 @Service
 public class TeachersTimetableService implements PersonalTimetable {
 
-    @Autowired
-    @Qualifier("teachersTimetableDAO")
     private TimetableDAO timetable;
+
+    @Autowired
+    public TeachersTimetableService(@Qualifier("teachersTimetableDAO")TimetableDAO timetable) {
+        this.timetable = timetable;
+    }
 
     @Override
     public boolean addTimetable(long lessonId, long teacherId, Instant time) {

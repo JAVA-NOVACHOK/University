@@ -9,6 +9,8 @@ public interface LessonDAO {
     public boolean addLesson(long groupId, int roomId, int subjectId);
 
     public Lesson getLessonById(long id);
+    
+    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId);
 
     public List<Lesson> getAllLessons();
 

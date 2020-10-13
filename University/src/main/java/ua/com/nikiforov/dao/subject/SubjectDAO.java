@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import ua.com.nikiforov.models.Subject;
 
-@Component
 public interface SubjectDAO {
 
     public boolean addSubject(String subjectName);

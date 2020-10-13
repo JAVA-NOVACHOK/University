@@ -9,6 +9,8 @@ public interface TeachersService {
     public boolean addTeacher(String firstName, String lastName);
 
     public Teacher getTeacherById(long id);
+    
+    public Teacher getTeacherByName(String firstName, String lastName);
 
     public List<Teacher> getAllTeachers();
 

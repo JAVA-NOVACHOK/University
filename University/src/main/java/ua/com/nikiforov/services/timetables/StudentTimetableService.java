@@ -13,26 +13,17 @@ import ua.com.nikiforov.models.timetable.Timetable;
 
 @Service
 public class StudentTimetableService implements PersonalTimetable {
-    
+
+    private TimetableDAO timetableDAO;
+
     @Autowired
-    @Qualifier("studentTimtableDao")
-    private TimetableDAO timetable;
-
-    @Override
-    public List<Timetable> getDayTimetable() {
-        return null;
-    }
-
-    @Override
-    public List<Timetable> getMonthTimetable() {
-        // TODO Auto-generated method stub
-        return null;
+    public StudentTimetableService(@Qualifier("studentTimtableDao") TimetableDAO timetableDAO) {
+        this.timetableDAO = timetableDAO;
     }
 
     @Override
     public boolean addTimetable(long lessonId, long teacherId, Instant time) {
-        // TODO Auto-generated method stub
-        return false;
+        return timetableDAO.addTimetable(lessonId, teacherId, time);
     }
 
     @Override
@@ -57,6 +48,17 @@ public class StudentTimetableService implements PersonalTimetable {
     public boolean deleteTimetableById(long id) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public List<Timetable> getDayTimetable() {
+        return null;
+    }
+
+    @Override
+    public List<Timetable> getMonthTimetable() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

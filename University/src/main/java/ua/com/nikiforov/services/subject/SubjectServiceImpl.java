@@ -8,18 +8,16 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.dao.subject.SubjectDAOImpl;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
-import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAOImpl;
 import ua.com.nikiforov.models.Subject;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
-    
-    private SubjectDAOImpl subjectDAO;
-    
-    private TeachersSubjectsDAOImpl techersSubjectsDAO;
+
+    private SubjectDAO subjectDAO;
+    private TeachersSubjectsDAO techersSubjectsDAO;
 
     @Autowired
-    public SubjectServiceImpl(SubjectDAOImpl subjectDAO, TeachersSubjectsDAOImpl techersSubjectsDAO) {
+    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO) {
         this.subjectDAO = subjectDAO;
         this.techersSubjectsDAO = techersSubjectsDAO;
     }

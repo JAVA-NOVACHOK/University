@@ -20,6 +20,8 @@ public class RoomDAOImpl implements RoomDAO {
     private static final String ADD_ROOM = INSERT + TABLE_ROOMS + L_BRACKET + ROOM_NUMBER + VALUES_1_QMARK;
     private static final String FIND_ROOM_BY_ID = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ID + EQUALS_M
             + Q_MARK;
+    private static final String FIND_ROOM_BY_ROOM_NUMBER = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ROOM_NUMBER
+            + EQUALS_M + Q_MARK;
     private static final String GET_ALL_ROOMS = SELECT + ASTERISK + FROM + TABLE_ROOMS;
     private static final String UPDATE_ROOM = UPDATE + TABLE_ROOMS + SET + ROOM_NUMBER + EQUALS_M + Q_MARK + WHERE + ID
             + EQUALS_M + Q_MARK;
@@ -40,6 +42,11 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public Room getRoomById(int id) {
         return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, new RoomMapper());
+    }
+
+    @Override
+    public Room getRoomByRoomNumber(int roomNumber) {
+        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ROOM_NUMBER, new Object[] { roomNumber }, new RoomMapper());
     }
 
     @Override

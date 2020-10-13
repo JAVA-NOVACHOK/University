@@ -9,6 +9,8 @@ public interface GroupDAO {
     public void createTable();
     
     public Group getGroupById(Long id);
+    
+    public Group getGroupByName(String groupName);
 
     public boolean deleteGroupById(Long id);
 

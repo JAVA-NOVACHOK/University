@@ -9,6 +9,8 @@ public interface RoomService {
     public boolean addRoom(int groupNumber);
 
     public Room getRoomById(int id);
+    
+    public Room getRoomByRoomNumber(int roomNumber);
 
     public List<Room> getAllRooms();
 

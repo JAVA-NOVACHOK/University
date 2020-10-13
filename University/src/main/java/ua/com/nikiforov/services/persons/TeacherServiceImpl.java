@@ -16,9 +16,9 @@ public class TeacherServiceImpl implements TeachersService {
     private TeachersSubjectsDAO techersSubjectsDAO;
 
     @Autowired
-    public TeacherServiceImpl(TeacherDAO teacherDAOImpl, TeachersSubjectsDAO techersSubjectsDAOImpl) {
-        this.teacherDAO = teacherDAOImpl;
-        this.techersSubjectsDAO = techersSubjectsDAOImpl;
+    public TeacherServiceImpl(TeacherDAO teacherDAO, TeachersSubjectsDAO techersSubjectsDAO) {
+        this.teacherDAO = teacherDAO;
+        this.techersSubjectsDAO = techersSubjectsDAO;
     }
 
     @Override
@@ -32,10 +32,19 @@ public class TeacherServiceImpl implements TeachersService {
         teacher.setSubjectIds(techersSubjectsDAO.getSubjectsIds(teacherId));
         return teacher;
     }
+    
+    public Teacher getTeacherByName(String firstName, String lastName) {
+        return teacherDAO.getTeacherByName(firstName, lastName);
+    }
 
     @Override
     public List<Teacher> getAllTeachers() {
-        return teacherDAO.getAllTeachers();
+        List<Teacher> teachers = teacherDAO.getAllTeachers();
+        for(Teacher teacher : teachers) {
+            List<Integer> subjectsIds = techersSubjectsDAO.getSubjectsIds(teacher.getId());
+            teacher.setSubjectIds(subjectsIds);
+        }
+        return teachers;
     }
 
     @Override

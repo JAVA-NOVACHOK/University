@@ -10,10 +10,14 @@ import ua.com.nikiforov.models.Group;
 
 @Service
 public class GroupServiceImpl implements GroupService {
-    
-    @Autowired
+
     private GroupDAO groupDAO;
-    
+
+    @Autowired
+    public GroupServiceImpl(GroupDAO groupDAO) {
+        this.groupDAO = groupDAO;
+    }
+
     @Override
     public boolean addGroup(String groupName) {
         return groupDAO.addGroup(groupName);
@@ -22,6 +26,10 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group getGroupById(long id) {
         return groupDAO.getGroupById(id);
+    }
+    @Override
+    public Group getGroupByName(String groupName) {
+        return groupDAO.getGroupByName(groupName);
     }
 
     @Override
@@ -42,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void createTable() {
         groupDAO.createTable();
-        
+
     }
 
 }

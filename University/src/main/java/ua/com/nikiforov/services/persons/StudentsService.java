@@ -9,6 +9,8 @@ public interface StudentsService {
     public boolean addStudent(String firstName, String lastName, long groupId);
 
     public Student getStudentById(long studentId);
+    
+    public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
 
     public List<Student> getAllStudents();
 
