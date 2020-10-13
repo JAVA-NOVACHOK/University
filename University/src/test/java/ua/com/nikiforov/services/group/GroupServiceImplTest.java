@@ -43,8 +43,7 @@ class GroupServiceImplTest {
 
     @Test
     void whenGetGroupByNameReturnCorrectGroup() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
+        Group group = insertGroup();
         assertEquals(TEST_GROUP_NAME_1, group.getGroupName());
     }
 
@@ -57,49 +56,47 @@ class GroupServiceImplTest {
         expected.append(TEST_GROUP_NAME_1).append(SPACE).append(TEST_GROUP_NAME_2).append(SPACE)
                 .append(TEST_GROUP_NAME_3).append(SPACE);
         StringBuilder actual = new StringBuilder();
-        long count = groupService.getAllGroups().stream().map(g -> actual.append(g.getGroupName()).append(SPACE)).count();
+        long count = groupService.getAllGroups().stream().map(g -> actual.append(g.getGroupName()).append(SPACE))
+                .count();
         assertEquals(expected.toString(), actual.toString());
         assertEquals(GROUP_TEST_COUNT_3, count);
     }
 
     @Test
     void whenGetGroupByIdReturnCorrectGroup() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
-        long groupId = group.getId();
+        long groupId = insertGroup().getId();
         assertEquals(groupId, groupService.getGroupById(groupId).getId());
     }
-    
+
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
+        Group group = insertGroup();
         assertTrue(groupService.updateGroup(group.getId(), TEST_GROUP_NAME_2));
     }
 
     @Test
     void whenUpdateGroupIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
-        long groupId = group.getId();
+        long groupId = insertGroup().getId();
         groupService.updateGroup(groupId, TEST_GROUP_NAME_2);
         assertEquals(TEST_GROUP_NAME_2, groupService.getGroupById(groupId).getGroupName());
     }
 
     @Test
     void whenDeleteGroupByIdIfSuccessThenReturnTrue() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
+        Group group = insertGroup();
         assertTrue(groupService.deleteGroup(group.getId()));
     }
 
     @Test
     void afterDeleteGroupByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        Group group = groupService.getGroupByName(TEST_GROUP_NAME_1);
-        long groupId = group.getId();
+        long groupId = insertGroup().getId();
         groupService.deleteGroup(groupId);
         assertThrows(EmptyResultDataAccessException.class, () -> groupService.getGroupById(groupId));
+    }
+
+    private Group insertGroup() {
+        groupService.addGroup(TEST_GROUP_NAME_1);
+        return groupService.getGroupByName(TEST_GROUP_NAME_1);
     }
 
 }
