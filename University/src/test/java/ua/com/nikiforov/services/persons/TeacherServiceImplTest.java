@@ -146,10 +146,10 @@ class TeacherServiceImplTest {
         teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
         teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
         teacher = teacherService.getTeacherById(teacherId);
-        String expectedIds = subjectOneId + SPACE + subjectTwoId + SPACE + subjectThreeId + SPACE;
-        StringBuilder actualIds = new StringBuilder();
-        long countSubjects = teacher.getSubjectIds().stream().map(i -> actualIds.append(i).append(SPACE)).count();
-        assertEquals(expectedIds, actualIds.toString());
+        String expectedSubjectIds = subjectOneId + SPACE + subjectTwoId + SPACE + subjectThreeId + SPACE;
+        StringBuilder actualSubjectIds = new StringBuilder();
+        long countSubjects = teacher.getSubjectIds().stream().map(i -> actualSubjectIds.append(i).append(SPACE)).count();
+        assertEquals(expectedSubjectIds, actualSubjectIds.toString());
         assertEquals(TEACHERS_SUBJECTS_COUNT, countSubjects);
     }
 

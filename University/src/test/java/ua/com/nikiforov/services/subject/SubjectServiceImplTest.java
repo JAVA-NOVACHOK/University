@@ -11,6 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.tablecreator.TableCreator;
 import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeachersService;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -88,13 +89,13 @@ class SubjectServiceImplTest {
         subjectService.updateSubject(SUBJECT_NAME_2, subjectId);
         assertEquals(SUBJECT_NAME_2, subjectService.getSubjectById(subjectId).getName());
     }
-    
+
     @Test
     void whenDeleteSubjectByIdIfSuccessThenReturnTrue() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         assertTrue(subjectService.deleteSubjectById(subject.getId()));
     }
-    
+
     @Test
     void afterDeleteSubjectByIdIfSearchForItReturnEmptyResultDataAccessException() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
@@ -103,9 +104,33 @@ class SubjectServiceImplTest {
         assertThrows(EmptyResultDataAccessException.class, () -> subjectService.getSubjectById(subjectId));
     }
 
+    @Test
+    void afterAssignSubjectsToTeachersSubjectHasListOfTeacherIds() {
+        Subject subject = insertSubject(SUBJECT_NAME_1);
+        int subjectId = subject.getId();
+        Teacher teacherOne = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        Teacher teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+        teacherService.assignSubjectToTeacher(subjectId, teacherOne.getId());
+        teacherService.assignSubjectToTeacher(subjectId, teacherTwo.getId());
+        teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
+        subject = subjectService.getSubjectById(subjectId);
+        StringBuilder expectedTeachersIds = new StringBuilder();
+        expectedTeachersIds.append(teacherOne.getId()).append(teacherTwo.getId()).append(teacherThree.getId());
+        StringBuilder actualTeachersIds = new StringBuilder();
+        long countTeachersIds = subject.getSubjectTeachersIds().stream().map(s -> actualTeachersIds.append(s)).count();
+        assertEquals(expectedTeachersIds.toString(), actualTeachersIds.toString());
+        assertEquals(SUBJECT_COUNT, countTeachersIds);
+    }
+
     private Subject insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
+    }
+
+    private Teacher insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(firstName, lastName);
+        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }
