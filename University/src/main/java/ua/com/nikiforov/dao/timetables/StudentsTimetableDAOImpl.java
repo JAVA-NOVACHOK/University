@@ -3,21 +3,20 @@ package ua.com.nikiforov.dao.timetables;
 import static ua.com.nikiforov.dao.SqlConstants.*;
 import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.*;
 
-import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.mappers.timetables.StudentTimetableMapper;
+import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
 
@@ -25,7 +24,9 @@ import ua.com.nikiforov.services.timetables.Period;
 @Qualifier("studentTimtableDao")
 public class StudentsTimetableDAOImpl implements TimetableDAO {
 
-    private static final int DATE_INDEX = 3;
+    private static final int DATE_STATEMENT_INDEX = 1;
+    private static final int STUDENT_ID_STATEMENT_INDEX = 2;
+    
 
     private static final String ADD_STUDENTS_TIMETABLE = INSERT + TABLE_STUDENTS_TIMETABLE + L_BRACKET + LESSON_ID
             + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
@@ -35,10 +36,10 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     private static final String UPDATE_STUDENTS_TIMETABLE = UPDATE + TABLE_STUDENTS_TIMETABLE + SET + LESSON_ID
             + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK
             + VALUES_3_QMARK;
-    private static final String DELETE_STUDENTS_TIMETABLE_BY_ID = DELETE + FROM + TABLE_STUDENTS_TIMETABLE
-            + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String GET_DAY_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE + WHERE + DATE
+    private static final String DELETE_STUDENTS_TIMETABLE_BY_ID = DELETE + FROM + TABLE_STUDENTS_TIMETABLE + WHERE + ID
             + EQUALS_M + Q_MARK;
+    private static final String GET_DAY_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE + WHERE + DATE
+            + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -57,7 +58,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable getTimetableById(long timetableId) {
         return jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_ID, new Object[] { timetableId },
-                new StudentTimetableMapper());
+                new TimetableMapper());
     }
 
     @Override
@@ -66,10 +67,12 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public boolean updateTimetable(long lessonId, long studentId, String stringDate, Period period, long studentsTimetableId) {
+    public boolean updateTimetable(long lessonId, long studentId, String stringDate, Period period,
+            long studentsTimetableId) {
         LocalDate time = getLocalDateFromString(stringDate);
         int periodNumber = period.getPeriod();
-        return jdbcTemplate.update(UPDATE_STUDENTS_TIMETABLE, lessonId, studentId, time, periodNumber,studentsTimetableId) > 0;
+        return jdbcTemplate.update(UPDATE_STUDENTS_TIMETABLE, lessonId, studentId, time, periodNumber,
+                studentsTimetableId) > 0;
     }
 
     @Override
@@ -77,20 +80,25 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
         return jdbcTemplate.update(DELETE_STUDENTS_TIMETABLE_BY_ID, studentsTimetableId) > 0;
     }
 
-    public List<Timetable> getDayTimetable(Date time) {
-        return jdbcTemplate.query(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connnection) throws SQLException {
-                final PreparedStatement preparedStatement = connnection.prepareStatement(GET_DAY_TIMETABLE);
-                preparedStatement.setDate(DATE_INDEX, time);
-                return preparedStatement;
-            }
-        }, new StudentTimetableMapper());
+    public List<Timetable> getDayTimetable(String date, long studentId) {
+        return jdbcTemplate.query(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_DAY_TIMETABLE);
+            preparedStatement.setObject(DATE_STATEMENT_INDEX, getLocalDateFromString(date));
+            preparedStatement.setLong(STUDENT_ID_STATEMENT_INDEX, studentId);
+            return preparedStatement;
+        }, new TimetableMapper());
     }
-    
+
+
     private LocalDate getLocalDateFromString(String stringDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        formatter.withZone(ZoneId.of("UTC+3"));
         return LocalDate.parse(stringDate, formatter);
     }
 
+    @Override
+    public List<Timetable> getMonthTimetable(String date) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

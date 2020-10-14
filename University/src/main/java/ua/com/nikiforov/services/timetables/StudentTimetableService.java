@@ -48,8 +48,8 @@ public class StudentTimetableService implements PersonalTimetable {
     }
 
     @Override
-    public List<Timetable> getDayTimetable() {
-        return null;
+    public List<Timetable> getDayTimetable(String date, long studentId) {
+        return timetableDAO.getDayTimetable(date, studentId);
     }
 
     @Override

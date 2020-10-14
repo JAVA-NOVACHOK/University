@@ -14,16 +14,16 @@ import ua.com.nikiforov.models.timetable.Timetable;
 @Service
 public class TeachersTimetableService implements PersonalTimetable {
 
-    private TimetableDAO timetable;
+    private TimetableDAO timetableDAO;
 
     @Autowired
-    public TeachersTimetableService(@Qualifier("teachersTimetableDAO")TimetableDAO timetable) {
-        this.timetable = timetable;
+    public TeachersTimetableService(@Qualifier("teachersTimetableDAO") TimetableDAO timetable) {
+        this.timetableDAO = timetable;
     }
 
     @Override
-    public boolean addTimetable(long lessonId, long teacherId, String time, Period period) {
-        return timetable.addTimetable(lessonId, teacherId, time, );
+    public boolean addTimetable(long lessonId, long teacherId, String date, Period period) {
+        return timetableDAO.addTimetable(lessonId, teacherId, date, period);
     }
 
     @Override

@@ -16,5 +16,9 @@ public interface TimetableDAO {
     public boolean updateTimetable(long lessonId, long teacherId, String stringDate, Period period, long id);
 
     public boolean deleteTimetableById(long id);
+    
+    public List<Timetable> getDayTimetable(String date,long personId);
+
+    public List<Timetable> getMonthTimetable(String date);
 
 }

@@ -74,4 +74,17 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         return LocalDate.parse(stringDate, formatter);
     }
 
+
+    @Override
+    public List<Timetable> getMonthTimetable(String date) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Timetable> getDayTimetable(String date) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

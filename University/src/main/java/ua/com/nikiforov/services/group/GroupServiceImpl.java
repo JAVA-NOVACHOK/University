@@ -47,10 +47,5 @@ public class GroupServiceImpl implements GroupService {
         return groupDAO.deleteGroupById(id);
     }
 
-    @Override
-    public void createTable() {
-        groupDAO.createTable();
-
-    }
 
 }

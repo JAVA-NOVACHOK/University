@@ -1,6 +1,5 @@
 package ua.com.nikiforov.services.timetables;
 
-import java.time.Instant;
 import java.util.List;
 
 import ua.com.nikiforov.models.timetable.Timetable;
@@ -17,7 +16,7 @@ public interface PersonalTimetable {
 
     public boolean deleteTimetableById(long id);
     
-    public List<Timetable> getDayTimetable();
+    public List<Timetable> getDayTimetable(String date, long personId);
     
     public List<Timetable> getMonthTimetable();
     

@@ -21,7 +21,6 @@ class GroupServiceImplTest {
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
     private static final String SPACE = " ";
-    private static final String NEW_LINE = System.lineSeparator();
 
     private static final int GROUP_TEST_COUNT_3 = 3;
 

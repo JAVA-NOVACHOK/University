@@ -1,6 +1,7 @@
 package ua.com.nikiforov;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
@@ -30,16 +31,17 @@ public class Main {
         
         ApplicationContext context = new AnnotationConfigApplicationContext(UniversityConfig.class);
         StudentTimetableService sts = context.getBean(StudentTimetableService.class);
-        String date = "2020-08-01T12:00";
-        sts.addTimetable(1, 1, date, Period.FIRST);
+        String date = "2020-08-12";
+        sts.addTimetable(1, 1, date, Period.FIFTH);
+        System.out.println(sts.getTimetableById(1).getTime());
 //        Time t = Time.valueOf("12:00:00");
 //        System.out.println(t);
 //        GroupService groupService = context.getBean(GroupService.class);
 //        groupService.createTable();
 //        groupService.addGroup("BB-11");
 //        System.out.println(groupService.getGroupById(1).getGroupName());
-//        TableCreator tableCreator = context.getBean(TableCreator.class);
-//        tableCreator.createTables();
+        TableCreator tableCreator = context.getBean(TableCreator.class);
+        tableCreator.createTables();
 //        RoomService roomService = context.getBean(RoomService.class);
 //        roomService.addRoom(221);
 //        GroupService groupService = context.getBean(GroupService.class);

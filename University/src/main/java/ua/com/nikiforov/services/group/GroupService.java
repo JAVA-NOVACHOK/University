@@ -6,8 +6,6 @@ import ua.com.nikiforov.models.Group;
 
 public interface GroupService {
     
-    public void createTable();
-    
     public boolean addGroup(String groupName);
     
     public Group getGroupById(long id);

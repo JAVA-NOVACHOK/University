@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 
 import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.*;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersTimetableTable.PERIOD;
 
 public class StudentTimetableMapper implements RowMapper<Timetable> {
 
@@ -17,7 +18,8 @@ public class StudentTimetableMapper implements RowMapper<Timetable> {
         timetable.setId(resultSet.getLong(ID));
         timetable.setLessonId(resultSet.getLong(LESSON_ID));
         timetable.setPersonId(resultSet.getLong(PERSON_ID));
-        timetable.setTime(resultSet.getObject(TIME, Instant.class));
+        timetable.setTime(resultSet.getObject(DATE, Instant.class));
+        timetable.setPeriod(resultSet.getInt(PERIOD));
         return timetable;
     }
 

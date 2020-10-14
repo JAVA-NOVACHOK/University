@@ -8,15 +8,17 @@ public class Timetable {
     private long personId;
     private long lessonId;
     private Instant time;
+    private int period;
 
     public Timetable() {
     }
 
-    public Timetable(long id, long personId, long lessonId, Instant time) {
+    public Timetable(long id, long personId, long lessonId, Instant time, int period) {
         this.id = id;
         this.personId = personId;
         this.lessonId = lessonId;
         this.time = time;
+        this.period = period;
     }
 
     public long getId() {
@@ -49,6 +51,14 @@ public class Timetable {
 
     public void setTime(Instant time) {
         this.time = time;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 
 }
