@@ -39,14 +39,16 @@ DROP TABLE IF EXISTS teachers_timetable;
 CREATE TABLE teachers_timetable(
 	id serial PRIMARY KEY,
 	lesson_id BIGINT,
-	time Date,
+	date TIMESTAMP NOT NULL,
+	period int NOT NULL,
 	person_id BIGINT
 );
 DROP TABLE IF EXISTS students_timetable;
 CREATE TABLE students_timetable(
 	id serial PRIMARY KEY,
 	lesson_id BIGINT,
-	time Date,
+	date TIMESTAMP NOT NULL,
+	period int NOT NULL,
 	person_id BIGINT
 );
 DROP TABLE IF EXISTS teachers_subjects;

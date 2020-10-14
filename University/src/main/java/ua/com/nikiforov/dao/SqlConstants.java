@@ -16,6 +16,7 @@ public class SqlConstants {
     public static final String VALUES_1_QMARK = ") VALUES(?)";
     public static final String VALUES_2_QMARK = ") VALUES(?,?)";
     public static final String VALUES_3_QMARK = ") VALUES(?,?,?)";
+    public static final String VALUES_4_QMARK = ") VALUES(?,?,?,?)";
     public static final String VALUES_6_QMARK = ") VALUES(?,?,?,?,?,?)";
     public static final String COUNT = " COUNT(*) ";
     public static final String GROUP_BY = " GROUP BY ";
@@ -106,8 +107,9 @@ public class SqlConstants {
         public static final String TABLE_STUDENTS_TIMETABLE = "students_timetable";
         public static final String ID = "id";
         public static final String LESSON_ID = "lesson_id";
-        public static final String TIME = "time";
+        public static final String DATE = "date";
         public static final String PERSON_ID = "person_id";
+        public static final String PERIOD = "period";
     }
 
     public static class TeachersTimetableTable {
@@ -117,8 +119,9 @@ public class SqlConstants {
         public static final String TABLE_TEACHERS_TIMETABLE = "teachers_timetable";
         public static final String ID = "id";
         public static final String LESSON_ID = "lesson_id";
-        public static final String TIME = "time";
+        public static final String DATE = "date";
         public static final String PERSON_ID = "person_id";
+        public static final String PERIOD = "period";
     }
 
     public static class TeachersSubjectsTable {

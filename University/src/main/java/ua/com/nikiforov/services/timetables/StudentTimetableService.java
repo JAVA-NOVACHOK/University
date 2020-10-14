@@ -1,6 +1,7 @@
 package ua.com.nikiforov.services.timetables;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,32 +23,28 @@ public class StudentTimetableService implements PersonalTimetable {
     }
 
     @Override
-    public boolean addTimetable(long lessonId, long teacherId, Instant time) {
-        return timetableDAO.addTimetable(lessonId, teacherId, time);
+    public boolean addTimetable(long lessonId, long teacherId, String date, Period period) {
+        return timetableDAO.addTimetable(lessonId, teacherId, date, period);
     }
 
     @Override
     public Timetable getTimetableById(long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return timetableDAO.getTimetableById(id);
     }
 
     @Override
     public List<Timetable> getAllTimetables() {
-        // TODO Auto-generated method stub
-        return null;
+        return timetableDAO.getAllTimetables();
     }
 
     @Override
-    public boolean updateTimetable(long lessonId, long teacherId, Instant time, long id) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean updateTimetable(long lessonId, long teacherId, String date, Period period,  long id) {
+        return timetableDAO.updateTimetable(lessonId, teacherId, date, period, id);
     }
 
     @Override
     public boolean deleteTimetableById(long id) {
-        // TODO Auto-generated method stub
-        return false;
+       return timetableDAO.deleteTimetableById(id);
     }
 
     @Override

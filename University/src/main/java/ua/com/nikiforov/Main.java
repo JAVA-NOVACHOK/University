@@ -1,5 +1,6 @@
 package ua.com.nikiforov;
 
+import java.sql.Time;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
@@ -16,6 +17,8 @@ import ua.com.nikiforov.services.persons.TeacherServiceImpl;
 import ua.com.nikiforov.services.persons.TeachersService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
+import ua.com.nikiforov.services.timetables.Period;
+import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
 public class Main {
@@ -23,18 +26,25 @@ public class Main {
     public static void main(String[] args) {
 
         
+        
+        
         ApplicationContext context = new AnnotationConfigApplicationContext(UniversityConfig.class);
+        StudentTimetableService sts = context.getBean(StudentTimetableService.class);
+        String date = "2020-08-01T12:00";
+        sts.addTimetable(1, 1, date, Period.FIRST);
+//        Time t = Time.valueOf("12:00:00");
+//        System.out.println(t);
 //        GroupService groupService = context.getBean(GroupService.class);
 //        groupService.createTable();
 //        groupService.addGroup("BB-11");
 //        System.out.println(groupService.getGroupById(1).getGroupName());
-        TableCreator tableCreator = context.getBean(TableCreator.class);
-        tableCreator.createTables();
+//        TableCreator tableCreator = context.getBean(TableCreator.class);
+//        tableCreator.createTables();
 //        RoomService roomService = context.getBean(RoomService.class);
 //        roomService.addRoom(221);
-        GroupService groupService = context.getBean(GroupService.class);
-        groupService.addGroup("AA-10");
-        System.out.println(groupService.getGroupByName("AA-10").getId());
+//        GroupService groupService = context.getBean(GroupService.class);
+//        groupService.addGroup("AA-10");
+//        System.out.println(groupService.getGroupByName("AA-10").getId());
 //        SubjectService subjectService = context.getBean(SubjectService.class);
 //        subjectService.addSubject("math");
 //        subjectService.addSubject("math");

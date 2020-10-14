@@ -22,8 +22,8 @@ public class TeachersTimetableService implements PersonalTimetable {
     }
 
     @Override
-    public boolean addTimetable(long lessonId, long teacherId, Instant time) {
-        return timetable.addTimetable(lessonId, teacherId, time);
+    public boolean addTimetable(long lessonId, long teacherId, String time, Period period) {
+        return timetable.addTimetable(lessonId, teacherId, time, );
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TeachersTimetableService implements PersonalTimetable {
     }
 
     @Override
-    public boolean updateTimetable(long lessonId, long teacherId, Instant time, long id) {
+    public boolean updateTimetable(long lessonId, long teacherId, String time, Period period, long id) {
         // TODO Auto-generated method stub
         return false;
     }
