@@ -51,6 +51,11 @@ CREATE TABLE students_timetable(
 	period int NOT NULL,
 	person_id BIGINT
 );
+DROP TABLE IF EXISTS universities;
+CREATE TABLE universities(
+	id serial PRIMARY KEY,
+	university_name VARCHAR(255)
+);
 DROP TABLE IF EXISTS teachers_subjects;
 CREATE TABLE teachers_subjects(
 	teacher_id BIGINT NOT NULL REFERENCES teachers (teacher_id) ON UPDATE CASCADE ON DELETE CASCADE,

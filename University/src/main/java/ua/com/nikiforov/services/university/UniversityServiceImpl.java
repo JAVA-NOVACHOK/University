@@ -20,8 +20,12 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public University findUniversityById(int id) {
+    public University getUniversityById(int id) {
         return universityDAO.findUniversityById(id);
+    }
+
+    public University getUniversityByName(String universityName) {
+        return universityDAO.getUniversityByName(universityName);
     }
 
     @Override

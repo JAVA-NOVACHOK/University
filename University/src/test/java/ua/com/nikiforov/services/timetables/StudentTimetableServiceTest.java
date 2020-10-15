@@ -2,6 +2,9 @@ package ua.com.nikiforov.services.timetables;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.zone.ZoneRulesProvider;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
