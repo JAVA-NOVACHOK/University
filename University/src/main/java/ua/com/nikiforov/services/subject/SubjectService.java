@@ -2,8 +2,6 @@ package ua.com.nikiforov.services.subject;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import ua.com.nikiforov.models.Subject;
 
 public interface SubjectService {

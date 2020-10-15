@@ -1,10 +1,14 @@
 package ua.com.nikiforov.dao.timetables;
 
 import static ua.com.nikiforov.dao.SqlConstants.*;
+import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.DATE;
+import static ua.com.nikiforov.dao.SqlConstants.StudentsTimetableTable.PERSON_ID;
 import static ua.com.nikiforov.dao.SqlConstants.TeachersTimetableTable.*;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.mappers.timetables.TeacherTimetableMapper;
+import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
 
@@ -20,17 +25,26 @@ import ua.com.nikiforov.services.timetables.Period;
 @Qualifier("teachersTimetableDAO")
 public class TeachersTimetableDAOImpl implements TimetableDAO {
 
+    private static final int DATE_STATEMENT_INDEX = 1;
+    private static final int FROM_DATE_STATEMENT_INDEX = 2;
+    private static final int TO_DATE_STATEMENT_INDEX = 3;
+    private static final int STUDENT_ID_STATEMENT_INDEX = 2;
+    private static final int STUDENT_ID_STATEMENT_INDEX_GET_MONTH_TABLE = 1;
+
     private static final String ADD_TEACHERS_TIMETABLE = INSERT + TABLE_TEACHERS_TIMETABLE + L_BRACKET + LESSON_ID
             + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
     private static final String FIND_TEACHERS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE
             + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_TEACHERS_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE;
     private static final String UPDATE_TEACHERS_TIMETABLE = UPDATE + TABLE_TEACHERS_TIMETABLE + SET + LESSON_ID
-            + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK
-            + VALUES_3_QMARK;
-    private static final String DELETE_TEACHERS_TIMETABLE_BY_ID = DELETE + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE
-            + WHERE + ID + EQUALS_M + Q_MARK;
-//    0 "AND p.examDate BETWEEN STR_TO_DATE(?3,'%Y,%m,%d') AND STR_TO_DATE(?4,'%Y,%m,%d')")
+            + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK + COMA + PERIOD
+            + EQUALS_M + Q_MARK + WHERE + PERSON_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_TEACHERS_TIMETABLE_BY_ID = DELETE + FROM + TABLE_TEACHERS_TIMETABLE + WHERE + ID
+            + EQUALS_M + Q_MARK;
+    private static final String GET_DAY_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE + WHERE + DATE
+            + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK;
+    private static final String GET_MONTH_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE + WHERE
+            + PERSON_ID + EQUALS_M + Q_MARK + AND + DATE + BETWEEN + Q_MARK + AND + Q_MARK;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -40,10 +54,10 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public boolean addTimetable(long lessonId, long teacherId, String stringDate,Period period) {
-        LocalDate time = getLocalDateFromString(stringDate);
+    public boolean addTimetable(long lessonId, long teacherId, String stringDate, Period period) {
+        Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
-        return jdbcTemplate.update(ADD_TEACHERS_TIMETABLE, lessonId, teacherId, periodNumber) > 0;
+        return jdbcTemplate.update(ADD_TEACHERS_TIMETABLE, lessonId, teacherId, time, periodNumber) > 0;
     }
 
     @Override
@@ -59,32 +73,41 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
 
     @Override
     public boolean updateTimetable(long lessonId, long teacherId, String stringDate, Period period, long id) {
-        LocalDate time = getLocalDateFromString(stringDate);
+        Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
-        return jdbcTemplate.update(UPDATE_TEACHERS_TIMETABLE, lessonId, teacherId, periodNumber, id) > 0;
+        return jdbcTemplate.update(UPDATE_TEACHERS_TIMETABLE, lessonId, teacherId, time, periodNumber, id) > 0;
     }
 
     @Override
     public boolean deleteTimetableById(long id) {
         return jdbcTemplate.update(DELETE_TEACHERS_TIMETABLE_BY_ID, id) > 0;
     }
-    
-    private LocalDate getLocalDateFromString(String stringDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        return LocalDate.parse(stringDate, formatter);
-    }
 
-
-    @Override
-    public List<Timetable> getMonthTimetable(String date) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Timetable> getDayTimetable(String date, long studentId) {
+        return jdbcTemplate.query(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_DAY_TIMETABLE);
+            preparedStatement.setTimestamp(DATE_STATEMENT_INDEX, getTimestampFromString(date));
+            preparedStatement.setLong(STUDENT_ID_STATEMENT_INDEX, studentId);
+            return preparedStatement;
+        }, new TimetableMapper());
     }
 
     @Override
-    public List<Timetable> getDayTimetable(String date) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Timetable> getMonthTimetable(String stringDate, long studentId) {
+        Timestamp timestampFrom = Timestamp.valueOf(stringDate + " 00:00:00");
+        LocalDate localDate = timestampFrom.toLocalDateTime().toLocalDate();
+        Timestamp timestampTo = Timestamp.valueOf(localDate.plusMonths(1).atTime(LocalTime.MIDNIGHT));
+        return jdbcTemplate.query(connection -> {
+            PreparedStatement preparedStatement = connection.prepareStatement(GET_MONTH_TIMETABLE);
+            preparedStatement.setLong(STUDENT_ID_STATEMENT_INDEX_GET_MONTH_TABLE, studentId);
+            preparedStatement.setTimestamp(FROM_DATE_STATEMENT_INDEX, timestampFrom);
+            preparedStatement.setTimestamp(TO_DATE_STATEMENT_INDEX, timestampTo);
+            return preparedStatement;
+        }, new TimetableMapper());
+    }
+
+    private Timestamp getTimestampFromString(String stringDate) {
+        return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 
 }

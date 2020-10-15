@@ -18,7 +18,6 @@ public interface PersonalTimetable {
     
     public List<Timetable> getDayTimetable(String date, long personId);
     
-    public List<Timetable> getMonthTimetable();
+    public List<Timetable> getMonthTimetable(String stringDate, long studentId);
     
-
 }

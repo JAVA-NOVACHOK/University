@@ -8,14 +8,14 @@ public enum Period {
     FOURTH(4),
     FIFTH(5);
     
-    private final int period;
+    private final int periodNumber;
     
     private Period(int period) {
-        this.period = period;
+        this.periodNumber = period;
     }
     
     public int getPeriod() {
-        return period;
+        return periodNumber;
     }
 
 }

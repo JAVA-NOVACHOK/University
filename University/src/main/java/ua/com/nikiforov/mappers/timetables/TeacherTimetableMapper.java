@@ -2,7 +2,6 @@ package ua.com.nikiforov.mappers.timetables;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.Date;
 
 import org.springframework.jdbc.core.RowMapper;

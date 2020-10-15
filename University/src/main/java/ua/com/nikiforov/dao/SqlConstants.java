@@ -13,6 +13,7 @@ public class SqlConstants {
     public static final String FROM = " FROM ";
     public static final String AND = " AND ";
     public static final String WHERE = " WHERE ";
+    public static final String BETWEEN = " BETWEEN ";
     public static final String VALUES_1_QMARK = ") VALUES(?)";
     public static final String VALUES_2_QMARK = ") VALUES(?,?)";
     public static final String VALUES_3_QMARK = ") VALUES(?,?,?)";

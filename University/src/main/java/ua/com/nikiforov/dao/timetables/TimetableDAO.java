@@ -19,6 +19,6 @@ public interface TimetableDAO {
     
     public List<Timetable> getDayTimetable(String date,long personId);
 
-    public List<Timetable> getMonthTimetable(String date);
+    public List<Timetable> getMonthTimetable(String date, long personId);
 
 }

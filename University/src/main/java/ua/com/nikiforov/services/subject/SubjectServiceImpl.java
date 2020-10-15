@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.subject.SubjectDAO;
-import ua.com.nikiforov.dao.subject.SubjectDAOImpl;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
 

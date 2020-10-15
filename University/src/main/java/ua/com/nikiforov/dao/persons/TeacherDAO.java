@@ -2,7 +2,6 @@ package ua.com.nikiforov.dao.persons;
 
 import java.util.List;
 
-import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
 
 public interface TeacherDAO {
