@@ -1,4 +1,4 @@
-package ua.com.nikiforov.dao.tablecreator;
+package ua.com.nikiforov.dao.table_creator;
 
 public class TableCreatorException extends RuntimeException {
 

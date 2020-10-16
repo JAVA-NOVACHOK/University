@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.subject.SubjectService;

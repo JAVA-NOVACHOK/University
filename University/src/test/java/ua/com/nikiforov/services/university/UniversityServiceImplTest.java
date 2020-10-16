@@ -9,7 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.University;
 
 @SpringJUnitConfig(UniversityConfig.class)

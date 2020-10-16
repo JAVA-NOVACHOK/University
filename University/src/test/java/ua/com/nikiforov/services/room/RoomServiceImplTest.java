@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Room;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -40,16 +40,12 @@ class RoomServiceImplTest {
         assertTrue(roomService.addRoom(TEST_ROOM_NUMBER_1));
     }
 
-    @Test
-    void whenAddRoomCanGetRoomByNumber() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
-        assertEquals(TEST_ROOM_NUMBER_1, room.getNumber());
-    }
-
+    
     @Test
     void whenQueryRoomByIdThenReturnSearchingRoom() {
         Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
+        assertEquals(TEST_ROOM_NUMBER_1, room.getNumber());
         assertEquals(roomId, roomService.getRoomById(roomId).getId());
     }
 
@@ -80,6 +76,7 @@ class RoomServiceImplTest {
         int roomId = room.getId();
         roomService.updateRoom(TEST_ROOM_NUMBER_2, roomId);
         assertEquals(TEST_ROOM_NUMBER_2, roomService.getRoomById(roomId).getNumber());
+        assertEquals(roomId, roomService.getRoomById(roomId).getId());
     }
 
     @Test

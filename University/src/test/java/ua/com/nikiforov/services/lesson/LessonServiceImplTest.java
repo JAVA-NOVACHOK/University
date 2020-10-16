@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Lesson;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -51,7 +51,7 @@ class LessonServiceImplTest {
 
     @Test
     void whenGetLessonByGroupSubjectRoomIdsReturnCorrectLesson() {
-        Lesson lesson = insertLesson();
+        Lesson lesson = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
         assertEquals(TEST_GROUP_ID_1, lesson.getGroupId());
         assertEquals(TEST_SUBJECT_ID_1, lesson.getSubjectId());
         assertEquals(TEST_ROOM_ID_1, lesson.getRoomId());
@@ -59,7 +59,7 @@ class LessonServiceImplTest {
 
     @Test
     void whenGetLessonByIdReturnCorrectLesson() {
-        long lessonId = insertLesson().getId();
+        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         assertEquals(TEST_GROUP_ID_1, lessonService.getLessonById(lessonId).getGroupId());
         assertEquals(TEST_SUBJECT_ID_1, lessonService.getLessonById(lessonId).getSubjectId());
         assertEquals(TEST_ROOM_ID_1, lessonService.getLessonById(lessonId).getRoomId());
@@ -87,33 +87,35 @@ class LessonServiceImplTest {
 
     @Test
     void whenUpdateLessonIfSuccessThenReturnTrue() {
-        long lessonId = insertLesson().getId();
+        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         assertTrue(lessonService.updateLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, lessonId));
     }
 
     @Test
     void whenUpdateLessonIfSuccessThenGetLessonByIdAfterUpdateReturnChangedLesson() {
-        long lessonId = insertLesson().getId();
-        lessonService.updateLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, lessonId);
+        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
+        lessonService.updateLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, lessonId);
         assertEquals(TEST_GROUP_ID_2, lessonService.getLessonById(lessonId).getGroupId());
+        assertEquals(TEST_SUBJECT_ID_2, lessonService.getLessonById(lessonId).getSubjectId());
+        assertEquals(TEST_ROOM_ID_2, lessonService.getLessonById(lessonId).getRoomId());
     }
 
     @Test
     void whenDeleteLessonByIdIfSuccessThenReturnTrue() {
-        long lessonId = insertLesson().getId();
+        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         assertTrue(lessonService.deleteLessonById(lessonId));
     }
 
     @Test
     void afterDeleteLessonByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        long lessonId = insertLesson().getId();
+        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         lessonService.deleteLessonById(lessonId);
         assertThrows(EmptyResultDataAccessException.class, () -> lessonService.getLessonById(lessonId));
     }
 
-    private Lesson insertLesson() {
-        lessonService.addLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
-        return lessonService.getLessonByGroupRoomSubjectIds(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
+    private Lesson insertLesson(long groupId, int subjectId, int roomId) {
+        lessonService.addLesson(groupId, subjectId, roomId);
+        return lessonService.getLessonByGroupRoomSubjectIds(groupId, subjectId, roomId);
     }
 
 }

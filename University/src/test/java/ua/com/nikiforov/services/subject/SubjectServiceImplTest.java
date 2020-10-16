@@ -9,7 +9,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeachersService;
@@ -50,16 +50,11 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void whenGetSubjectByNameReturnCorrectSubject() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
-        assertEquals(SUBJECT_NAME_1, subject.getName());
-    }
-
-    @Test
     void whenGetSubjectByIdReturnCorrectSubject() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
-        assertEquals(SUBJECT_NAME_1, subjectService.getSubjectById(subjectId).getName());
+        assertEquals(SUBJECT_NAME_1, subject.getName());
+        assertEquals(subjectId, subjectService.getSubjectById(subjectId).getId());
     }
 
     @Test

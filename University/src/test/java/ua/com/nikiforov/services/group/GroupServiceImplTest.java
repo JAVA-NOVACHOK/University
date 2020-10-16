@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
-import ua.com.nikiforov.dao.tablecreator.TableCreator;
+import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -41,9 +41,18 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void whenGetGroupByNameReturnCorrectGroup() {
-        Group group = insertGroup();
+    void whenAddGroupAndThenGetGroupByNameReturnCorrectGroup() {
+        Group group = insertGroup(TEST_GROUP_NAME_1);
         assertEquals(TEST_GROUP_NAME_1, group.getGroupName());
+        assertEquals(group.getId(), groupService.getGroupById(group.getId()).getId());
+    }
+    
+    @Test
+    void whenGetGroupByIdReturnCorrectGroup() {
+        Group group = insertGroup(TEST_GROUP_NAME_1);
+        long groupId = group.getId();
+        assertEquals(groupId, groupService.getGroupById(groupId).getId());
+        assertEquals(group.getGroupName(), groupService.getGroupById(groupId).getGroupName());
     }
 
     @Test
@@ -61,41 +70,38 @@ class GroupServiceImplTest {
         assertEquals(GROUP_TEST_COUNT_3, countGroups);
     }
 
-    @Test
-    void whenGetGroupByIdReturnCorrectGroup() {
-        long groupId = insertGroup().getId();
-        assertEquals(groupId, groupService.getGroupById(groupId).getId());
-    }
 
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
-        Group group = insertGroup();
+        Group group = insertGroup(TEST_GROUP_NAME_1);
         assertTrue(groupService.updateGroup(group.getId(), TEST_GROUP_NAME_2));
     }
 
     @Test
     void whenUpdateGroupIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
-        long groupId = insertGroup().getId();
+        long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.updateGroup(groupId, TEST_GROUP_NAME_2);
-        assertEquals(TEST_GROUP_NAME_2, groupService.getGroupById(groupId).getGroupName());
+        Group updatedGroup = groupService.getGroupById(groupId);
+        assertEquals(TEST_GROUP_NAME_2, updatedGroup.getGroupName());
+        assertEquals(groupId, updatedGroup.getId());
     }
 
     @Test
     void whenDeleteGroupByIdIfSuccessThenReturnTrue() {
-        Group group = insertGroup();
+        Group group = insertGroup(TEST_GROUP_NAME_1);
         assertTrue(groupService.deleteGroup(group.getId()));
     }
 
     @Test
     void afterDeleteGroupByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        long groupId = insertGroup().getId();
+        long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.deleteGroup(groupId);
         assertThrows(EmptyResultDataAccessException.class, () -> groupService.getGroupById(groupId));
     }
 
-    private Group insertGroup() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        return groupService.getGroupByName(TEST_GROUP_NAME_1);
+    private Group insertGroup(String groupName) {
+        groupService.addGroup(groupName);
+        return groupService.getGroupByName(groupName);
     }
 
 }
