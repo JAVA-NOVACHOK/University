@@ -31,11 +31,13 @@ public class TeacherDAOImpl implements TeacherDAO {
             + LAST_NAME + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String DELETE_TEACHER_BY_ID = DELETE + FROM + TABLE_TEACHERS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private TeacherMapper teacherMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TeacherDAOImpl(DataSource dataSource) {
+    public TeacherDAOImpl(DataSource dataSource,TeacherMapper teacherMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.teacherMapper = teacherMapper;
     }
 
     @Override
@@ -45,18 +47,18 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     @Override
     public Teacher getTeacherById(long teacherId) {
-        return jdbcTemplate.queryForObject(FIND_TEACHER_BY_ID, new Object[] { teacherId }, new TeacherMapper());
+        return jdbcTemplate.queryForObject(FIND_TEACHER_BY_ID, new Object[] { teacherId }, teacherMapper);
     }
 
     @Override
     public Teacher getTeacherByName(String firstName, String lastName) {
         return jdbcTemplate.queryForObject(GET_TEACHER_BY_NAME, new Object[] { firstName, lastName },
-                new TeacherMapper());
+                teacherMapper);
     }
 
     @Override
     public List<Teacher> getAllTeachers() {
-        return jdbcTemplate.query(GET_ALL_TEACHERS, new TeacherMapper());
+        return jdbcTemplate.query(GET_ALL_TEACHERS, teacherMapper);
     }
 
     @Override

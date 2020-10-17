@@ -23,14 +23,15 @@ public class StudentDAOImpl implements StudentDAO {
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
     private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M + Q_MARK + COMA
             + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_STUDENT_BY_ID = DELETE + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
-            + Q_MARK;
+    private static final String DELETE_STUDENT_BY_ID = DELETE + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private StudentMapper studentMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public StudentDAOImpl(DataSource dataSource) {
+    public StudentDAOImpl(DataSource dataSource,StudentMapper studentMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.studentMapper = studentMapper;
     }
 
     @Override
@@ -40,18 +41,18 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public Student getStudentById(long studentId) {
-        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, new StudentMapper());
+        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, studentMapper);
     }
 
     @Override
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
         return jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME_GROUP_ID, new Object[] { firstName, lastName, groupId },
-                new StudentMapper());
+                studentMapper);
     }
 
     @Override
     public List<Student> getAllStudents() {
-        return jdbcTemplate.query(GET_ALL_STUDENTS, new StudentMapper());
+        return jdbcTemplate.query(GET_ALL_STUDENTS, studentMapper);
     }
 
     @Override

@@ -5,11 +5,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import ua.com.nikiforov.models.timetable.Timetable;
 
 import static ua.com.nikiforov.dao.SqlConstants.TeachersTimetableTable.*;
 
+@Component
 public class TimetableMapper implements RowMapper<Timetable> {
 
     @Override

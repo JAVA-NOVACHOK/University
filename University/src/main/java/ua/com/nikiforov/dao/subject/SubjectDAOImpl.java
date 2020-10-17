@@ -22,14 +22,16 @@ public class SubjectDAOImpl implements SubjectDAO {
     private static final String GET_ALL_SUBJECTS = SELECT + ASTERISK + FROM + TABLE_SUBJECTS;
     private static final String UPDATE_SUBJECT = UPDATE + TABLE_SUBJECTS + SET + SUBJECT_NAME + EQUALS_M + Q_MARK
             + WHERE + SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_SUBJECT_BY_ID = DELETE + FROM + TABLE_SUBJECTS + WHERE + SUBJECT_ID
-            + EQUALS_M + Q_MARK;
+    private static final String DELETE_SUBJECT_BY_ID = DELETE + FROM + TABLE_SUBJECTS + WHERE + SUBJECT_ID + EQUALS_M
+            + Q_MARK;
 
+    private SubjectMapper subjectMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public SubjectDAOImpl(DataSource dataSource) {
+    public SubjectDAOImpl(DataSource dataSource, SubjectMapper subjectMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.subjectMapper = subjectMapper;
     }
 
     @Override
@@ -39,17 +41,17 @@ public class SubjectDAOImpl implements SubjectDAO {
 
     @Override
     public Subject getSubjectById(int subjectId) {
-        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { subjectId }, new SubjectMapper());
+        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { subjectId }, subjectMapper);
     }
 
     @Override
     public Subject getSubjectByName(String subjectName) {
-        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_NAME, new Object[] { subjectName }, new SubjectMapper());
+        return jdbcTemplate.queryForObject(GET_SUBJECT_BY_NAME, new Object[] { subjectName }, subjectMapper);
     }
 
     @Override
     public List<Subject> getAllSubjects() {
-        return jdbcTemplate.query(GET_ALL_SUBJECTS, new SubjectMapper());
+        return jdbcTemplate.query(GET_ALL_SUBJECTS, subjectMapper);
     }
 
     @Override

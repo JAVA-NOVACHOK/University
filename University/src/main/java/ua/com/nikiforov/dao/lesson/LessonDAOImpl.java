@@ -23,13 +23,14 @@ public class LessonDAOImpl implements LessonDAO {
             + GROUP_ID + EQUALS_M + Q_MARK + AND + ROOM_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
     private static final String UPDATE_LESSON = UPDATE + TABLE_LESSONS + SET + GROUP_ID + EQUALS_M + Q_MARK + COMA
             + ROOM_ID + EQUALS_M + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_LESSON_BY_ID = DELETE + FROM + TABLE_LESSONS + WHERE + ID + EQUALS_M
-            + Q_MARK;
+    private static final String DELETE_LESSON_BY_ID = DELETE + FROM + TABLE_LESSONS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private LessonMapper lessonMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public LessonDAOImpl(DataSource dataSource) {
+    public LessonDAOImpl(DataSource dataSource, LessonMapper lessonMapper) {
+        this.lessonMapper = lessonMapper;
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -40,18 +41,18 @@ public class LessonDAOImpl implements LessonDAO {
 
     @Override
     public Lesson getLessonById(long id) {
-        return jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, new LessonMapper());
+        return jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, lessonMapper);
     }
 
     @Override
     public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId) {
-        return jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS, new Object[] { groupId, roomId, subjectId },
-                new LessonMapper());
+        return jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS,
+                new Object[] { groupId, roomId, subjectId }, lessonMapper);
     }
 
     @Override
     public List<Lesson> getAllLessons() {
-        return jdbcTemplate.query(GET_ALL_LESSONS, new LessonMapper());
+        return jdbcTemplate.query(GET_ALL_LESSONS, lessonMapper);
     }
 
     @Override

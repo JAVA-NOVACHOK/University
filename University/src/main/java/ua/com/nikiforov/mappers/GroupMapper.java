@@ -3,10 +3,12 @@ package ua.com.nikiforov.mappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
 import ua.com.nikiforov.models.Group;
 import static ua.com.nikiforov.dao.SqlConstants.GroupsTable.*;
 
-
+@Component
 public class GroupMapper implements RowMapper<Group> {
 
     @Override

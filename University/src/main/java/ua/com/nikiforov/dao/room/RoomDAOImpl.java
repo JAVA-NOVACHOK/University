@@ -27,11 +27,13 @@ public class RoomDAOImpl implements RoomDAO {
             + EQUALS_M + Q_MARK;
     private static final String DELETE_ROOM_BY_ID = DELETE + FROM + TABLE_ROOMS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private RoomMapper roomMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public RoomDAOImpl(DataSource dataSource) {
+    public RoomDAOImpl(DataSource dataSource, RoomMapper roomMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.roomMapper = roomMapper;
     }
 
     @Override
@@ -41,17 +43,17 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public Room getRoomById(int id) {
-        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, new RoomMapper());
+        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, roomMapper);
     }
 
     @Override
     public Room getRoomByRoomNumber(int roomNumber) {
-        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ROOM_NUMBER, new Object[] { roomNumber }, new RoomMapper());
+        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ROOM_NUMBER, new Object[] { roomNumber }, roomMapper);
     }
 
     @Override
     public List<Room> getAllRooms() {
-        return jdbcTemplate.query(GET_ALL_ROOMS, new RoomMapper());
+        return jdbcTemplate.query(GET_ALL_ROOMS, roomMapper);
     }
 
     @Override

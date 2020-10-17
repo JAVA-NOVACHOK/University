@@ -4,10 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import ua.com.nikiforov.models.TeachersSubjects;
 import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
 
+@Component
 public class TeachersSubjectsMapper implements RowMapper<TeachersSubjects> {
 
     @Override

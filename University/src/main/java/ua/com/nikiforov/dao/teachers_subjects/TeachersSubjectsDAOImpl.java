@@ -27,29 +27,31 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             + TEACHER_ID + EQUALS_M + Q_MARK;
     private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
             + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE + TEACHER_ID + EQUALS_M
-            + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
+            + TEACHER_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
 
     private static final int PREPARE_STATEMENT_FIRST_INDEX = 1;
 
+    private TeachersSubjectsMapper teachersSubjectsMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TeachersSubjectsDAOImpl(DataSource dataSource) {
+    public TeachersSubjectsDAOImpl(DataSource dataSource, TeachersSubjectsMapper teachersSubjectsMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.teachersSubjectsMapper = teachersSubjectsMapper;
     }
 
     @Override
     public List<Long> getTeachersIds(int subjectId) {
         List<TeachersSubjects> teachersSubjects = jdbcTemplate.query(GET_TEACHERS_IDS, new Object[] { subjectId },
-                new TeachersSubjectsMapper());
+                teachersSubjectsMapper);
         return teachersSubjects.stream().map(t -> t.getTeachersId()).collect(Collectors.toList());
     }
 
     @Override
     public List<Integer> getSubjectsIds(long teacherId) {
         List<TeachersSubjects> teachersSubjects = jdbcTemplate.query(GET_SUBJECTS_IDS,
-                ps -> ps.setLong(PREPARE_STATEMENT_FIRST_INDEX, teacherId), new TeachersSubjectsMapper());
+                ps -> ps.setLong(PREPARE_STATEMENT_FIRST_INDEX, teacherId), teachersSubjectsMapper);
         return teachersSubjects.stream().map(t -> t.getSubjectId()).collect(Collectors.toList());
     }
 
@@ -60,7 +62,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
 
     @Override
     public boolean unassignSubjectFromTeacher(long teacherId, int subjectId) {
-         return jdbcTemplate.update(DELETE_SUBJECT_FROM_TEACHER,teacherId, subjectId) > 0;
+        return jdbcTemplate.update(DELETE_SUBJECT_FROM_TEACHER, teacherId, subjectId) > 0;
     }
 
 }

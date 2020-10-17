@@ -3,10 +3,12 @@ package ua.com.nikiforov.mappers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
 import ua.com.nikiforov.models.Lesson;
 import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.*;
 
-
+@Component
 public class LessonMapper implements RowMapper<Lesson> {
 
     @Override

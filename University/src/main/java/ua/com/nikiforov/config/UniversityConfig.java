@@ -19,7 +19,7 @@ public class UniversityConfig {
     private String url;
     
     @Value("user")
-    private String user = "user";
+    private String user;
     
     @Value("driver")
     private String driver;

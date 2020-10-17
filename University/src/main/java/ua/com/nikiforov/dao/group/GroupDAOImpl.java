@@ -27,21 +27,23 @@ public class GroupDAOImpl implements GroupDAO {
             + EQUALS_M + Q_MARK;
     private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M + Q_MARK;
 
-
+    private GroupMapper groupMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public GroupDAOImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public GroupDAOImpl(DataSource dataSource,GroupMapper groupMapper) {
+        this.jdbcTemplate = new  JdbcTemplate(dataSource);
+        this.groupMapper = groupMapper;
     }
 
     @Override
     public Group getGroupById(Long id) {
-        return jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, new GroupMapper());
+        return jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, groupMapper);
     }
+
     @Override
     public Group getGroupByName(String groupName) {
-        return jdbcTemplate.queryForObject(FIND_GROUP_BY_NAME, new Object[] { groupName }, new GroupMapper());
+        return jdbcTemplate.queryForObject(FIND_GROUP_BY_NAME, new Object[] { groupName }, groupMapper);
     }
 
     @Override
@@ -49,10 +51,9 @@ public class GroupDAOImpl implements GroupDAO {
         return jdbcTemplate.update(DELETE_GROUP_BY_ID, id) > 0;
     }
 
-
     @Override
     public List<Group> getAllGroups() {
-        return jdbcTemplate.query(GET_ALL_GROUPS, new GroupMapper());
+        return jdbcTemplate.query(GET_ALL_GROUPS, groupMapper);
     }
 
     @Override
@@ -64,6 +65,5 @@ public class GroupDAOImpl implements GroupDAO {
     public boolean updateGroup(String groupName, Long id) {
         return jdbcTemplate.update(UPDATE_GROUP, groupName, id) > 0;
     }
-
 
 }

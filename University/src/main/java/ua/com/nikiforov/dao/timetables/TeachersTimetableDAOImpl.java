@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ua.com.nikiforov.mappers.timetables.TeacherTimetableMapper;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
@@ -49,11 +48,13 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     private static final String GET_MONTH_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE + WHERE
             + PERSON_ID + EQUALS_M + Q_MARK + AND + DATE + BETWEEN + Q_MARK + AND + Q_MARK;
 
+    private TimetableMapper timetableMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TeachersTimetableDAOImpl(DataSource dataSource) {
+    public TeachersTimetableDAOImpl(DataSource dataSource, TimetableMapper timetableMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.timetableMapper = timetableMapper;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable getTimetableById(long id) {
         return jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_ID, new Object[] { id },
-                new TeacherTimetableMapper());
+                timetableMapper);
     }
 
     @Override
@@ -75,12 +76,12 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
         return jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
-                new Object[] { lessonId, teacherId, time, periodNumber }, new TeacherTimetableMapper());
+                new Object[] { lessonId, teacherId, time, periodNumber }, timetableMapper);
     }
 
     @Override
     public List<Timetable> getAllTimetables() {
-        return jdbcTemplate.query(GET_ALL_TEACHERS_TIMETABLE, new TeacherTimetableMapper());
+        return jdbcTemplate.query(GET_ALL_TEACHERS_TIMETABLE, timetableMapper);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
             preparedStatement.setTimestamp(DATE_STATEMENT_INDEX, getTimestampFromString(date));
             preparedStatement.setLong(STUDENT_ID_STATEMENT_INDEX, studentId);
             return preparedStatement;
-        }, new TimetableMapper());
+        }, timetableMapper);
     }
 
     @Override
@@ -115,7 +116,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
             preparedStatement.setTimestamp(FROM_DATE_STATEMENT_INDEX, timestampFrom);
             preparedStatement.setTimestamp(TO_DATE_STATEMENT_INDEX, timestampTo);
             return preparedStatement;
-        }, new TimetableMapper());
+        }, timetableMapper);
     }
 
     private Timestamp getTimestampFromString(String stringDate) {
