@@ -3,6 +3,10 @@ package ua.com.nikiforov.services.room;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +24,7 @@ class RoomServiceImplTest {
     private static final int TEST_ROOM_NUMBER_1 = 12;
     private static final int TEST_ROOM_NUMBER_2 = 13;
     private static final int TEST_ROOM_NUMBER_3 = 14;
-    private static final int TEST_ROOM_COUNT = 3;
 
-    private static final String SPACE = " ";
 
     @Autowired
     private RoomServiceImpl roomService;
@@ -42,26 +44,18 @@ class RoomServiceImplTest {
 
     
     @Test
-    void whenQueryRoomByIdThenReturnSearchingRoom() {
+    void afterAddRoomGetRoomByIdReturnCorrectRoom() {
         Room room = insertRoom(TEST_ROOM_NUMBER_1);
-        int roomId = room.getId();
-        assertEquals(TEST_ROOM_NUMBER_1, room.getNumber());
-        assertEquals(roomId, roomService.getRoomById(roomId).getId());
+        assertEquals(room, roomService.getRoomById(room.getId()));
     }
 
     @Test
     void whenGetAllRoomsThenReturnGroupList() {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        roomService.addRoom(TEST_ROOM_NUMBER_2);
-        roomService.addRoom(TEST_ROOM_NUMBER_3);
-        StringBuilder expectedRoomNumbers = new StringBuilder();
-        expectedRoomNumbers.append(TEST_ROOM_NUMBER_1).append(SPACE).append(TEST_ROOM_NUMBER_2).append(SPACE)
-                .append(TEST_ROOM_NUMBER_3).append(SPACE);
-        StringBuilder actualRoomNumbers = new StringBuilder();
-        long countRoom = roomService.getAllRooms().stream()
-                .map(r -> actualRoomNumbers.append(r.getNumber()).append(SPACE)).count();
-        assertEquals(expectedRoomNumbers.toString(), actualRoomNumbers.toString());
-        assertEquals(TEST_ROOM_COUNT, countRoom);
+        List<Room> expectedRooms = new ArrayList<>();
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_1));
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_2));
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_3));
+        assertIterableEquals(expectedRooms,roomService.getAllRooms());
     }
 
     @Test
@@ -75,8 +69,9 @@ class RoomServiceImplTest {
         Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
         roomService.updateRoom(TEST_ROOM_NUMBER_2, roomId);
-        assertEquals(TEST_ROOM_NUMBER_2, roomService.getRoomById(roomId).getNumber());
-        assertEquals(roomId, roomService.getRoomById(roomId).getId());
+        Room expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_2);
+        Room actualRoom = roomService.getRoomById(roomId);
+        assertEquals(expectedRoom, actualRoom);
     }
 
     @Test
@@ -94,7 +89,7 @@ class RoomServiceImplTest {
     }
 
     private Room insertRoom(int roomNumber) {
-        roomService.addRoom(TEST_ROOM_NUMBER_1);
-        return roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_1);
+        roomService.addRoom(roomNumber);
+        return roomService.getRoomByRoomNumber(roomNumber);
     }
 }

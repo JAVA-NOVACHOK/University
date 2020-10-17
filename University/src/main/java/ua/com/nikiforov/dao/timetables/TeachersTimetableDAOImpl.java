@@ -35,6 +35,9 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
             + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
     private static final String FIND_TEACHERS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE
             + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = SELECT + ASTERISK + FROM
+            + TABLE_TEACHERS_TIMETABLE + WHERE + LESSON_ID + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK
+            + AND + DATE + EQUALS_M + Q_MARK + AND + PERIOD + EQUALS_M + Q_MARK;
     private static final String GET_ALL_TEACHERS_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE;
     private static final String UPDATE_TEACHERS_TIMETABLE = UPDATE + TABLE_TEACHERS_TIMETABLE + SET + LESSON_ID
             + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK + COMA + PERIOD
@@ -64,6 +67,15 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     public Timetable getTimetableById(long id) {
         return jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_ID, new Object[] { id },
                 new TeacherTimetableMapper());
+    }
+
+    @Override
+    public Timetable getTimetableByLessonTeacherTimePeriod(long lessonId, long teacherId, String stringDate,
+            Period period) {
+        Timestamp time = getTimestampFromString(stringDate);
+        int periodNumber = period.getPeriod();
+        return jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
+                new Object[] { lessonId, teacherId, time, periodNumber }, new TeacherTimetableMapper());
     }
 
     @Override

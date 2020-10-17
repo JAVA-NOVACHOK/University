@@ -69,7 +69,12 @@ public class Timetable {
         result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
         result = prime * result + period;
         result = prime * result + (int) (personId ^ (personId >>> 32));
-        result = prime * result + ((time == null) ? 0 : time.hashCode());
+        if (time != null) {
+            long timeMillis = time.toEpochMilli();
+            result = prime * result + (int) (timeMillis ^ (timeMillis >>> 32));
+        }else {
+            result = prime * result;
+        }
         return result;
     }
 

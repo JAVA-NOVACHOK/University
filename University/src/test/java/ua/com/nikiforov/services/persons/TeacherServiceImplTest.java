@@ -36,12 +36,6 @@ class TeacherServiceImplTest {
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
 
-    private static final String SPACE = " ";
-    private static final String NEW_LINE = System.lineSeparator();
-
-    private static final int TEACHER_TEST_COUNT = 3;
-    private static final int TEACHERS_SUBJECTS_COUNT = 3;
-
     @Autowired
     private TeacherService teacherService;
 

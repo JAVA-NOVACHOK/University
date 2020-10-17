@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.mappers.timetables.StudentTimetableMapper;
+import ua.com.nikiforov.mappers.timetables.TeacherTimetableMapper;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
@@ -33,6 +34,9 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
     private static final String FIND_STUDENTS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE
             + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = SELECT + ASTERISK + FROM
+            + TABLE_STUDENTS_TIMETABLE + WHERE + LESSON_ID + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK
+            + AND + DATE + EQUALS_M + Q_MARK + AND + PERIOD + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE;
     private static final String UPDATE_STUDENTS_TIMETABLE = UPDATE + TABLE_STUDENTS_TIMETABLE + SET + LESSON_ID
             + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK + COMA + PERIOD
@@ -62,6 +66,15 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     public Timetable getTimetableById(long timetableId) {
         return jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_ID, new Object[] { timetableId },
                 new TimetableMapper());
+    }
+
+    @Override
+    public Timetable getTimetableByLessonTeacherTimePeriod(long lessonId, long teacherId, String stringDate,
+            Period period) {
+        Timestamp time = getTimestampFromString(stringDate);
+        int periodNumber = period.getPeriod();
+        return jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
+                new Object[] { lessonId, teacherId, time, periodNumber }, new TeacherTimetableMapper());
     }
 
     @Override

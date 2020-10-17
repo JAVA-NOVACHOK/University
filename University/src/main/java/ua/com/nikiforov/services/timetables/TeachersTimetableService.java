@@ -30,18 +30,24 @@ public class TeachersTimetableService implements PersonalTimetable {
     }
 
     @Override
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
+            Period period) {
+        return timetableDAO.getTimetableByLessonTeacherTimePeriod(lessonId, teacherId, stringDate, period);
+    }
+
+    @Override
     public List<Timetable> getAllTimetables() {
         return timetableDAO.getAllTimetables();
     }
 
     @Override
-    public boolean updateTimetable(long lessonId, long teacherId, String date, Period period,  long id) {
+    public boolean updateTimetable(long lessonId, long teacherId, String date, Period period, long id) {
         return timetableDAO.updateTimetable(lessonId, teacherId, date, period, id);
     }
 
     @Override
     public boolean deleteTimetableById(long id) {
-       return timetableDAO.deleteTimetableById(id);
+        return timetableDAO.deleteTimetableById(id);
     }
 
     @Override

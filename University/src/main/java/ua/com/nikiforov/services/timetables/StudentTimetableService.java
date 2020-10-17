@@ -28,6 +28,12 @@ public class StudentTimetableService implements PersonalTimetable {
     public Timetable getTimetableById(long id) {
         return timetableDAO.getTimetableById(id);
     }
+    
+    @Override
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
+            Period period) {
+        return timetableDAO.getTimetableByLessonTeacherTimePeriod(lessonId, teacherId, stringDate, period);
+    }
 
     @Override
     public List<Timetable> getAllTimetables() {

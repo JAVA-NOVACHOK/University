@@ -9,6 +9,9 @@ public interface PersonalTimetable {
     public boolean addTimetable(long lessonId, long teacherId, String time, Period period);
 
     public Timetable getTimetableById(long id);
+    
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate, Period period);
+
 
     public List<Timetable> getAllTimetables();
 

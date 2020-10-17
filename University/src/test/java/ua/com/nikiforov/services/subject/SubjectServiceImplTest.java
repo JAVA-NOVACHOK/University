@@ -2,6 +2,9 @@ package ua.com.nikiforov.services.subject;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,25 +53,19 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void whenGetSubjectByIdReturnCorrectSubject() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
-        int subjectId = subject.getId();
-        assertEquals(SUBJECT_NAME_1, subject.getName());
-        assertEquals(subjectId, subjectService.getSubjectById(subjectId).getId());
+    void afetrAddSubjectGetSubjectByIdReturnCorrectSubject() {
+        Subject expectedSubject = insertSubject(SUBJECT_NAME_1);
+        assertEquals(expectedSubject, subjectService.getSubjectById(expectedSubject.getId()));
     }
 
     @Test
     void whenGetAllSubjectsIfPresentReturnListOfAllSubjects() {
-        subjectService.addSubject(SUBJECT_NAME_1);
-        subjectService.addSubject(SUBJECT_NAME_2);
-        subjectService.addSubject(SUBJECT_NAME_3);
-        StringBuilder expectedSubjectNames = new StringBuilder();
-        expectedSubjectNames.append(SUBJECT_NAME_1).append(SUBJECT_NAME_2).append(SUBJECT_NAME_3);
-        StringBuilder actualSubjectNames = new StringBuilder();
-        long countSubjects = subjectService.getAllSubjects().stream().map(s -> actualSubjectNames.append(s.getName()))
-                .count();
-        assertEquals(expectedSubjectNames.toString(), actualSubjectNames.toString());
-        assertEquals(SUBJECT_COUNT, countSubjects);
+        List<Subject> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(insertSubject(SUBJECT_NAME_1));
+        expectedSubjects.add(insertSubject(SUBJECT_NAME_2));
+        expectedSubjects.add(insertSubject(SUBJECT_NAME_3));
+        List<Subject> actualSubjects = subjectService.getAllSubjects();
+        assertEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
@@ -82,7 +79,9 @@ class SubjectServiceImplTest {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         subjectService.updateSubject(SUBJECT_NAME_2, subjectId);
-        assertEquals(SUBJECT_NAME_2, subjectService.getSubjectById(subjectId).getName());
+        Subject expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
+        Subject actualSubject = subjectService.getSubjectById(subjectId);
+        assertEquals(expectedSubject, actualSubject);
     }
 
     @Test
