@@ -2,6 +2,9 @@ package ua.com.nikiforov.services.persons;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +25,9 @@ class StudentsServiseImplTest {
     private static final String LAST_NAME_1 = "Hanks";
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
-    private static final String SPACE = " ";
-    private static final String NEW_LINE = System.lineSeparator();
 
     private static final long TEST_GROUP_ID_1 = 1;
     private static final long TEST_GROUP_ID_2 = 2;
-
-    private static final int STUDENT_TEST_COUNT = 3;
 
     @Autowired
     private StudentsService studentService;
@@ -47,82 +46,33 @@ class StudentsServiseImplTest {
     }
 
     @Test
-    void whenGetStudentByNameReturnCorrectStudentObject() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        assertEquals(FIRST_NAME_1, student.getFirstName());
-        assertEquals(LAST_NAME_1, student.getLastName());
-        assertEquals(TEST_GROUP_ID_1, student.getGroupId());
+    void afterAddStudentGetStudentByIdReturnCorrectStudentObject() {
+        Student expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
+        assertEquals(expectedStudent, studentService.getStudentById(expectedStudent.getId()));
     }
 
     @Test
     void whenGetAllStudentsIfPresentReturnListOfAllStudents() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        studentService.addStudent(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_1);
-        studentService.addStudent(FIRST_NAME_3, LAST_NAME_3, TEST_GROUP_ID_1);
-        StringBuilder expectedNames = new StringBuilder();
-        expectedNames.append(FIRST_NAME_1).append(SPACE).append(LAST_NAME_1).append(SPACE).append(TEST_GROUP_ID_1)
-                .append(NEW_LINE);
-        expectedNames.append(FIRST_NAME_2).append(SPACE).append(LAST_NAME_2).append(SPACE).append(TEST_GROUP_ID_1)
-                .append(NEW_LINE);
-        expectedNames.append(FIRST_NAME_3).append(SPACE).append(LAST_NAME_3).append(SPACE).append(TEST_GROUP_ID_1)
-                .append(NEW_LINE);
-        StringBuilder actualNames = new StringBuilder();
-        long countNames = studentService.getAllStudents().stream().map(s -> actualNames.append(s.getFirstName()).append(SPACE)
-                .append(s.getLastName()).append(SPACE).append(s.getGroupId()).append(NEW_LINE)).count();
-        assertEquals(expectedNames.toString(), actualNames.toString());
-        assertEquals(STUDENT_TEST_COUNT, countNames);
+        List<Student> expectedStudents = new ArrayList<>();
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, TEST_GROUP_ID_1));
+        assertIterableEquals(expectedStudents, studentService.getAllStudents());
     }
 
     @Test
-    void whenUpdateStudentsFirstNameIfSuccessThenReturnTrue() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        assertTrue(studentService.updateStudent(FIRST_NAME_2, LAST_NAME_1, TEST_GROUP_ID_1, studentId));
+    void whenUpdateStudentIfSuccessThenReturnTrue() {
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1).getId();
+        assertTrue(studentService.updateStudent(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_2, studentId));
     }
 
     @Test
-    void whenUpdateStudentsLastNameIfSuccessThenReturnTrue() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        assertTrue(studentService.updateStudent(FIRST_NAME_1, LAST_NAME_2, TEST_GROUP_ID_1, studentId));
-    }
-
-    @Test
-    void whenUpdateStudentsGroupIdIfSuccessThenReturnTrue() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        assertTrue(studentService.updateStudent(FIRST_NAME_1, LAST_NAME_2, TEST_GROUP_ID_2, studentId));
-    }
-
-    @Test
-    void afterUpdateStudentsFirstNameIfSuccessThenGetStudentByIdReturnChangedFirstName() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        studentService.updateStudent(FIRST_NAME_2, LAST_NAME_1, TEST_GROUP_ID_1, studentId);
-        assertEquals(FIRST_NAME_2, studentService.getStudentById(studentId).getFirstName());
-    }
-
-    @Test
-    void afterUpdateStudentsLastNameIfSuccessThenGetStudentByIdReturnChangedLastName() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        studentService.updateStudent(FIRST_NAME_1, LAST_NAME_2, TEST_GROUP_ID_1, studentId);
-        assertEquals(LAST_NAME_2, studentService.getStudentById(studentId).getLastName());
-    }
-
-    @Test
-    void afterUpdateStudentsGroupIdIfSuccessThenGetStudentsByIdReturnChangedGroupId() {
-        studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
-        long studentId = student.getId();
-        studentService.updateStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_2, studentId);
-        assertEquals(TEST_GROUP_ID_2, studentService.getStudentById(studentId).getGroupId());
+    void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1).getId();
+        studentService.updateStudent(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_2, studentId);
+        Student expectedStudent = studentService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, TEST_GROUP_ID_2);
+        Student actualStudent = studentService.getStudentById(studentId);
+        assertEquals(expectedStudent, actualStudent);
     }
 
     @Test
@@ -139,6 +89,12 @@ class StudentsServiseImplTest {
         long studentId = student.getId();
         studentService.deleteStudentById(studentId);
         assertThrows(EmptyResultDataAccessException.class, () -> studentService.getStudentById(studentId));
+    }
+
+    private Student insertStudent(String firstName, String lastaName, long groupName) {
+        studentService.addStudent(firstName, lastaName, groupName);
+        return studentService.getStudentByNameGroupId(firstName, lastaName, groupName);
+
     }
 
 }

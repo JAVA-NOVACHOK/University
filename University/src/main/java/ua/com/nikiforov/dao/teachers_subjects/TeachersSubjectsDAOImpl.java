@@ -27,8 +27,8 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             + TEACHER_ID + EQUALS_M + Q_MARK;
     private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
             + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
-            + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE + TEACHER_ID + EQUALS_M
+            + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
 
     private static final int PREPARE_STATEMENT_FIRST_INDEX = 1;
 

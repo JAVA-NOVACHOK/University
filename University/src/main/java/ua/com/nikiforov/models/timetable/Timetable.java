@@ -61,4 +61,41 @@ public class Timetable {
         this.period = period;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
+        result = prime * result + period;
+        result = prime * result + (int) (personId ^ (personId >>> 32));
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Timetable other = (Timetable) obj;
+        if (id != other.id)
+            return false;
+        if (lessonId != other.lessonId)
+            return false;
+        if (period != other.period)
+            return false;
+        if (personId != other.personId)
+            return false;
+        if (time == null) {
+            if (other.time != null)
+                return false;
+        } else if (!time.equals(other.time))
+            return false;
+        return true;
+    }
+
 }

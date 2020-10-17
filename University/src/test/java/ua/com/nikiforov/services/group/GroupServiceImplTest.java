@@ -3,6 +3,10 @@ package ua.com.nikiforov.services.group;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +24,6 @@ class GroupServiceImplTest {
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
-    private static final String SPACE = " ";
-
-    private static final int GROUP_TEST_COUNT_3 = 3;
 
     @Autowired
     private GroupService groupService;
@@ -41,35 +42,20 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void whenAddGroupAndThenGetGroupByNameReturnCorrectGroup() {
-        Group group = insertGroup(TEST_GROUP_NAME_1);
-        assertEquals(TEST_GROUP_NAME_1, group.getGroupName());
-        assertEquals(group.getId(), groupService.getGroupById(group.getId()).getId());
-    }
-    
-    @Test
     void whenGetGroupByIdReturnCorrectGroup() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
-        long groupId = group.getId();
-        assertEquals(groupId, groupService.getGroupById(groupId).getId());
-        assertEquals(group.getGroupName(), groupService.getGroupById(groupId).getGroupName());
+        assertEquals(group, groupService.getGroupById(group.getId()));
     }
 
     @Test
     void whenGetAllGroupsIfPresentReturnListOfAllGroups() {
-        groupService.addGroup(TEST_GROUP_NAME_1);
-        groupService.addGroup(TEST_GROUP_NAME_2);
-        groupService.addGroup(TEST_GROUP_NAME_3);
-        StringBuilder expectedGroupNames = new StringBuilder();
-        expectedGroupNames.append(TEST_GROUP_NAME_1).append(SPACE).append(TEST_GROUP_NAME_2).append(SPACE)
-                .append(TEST_GROUP_NAME_3).append(SPACE);
-        StringBuilder actualGroupNames = new StringBuilder();
-        long countGroups = groupService.getAllGroups().stream().map(g -> actualGroupNames.append(g.getGroupName()).append(SPACE))
-                .count();
-        assertEquals(expectedGroupNames.toString(), actualGroupNames.toString());
-        assertEquals(GROUP_TEST_COUNT_3, countGroups);
-    }
+        List<Group> expectedGroups = new ArrayList<>();
+        expectedGroups.add(insertGroup(TEST_GROUP_NAME_1));
+        expectedGroups.add(insertGroup(TEST_GROUP_NAME_2));
+        expectedGroups.add(insertGroup(TEST_GROUP_NAME_3));
+        assertIterableEquals(expectedGroups, groupService.getAllGroups());
 
+    }
 
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
@@ -81,9 +67,9 @@ class GroupServiceImplTest {
     void whenUpdateGroupIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
         long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.updateGroup(groupId, TEST_GROUP_NAME_2);
-        Group updatedGroup = groupService.getGroupById(groupId);
-        assertEquals(TEST_GROUP_NAME_2, updatedGroup.getGroupName());
-        assertEquals(groupId, updatedGroup.getId());
+        Group expectedUpdatedGroup = groupService.getGroupById(groupId);
+        Group actualUpdatedGroup = groupService.getGroupByName(TEST_GROUP_NAME_2);
+        assertEquals(expectedUpdatedGroup, actualUpdatedGroup);
     }
 
     @Test

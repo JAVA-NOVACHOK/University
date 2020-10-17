@@ -10,7 +10,7 @@ import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.persons.Teacher;
 
 @Service
-public class TeacherServiceImpl implements TeachersService {
+public class TeacherServiceImpl implements TeacherService {
 
     private TeacherDAO teacherDAO;
     private TeachersSubjectsDAO techersSubjectsDAO;

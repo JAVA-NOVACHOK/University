@@ -12,7 +12,7 @@ import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.services.persons.TeachersService;
+import ua.com.nikiforov.services.persons.TeacherService;
 
 @SpringJUnitConfig(UniversityConfig.class)
 class SubjectServiceImplTest {
@@ -31,7 +31,7 @@ class SubjectServiceImplTest {
     private static final String LAST_NAME_3 = "Sparrow";
 
     @Autowired
-    private TeachersService teacherService;
+    private TeacherService teacherService;
 
     @Autowired
     private SubjectService subjectService;

@@ -2,6 +2,7 @@ package ua.com.nikiforov.services.lesson;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -29,10 +30,6 @@ class LessonServiceImplTest {
     private static final int TEST_ROOM_ID_2 = 2;
     private static final int TEST_ROOM_ID_3 = 3;
 
-    private static final int TEST_LESSON_COUNT = 3;
-
-    private static final String SPACE = " ";
-
     @Autowired
     private LessonService lessonService;
 
@@ -50,39 +47,19 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void whenGetLessonByGroupSubjectRoomIdsReturnCorrectLesson() {
-        Lesson lesson = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
-        assertEquals(TEST_GROUP_ID_1, lesson.getGroupId());
-        assertEquals(TEST_SUBJECT_ID_1, lesson.getSubjectId());
-        assertEquals(TEST_ROOM_ID_1, lesson.getRoomId());
-    }
-
-    @Test
     void whenGetLessonByIdReturnCorrectLesson() {
-        long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
-        assertEquals(TEST_GROUP_ID_1, lessonService.getLessonById(lessonId).getGroupId());
-        assertEquals(TEST_SUBJECT_ID_1, lessonService.getLessonById(lessonId).getSubjectId());
-        assertEquals(TEST_ROOM_ID_1, lessonService.getLessonById(lessonId).getRoomId());
+        Lesson expectedlesson = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
+        assertEquals(expectedlesson, lessonService.getLessonById(expectedlesson.getId()));
     }
 
     @Test
     void whenGetAllLessonsIfPresentReturnListOfAllLessons() {
-        lessonService.addLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1);
-        lessonService.addLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2);
-        lessonService.addLesson(TEST_GROUP_ID_3, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3);
-        StringBuilder expectedGroupSubjectRoomIds = new StringBuilder();
-        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_1).append(SPACE).append(TEST_SUBJECT_ID_1).append(SPACE).append(TEST_ROOM_ID_1)
-                .append(SPACE);
-        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_2).append(SPACE).append(TEST_SUBJECT_ID_2).append(SPACE).append(TEST_ROOM_ID_2)
-                .append(SPACE);
-        expectedGroupSubjectRoomIds.append(TEST_GROUP_ID_3).append(SPACE).append(TEST_SUBJECT_ID_3).append(SPACE).append(TEST_ROOM_ID_3)
-                .append(SPACE);
-        StringBuilder actualGroupSubjectRoomIds = new StringBuilder();
-        List<Lesson> lessons = lessonService.getAllLessons();
-        long countLessons = lessons.stream().map(l -> actualGroupSubjectRoomIds.append(l.getGroupId()).append(SPACE).append(l.getSubjectId())
-                .append(SPACE).append(l.getRoomId()).append(SPACE)).count();
-        assertEquals(TEST_LESSON_COUNT, countLessons);
-        assertEquals(expectedGroupSubjectRoomIds.toString(), actualGroupSubjectRoomIds.toString());
+        List<Lesson> expectedLessons = new ArrayList<>();
+        expectedLessons.add(insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1));
+        expectedLessons.add(insertLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2));
+        expectedLessons.add(insertLesson(TEST_GROUP_ID_3, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3));
+        List<Lesson> actualLessons = lessonService.getAllLessons();
+        assertIterableEquals(expectedLessons, actualLessons);
     }
 
     @Test
@@ -95,9 +72,10 @@ class LessonServiceImplTest {
     void whenUpdateLessonIfSuccessThenGetLessonByIdAfterUpdateReturnChangedLesson() {
         long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         lessonService.updateLesson(TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, lessonId);
-        assertEquals(TEST_GROUP_ID_2, lessonService.getLessonById(lessonId).getGroupId());
-        assertEquals(TEST_SUBJECT_ID_2, lessonService.getLessonById(lessonId).getSubjectId());
-        assertEquals(TEST_ROOM_ID_2, lessonService.getLessonById(lessonId).getRoomId());
+        Lesson expectedUpdatedLesson = lessonService.getLessonByGroupRoomSubjectIds(TEST_GROUP_ID_2, TEST_ROOM_ID_2,
+                TEST_SUBJECT_ID_2);
+        Lesson actualUpdatedLesson = lessonService.getLessonById(lessonId);
+        assertEquals(expectedUpdatedLesson, actualUpdatedLesson);
     }
 
     @Test
@@ -113,9 +91,9 @@ class LessonServiceImplTest {
         assertThrows(EmptyResultDataAccessException.class, () -> lessonService.getLessonById(lessonId));
     }
 
-    private Lesson insertLesson(long groupId, int subjectId, int roomId) {
-        lessonService.addLesson(groupId, subjectId, roomId);
-        return lessonService.getLessonByGroupRoomSubjectIds(groupId, subjectId, roomId);
+    private Lesson insertLesson(long groupId, int roomId, int subjectId) {
+        lessonService.addLesson(groupId, roomId, subjectId);
+        return lessonService.getLessonByGroupRoomSubjectIds(groupId, roomId, subjectId);
     }
 
 }

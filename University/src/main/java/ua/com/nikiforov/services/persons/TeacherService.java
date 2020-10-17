@@ -4,7 +4,7 @@ import java.util.List;
 
 import ua.com.nikiforov.models.persons.Teacher;
 
-public interface TeachersService {
+public interface TeacherService {
 
     public boolean addTeacher(String firstName, String lastName);
 
