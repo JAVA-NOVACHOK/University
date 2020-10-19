@@ -21,6 +21,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public boolean addGroup(String groupName) {
         return groupDAO.addGroup(groupName);
+       
     }
 
     @Override
@@ -38,7 +39,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean updateGroup(long id, String groupName) {
+    public boolean updateGroup(long id, String groupName)  {
         return groupDAO.updateGroup(groupName, id);
     }
 

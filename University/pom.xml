@@ -15,10 +15,14 @@
 		<surfire.version>2.22.1</surfire.version>
 		<h2.version>1.4.200</h2.version>
 		<spring.version>5.2.9.RELEASE</spring.version>
-		<mockito.version>3.5.13</mockito.version>
+		<logback.version>1.2.3</logback.version>
 	</properties>
-
 	<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
