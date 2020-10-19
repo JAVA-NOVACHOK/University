@@ -6,13 +6,15 @@ import ua.com.nikiforov.models.persons.Teacher;
 
 public interface TeacherDAO {
 
-    public boolean addTeacher(String firstName, String lastName, long groupId);
+    public boolean addTeacher(String firstName, String lastName);
 
-    public Teacher getTeacherById(long id);
+    public Teacher getTeacherById(long teacherId);
+    
+    public Teacher getTeacherByName(String firstName, String lastName);
 
     public List<Teacher> getAllTeachers();
 
-    public boolean updateTeacher(String firstName, String lastName, long groupId);
+    public boolean updateTeacher(String firstName, String lastName,long teacherId);
 
-    public boolean deleteTeacherById(long id);
+    public boolean deleteTeacherById(long teacherId);
 }

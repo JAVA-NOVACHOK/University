@@ -1,6 +1,8 @@
- package ua.com.nikiforov.config;
+package ua.com.nikiforov.config;
 
 import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,18 +15,25 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @PropertySource("classpath:university.properties")
 public class UniversityConfig {
 
-    private static final String URL = "url";
-    private static final String USER = "user";
-    private static final String DRIVER = "driver";
-    private static final String PASSWORD = "password";
+    @Value("url")
+    private String url;
+    
+    @Value("user")
+    private String user;
+    
+    @Value("driver")
+    private String driver;
+    
+    @Value("password")
+    private String password;
 
     @Bean
     DataSource dataSource(Environment environment) {
         DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
-        driverManagerDataSource.setUrl(environment.getProperty(URL));
-        driverManagerDataSource.setDriverClassName(environment.getProperty(DRIVER));
-        driverManagerDataSource.setUsername(environment.getProperty(USER));
-        driverManagerDataSource.setPassword(environment.getProperty(PASSWORD));
+        driverManagerDataSource.setUrl(environment.getProperty(url));
+        driverManagerDataSource.setUsername(environment.getProperty(user));
+        driverManagerDataSource.setPassword(environment.getProperty(password));
+        driverManagerDataSource.setDriverClassName(environment.getProperty(driver));
         return driverManagerDataSource;
     }
 

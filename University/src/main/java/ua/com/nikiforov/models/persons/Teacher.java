@@ -1,23 +1,26 @@
 package ua.com.nikiforov.models.persons;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Teacher extends Person {
 
-    private int subjectId;
+    private List<Integer> subjectIds;
 
     public Teacher() {
     }
 
-    public Teacher(long id, String firstName, String lastName, int subjectId) {
+    public Teacher(long id, String firstName, String lastName) {
         super(id, firstName, lastName);
-        this.subjectId = subjectId;
+        subjectIds = new ArrayList<>();
     }
 
-    public int getSubjectId() {
-        return subjectId;
+    public List<Integer> getSubjectIds() {
+        return subjectIds;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
+    public void setSubjectIds(List<Integer> subjectIds) {
+        this.subjectIds = subjectIds;
     }
 
 }

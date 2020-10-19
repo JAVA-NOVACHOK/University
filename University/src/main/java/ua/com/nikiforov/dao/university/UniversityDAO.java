@@ -9,6 +9,8 @@ public interface UniversityDAO {
     public boolean addUniversity(String name);
 
     public University findUniversityById(int id);
+    
+    public University getUniversityByName(String universityName);
 
     public List<University> getAllUniversities();
 

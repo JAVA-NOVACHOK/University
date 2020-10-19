@@ -14,21 +14,23 @@ import ua.com.nikiforov.models.Lesson;
 @Repository
 public class LessonDAOImpl implements LessonDAO {
 
-    private static final String ADD_LESSON = INSERT + TABLE_LESSONS + L_BRACKET + GROUP_ID + COMA
-            + ROOM_ID + COMA + SUBJECT_ID + VALUES_3_QMARK;
+    private static final String ADD_LESSON = INSERT + TABLE_LESSONS + L_BRACKET + GROUP_ID + COMA + ROOM_ID + COMA
+            + SUBJECT_ID + VALUES_3_QMARK;
     private static final String GET_ALL_LESSONS = SELECT + ASTERISK + FROM + TABLE_LESSONS;
-    private static final String FIND_LESSON_BY_ID = SELECT + ASTERISK + FROM + TABLE_LESSONS + WHERE + ID
-            + EQUALS_M + Q_MARK;
-    private static final String UPDATE_LESSON = UPDATE + TABLE_LESSONS + SET + GROUP_ID + EQUALS_M
-            + Q_MARK + COMA + ROOM_ID + EQUALS_M + Q_MARK + COMA + SUBJECT_ID + EQUALS_M
-            + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_LESSON_BY_ID = DELETE + ASTERISK + FROM + TABLE_LESSONS + WHERE
-            + ID + EQUALS_M + Q_MARK;
+    private static final String FIND_LESSON_BY_ID = SELECT + ASTERISK + FROM + TABLE_LESSONS + WHERE + ID + EQUALS_M
+            + Q_MARK;
+    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = SELECT + ASTERISK + FROM + TABLE_LESSONS + WHERE
+            + GROUP_ID + EQUALS_M + Q_MARK + AND + ROOM_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String UPDATE_LESSON = UPDATE + TABLE_LESSONS + SET + GROUP_ID + EQUALS_M + Q_MARK + COMA
+            + ROOM_ID + EQUALS_M + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_LESSON_BY_ID = DELETE + FROM + TABLE_LESSONS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private LessonMapper lessonMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public LessonDAOImpl(DataSource dataSource) {
+    public LessonDAOImpl(DataSource dataSource, LessonMapper lessonMapper) {
+        this.lessonMapper = lessonMapper;
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -38,13 +40,19 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public Lesson findLessonById(long id) {
-        return jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, new LessonMapper());
+    public Lesson getLessonById(long id) {
+        return jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, lessonMapper);
+    }
+
+    @Override
+    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId) {
+        return jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS,
+                new Object[] { groupId, roomId, subjectId }, lessonMapper);
     }
 
     @Override
     public List<Lesson> getAllLessons() {
-        return jdbcTemplate.query(GET_ALL_LESSONS, new LessonMapper());
+        return jdbcTemplate.query(GET_ALL_LESSONS, lessonMapper);
     }
 
     @Override

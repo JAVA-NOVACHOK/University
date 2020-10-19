@@ -18,24 +18,32 @@ import ua.com.nikiforov.models.Group;
 public class GroupDAOImpl implements GroupDAO {
 
     private static final String ADD_GROUP = INSERT + TABLE_GROUPS + L_BRACKET + NAME + VALUES_1_QMARK;
-    private static final String FIND_GROUP_BY_ID = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + ID
-            + EQUALS_M + Q_MARK;
-    private static final String GET_ALL_GROUPS = SELECT + ASTERISK + FROM + TABLE_GROUPS;
-    private static final String UPDATE_GROUP = UPDATE + TABLE_GROUPS + SET + NAME + EQUALS_M + Q_MARK
-            + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M
+    private static final String FIND_GROUP_BY_ID = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M
             + Q_MARK;
+    private static final String FIND_GROUP_BY_NAME = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + NAME + EQUALS_M
+            + Q_MARK;
+    private static final String GET_ALL_GROUPS = SELECT + ASTERISK + FROM + TABLE_GROUPS;
+    private static final String UPDATE_GROUP = UPDATE + TABLE_GROUPS + SET + NAME + EQUALS_M + Q_MARK + WHERE + ID
+            + EQUALS_M + Q_MARK;
+    private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private GroupMapper groupMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public GroupDAOImpl(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public GroupDAOImpl(DataSource dataSource,GroupMapper groupMapper) {
+        this.jdbcTemplate = new  JdbcTemplate(dataSource);
+        this.groupMapper = groupMapper;
     }
 
     @Override
     public Group getGroupById(Long id) {
-        return jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, new GroupMapper());
+        return jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, groupMapper);
+    }
+
+    @Override
+    public Group getGroupByName(String groupName) {
+        return jdbcTemplate.queryForObject(FIND_GROUP_BY_NAME, new Object[] { groupName }, groupMapper);
     }
 
     @Override
@@ -45,17 +53,17 @@ public class GroupDAOImpl implements GroupDAO {
 
     @Override
     public List<Group> getAllGroups() {
-        return jdbcTemplate.query(GET_ALL_GROUPS, new GroupMapper());
+        return jdbcTemplate.query(GET_ALL_GROUPS, groupMapper);
     }
 
     @Override
-    public boolean addGroup(Long groupNumber) {
-        return jdbcTemplate.update(ADD_GROUP, groupNumber) > 0;
+    public boolean addGroup(String groupName) {
+        return jdbcTemplate.update(ADD_GROUP, groupName) > 0;
     }
 
     @Override
-    public boolean updateGroup(Long groupNumber, Long id) {
-        return jdbcTemplate.update(UPDATE_GROUP, groupNumber, id) > 0;
+    public boolean updateGroup(String groupName, Long id) {
+        return jdbcTemplate.update(UPDATE_GROUP, groupName, id) > 0;
     }
 
 }

@@ -49,4 +49,35 @@ public class Lesson {
         this.roomId = roomId;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (groupId ^ (groupId >>> 32));
+        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + roomId;
+        result = prime * result + subjectId;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Lesson other = (Lesson) obj;
+        if (groupId != other.groupId)
+            return false;
+        if (id != other.id)
+            return false;
+        if (roomId != other.roomId)
+            return false;
+        if (subjectId != other.subjectId)
+            return false;
+        return true;
+    }
+
 }

@@ -14,22 +14,24 @@ import ua.com.nikiforov.models.persons.Student;
 @Repository
 public class StudentDAOImpl implements StudentDAO {
 
-    private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + FIRST_NAME + COMA
-            + LAST_NAME + COMA + GROUP_ID + VALUES_3_QMARK;
-    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
-            + ID + EQUALS_M + Q_MARK;
+    private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + FIRST_NAME + COMA + LAST_NAME + COMA
+            + GROUP_ID + VALUES_3_QMARK;
+    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
+            + Q_MARK;
+    private static final String FIND_STUDENT_BY_NAME_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
+            + FIRST_NAME + EQUALS_M + Q_MARK + AND + LAST_NAME + EQUALS_M + Q_MARK + AND + GROUP_ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
-    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M
-            + Q_MARK + COMA + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + WHERE
-            + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_STUDENT_BY_ID = DELETE + ASTERISK + FROM + TABLE_STUDENTS + WHERE
-            + ID + EQUALS_M + Q_MARK;
+    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M + Q_MARK + COMA
+            + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_STUDENT_BY_ID = DELETE + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private StudentMapper studentMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public StudentDAOImpl(DataSource dataSource) {
+    public StudentDAOImpl(DataSource dataSource,StudentMapper studentMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.studentMapper = studentMapper;
     }
 
     @Override
@@ -38,22 +40,28 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public Student getStudentById(long id) {
-        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { id }, new StudentMapper());
+    public Student getStudentById(long studentId) {
+        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, studentMapper);
+    }
+
+    @Override
+    public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
+        return jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME_GROUP_ID, new Object[] { firstName, lastName, groupId },
+                studentMapper);
     }
 
     @Override
     public List<Student> getAllStudents() {
-        return jdbcTemplate.query(GET_ALL_STUDENTS, new StudentMapper());
+        return jdbcTemplate.query(GET_ALL_STUDENTS, studentMapper);
     }
 
     @Override
-    public boolean updateStudent(String firstName, String lastName, long groupId) {
-        return jdbcTemplate.update(UPDATE_STUDENT, firstName, lastName, groupId) > 0;
+    public boolean updateStudent(String firstName, String lastName, long groupId, long studentId) {
+        return jdbcTemplate.update(UPDATE_STUDENT, firstName, lastName, groupId, studentId) > 0;
     }
 
     @Override
-    public boolean deleteStudentById(long id) {
-        return jdbcTemplate.update(DELETE_STUDENT_BY_ID, id) > 0;
+    public boolean deleteStudentById(long studentId) {
+        return jdbcTemplate.update(DELETE_STUDENT_BY_ID, studentId) > 0;
     }
 }

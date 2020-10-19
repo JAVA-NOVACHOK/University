@@ -16,17 +16,21 @@ public class UniversityDAOImpl implements UniversityDAO {
     private static final String ADD_UNIVERSITY = INSERT + TABLE_UNIVERSITIES + L_BRACKET + NAME + VALUES_1_QMARK;
     private static final String FIND_UNIVERSITY_BY_ID = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES + WHERE + ID
             + EQUALS_M + Q_MARK;
+    private static final String FIND_UNIVERSITY_BY_NAME = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES + WHERE + NAME
+            + EQUALS_M + Q_MARK;
     private static final String GET_ALL_UNIVERSITIES = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES;
     private static final String UPDATE_UNIVERSITY = UPDATE + TABLE_UNIVERSITIES + SET + NAME + EQUALS_M + Q_MARK + WHERE
             + ID + EQUALS_M + Q_MARK;
     private static final String DELETE_UNIVERSITY_BY_ID = DELETE + FROM + TABLE_UNIVERSITIES + WHERE + ID + EQUALS_M
             + Q_MARK;
 
+    private UniversityMapper universityMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UniversityDAOImpl(DataSource dataSource) {
+    public UniversityDAOImpl(DataSource dataSource, UniversityMapper universityMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.universityMapper = universityMapper;
     }
 
     @Override
@@ -36,11 +40,15 @@ public class UniversityDAOImpl implements UniversityDAO {
 
     @Override
     public University findUniversityById(int id) {
-        return jdbcTemplate.queryForObject(FIND_UNIVERSITY_BY_ID, new Object[] { id }, new UniversityMapper());
+        return jdbcTemplate.queryForObject(FIND_UNIVERSITY_BY_ID, new Object[] { id }, universityMapper);
+    }
+    @Override
+    public University getUniversityByName(String universityName) {
+        return jdbcTemplate.queryForObject(FIND_UNIVERSITY_BY_NAME, new Object[] { universityName }, universityMapper);
     }
 
     public List<University> getAllUniversities() {
-        return jdbcTemplate.query(GET_ALL_UNIVERSITIES, new UniversityMapper());
+        return jdbcTemplate.query(GET_ALL_UNIVERSITIES, universityMapper);
     }
 
     @Override

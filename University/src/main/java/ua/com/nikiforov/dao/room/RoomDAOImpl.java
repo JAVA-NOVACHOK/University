@@ -20,16 +20,20 @@ public class RoomDAOImpl implements RoomDAO {
     private static final String ADD_ROOM = INSERT + TABLE_ROOMS + L_BRACKET + ROOM_NUMBER + VALUES_1_QMARK;
     private static final String FIND_ROOM_BY_ID = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ID + EQUALS_M
             + Q_MARK;
+    private static final String FIND_ROOM_BY_ROOM_NUMBER = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ROOM_NUMBER
+            + EQUALS_M + Q_MARK;
     private static final String GET_ALL_ROOMS = SELECT + ASTERISK + FROM + TABLE_ROOMS;
     private static final String UPDATE_ROOM = UPDATE + TABLE_ROOMS + SET + ROOM_NUMBER + EQUALS_M + Q_MARK + WHERE + ID
             + EQUALS_M + Q_MARK;
     private static final String DELETE_ROOM_BY_ID = DELETE + FROM + TABLE_ROOMS + WHERE + ID + EQUALS_M + Q_MARK;
 
+    private RoomMapper roomMapper;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public RoomDAOImpl(DataSource dataSource) {
+    public RoomDAOImpl(DataSource dataSource, RoomMapper roomMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+        this.roomMapper = roomMapper;
     }
 
     @Override
@@ -38,13 +42,18 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public Room findRoomById(int id) {
-        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, new RoomMapper());
+    public Room getRoomById(int id) {
+        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ID, new Object[] { id }, roomMapper);
+    }
+
+    @Override
+    public Room getRoomByRoomNumber(int roomNumber) {
+        return jdbcTemplate.queryForObject(FIND_ROOM_BY_ROOM_NUMBER, new Object[] { roomNumber }, roomMapper);
     }
 
     @Override
     public List<Room> getAllRooms() {
-        return jdbcTemplate.query(GET_ALL_ROOMS, new RoomMapper());
+        return jdbcTemplate.query(GET_ALL_ROOMS, roomMapper);
     }
 
     @Override
