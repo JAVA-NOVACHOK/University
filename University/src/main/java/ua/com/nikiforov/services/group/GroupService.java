@@ -6,7 +6,7 @@ import ua.com.nikiforov.models.Group;
 
 public interface GroupService {
     
-    public boolean addGroup(String groupName) ;
+    public boolean addGroup(String groupName);
     
     public Group getGroupById(long id);
     
@@ -14,7 +14,7 @@ public interface GroupService {
     
     public List<Group> getAllGroups();
     
-    public boolean updateGroup(long id, String groupName) ;
+    public boolean updateGroup(long id, String groupName);
     
     public boolean deleteGroup(long id);
 

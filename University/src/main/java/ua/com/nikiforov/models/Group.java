@@ -61,7 +61,5 @@ public class Group {
     public String toString() {
         return "id=" + id + ", groupName=" + groupName + "]";
     }
-    
-    
 
 }
