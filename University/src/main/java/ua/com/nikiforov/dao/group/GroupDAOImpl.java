@@ -23,6 +23,8 @@ import ua.com.nikiforov.models.Group;
 public class GroupDAOImpl implements GroupDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupDAOImpl.class);
+    
+    private static final String NO_AFFECTED_ROWS_MSG = "No affected rows";
 
     private static final String ADD_GROUP = INSERT + TABLE_GROUPS + L_BRACKET + NAME + VALUES_1_QMARK;
     private static final String FIND_GROUP_BY_ID = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M
@@ -78,9 +80,10 @@ public class GroupDAOImpl implements GroupDAO {
             if (jdbcTemplate.update(DELETE_GROUP_BY_ID, id) > 0) {
                 LOGGER.info("Successful deleting group");
             } else {
-                throw new RuntimeException();
+                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
         } catch (Exception e) {
+            LOGGER.warn("Couldn't find group by ID '{}'", id);
             throw new ChangesNotMadeException("Couldn't delete group by id " + id, e);
         }
         return true;
@@ -88,6 +91,7 @@ public class GroupDAOImpl implements GroupDAO {
 
     @Override
     public List<Group> getAllGroups() {
+        LOGGER.debug("Retrieving all groups.");
         return jdbcTemplate.query(GET_ALL_GROUPS, groupMapper);
     }
 
@@ -98,7 +102,7 @@ public class GroupDAOImpl implements GroupDAO {
             if (jdbcTemplate.update(ADD_GROUP, groupName) > 0) {
                 LOGGER.info("Successful adding group {}", groupName);
             } else {
-                throw new RuntimeException();
+                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
         } catch (Exception e) {
             LOGGER.error("Couldn't add Group with name '{}'", groupName);
@@ -114,7 +118,7 @@ public class GroupDAOImpl implements GroupDAO {
             if (jdbcTemplate.update(UPDATE_GROUP, id, groupName) > 0) {
                 LOGGER.info("Successful adding group with id '{}' name '{}'", id, groupName);
             } else {
-                throw new RuntimeException();
+                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
         } catch (Exception e) {
             LOGGER.error("Couldn't update Group with id '{}' name '{}'", id, groupName);
