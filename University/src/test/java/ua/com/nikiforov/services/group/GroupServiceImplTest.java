@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -82,7 +83,7 @@ class GroupServiceImplTest {
     void afterDeleteGroupByIdIfSearchForItReturnEmptyResultDataAccessException() {
         long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.deleteGroup(groupId);
-        assertThrows(EmptyResultDataAccessException.class, () -> groupService.getGroupById(groupId));
+        assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(groupId));
     }
 
     private Group insertGroup(String groupName) {

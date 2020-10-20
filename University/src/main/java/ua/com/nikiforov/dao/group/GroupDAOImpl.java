@@ -76,8 +76,10 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public boolean deleteGroupById(Long id) {
         LOGGER.debug("Deleting group by id '{}'", id);
+        boolean actionResult = false;
         try {
-            if (jdbcTemplate.update(DELETE_GROUP_BY_ID, id) > 0) {
+            actionResult = jdbcTemplate.update(DELETE_GROUP_BY_ID, id) > 0;
+            if (actionResult) {
                 LOGGER.info("Successful deleting group");
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
@@ -86,7 +88,7 @@ public class GroupDAOImpl implements GroupDAO {
             LOGGER.warn("Couldn't find group by ID '{}'", id);
             throw new ChangesNotMadeException("Couldn't delete group by id " + id, e);
         }
-        return true;
+        return actionResult;
     }
 
     @Override
@@ -98,8 +100,10 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public boolean addGroup(String groupName) {
         LOGGER.debug("Adding group '{}'", groupName);
+        boolean actionResult = false;
         try {
-            if (jdbcTemplate.update(ADD_GROUP, groupName) > 0) {
+            actionResult = jdbcTemplate.update(ADD_GROUP, groupName) > 0;
+            if (actionResult) {
                 LOGGER.info("Successful adding group {}", groupName);
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
@@ -108,14 +112,16 @@ public class GroupDAOImpl implements GroupDAO {
             LOGGER.error("Couldn't add Group with name '{}'", groupName);
             throw new ChangesNotMadeException("Couldn't add group " + groupName, e);
         }
-        return true;
+        return actionResult;
     }
 
     @Override
     public boolean updateGroup(String groupName, Long id) {
         LOGGER.debug("Updating group '{}'", groupName);
+        boolean actionResult = false;
         try {
-            if (jdbcTemplate.update(UPDATE_GROUP, id, groupName) > 0) {
+            actionResult = jdbcTemplate.update(UPDATE_GROUP, groupName,id) > 0;
+            if (actionResult) {
                 LOGGER.info("Successful adding group with id '{}' name '{}'", id, groupName);
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
@@ -124,7 +130,7 @@ public class GroupDAOImpl implements GroupDAO {
             LOGGER.error("Couldn't update Group with id '{}' name '{}'", id, groupName);
             throw new ChangesNotMadeException("Couldn't update group " + groupName, e);
         }
-        return true;
+        return actionResult;
     }
 
 }
