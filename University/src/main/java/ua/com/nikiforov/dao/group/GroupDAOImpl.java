@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -84,7 +85,7 @@ public class GroupDAOImpl implements GroupDAO {
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             LOGGER.warn("Couldn't find group by ID '{}'", id);
             throw new ChangesNotMadeException("Couldn't delete group by id " + id, e);
         }
@@ -108,7 +109,7 @@ public class GroupDAOImpl implements GroupDAO {
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             LOGGER.error("Couldn't add Group with name '{}'", groupName);
             throw new ChangesNotMadeException("Couldn't add group " + groupName, e);
         }
@@ -126,7 +127,7 @@ public class GroupDAOImpl implements GroupDAO {
             } else {
                 throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
             }
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             LOGGER.error("Couldn't update Group with id '{}' name '{}'", id, groupName);
             throw new ChangesNotMadeException("Couldn't update group " + groupName, e);
         }
