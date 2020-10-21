@@ -3,6 +3,7 @@ package ua.com.nikiforov.dao.group;
 import static ua.com.nikiforov.dao.SqlConstants.*;
 import static ua.com.nikiforov.dao.SqlConstants.GroupsTable.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -15,7 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ua.com.nikiforov.exceptions.ChangesNotMadeException;
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.GroupMapper;
 import ua.com.nikiforov.models.Group;
@@ -52,10 +53,11 @@ public class GroupDAOImpl implements GroupDAO {
         Group group;
         try {
             group = jdbcTemplate.queryForObject(FIND_GROUP_BY_ID, new Object[] { id }, groupMapper);
-            LOGGER.info("Retrived group '{}'", group);
+            LOGGER.info("Successfully retrived group '{}'", group);
         } catch (EmptyResultDataAccessException e) {
-            LOGGER.warn("Couldn't find group by id '{}'", id);
-            throw new EntityNotFoundException("Couldn't find group by id " + id, e);
+            String failGetByIdMessage = String.format("Couldn't get group by Id %d", id);
+            LOGGER.error(failGetByIdMessage);
+            throw new EntityNotFoundException(failGetByIdMessage, e);
         }
         return group;
     }
@@ -66,10 +68,11 @@ public class GroupDAOImpl implements GroupDAO {
         Group group;
         try {
             group = jdbcTemplate.queryForObject(FIND_GROUP_BY_NAME, new Object[] { groupName }, groupMapper);
-            LOGGER.info("Retrived group '{}'", group);
+            LOGGER.info("Successfully retrived group '{}'", group);
         } catch (EmptyResultDataAccessException e) {
-            LOGGER.warn("Couldn't find group by name '{}'", groupName);
-            throw new EntityNotFoundException("Couldn't find group by id " + groupName, e);
+            String failGetByNameMessage = String.format("Couldn't get group by name %s", groupName);
+            LOGGER.error(failGetByNameMessage);
+            throw new EntityNotFoundException(failGetByNameMessage, e);
         }
         return group;
     }
@@ -78,16 +81,17 @@ public class GroupDAOImpl implements GroupDAO {
     public boolean deleteGroupById(Long id) {
         LOGGER.debug("Deleting group by id '{}'", id);
         boolean actionResult = false;
+        String failDeleteMessage = String.format("Couldn't delete group by ID %d", id);
         try {
             actionResult = jdbcTemplate.update(DELETE_GROUP_BY_ID, id) > 0;
             if (actionResult) {
-                LOGGER.info("Successful deleting group");
+                LOGGER.info("Successful deleting group with id '{}'", id);
             } else {
-                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
+                throw new DataOperationException(failDeleteMessage);
             }
         } catch (DataAccessException e) {
-            LOGGER.warn("Couldn't find group by ID '{}'", id);
-            throw new ChangesNotMadeException("Couldn't delete group by id " + id, e);
+            LOGGER.error(failDeleteMessage);
+            throw new DataOperationException(failDeleteMessage, e);
         }
         return actionResult;
     }
@@ -95,7 +99,16 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public List<Group> getAllGroups() {
         LOGGER.debug("Retrieving all groups.");
-        return jdbcTemplate.query(GET_ALL_GROUPS, groupMapper);
+        List<Group> allGroups = new ArrayList<>();
+        try {
+            allGroups.addAll(jdbcTemplate.query(GET_ALL_GROUPS, groupMapper));
+            LOGGER.info("Successfully query for all groups");
+        }catch (DataAccessException e) {
+            String failMessage = "Fail to get all groups from DB.";
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage,e);
+        }
+        return allGroups;
     }
 
     @Override
@@ -105,13 +118,14 @@ public class GroupDAOImpl implements GroupDAO {
         try {
             actionResult = jdbcTemplate.update(ADD_GROUP, groupName) > 0;
             if (actionResult) {
-                LOGGER.info("Successful adding group {}", groupName);
+                LOGGER.info("Successful adding group '{}'", groupName);
             } else {
-                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
+                throw new DataOperationException(NO_AFFECTED_ROWS_MSG);
             }
         } catch (DataAccessException e) {
-            LOGGER.error("Couldn't add Group with name '{}'", groupName);
-            throw new ChangesNotMadeException("Couldn't add group " + groupName, e);
+            String failMessage = String.format("Couldn't add Group with name %s", groupName);
+            LOGGER.error(failMessage,e);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }
@@ -125,11 +139,13 @@ public class GroupDAOImpl implements GroupDAO {
             if (actionResult) {
                 LOGGER.info("Successful adding group with id '{}' name '{}'", id, groupName);
             } else {
-                throw new ChangesNotMadeException(NO_AFFECTED_ROWS_MSG);
+                String failMessage = String.format("Couldn't update Group with id %d name %s",id, groupName);
+                throw new DataOperationException(failMessage);
             }
         } catch (DataAccessException e) {
-            LOGGER.error("Couldn't update Group with id '{}' name '{}'", id, groupName);
-            throw new ChangesNotMadeException("Couldn't update group " + groupName, e);
+            String failMessage = String.format("Couldn't update Group with id %d name %s",id, groupName);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }

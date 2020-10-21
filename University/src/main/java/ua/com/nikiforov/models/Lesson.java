@@ -80,4 +80,11 @@ public class Lesson {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "id=" + id + ", groupId=" + groupId + ", subjectId=" + subjectId + ", roomId=" + roomId;
+    }
+    
+    
+
 }

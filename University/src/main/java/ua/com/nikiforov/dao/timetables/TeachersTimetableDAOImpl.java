@@ -11,6 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +26,8 @@ import ua.com.nikiforov.services.timetables.Period;
 @Repository
 @Qualifier("teachersTimetableDAO")
 public class TeachersTimetableDAOImpl implements TimetableDAO {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
 
     private static final int DATE_STATEMENT_INDEX = 1;
     private static final int FROM_DATE_STATEMENT_INDEX = 2;
@@ -71,7 +76,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public Timetable getTimetableByLessonTeacherTimePeriod(long lessonId, long teacherId, String stringDate,
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
             Period period) {
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();

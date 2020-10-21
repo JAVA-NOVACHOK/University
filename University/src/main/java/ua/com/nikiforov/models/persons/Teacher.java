@@ -23,4 +23,10 @@ public class Teacher extends Person {
         this.subjectIds = subjectIds;
     }
 
+    @Override
+    public String toString() {
+        return "subjectIds=" + subjectIds + ", getId()=" + getId() + ", getFirstName()=" + getFirstName()
+                + ", getLastName()=" + getLastName();
+    }
+
 }

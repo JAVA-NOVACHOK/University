@@ -80,7 +80,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void afterDeleteGroupByIdIfSearchForItReturnEmptyResultDataAccessException() {
+    void afterDeleteGroupByIdIfSearchForItReturnEntityNotFoundException() {
         long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.deleteGroup(groupId);
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(groupId));

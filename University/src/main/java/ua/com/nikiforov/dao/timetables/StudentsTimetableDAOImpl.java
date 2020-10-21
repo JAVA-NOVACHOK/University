@@ -9,11 +9,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
@@ -21,6 +27,8 @@ import ua.com.nikiforov.services.timetables.Period;
 @Repository
 @Qualifier("studentTimtableDao")
 public class StudentsTimetableDAOImpl implements TimetableDAO {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentsTimetableDAOImpl.class);
 
     private static final int DATE_STATEMENT_INDEX = 1;
     private static final int FROM_DATE_STATEMENT_INDEX = 2;
@@ -57,24 +65,60 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
 
     @Override
     public boolean addTimetable(long lessonId, long studentId, String stringDate, Period period) {
+        String timetableMessage = String.format("Timetable with lessonId = %d, sudentId = %d, date = %s, period = %d",
+                lessonId, studentId, stringDate, period.getPeriod());
+        LOGGER.debug("Adding {}", timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
-        return jdbcTemplate.update(ADD_STUDENTS_TIMETABLE, lessonId, studentId, time, periodNumber) > 0;
+        boolean actionResult = false;
+        try {
+            actionResult = jdbcTemplate.update(ADD_STUDENTS_TIMETABLE, lessonId, studentId, time, periodNumber) > 0;
+            if (actionResult) {
+                LOGGER.info("Successfully added {}", timetableMessage);
+            }else {
+                LOGGER.error("Couldn't add {}",timetableMessage);
+                throw new DataOperationException(message)
+            }
+        } catch (DataAccessException e) {
+
+        }
+        return actionResult;
     }
 
     @Override
     public Timetable getTimetableById(long timetableId) {
-        return jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_ID, new Object[] { timetableId },
-                timetableMapper);
+        String timetableMessage = String.format("Timetable by Id %d", timetableId);
+        LOGGER.debug("Getting {}", timetableMessage);
+        Timetable timetable;
+        try {
+            timetable = jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_ID, new Object[] { timetableId },
+                    timetableMapper);
+        } catch (EmptyResultDataAccessException e) {
+            String failMessage = String.format("Failed to get %s", timetableMessage);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage);
+        }
+        return timetable;
     }
 
     @Override
-    public Timetable getTimetableByLessonTeacherTimePeriod(long lessonId, long teacherId, String stringDate,
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long studentId, String stringDate,
             Period period) {
+        String timetableMessage = String.format("Timetable by lessonId = %d, sudentId = %d, date = %s, period = %d",
+                lessonId, studentId, stringDate, period.getPeriod());
+        LOGGER.debug("Getting {}", timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
-        return jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
-                new Object[] { lessonId, teacherId, time, periodNumber }, timetableMapper);
+        Timetable timetable;
+        try {
+            timetable = jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
+                    new Object[] { lessonId, studentId, time, periodNumber }, timetableMapper);
+        } catch (EmptyResultDataAccessException e) {
+            String failMessage = String.format("Failed to get %s", timetableMessage);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage);
+        }
+        return timetable;
     }
 
     @Override

@@ -4,4 +4,6 @@
 /target
 /mem/
 TableCreator.java
+/logs
+Main.java
 

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.persons.Student;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -83,12 +84,12 @@ class StudentsServiseImplTest {
     }
 
     @Test
-    void afterDeleteStudentByIdIfSearchForItReturnEmptyResultDataAccessException() {
+    void afterDeleteStudentByIdIfSearchForItReturnEntityNotFoundException() {
         studentService.addStudent(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
         Student student = studentService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, TEST_GROUP_ID_1);
         long studentId = student.getId();
         studentService.deleteStudentById(studentId);
-        assertThrows(EmptyResultDataAccessException.class, () -> studentService.getStudentById(studentId));
+        assertThrows(EntityNotFoundException.class, () -> studentService.getStudentById(studentId));
     }
 
     private Student insertStudent(String firstName, String lastaName, long groupName) {
