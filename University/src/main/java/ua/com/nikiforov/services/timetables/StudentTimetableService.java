@@ -32,7 +32,7 @@ public class StudentTimetableService implements PersonalTimetable {
     @Override
     public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
             Period period) {
-        return timetableDAO.getTimetableByLessonTeacherTimePeriod(lessonId, teacherId, stringDate, period);
+        return timetableDAO.getTimetableByLessonPersonTimePeriod(lessonId, teacherId, stringDate, period);
     }
 
     @Override

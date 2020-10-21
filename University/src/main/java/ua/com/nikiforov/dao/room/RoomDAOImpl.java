@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.RoomMapper;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
@@ -74,7 +75,7 @@ public class RoomDAOImpl implements RoomDAO {
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format("Fail to get room by Id %d from DB", id);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
+            throw new EntityNotFoundException(failMessage, e);
         }
         return room;
     }
@@ -89,7 +90,7 @@ public class RoomDAOImpl implements RoomDAO {
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format("Fail to get room by  room number %d from DB", roomNumber);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
+            throw new EntityNotFoundException(failMessage, e);
         }
         return room;
     }

@@ -56,6 +56,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
         try {
             teachersSubjects
                     .addAll(jdbcTemplate.query(GET_TEACHERS_IDS, new Object[] { subjectId }, teachersSubjectsMapper));
+            LOGGER.info("Got {}", subjectsTeacherIdsMSG);
         } catch (DataAccessException e) {
             throw new DataOperationException("Couldn't get " + subjectsTeacherIdsMSG);
         }

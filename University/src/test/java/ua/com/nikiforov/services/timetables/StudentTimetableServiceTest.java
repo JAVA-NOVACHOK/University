@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.timetable.Timetable;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -106,7 +107,7 @@ class StudentTimetableServiceTest {
     void whenDeleteTimetableByIdIfAfterGetTimetableByIdShouldThrowEmptyResultDataAccessException() {
         long timetableId = insertTimetable(LESSON_ID_1, STUDENT_ID_1, DATE, Period.FIRST).getId();
         studentTimetableService.deleteTimetableById(timetableId);
-        assertThrows(EmptyResultDataAccessException.class, () -> studentTimetableService.getTimetableById(timetableId));
+        assertThrows(EntityNotFoundException.class, () -> studentTimetableService.getTimetableById(timetableId));
     }
 
     @Test
