@@ -54,4 +54,9 @@ public class TeachersSubjects {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "teachersId=" + teachersId + ", subjectId=" + subjectId;
+    }
+
 }

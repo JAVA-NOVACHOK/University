@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -85,7 +86,7 @@ class RoomServiceImplTest {
         Room room = insertRoom(TEST_ROOM_NUMBER_1);
         int roomId = room.getId();
         roomService.deleteRoomById(roomId);
-        assertThrows(EmptyResultDataAccessException.class, () -> roomService.getRoomById(roomId));
+        assertThrows(EntityNotFoundException.class, () -> roomService.getRoomById(roomId));
     }
 
     private Room insertRoom(int roomNumber) {

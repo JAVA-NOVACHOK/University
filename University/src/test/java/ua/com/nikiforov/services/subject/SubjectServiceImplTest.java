@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeacherService;
@@ -95,7 +96,7 @@ class SubjectServiceImplTest {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         subjectService.deleteSubjectById(subjectId);
-        assertThrows(EmptyResultDataAccessException.class, () -> subjectService.getSubjectById(subjectId));
+        assertThrows(EntityNotFoundException.class, () -> subjectService.getSubjectById(subjectId));
     }
 
     @Test

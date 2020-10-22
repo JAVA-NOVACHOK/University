@@ -13,6 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Lesson;
 
 @SpringJUnitConfig(UniversityConfig.class)
@@ -85,10 +87,10 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void afterDeleteLessonByIdIfSearchForItReturnEmptyResultDataAccessException() {
+    void afterDeleteLessonByIdIfSearchForItReturnEntityNotFoundException() {
         long lessonId = insertLesson(TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1).getId();
         lessonService.deleteLessonById(lessonId);
-        assertThrows(EmptyResultDataAccessException.class, () -> lessonService.getLessonById(lessonId));
+        assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(lessonId));
     }
 
     private Lesson insertLesson(long groupId, int roomId, int subjectId) {

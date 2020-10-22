@@ -11,7 +11,7 @@ public interface TimetableDAO {
 
     public Timetable getTimetableById(long id);
     
-    public Timetable getTimetableByLessonTeacherTimePeriod(long lessonId, long teacherId, String stringDate, Period period);
+    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate, Period period);
 
     public List<Timetable> getAllTimetables();
 

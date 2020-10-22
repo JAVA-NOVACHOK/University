@@ -42,4 +42,10 @@ public class Student extends Person {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "groupId=" + groupId + ", getId()=" + getId() + ", getFirstName()=" + getFirstName() + ", getLastName()="
+                + getLastName();
+    }
+
 }

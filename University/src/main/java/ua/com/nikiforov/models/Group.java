@@ -57,4 +57,9 @@ public class Group {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "id=" + id + ", groupName=" + groupName + "]";
+    }
+
 }

@@ -72,7 +72,7 @@ public class Timetable {
         if (time != null) {
             long timeMillis = time.toEpochMilli();
             result = prime * result + (int) (timeMillis ^ (timeMillis >>> 32));
-        }else {
+        } else {
             result = prime * result;
         }
         return result;
@@ -101,6 +101,12 @@ public class Timetable {
         } else if (!time.equals(other.time))
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + id + ", personId=" + personId + ", lessonId=" + lessonId + ", time=" + time + ", period="
+                + period;
     }
 
 }
