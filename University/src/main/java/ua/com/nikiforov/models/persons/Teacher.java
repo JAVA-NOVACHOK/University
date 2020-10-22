@@ -22,6 +22,8 @@ public class Teacher extends Person {
     public void setSubjectIds(List<Integer> subjectIds) {
         this.subjectIds = subjectIds;
     }
+    
+    
 
     @Override
     public String toString() {

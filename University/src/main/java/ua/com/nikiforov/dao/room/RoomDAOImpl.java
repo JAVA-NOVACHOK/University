@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.RoomMapper;
-import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
 
 @Repository
@@ -140,7 +139,7 @@ public class RoomDAOImpl implements RoomDAO {
             if (actionResult) {
                 LOGGER.info("Successful deleting Room with id '{}'.", id);
             } else {
-                throw new DataOperationException(failDeleteMessage);
+                throw new EntityNotFoundException(failDeleteMessage);
             }
         } catch (DataAccessException e) {
             LOGGER.error(failDeleteMessage);

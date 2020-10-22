@@ -60,7 +60,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
         } catch (DataAccessException e) {
             throw new DataOperationException("Couldn't get " + subjectsTeacherIdsMSG);
         }
-        return teachersSubjects.stream().map(t -> t.getTeachersId()).collect(Collectors.toList());
+        return teachersSubjects.stream().map(TeachersSubjects::getTeachersId).collect(Collectors.toList());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage);
         }
-        return teachersSubjects.stream().map(t -> t.getSubjectId()).collect(Collectors.toList());
+        return teachersSubjects.stream().map(TeachersSubjects::getSubjectId).collect(Collectors.toList());
     }
 
     @Override

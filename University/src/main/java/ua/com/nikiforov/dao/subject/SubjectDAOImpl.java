@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.SubjectMapper;
-import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.Subject;
 
 @Repository
@@ -145,7 +144,7 @@ public class SubjectDAOImpl implements SubjectDAO {
                 LOGGER.info("Successfully deleted '{}'", deleteMessage);
             } else {
                 String failMessage = String.format("Couldn't delete %s", deleteMessage);
-                throw new DataOperationException(failMessage);
+                throw new EntityNotFoundException(failMessage);
             }
         } catch (DataAccessException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);

@@ -1,10 +1,28 @@
 package ua.com.nikiforov.dao.lesson;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.*;
+import static ua.com.nikiforov.dao.SqlConstants.AND;
+import static ua.com.nikiforov.dao.SqlConstants.ASTERISK;
+import static ua.com.nikiforov.dao.SqlConstants.COMA;
+import static ua.com.nikiforov.dao.SqlConstants.DELETE;
+import static ua.com.nikiforov.dao.SqlConstants.EQUALS_M;
+import static ua.com.nikiforov.dao.SqlConstants.FROM;
+import static ua.com.nikiforov.dao.SqlConstants.INSERT;
+import static ua.com.nikiforov.dao.SqlConstants.L_BRACKET;
+import static ua.com.nikiforov.dao.SqlConstants.Q_MARK;
+import static ua.com.nikiforov.dao.SqlConstants.SELECT;
+import static ua.com.nikiforov.dao.SqlConstants.SET;
+import static ua.com.nikiforov.dao.SqlConstants.UPDATE;
+import static ua.com.nikiforov.dao.SqlConstants.VALUES_3_QMARK;
+import static ua.com.nikiforov.dao.SqlConstants.WHERE;
+import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.GROUP_ID;
+import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.ID;
+import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.ROOM_ID;
+import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.SUBJECT_ID;
+import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.TABLE_LESSONS;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
@@ -15,13 +33,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ua.com.nikiforov.dao.group.GroupDAOImpl;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.LessonMapper;
-import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Lesson;
-import ua.com.nikiforov.models.Room;
 
 @Repository
 public class LessonDAOImpl implements LessonDAO {

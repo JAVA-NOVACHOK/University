@@ -55,6 +55,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK;
     private static final String GET_MONTH_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE + WHERE
             + PERSON_ID + EQUALS_M + Q_MARK + AND + DATE + BETWEEN + Q_MARK + AND + Q_MARK;
+    private static final String GETTING = "Getting {}";
+    private static final String FAILED_TO_GET = "Failed to get %s";
 
     private TimetableMapper timetableMapper;
     private JdbcTemplate jdbcTemplate;
@@ -91,13 +93,13 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable getTimetableById(long timetableId) {
         String timetableMessage = String.format("TeachersTimetable by Id %d", timetableId);
-        LOGGER.debug("Getting {}", timetableMessage);
+        LOGGER.debug(GETTING, timetableMessage);
         Timetable timetable;
         try {
             timetable = jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_ID, new Object[] { timetableId },
                     timetableMapper);
         } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format("Failed to get %s", timetableMessage);
+            String failMessage = String.format(FAILED_TO_GET, timetableMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
@@ -109,7 +111,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             Period period) {
         String timetableMessage = String.format("TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d",
                 lessonId, studentId, stringDate, period.getPeriod());
-        LOGGER.debug("Getting {}", timetableMessage);
+        LOGGER.debug(GETTING, timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
         Timetable timetable;
@@ -117,7 +119,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             timetable = jdbcTemplate.queryForObject(FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
                     new Object[] { lessonId, studentId, time, periodNumber }, timetableMapper);
         } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format("Failed to get %s", timetableMessage);
+            String failMessage = String.format(FAILED_TO_GET, timetableMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
@@ -187,7 +189,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
 
     public List<Timetable> getDayTimetable(String date, long studentId) {
         String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date, studentId);
-        LOGGER.debug("Getting {}", date);
+        LOGGER.debug(GETTING, date);
         List<Timetable> dayTimetable = new ArrayList<>();
         try {
             dayTimetable.addAll(jdbcTemplate.query(connection -> {
@@ -198,7 +200,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             }, timetableMapper));
             LOGGER.info("Got {}", dayTimetableMSG);
         } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to get %s", dayTimetableMSG);
+            String failMessage = String.format(FAILED_TO_GET, dayTimetableMSG);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage);
         }
@@ -208,7 +210,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     @Override
     public List<Timetable> getMonthTimetable(String date, long studentId) {
         String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date, studentId);
-        LOGGER.debug("Getting {}", date);
+        LOGGER.debug(GETTING, date);
         List<Timetable> monthTimetable = new ArrayList<>();
         Timestamp timestampFrom = Timestamp.valueOf(date + " 00:00:00");
         LocalDate localDate = timestampFrom.toLocalDateTime().toLocalDate();
@@ -223,7 +225,7 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
             }, timetableMapper));
             LOGGER.info("Got {}", monthTimetableMSG);
         } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to {}", monthTimetableMSG);
+            String failMessage = String.format("Failed to %s", monthTimetableMSG);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage);
         }

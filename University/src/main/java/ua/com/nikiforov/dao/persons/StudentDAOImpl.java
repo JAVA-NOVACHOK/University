@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.persons.StudentMapper;
-import ua.com.nikiforov.models.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 
 @Repository
