@@ -29,6 +29,8 @@ public class StudentDAOImpl implements StudentDAO {
             + GROUP_ID + VALUES_3_QMARK;
     private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
             + Q_MARK;
+    private static final String FIND_STUDENT_BY_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + GROUP_ID + EQUALS_M
+            + Q_MARK;
     private static final String FIND_STUDENT_BY_NAME_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
             + FIRST_NAME + EQUALS_M + Q_MARK + AND + LAST_NAME + EQUALS_M + Q_MARK + AND + GROUP_ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
@@ -153,5 +155,21 @@ public class StudentDAOImpl implements StudentDAO {
             throw new DataOperationException(failDeleteMessage, e);
         }
         return actionResult;
+    }
+    
+    @Override
+    public List<Student> getStudentsByGroupId(long groupId) {
+        String studentsInGroupMSG = String.format("students from group with ID = %d", groupId);
+        LOGGER.debug("Getting {}",studentsInGroupMSG);
+        List<Student> studentsInGroup = new ArrayList<>();
+        try {
+            studentsInGroup.addAll(jdbcTemplate.query(FIND_STUDENT_BY_GROUP_ID, new Object[] {groupId}, studentMapper));
+            LOGGER.info("Successfully query {}",studentsInGroupMSG);
+        } catch (DataAccessException e) {
+            String failMessage = String.format("Fail to get %s",studentsInGroupMSG);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
+        }
+        return studentsInGroup;
     }
 }

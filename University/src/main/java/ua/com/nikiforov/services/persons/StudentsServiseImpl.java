@@ -10,7 +10,7 @@ import ua.com.nikiforov.models.persons.Student;
 
 @Service
 public class StudentsServiseImpl implements StudentsService {
-    
+
     private StudentDAO studentDAO;
 
     @Autowired
@@ -25,9 +25,9 @@ public class StudentsServiseImpl implements StudentsService {
 
     @Override
     public Student getStudentById(long studentId) {
-       return studentDAO.getStudentById(studentId);
+        return studentDAO.getStudentById(studentId);
     }
-    
+
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
         return studentDAO.getStudentByNameGroupId(firstName, lastName, groupId);
     }
@@ -47,5 +47,15 @@ public class StudentsServiseImpl implements StudentsService {
         return studentDAO.deleteStudentById(studentId);
     }
 
-   
+    @Override
+    public List<Student> getStudentsByGroupId(long groupId) {
+        return studentDAO.getStudentsByGroupId(groupId);
+    }
+
+    @Override
+    public boolean transferStudent(long studentId, long groupIdTo) {
+        Student student = studentDAO.getStudentById(studentId);
+        return studentDAO.updateStudent(student.getFirstName(), student.getLastName(), groupIdTo, studentId);
+    }
+
 }

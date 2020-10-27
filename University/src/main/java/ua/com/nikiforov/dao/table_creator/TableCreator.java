@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class TableCreator {
 
-    private static final String PATH = "src/test/resources/script_create_tables.sql";
+    private static final String PATH = "src/main/resources/script_create_tables.sql";
     private JdbcTemplate jdbcTemplate;
 
     @Autowired

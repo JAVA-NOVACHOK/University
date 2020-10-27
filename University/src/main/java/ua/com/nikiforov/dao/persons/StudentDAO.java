@@ -12,6 +12,8 @@ public interface StudentDAO {
     public boolean addStudent(String firstName, String lastName, long groupId);
 
     public Student getStudentById(long studentId);
+    
+    public List<Student> getStudentsByGroupId(long groupId);
 
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
 

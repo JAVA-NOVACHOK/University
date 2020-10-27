@@ -1,9 +1,15 @@
 package ua.com.nikiforov.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ua.com.nikiforov.models.persons.Student;
+
 public class Group {
 
     private long id;
     private String groupName;
+    private List<Student> groupStudents;
 
     public Group() {
     }
@@ -11,6 +17,7 @@ public class Group {
     public Group(long id, String groupName) {
         this.id = id;
         this.groupName = groupName;
+        groupStudents = new ArrayList<>();
     }
 
     public long getId() {
@@ -27,6 +34,14 @@ public class Group {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+    
+    public List<Student> getGroupStudents() {
+        return groupStudents;
+    }
+
+    public void setGroupStudents(List<Student> groupStudents) {
+        this.groupStudents = groupStudents;
     }
 
     @Override

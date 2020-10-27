@@ -19,8 +19,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean addRoom(int groupNumber) {
-        return roomDAO.addRoom(groupNumber);
+    public boolean addRoom(int groupNumber, int seatNumber) {
+        return roomDAO.addRoom(groupNumber,seatNumber);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean updateRoom(int number, int id) {
-        return roomDAO.updateRoom(number, id);
+    public boolean updateRoom(int number, int seatNumber, int id) {
+        return roomDAO.updateRoom(number,seatNumber, id);
     }
 
     @Override

@@ -4,7 +4,7 @@ CREATE TABLE rooms(
 	room_number int UNIQUE,
 	seat_number int
 );
-DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS students CASCADE;
 CREATE TABLE students(
 	student_id serial PRIMARY KEY,
 	first_name varchar(255),
@@ -12,7 +12,7 @@ CREATE TABLE students(
 	group_id BIGINT,
 	UNIQUE(first_name,last_name,group_id)
 );
-DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS groups CASCADE;
 CREATE TABLE groups(
 	group_id serial PRIMARY KEY,
 	group_name varchar(255) UNIQUE
@@ -29,6 +29,7 @@ CREATE TABLE subjects(
 	subject_id serial PRIMARY KEY,
 	subject_name varchar(255) UNIQUE
 );
+
 DROP TABLE IF EXISTS teachers CASCADE;
 CREATE TABLE teachers(
 	teacher_id serial PRIMARY KEY,
@@ -63,5 +64,12 @@ CREATE TABLE teachers_subjects(
 	subject_id int NOT NULL REFERENCES subjects (subject_id) ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY(teacher_id,subject_id),
 	UNIQUE(teacher_id,subject_id)
+);
+DROP TABLE IF EXISTS groups_students;
+CREATE TABLE groups_students(
+	group_id BIGINT NOT NULL REFERENCES groups (group_id) ON UPDATE CASCADE ON DELETE CASCADE,
+	student_id BIGINT NOT NULL REFERENCES students (student_id) ON UPDATE CASCADE ON DELETE CASCADE,
+	PRIMARY KEY(group_id,student_id),
+	UNIQUE(group_id,student_id)
 );
 	

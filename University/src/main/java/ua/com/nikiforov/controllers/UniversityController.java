@@ -26,14 +26,16 @@ public class UniversityController {
     public String startPage() {
         return "start2";
     }
-    @GetMapping("/start3")
-    public String startPage3() {
-        return "start3";
-    }
+//    @GetMapping("/rooms")
+//    public String startPage3() {
+//        return "start3";
+//    }
     
     @GetMapping("/create")
     public String create() {
         tableCreator.createTables();
         return "created";
     }
+    
+    
 }

@@ -30,6 +30,11 @@ class RoomServiceImplTest {
     private static final int TEST_ROOM_NUMBER_2 = 13;
     private static final int TEST_ROOM_NUMBER_3 = 14;
 
+    private static final int TEST_SEAT_NUMBER_1 = 20;
+    private static final int TEST_SEAT_NUMBER_2 = 25;
+    private static final int TEST_SEAT_NUMBER_3 = 30;
+    private static final int TEST_SEAT_NUMBER_4 = 35;
+
     @Autowired
     private RoomServiceImpl roomService;
 
@@ -43,35 +48,29 @@ class RoomServiceImplTest {
 
     @Test
     void whenAddRoomIfSuccessReturnTrue() {
-        assertTrue(roomService.addRoom(TEST_ROOM_NUMBER_1));
+        assertTrue(roomService.addRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
     }
 
     @Test
     void afterAddRoomGetRoomByIdReturnCorrectRoom() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         assertEquals(room, roomService.getRoomById(room.getId()));
     }
 
     @Test
     void whenGetAllRoomsThenReturnGroupList() {
         List<Room> expectedRooms = new ArrayList<>();
-        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_1));
-        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_2));
-        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_3));
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2));
+        expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3));
         assertIterableEquals(expectedRooms, roomService.getAllRooms());
     }
 
     @Test
-    void whenUpdateRoomByIdIfSuccessThenReturnTrue() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
-        assertTrue(roomService.updateRoom(TEST_ROOM_NUMBER_2, room.getId()));
-    }
-
-    @Test
     void whenUpdateRoomIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
-        roomService.updateRoom(TEST_ROOM_NUMBER_2, roomId);
+        roomService.updateRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2, roomId);
         Room expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_2);
         Room actualRoom = roomService.getRoomById(roomId);
         assertEquals(expectedRoom, actualRoom);
@@ -79,20 +78,20 @@ class RoomServiceImplTest {
 
     @Test
     void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         assertTrue(roomService.deleteRoomById(room.getId()));
     }
 
     @Test
     void afterDeleteRoomByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1);
+        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
         roomService.deleteRoomById(roomId);
         assertThrows(EntityNotFoundException.class, () -> roomService.getRoomById(roomId));
     }
 
-    private Room insertRoom(int roomNumber) {
-        roomService.addRoom(roomNumber);
+    private Room insertRoom(int roomNumber, int seatNumber) {
+        roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 }

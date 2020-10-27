@@ -5,7 +5,7 @@ import ua.com.nikiforov.models.Room;
 
 public interface RoomDAO {
     
-    public boolean addRoom(int groupNumber);
+    public boolean addRoom(int groupNumber, int seatNumber);
 
     public Room getRoomById(int id);
     
@@ -13,7 +13,7 @@ public interface RoomDAO {
 
     public List<Room> getAllRooms();
 
-    public boolean updateRoom(int number, int id);
+    public boolean updateRoom(int number,int seatNumber, int id);
 
     public boolean deleteRoomById(int id);
 

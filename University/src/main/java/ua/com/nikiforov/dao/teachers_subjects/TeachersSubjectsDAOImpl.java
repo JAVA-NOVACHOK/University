@@ -2,9 +2,7 @@ package ua.com.nikiforov.dao.teachers_subjects;
 
 import static ua.com.nikiforov.dao.SqlConstants.*;
 
-import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.SUBJECT_ID;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.TEACHERS_SUBJECTS_TABLE;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.TEACHER_ID;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ import ua.com.nikiforov.models.TeachersSubjects;
 public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersSubjectsDAOImpl.class);
-
+    
     private static final String GET_TEACHERS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
             + SUBJECT_ID + EQUALS_M + Q_MARK;
     private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
@@ -38,7 +36,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             + TEACHER_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
 
     private static final int PREPARE_STATEMENT_FIRST_INDEX = 1;
-
+    
     private TeachersSubjectsMapper teachersSubjectsMapper;
     private JdbcTemplate jdbcTemplate;
 

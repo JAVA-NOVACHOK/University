@@ -16,11 +16,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.services.group.GroupService;
+import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.models.persons.Student;
 
 @SpringJUnitConfig(UniversityConfig.class)
 @ExtendWith(SpringExtension.class)
@@ -31,8 +32,23 @@ class GroupServiceImplTest {
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
 
+    private static final String FIRST_NAME_1 = "Tom";
+    private static final String FIRST_NAME_2 = "Bill";
+    private static final String FIRST_NAME_3 = "Jack";
+    private static final String FIRST_NAME_4 = "Frank";
+    private static final String FIRST_NAME_5 = "Bob";
+
+    private static final String LAST_NAME_1 = "Hanks";
+    private static final String LAST_NAME_2 = "Clinton";
+    private static final String LAST_NAME_3 = "Sparrow";
+    private static final String LAST_NAME_4 = "Bird";
+    private static final String LAST_NAME_5 = "Crow";
+
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private StudentsService studentsService;
 
     @Autowired
     private TableCreator tableCreator;
@@ -62,6 +78,7 @@ class GroupServiceImplTest {
         assertIterableEquals(expectedGroups, groupService.getAllGroups());
 
     }
+    
 
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
@@ -91,9 +108,79 @@ class GroupServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(groupId));
     }
 
+    @Test
+    private void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
+        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        long groupId_1 = group_1.getId();
+        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        long groupId_2 = group_2.getId();
+
+        List<Student> expectedStudents = new ArrayList<>();
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1));
+
+        insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
+        insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
+
+        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        assertIterableEquals(expectedStudents, actualStudents);
+
+    }
+
+    @Test
+    private void whenDeleteStudentReturnListOfStudentsInGroupWithoutThisStudent() {
+        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        long groupId_1 = group_1.getId();
+        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        long groupId_2 = group_2.getId();
+
+        List<Student> expectedStudents = new ArrayList<>();
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
+        Student studentToRemove = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1);
+
+        insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
+        insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
+
+        studentsService.deleteStudentById(studentToRemove.getId());
+
+        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        assertIterableEquals(expectedStudents, actualStudents);
+
+    }
+
+    @Test
+    private void whenTransferStudentReturnListOfStudentsInGroupTransferedStudent() {
+        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        long groupId_1 = group_1.getId();
+        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        long groupId_2 = group_2.getId();
+
+        insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1);
+        insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1);
+
+        long transferedStudentId = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1).getId();
+
+        List<Student> expectedStudents = new ArrayList<>();
+        expectedStudents.add(insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2));
+        expectedStudents.add(insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2));
+
+        studentsService.transferStudent(transferedStudentId, groupId_2);
+
+        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_2);
+        assertIterableEquals(expectedStudents, actualStudents);
+
+    }
+
     private Group insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
+    }
+
+    private Student insertStudent(String firstName, String lastaName, long groupName) {
+        studentsService.addStudent(firstName, lastaName, groupName);
+        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 
 }

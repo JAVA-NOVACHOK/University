@@ -3,6 +3,7 @@ package ua.com.nikiforov.services.group;
 import java.util.List;
 
 import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.models.persons.Student;
 
 public interface GroupService {
     
@@ -17,5 +18,6 @@ public interface GroupService {
     public boolean updateGroup(long id, String groupName);
     
     public boolean deleteGroup(long id);
-
+    
+    public List<Student> getStudentsByGroupId(long groupId);
 }

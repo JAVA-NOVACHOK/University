@@ -4,13 +4,15 @@ public class Room {
 
     private int id;
     private int roomNumber;
+    private int seatNumber;
 
     public Room() {
     }
 
-    public Room(int id, int number) {
+    public Room(int id, int roomNumber, int seatNumber) {
         this.id = id;
-        this.roomNumber = number;
+        this.roomNumber = roomNumber;
+        this.seatNumber = seatNumber;
     }
 
     public int getId() {
@@ -21,12 +23,20 @@ public class Room {
         this.id = id;
     }
 
-    public int getNumber() {
+    public int getRoomNumber() {
         return roomNumber;
     }
 
-    public void setNumber(int number) {
-        this.roomNumber = number;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
+    }
+
+    public void setSeatNumber(int seatNumber) {
+        this.seatNumber = seatNumber;
     }
 
     @Override
@@ -35,6 +45,7 @@ public class Room {
         int result = 1;
         result = prime * result + id;
         result = prime * result + roomNumber;
+        result = prime * result + seatNumber;
         return result;
     }
 
@@ -51,12 +62,15 @@ public class Room {
             return false;
         if (roomNumber != other.roomNumber)
             return false;
+        if (seatNumber != other.seatNumber)
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "id=" + id + ", roomNumber=" + roomNumber;
+        return "id=" + id + ", roomNumber=" + roomNumber + ", seatNumber=" + seatNumber;
     }
 
+   
 }

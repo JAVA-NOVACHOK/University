@@ -47,6 +47,7 @@ public class SqlConstants {
         public static final String TABLE_ROOMS = "rooms";
         public static final String ID = "room_id";
         public static final String ROOM_NUMBER = "room_number";
+        public static final String SEAT_NUMBER = "seat_number";
     }
 
     public static class GroupsTable {
@@ -132,6 +133,15 @@ public class SqlConstants {
         public static final String TEACHERS_SUBJECTS_TABLE = "teachers_subjects";
         public static final String TEACHER_ID = "teacher_id";
         public static final String SUBJECT_ID = "subject_id";
+    }
+    
+    public static class GroupsStudentsTable{
+        private GroupsStudentsTable(){
+        }
+        public static final String GROUPS_STUDENTS_TABLE = "groups_students";
+        public static final String GROUP_ID = "group_id";
+        public static final String STUDENT_ID = "student_id";
+        
     }
 
 }

@@ -10,6 +10,8 @@ public interface StudentsService {
 
     public Student getStudentById(long studentId);
     
+    public List<Student> getStudentsByGroupId(long groupId);
+    
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
 
     public List<Student> getAllStudents();
@@ -17,4 +19,6 @@ public interface StudentsService {
     public boolean updateStudent(String firstName, String lastName, long groupId, long studentId);
 
     public boolean deleteStudentById(long studentId);
+    
+    public boolean transferStudent(long studentId, long groupIdTo);
 }
