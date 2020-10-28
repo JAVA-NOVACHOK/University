@@ -1,6 +1,5 @@
 package ua.com.nikiforov.models.persons;
 
-import java.util.Comparator;
 
 public abstract class Person implements Comparable<Person>{
 

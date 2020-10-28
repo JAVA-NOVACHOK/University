@@ -1,10 +1,7 @@
 package ua.com.nikiforov.dao.persons;
 
 import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.StudentsTable.FIRST_NAME;
-import static ua.com.nikiforov.dao.SqlConstants.StudentsTable.LAST_NAME;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.ID;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.TABLE_TEACHERS;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +48,7 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     @Override
     public boolean addTeacher(String firstName, String lastName) {
-        String teacherMessage = String.format("Student with firstName = %s, lastname = %s", firstName, lastName);
+        String teacherMessage = String.format("Teacher with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug("Adding {}", teacherMessage);
         boolean actionResult = false;
         try {
@@ -71,13 +68,13 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     @Override
     public Teacher getTeacherById(long teacherId) {
-        LOGGER.debug("Getting Student by id '{}'", teacherId);
+        LOGGER.debug("Getting Teacher by id '{}'", teacherId);
         Teacher teacher;
         try {
             teacher = jdbcTemplate.queryForObject(FIND_TEACHER_BY_ID, new Object[] { teacherId }, teacherMapper);
-            LOGGER.info("Successfully retrived Student {}", teacher);
+            LOGGER.info("Successfully retrived Teacher {}", teacher);
         } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get Student by Id %d", teacherId);
+            String failGetByIdMessage = String.format("Couldn't get Teacher by Id %d", teacherId);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }

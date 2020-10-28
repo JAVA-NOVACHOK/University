@@ -30,8 +30,8 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             + SUBJECT_ID + EQUALS_M + Q_MARK;
     private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
             + TEACHER_ID + EQUALS_M + Q_MARK;
-    private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + SET + TEACHER_ID + EQUALS_M
-            + Q_MARK + COMA + SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + L_BRACKET + TEACHER_ID
+            + COMA + SUBJECT_ID + VALUES_2_QMARK;
     private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
             + TEACHER_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
 

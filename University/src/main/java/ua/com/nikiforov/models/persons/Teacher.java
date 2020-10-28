@@ -8,6 +8,7 @@ public class Teacher extends Person {
     private List<Integer> subjectIds;
 
     public Teacher() {
+        subjectIds = new ArrayList<>();
     }
 
     public Teacher(long id, String firstName, String lastName) {
@@ -24,6 +25,31 @@ public class Teacher extends Person {
     }
     
     
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((subjectIds == null) ? 0 : subjectIds.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Teacher other = (Teacher) obj;
+        if (subjectIds == null) {
+            if (other.subjectIds != null)
+                return false;
+        } else if (!subjectIds.equals(other.subjectIds))
+            return false;
+        return true;
+    }
 
     @Override
     public String toString() {

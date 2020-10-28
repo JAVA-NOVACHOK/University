@@ -3,19 +3,22 @@ package ua.com.nikiforov.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.com.nikiforov.models.persons.Teacher;
+
 public class Subject {
 
     private int id;
     private String name;
-    private List<Long> teachersIds;
+    private List<Teacher> teachers;
 
     public Subject() {
+        teachers = new ArrayList<>();
     }
 
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;
-        teachersIds = new ArrayList<>();
+        teachers = new ArrayList<>();
     }
 
     public int getId() {
@@ -34,12 +37,12 @@ public class Subject {
         this.name = name;
     }
 
-    public List<Long> getSubjectTeachersIds() {
-        return teachersIds;
+    public List<Teacher> getTeachers() {
+        return teachers;
     }
 
-    public void setSubjectTeacherIds(List<Long> subjectTeacherIds) {
-        this.teachersIds = subjectTeacherIds;
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
     }
 
     @Override
@@ -48,7 +51,6 @@ public class Subject {
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((teachersIds == null) ? 0 : teachersIds.hashCode());
         return result;
     }
 
@@ -68,17 +70,7 @@ public class Subject {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (teachersIds == null) {
-            if (other.teachersIds != null)
-                return false;
-        } else if (!teachersIds.equals(other.teachersIds))
-            return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "id=" + id + ", name=" + name + ", teachersIds=" + teachersIds;
     }
 
 }

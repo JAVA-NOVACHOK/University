@@ -1,6 +1,8 @@
 package ua.com.nikiforov.services.subject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,17 +10,22 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.services.persons.TeacherService;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
 
     private SubjectDAO subjectDAO;
     private TeachersSubjectsDAO techersSubjectsDAO;
+    private TeacherService teacherService;
 
     @Autowired
-    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO) {
+    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO,
+            TeacherService teacherService) {
         this.subjectDAO = subjectDAO;
         this.techersSubjectsDAO = techersSubjectsDAO;
+        this.teacherService = teacherService;
     }
 
     @Override
@@ -29,22 +36,29 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Subject getSubjectById(int subjectId) {
         Subject subject = subjectDAO.getSubjectById(subjectId);
-        subject.setSubjectTeacherIds(techersSubjectsDAO.getTeachersIds(subjectId));
-        return subject;
-    }
-    @Override
-    public Subject getSubjectByName(String subjectName){
-        Subject subject = subjectDAO.getSubjectByName(subjectName);
-        subject.setSubjectTeacherIds(techersSubjectsDAO.getTeachersIds(subject.getId()));
-        return subject;
+        return setTeachersToSubject(subject);
     }
     
+    private Subject setTeachersToSubject(Subject subject) {
+        List<Long> teachersIds = techersSubjectsDAO.getTeachersIds(subject.getId());
+        List<Teacher> teachers = new ArrayList<>();
+        teachersIds.parallelStream().map(t -> teachers.add(teacherService.getTeacherById(t)))
+                .collect(Collectors.toList());
+        subject.setTeachers(teachers);
+        return subject;
+    }
+
+    @Override
+    public Subject getSubjectByName(String subjectName) {
+        Subject subject = subjectDAO.getSubjectByName(subjectName);
+        return setTeachersToSubject(subject);
+    }
+
     @Override
     public List<Subject> getAllSubjects() {
         List<Subject> subjects = subjectDAO.getAllSubjects();
         for (Subject subject : subjects) {
-            List<Long> subjectTeachersIds = techersSubjectsDAO.getTeachersIds(subject.getId());
-            subject.setSubjectTeacherIds(subjectTeachersIds);
+            setTeachersToSubject(subject);
         }
         return subjects;
     }
