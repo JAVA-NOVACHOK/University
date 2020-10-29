@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package ua.com.nikiforov.mappers;
 
 import java.sql.ResultSet;
@@ -20,3 +21,27 @@ public class GroupMapper implements RowMapper<Group> {
     }
 
 }
+=======
+package ua.com.nikiforov.mappers;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+
+import ua.com.nikiforov.models.Group;
+import static ua.com.nikiforov.dao.SqlConstants.GroupsTable.*;
+
+@Component
+public class GroupMapper implements RowMapper<Group> {
+
+    @Override
+    public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        Group group = new Group();
+        group.setId(resultSet.getLong(ID));
+        group.setGroupName(resultSet.getString(NAME));
+        return group;
+    }
+
+}
+>>>>>>> refs/remotes/origin/master

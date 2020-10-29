@@ -16,13 +16,11 @@
 	<div class="topnav">
 		<div th:replace="fragments/navbar_fr :: topnav"></div>
 	</div>
-
-
 	<div>
 		<h1 class="text-center text-success">List of all subjects</h1>
 	</div>
 
-	<div th:each="subject, iterStat : ${subjects}">
+	<div th:each="subject : ${subjects}">
 		<div class="row justify-content-center">
 			<h3 class="text-primary" th:text="${subject.name}"></h3>
 			<p></p>
@@ -38,7 +36,7 @@
 					</thead>
 					<tbody>
 						<tr th:each="teacher, iterStat : ${subject.teachers}">
-							<td th:text="${iterStat.count}"></td>
+							<td th:text="|${iterStat.count}.|"></td>
 							<td th:text="|${teacher.lastName} ${teacher.firstName}|">Teacher's
 								name</td>
 						</tr>
@@ -47,8 +45,6 @@
 			</div>
 		</div>
 	</div>
-
-
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

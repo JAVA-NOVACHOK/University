@@ -1,6 +1,17 @@
+<<<<<<< HEAD
 /.project
 .classpath
 /target
 .settings
 /logs
+=======
+.project
+.classpath
+.settings
+/target
+/mem/
+TableCreator.java
+/logs
+Main.java
+>>>>>>> refs/remotes/origin/master
 
