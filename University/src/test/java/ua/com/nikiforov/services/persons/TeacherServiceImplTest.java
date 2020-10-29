@@ -122,18 +122,18 @@ class TeacherServiceImplTest {
         Subject subjectThree = insertSubject(SUBJECT_NAME_3);
         int subjectThreeId = subjectThree.getId();
 
-        List<Integer> expectedSubjectIds = new ArrayList<>();
-        expectedSubjectIds.add(subjectOneId);
-        expectedSubjectIds.add(subjectTwoId);
-        expectedSubjectIds.add(subjectThreeId);
+        List<Subject> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(subjectOne);
+        expectedSubjects.add(subjectTwo);
+        expectedSubjects.add(subjectThree);
 
         teacherService.assignSubjectToTeacher(subjectOneId, teacherId);
         teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
         teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
 
         Teacher teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
-        List<Integer> actualSubjectIds = teacherAfterAssignSubjects.getSubjectIds();
-        assertIterableEquals(expectedSubjectIds, actualSubjectIds);
+        List<Subject> actualSubjects = teacherAfterAssignSubjects.getSubjects();
+        assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
@@ -148,10 +148,10 @@ class TeacherServiceImplTest {
         Subject subjectThree = insertSubject(SUBJECT_NAME_3);
         int subjectThreeId = subjectThree.getId();
 
-        List<Integer> expectedSubjectIds = new ArrayList<>();
-        expectedSubjectIds.add(subjectOneId);
-        expectedSubjectIds.add(subjectTwoId);
-
+        List<Subject> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(subjectOne);
+        expectedSubjects.add(subjectTwo);
+       
         teacherService.assignSubjectToTeacher(subjectOneId, teacherId);
         teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
         teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
@@ -159,8 +159,8 @@ class TeacherServiceImplTest {
         teacherService.unassignSubjectFromTeacher(subjectThreeId, teacherId);
 
         Teacher teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
-        List<Integer> actualSubjectIds = teacherAfterAssignSubjects.getSubjectIds();
-        assertIterableEquals(expectedSubjectIds, actualSubjectIds);
+        List<Subject> actualSubjects = teacherAfterAssignSubjects.getSubjects();
+        assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
     private Subject insertSubject(String subjectName) {

@@ -42,7 +42,7 @@ public class Subject {
     }
 
     public void setTeachers(List<Teacher> teachers) {
-        this.teachers = teachers;
+        this.teachers.addAll(teachers);
     }
 
     @Override
