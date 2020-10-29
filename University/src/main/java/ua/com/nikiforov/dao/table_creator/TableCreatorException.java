@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package ua.com.nikiforov.dao.table_creator;
 
 public class TableCreatorException extends RuntimeException {
@@ -13,14 +12,3 @@ public class TableCreatorException extends RuntimeException {
     }
 
 }
-=======
-package ua.com.nikiforov.dao.table_creator;
-
-public class TableCreatorException extends RuntimeException {
-
-    public TableCreatorException(String massege, Exception e) {
-        super(massege, e);
-    }
-
-}
->>>>>>> refs/remotes/origin/master
