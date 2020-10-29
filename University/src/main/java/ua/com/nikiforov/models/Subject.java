@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package ua.com.nikiforov.models;
 
 import java.util.ArrayList;
@@ -160,4 +159,4 @@ public class Subject {
     }
 
 }
->>>>>>> refs/remotes/origin/master
+
