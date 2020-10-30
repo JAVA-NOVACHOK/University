@@ -27,13 +27,8 @@ public class StudentsController {
     @Autowired
     private GroupService groupService;
 
-    @GetMapping("/show")
+    @GetMapping("/")
     public String showStudents(@RequestParam long id, Model model) {
-//        studentService.addStudent("Bob", "Nikiforov", 2);
-//        studentService.addStudent("Artem", "Jackson", 3);
-//        studentService.addStudent("Jack", "Clinton", 3);
-//        studentService.addStudent("Bill", "Sparrow", 2);
-//        studentService.addStudent("Jack", "Smith", 3);
 
         Group group = groupService.getGroupById(id);
         List<Student> students = studentService.getStudentsByGroupId(id);

@@ -78,7 +78,6 @@ class GroupServiceImplTest {
         assertIterableEquals(expectedGroups, groupService.getAllGroups());
 
     }
-    
 
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
@@ -129,7 +128,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    private void whenDeleteStudentReturnListOfStudentsInGroupWithoutThisStudent() {
+    void whenDeleteStudentReturnListOfStudentsInGroupWithoutThisStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
@@ -151,7 +150,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    private void whenTransferStudentReturnListOfStudentsInGroupTransferedStudent() {
+    void whenTransferStudentReturnListOfStudentsInGroupTransferedStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);

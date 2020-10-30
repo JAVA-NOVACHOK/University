@@ -1,7 +1,5 @@
 package ua.com.nikiforov.controllers;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +14,15 @@ import ua.com.nikiforov.services.room.RoomService;
 @Controller
 @RequestMapping("/rooms")
 public class RoomsController {
-    
+
     @Autowired
     private RoomService roomService;
 
-//  @GetMapping("/")
-//  public String rooms() {
-//     
-//      return "rooms";
-//  }
-  @GetMapping("/show")
-  public String roomsShow(Model model) {
-      List<Room> rooms = roomService.getAllRooms();
-      model.addAttribute("rooms",rooms);
-      return "rooms";
-  }
+    @GetMapping("/")
+    public String roomsShow(Model model) {
+        List<Room> rooms = roomService.getAllRooms();
+        model.addAttribute("rooms", rooms);
+        return "rooms";
+    }
 
 }

@@ -116,7 +116,7 @@ public class RoomDAOImpl implements RoomDAO {
         try {
             actionResult = jdbcTemplate.update(UPDATE_ROOM, number, seatNumber, id) > 0;
             if (actionResult) {
-                LOGGER.info("Successfully updated room with id = '{}', number = '{}' and {} seats", id, number);
+                LOGGER.info("Successfully updated room with id = '{}', number = '{}' and {} seats", id, number,seatNumber);
             } else {
                 String failMessage = String.format("Couldn't update Room with id - %d, number - %s, %d seats",id, number,seatNumber);
                 throw new DataOperationException(failMessage);

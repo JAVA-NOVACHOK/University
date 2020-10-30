@@ -19,7 +19,7 @@ public class TeacherController {
     private TeacherService teacherServise;
       
 
-    @GetMapping("/show")
+    @GetMapping("/")
     public String show(Model model) {
         List<Teacher> teachers = teacherServise.getAllTeachers();
         model.addAttribute("teachers", teachers);
