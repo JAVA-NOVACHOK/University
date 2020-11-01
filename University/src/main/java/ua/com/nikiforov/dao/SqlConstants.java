@@ -11,6 +11,9 @@ public class SqlConstants {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String FROM = " FROM ";
+    public static final String INNER = " INNER ";
+    public static final String JOIN = " JOIN ";
+    public static final String ON = " ON ";
     public static final String AND = " AND ";
     public static final String WHERE = " WHERE ";
     public static final String BETWEEN = " BETWEEN ";
@@ -35,7 +38,7 @@ public class SqlConstants {
         private UniversityTable() {
         }
 
-        public static final String TABLE_UNIVERSITIES = "universities";
+        public static final String TABLE_UNIVERSITIES = "universities ";
         public static final String ID = "id";
         public static final String NAME = "university_name";
     }
@@ -44,7 +47,7 @@ public class SqlConstants {
         private RoomsTable() {
         }
 
-        public static final String TABLE_ROOMS = "rooms";
+        public static final String TABLE_ROOMS = "rooms ";
         public static final String ID = "room_id";
         public static final String ROOM_NUMBER = "room_number";
         public static final String SEAT_NUMBER = "seat_number";
@@ -54,9 +57,9 @@ public class SqlConstants {
         private GroupsTable() {
         }
 
-        public static final String TABLE_GROUPS = "groups";
-        public static final String ID = "group_id";
-        public static final String NAME = "group_name";
+        public static final String TABLE_GROUPS = "groups ";
+        public static final String GROUPS_GROUP_ID = "groups.group_id";
+        public static final String GROUPS_GROUP_NAME = "groups.group_name";
     }
 
     public static class LessonsTable {
@@ -64,20 +67,20 @@ public class SqlConstants {
 
         }
 
-        public static final String TABLE_LESSONS = "lessons";
-        public static final String ID = "lesson_id";
-        public static final String GROUP_ID = "group_id";
-        public static final String SUBJECT_ID = "subject_id";
-        public static final String ROOM_ID = "room_id";
+        public static final String TABLE_LESSONS = "lessons ";
+        public static final String LESSONS_LESSON_ID = "lessons.lesson_id";
+        public static final String LESSONS_GROUP_ID = "lessons.group_id";
+        public static final String LESSONS_SUBJECT_ID = "lessons.subject_id";
+        public static final String LESSONS_ROOM_ID = "lessons.room_id";
     }
 
     public static class SubjectTable {
         private SubjectTable() {
         }
 
-        public static final String TABLE_SUBJECTS = "subjects";
-        public static final String SUBJECT_ID = "subject_id";
-        public static final String SUBJECT_NAME = "subject_name";
+        public static final String TABLE_SUBJECTS = "subjects ";
+        public static final String SUBJECTS_SUBJECT_ID = "subjects.subject_id";
+        public static final String SUBJECTS_SUBJECT_NAME = "subjects.subject_name";
     }
 
     public static class TeachersTable {
@@ -85,10 +88,10 @@ public class SqlConstants {
         }
 
         public static final String TABLE_TEACHERS = "teachers";
-        public static final String ID = "teacher_id";
-        public static final String FIRST_NAME = "first_name";
-        public static final String LAST_NAME = "last_name";
-        public static final String SUBJECT_ID = "subject_id";
+        public static final String TEACHERS_TEACHER_ID = "teachers.teacher_id";
+        public static final String TEACHERS_FIRST_NAME = "teachers.first_name";
+        public static final String TEACHERS_LAST_NAME = "teachers.last_name";
+        public static final String TEACHERS_SUBJECT_ID = "teachers.subject_id";
     }
 
     public static class StudentsTable {
@@ -96,10 +99,10 @@ public class SqlConstants {
         }
 
         public static final String TABLE_STUDENTS = "students";
-        public static final String ID = "student_id";
-        public static final String FIRST_NAME = "first_name";
-        public static final String LAST_NAME = "last_name";
-        public static final String GROUP_ID = "group_id";
+        public static final String STUDENTS_STUDENT_ID = "students.student_id";
+        public static final String STUDENTS_STUDENT_FIRST_NAME = "students.first_name";
+        public static final String STUDENTS_STUDENT_LAST_NAME = "students.last_name";
+        public static final String STUDENTS_STUDENT_GROUP_ID = "students.group_id";
     }
 
     public static class StudentsTimetableTable {
@@ -107,10 +110,10 @@ public class SqlConstants {
         }
 
         public static final String TABLE_STUDENTS_TIMETABLE = "students_timetable";
-        public static final String ID = "id";
-        public static final String LESSON_ID = "lesson_id";
-        public static final String DATE = "date";
-        public static final String PERSON_ID = "person_id";
+        public static final String ID = "students_timetable.id";
+        public static final String LESSON_ID = "students_timetable.lesson_id";
+        public static final String DATE = "students_timetable.date";
+        public static final String PERSON_ID = "students_timetable.person_id";
         public static final String PERIOD = "period";
     }
 
@@ -131,17 +134,10 @@ public class SqlConstants {
         }
 
         public static final String TEACHERS_SUBJECTS_TABLE = "teachers_subjects";
-        public static final String TEACHER_ID = "teacher_id";
-        public static final String SUBJECT_ID = "subject_id";
+        public static final String TEACHERS_SUBJECTS_TEACHER_ID = "teachers_subjects.teacher_id";
+        public static final String TEACHERS_SUBJECTS_SUBJECT_ID = "teachers_subjects.subject_id";
     }
     
-    public static class GroupsStudentsTable{
-        private GroupsStudentsTable(){
-        }
-        public static final String GROUPS_STUDENTS_TABLE = "groups_students";
-        public static final String GROUP_ID = "group_id";
-        public static final String STUDENT_ID = "student_id";
-        
-    }
+    
 
 }

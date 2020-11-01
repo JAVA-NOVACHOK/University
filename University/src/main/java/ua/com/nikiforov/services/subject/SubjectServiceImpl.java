@@ -40,10 +40,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
     
     private Subject setTeachersToSubject(Subject subject) {
-        List<Long> teachersIds = techersSubjectsDAO.getTeachersIds(subject.getId());
-        List<Teacher> teachers = new ArrayList<>();
-        teachersIds.parallelStream().map(t -> teachers.add(teacherService.getTeacherById(t)))
-                .collect(Collectors.toList());
+        List<Teacher> teachers = techersSubjectsDAO.getTeachers(subject.getId());
         subject.setTeachers(teachers);
         return subject;
     }

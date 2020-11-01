@@ -11,12 +11,15 @@ import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
 
 @Component
 public class TeachersSubjectsMapper implements RowMapper<TeachersSubjects> {
+    
+    private static final int TEACHERS_SUBJECTS_ID_INDEX = 1;
+    private static final int TEACHERS_SUBJECTS_NAME_INDEX = 2;
 
     @Override
     public TeachersSubjects mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         TeachersSubjects teachersSubjects = new TeachersSubjects();
-        teachersSubjects.setTeachersId(resultSet.getLong(TEACHER_ID));
-        teachersSubjects.setSubjectId(resultSet.getInt(SUBJECT_ID));
+        teachersSubjects.setTeachersId(resultSet.getLong(TEACHERS_SUBJECTS_ID_INDEX));
+        teachersSubjects.setSubjectId(resultSet.getInt(TEACHERS_SUBJECTS_NAME_INDEX));
         return teachersSubjects;
     }
 

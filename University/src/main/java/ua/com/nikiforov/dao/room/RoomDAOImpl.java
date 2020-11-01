@@ -26,7 +26,7 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomDAOImpl.class);
 
-    private static final String ADD_ROOM = INSERT + TABLE_ROOMS + L_BRACKET + ROOM_NUMBER + COMA + SEAT_NUMBER + VALUES_2_QMARK;
+    private static final String ADD_ROOM = "INSERT INTO rooms (room_number,seat_number) VALUES(?,?)";
     private static final String FIND_ROOM_BY_ID = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ID + EQUALS_M
             + Q_MARK;
     private static final String FIND_ROOM_BY_ROOM_NUMBER = SELECT + ASTERISK + FROM + TABLE_ROOMS + WHERE + ROOM_NUMBER

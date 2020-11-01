@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -166,8 +167,13 @@ class GroupServiceImplTest {
         expectedStudents.add(insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2));
 
         studentsService.transferStudent(transferedStudentId, groupId_2);
-
+        
+        Student transferedStudent = studentsService.getStudentById(transferedStudentId);
+        expectedStudents.add(transferedStudent);
+        
         List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_2);
+        Collections.sort(actualStudents);
+        Collections.sort(expectedStudents);
         assertIterableEquals(expectedStudents, actualStudents);
 
     }

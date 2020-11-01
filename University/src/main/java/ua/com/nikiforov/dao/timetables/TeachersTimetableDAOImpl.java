@@ -38,8 +38,8 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     private static final int TEACHER_ID_STATEMENT_INDEX = 2;
     private static final int TEACHER_ID_STATEMENT_INDEX_GET_MONTH_TABLE = 1;
 
-    private static final String ADD_TEACHERS_TIMETABLE = INSERT + TABLE_TEACHERS_TIMETABLE + L_BRACKET + LESSON_ID
-            + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
+    private static final String ADD_TEACHERS_TIMETABLE = 
+            "INSERT INTO teachers_timetable (lesson_id,person_id,date,period) VALUES(?,?,?,?)";
     private static final String FIND_TEACHERS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE
             + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = SELECT + ASTERISK + FROM
@@ -85,7 +85,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to add %s", timetableMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage,e);
         }
         return actionResult;
     }
@@ -232,7 +232,8 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         return monthTimetable;
     }
 
-    private Timestamp getTimestampFromString(String stringDate) {
+    @Override
+    public Timestamp getTimestampFromString(String stringDate) {
         return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 }

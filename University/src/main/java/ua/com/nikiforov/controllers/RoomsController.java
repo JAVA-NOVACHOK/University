@@ -22,7 +22,7 @@ public class RoomsController {
     public String roomsShow(Model model) {
         List<Room> rooms = roomService.getAllRooms();
         model.addAttribute("rooms", rooms);
-        return "rooms";
+        return "rooms/rooms";
     }
 
 }

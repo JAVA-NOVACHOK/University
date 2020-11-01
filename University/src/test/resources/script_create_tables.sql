@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms(
 	room_id serial PRIMARY KEY,
@@ -133,4 +132,4 @@ CREATE TABLE teachers_subjects(
 	UNIQUE(teacher_id,subject_id)
 );
 	
->>>>>>> refs/remotes/origin/master
+

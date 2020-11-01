@@ -5,7 +5,7 @@ import java.util.List;
 
 import ua.com.nikiforov.models.persons.Student;
 
-public class Group {
+public class Group implements Comparable<Group>{
 
     private long id;
     private String groupName;
@@ -75,6 +75,11 @@ public class Group {
     @Override
     public String toString() {
         return "id=" + id + ", groupName=" + groupName + "]";
+    }
+
+    @Override
+    public int compareTo(Group g) {
+        return groupName.compareTo(g.groupName);
     }
 
 }

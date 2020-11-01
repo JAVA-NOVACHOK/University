@@ -1,15 +1,13 @@
 package ua.com.nikiforov.services.persons;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.persons.TeacherDAO;
-import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
+import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
 @Service
@@ -17,13 +15,12 @@ public class TeacherServiceImpl implements TeacherService {
 
     private TeacherDAO teacherDAO;
     private TeachersSubjectsDAO techersSubjectsDAO;
-    private SubjectDAO subjectDAO;
 
     @Autowired
-    public TeacherServiceImpl(TeacherDAO teacherDAO, TeachersSubjectsDAO techersSubjectsDAO, SubjectDAO subjectDAO) {
+    public TeacherServiceImpl(TeacherDAO teacherDAO, TeachersSubjectsDAO techersSubjectsDAO) {
         this.teacherDAO = teacherDAO;
         this.techersSubjectsDAO = techersSubjectsDAO;
-        this.subjectDAO = subjectDAO;
+       
     }
 
     @Override
@@ -42,9 +39,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     private Teacher addSubjectsToTeacher(Teacher teacher) {
-        List<Integer> subjectsId = techersSubjectsDAO.getSubjectsIds(teacher.getId());
-        List<ua.com.nikiforov.models.Subject> subjects = subjectsId.stream().map(s -> subjectDAO.getSubjectById(s))
-                .collect(Collectors.toList());
+        List<Subject> subjects = techersSubjectsDAO.getSubjects(teacher.getId());
         teacher.setSubjects(subjects);
         return teacher;
     }

@@ -23,36 +23,30 @@
 	</div>
 
 	<div class="row justify-content-center">
-		<form>
+		<form action="/teacher_schedule" method="post">
 			<div class="row">
 				<div class="col">
-					<input type="text" class="form-control" placeholder="First name">
+					<input type="text" class="form-control" placeholder="First name" name="firstName">
 				</div>
 				<div class="col">
-					<input type="text" class="form-control" placeholder="Last name">
+					<input type="text" class="form-control" required="required" placeholder="Last name" name="lastName">
 				</div>
 				<div>
-					<select class="custom-select">
-						<option th:each="subject : ${subjects}" th:value="${subject.id}"
-							th:text="${subject.name}"></option>
-					</select>
+					<input type="date" class="form-control" required="required" name="time">
 				</div>
 				<div class="col">
 					<label for="day">schedule</label>
-					<button id="day" type="submit" class="btn btn-primary">For
+					<button id="day" type="submit" class="btn btn-outline-success">For
 						day</button>
 				</div>
-				<div>
-					
-				</div>
 				<div class="col">
-					<button id="month" type="submit" class="btn btn-primary">For
+					<button id="month" type="submit" class="btn btn-outline-warning">For
 						month</button>
 				</div>
 			</div>
 		</form>
 	</div>
-	<div class="row mb-5 justify-content-center">
+	<div class="row mt-3 justify-content-center">
 		<a type="button" class="btn btn-primary position-relative">Add
 			timetable</a>
 	</div>

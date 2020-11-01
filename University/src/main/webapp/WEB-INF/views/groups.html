@@ -36,7 +36,7 @@
 					<tr th:each="group, iterStat : ${groups}">
 						<td th:text="${iterStat.count}">ID</td>
 						<td><a class="btn btn-primary " th:text="${group.groupName}"
-							th:href="@{/students/show?id=__${group.id}__}">Group name</a></td>
+							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
 					</tr>
 				</tbody>
 			</table>

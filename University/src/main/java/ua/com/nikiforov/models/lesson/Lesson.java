@@ -1,4 +1,4 @@
-package ua.com.nikiforov.models;
+package ua.com.nikiforov.models.lesson;
 
 public class Lesson {
 
@@ -84,5 +84,7 @@ public class Lesson {
     public String toString() {
         return "id=" + id + ", groupId=" + groupId + ", subjectId=" + subjectId + ", roomId=" + roomId;
     }
+    
+    
 
 }

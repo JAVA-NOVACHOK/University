@@ -43,7 +43,7 @@ CREATE TABLE teachers_timetable(
 	lesson_id BIGINT,
 	date TIMESTAMP WITH TIME ZONE NOT NULL,
 	period int NOT NULL,
-	person_id BIGINT
+	person_id BIGINT 
 );
 DROP TABLE IF EXISTS students_timetable;
 CREATE TABLE students_timetable(
@@ -51,7 +51,7 @@ CREATE TABLE students_timetable(
 	lesson_id BIGINT,
 	date TIMESTAMP WITH TIME ZONE NOT NULL,
 	period int NOT NULL,
-	person_id BIGINT
+	person_id BIGINT 
 );
 DROP TABLE IF EXISTS universities;
 CREATE TABLE universities(

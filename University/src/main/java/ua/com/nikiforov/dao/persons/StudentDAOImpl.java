@@ -25,18 +25,17 @@ public class StudentDAOImpl implements StudentDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAOImpl.class);
 
-    private static final String ADD_STUDENT = INSERT + TABLE_STUDENTS + L_BRACKET + FIRST_NAME + COMA + LAST_NAME + COMA
-            + GROUP_ID + VALUES_3_QMARK;
-    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M
+    private static final String ADD_STUDENT = "INSERT INTO students (first_name,last_name,group_id) VALUES(?,?,?)";
+    private static final String FIND_STUDENT_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + STUDENTS_STUDENT_ID + EQUALS_M
             + Q_MARK;
-    private static final String FIND_STUDENT_BY_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + GROUP_ID + EQUALS_M
+    private static final String FIND_STUDENT_BY_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE + STUDENTS_STUDENT_GROUP_ID + EQUALS_M
             + Q_MARK;
     private static final String FIND_STUDENT_BY_NAME_GROUP_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS + WHERE
-            + FIRST_NAME + EQUALS_M + Q_MARK + AND + LAST_NAME + EQUALS_M + Q_MARK + AND + GROUP_ID + EQUALS_M + Q_MARK;
+            + STUDENTS_STUDENT_FIRST_NAME + EQUALS_M + Q_MARK + AND + STUDENTS_STUDENT_LAST_NAME + EQUALS_M + Q_MARK + AND + STUDENTS_STUDENT_GROUP_ID + EQUALS_M + Q_MARK;
     private static final String GET_ALL_STUDENTS = SELECT + ASTERISK + FROM + TABLE_STUDENTS;
-    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + FIRST_NAME + EQUALS_M + Q_MARK + COMA
-            + LAST_NAME + EQUALS_M + Q_MARK + COMA + GROUP_ID + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_STUDENT_BY_ID = DELETE + FROM + TABLE_STUDENTS + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String UPDATE_STUDENT = UPDATE + TABLE_STUDENTS + SET + STUDENTS_STUDENT_FIRST_NAME + EQUALS_M + Q_MARK + COMA
+            + STUDENTS_STUDENT_LAST_NAME + EQUALS_M + Q_MARK + COMA + STUDENTS_STUDENT_GROUP_ID + EQUALS_M + Q_MARK + WHERE + STUDENTS_STUDENT_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_STUDENT_BY_ID = DELETE + FROM + TABLE_STUDENTS + WHERE + STUDENTS_STUDENT_ID + EQUALS_M + Q_MARK;
 
     private StudentMapper studentMapper;
     private JdbcTemplate jdbcTemplate;

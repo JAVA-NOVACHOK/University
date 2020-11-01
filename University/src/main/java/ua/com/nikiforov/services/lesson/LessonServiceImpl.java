@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import ua.com.nikiforov.dao.lesson.LessonDAO;
-import ua.com.nikiforov.models.Lesson;
+import ua.com.nikiforov.models.lesson.Lesson;
 
 @Service
 public class LessonServiceImpl implements LessonService {

@@ -7,20 +7,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.UniversityConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Lesson;
+import ua.com.nikiforov.models.lesson.Lesson;
 
 
 @SpringJUnitConfig(UniversityConfig.class)

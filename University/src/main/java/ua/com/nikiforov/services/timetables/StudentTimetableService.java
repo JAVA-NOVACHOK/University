@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.timetables;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,4 +61,8 @@ public class StudentTimetableService implements PersonalTimetable {
         return timetableDAO.getMonthTimetable(date, studentId);
     }
 
+    @Override
+    public Timestamp getTimestampFromString(String stringDate) {
+        return timetableDAO.getTimestampFromString(stringDate);
+    }
 }

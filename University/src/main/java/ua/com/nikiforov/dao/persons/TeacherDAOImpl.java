@@ -26,16 +26,16 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherDAOImpl.class);
 
-    private static final String ADD_TEACHER = INSERT + TABLE_TEACHERS + L_BRACKET + FIRST_NAME + COMA + LAST_NAME
-            + VALUES_2_QMARK;
-    private static final String FIND_TEACHER_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE + ID + EQUALS_M
-            + Q_MARK;
-    private static final String GET_TEACHER_BY_NAME = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE + FIRST_NAME
-            + EQUALS_M + Q_MARK + AND + LAST_NAME + EQUALS_M + Q_MARK;
+    private static final String ADD_TEACHER = "INSERT INTO teachers (first_name,last_name) VALUES(?,?)";
+    private static final String FIND_TEACHER_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
+            + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
+    private static final String GET_TEACHER_BY_NAME = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
+            + TEACHERS_FIRST_NAME + EQUALS_M + Q_MARK + AND + TEACHERS_LAST_NAME + EQUALS_M + Q_MARK;
     private static final String GET_ALL_TEACHERS = SELECT + ASTERISK + FROM + TABLE_TEACHERS;
-    private static final String UPDATE_TEACHER = UPDATE + TABLE_TEACHERS + SET + FIRST_NAME + EQUALS_M + Q_MARK + COMA
-            + LAST_NAME + EQUALS_M + Q_MARK + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_TEACHER_BY_ID = DELETE + FROM + TABLE_TEACHERS + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String UPDATE_TEACHER = UPDATE + TABLE_TEACHERS + SET + TEACHERS_FIRST_NAME + EQUALS_M + Q_MARK
+            + COMA + TEACHERS_LAST_NAME + EQUALS_M + Q_MARK + WHERE + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_TEACHER_BY_ID = DELETE + FROM + TABLE_TEACHERS + WHERE + TEACHERS_TEACHER_ID
+            + EQUALS_M + Q_MARK;
 
     private TeacherMapper teacherMapper;
     private JdbcTemplate jdbcTemplate;

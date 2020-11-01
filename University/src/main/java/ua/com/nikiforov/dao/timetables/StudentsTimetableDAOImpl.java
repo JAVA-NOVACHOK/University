@@ -38,8 +38,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     private static final int STUDENT_ID_STATEMENT_INDEX = 2;
     private static final int STUDENT_ID_STATEMENT_INDEX_GET_MONTH_TABLE = 1;
 
-    private static final String ADD_STUDENTS_TIMETABLE = INSERT + TABLE_STUDENTS_TIMETABLE + L_BRACKET + LESSON_ID
-            + COMA + PERSON_ID + COMA + DATE + COMA + PERIOD + VALUES_4_QMARK;
+    private static final String ADD_STUDENTS_TIMETABLE = "INSERT INTO students_timetable "
+            + "(lesson_id,person_id,date,period) VALUES(?,?,?,?)";
     private static final String FIND_STUDENTS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_STUDENTS_TIMETABLE
             + WHERE + ID + EQUALS_M + Q_MARK;
     private static final String FIND_STUDENTS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = SELECT + ASTERISK + FROM
@@ -69,8 +69,9 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
 
     @Override
     public boolean addTimetable(long lessonId, long studentId, String stringDate, Period period) {
-        String timetableMessage = String.format("TeachersTimetable with lessonId = %d, sudentId = %d, date = %s, period = %d",
-                lessonId, studentId, stringDate, period.getPeriod());
+        String timetableMessage = String.format(
+                "TeachersTimetable with lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, studentId,
+                stringDate, period.getPeriod());
         LOGGER.debug("Adding {}", timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
@@ -109,8 +110,9 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long studentId, String stringDate,
             Period period) {
-        String timetableMessage = String.format("TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d",
-                lessonId, studentId, stringDate, period.getPeriod());
+        String timetableMessage = String.format(
+                "TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, studentId,
+                stringDate, period.getPeriod());
         LOGGER.debug(GETTING, timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
@@ -145,8 +147,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     public boolean updateTimetable(long lessonId, long studentId, String stringDate, Period period,
             long studentsTimetableId) {
         String timetableMessage = String.format(
-                "TeachersTimetable with ID = %d and lessonId = %d, sudentId = %d, date = %s, period = %d", studentsTimetableId,
-                lessonId, studentId, stringDate, period.getPeriod());
+                "TeachersTimetable with ID = %d and lessonId = %d, sudentId = %d, date = %s, period = %d",
+                studentsTimetableId, lessonId, studentId, stringDate, period.getPeriod());
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
         LOGGER.debug("Updating {}", timetableMessage);
@@ -188,7 +190,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
     }
 
     public List<Timetable> getDayTimetable(String date, long studentId) {
-        String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date, studentId);
+        String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date,
+                studentId);
         LOGGER.debug(GETTING, date);
         List<Timetable> dayTimetable = new ArrayList<>();
         try {
@@ -209,7 +212,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
 
     @Override
     public List<Timetable> getMonthTimetable(String date, long studentId) {
-        String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date, studentId);
+        String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and studentId %d", date,
+                studentId);
         LOGGER.debug(GETTING, date);
         List<Timetable> monthTimetable = new ArrayList<>();
         Timestamp timestampFrom = Timestamp.valueOf(date + " 00:00:00");
@@ -232,7 +236,8 @@ public class StudentsTimetableDAOImpl implements TimetableDAO {
         return monthTimetable;
     }
 
-    private Timestamp getTimestampFromString(String stringDate) {
+    @Override
+    public Timestamp getTimestampFromString(String stringDate) {
         return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 }

@@ -2,11 +2,14 @@ package ua.com.nikiforov.dao.teachers_subjects;
 
 import java.util.List;
 
+import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
+
 public interface TeachersSubjectsDAO {
 
-    public List<Long> getTeachersIds(int subjectId);
+    public List<Teacher> getTeachers(int subjectId);
     
-    public List<Integer> getSubjectsIds(long teacherId);
+    public List<Subject> getSubjects(long teacherId);
     
     public boolean assignSubjectToTeacher(long teacherId, int subjectId);
 

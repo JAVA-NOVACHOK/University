@@ -16,10 +16,10 @@ public class StudentMapper implements RowMapper<Student> {
     @Override
     public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Student student = new Student();
-        student.setId(resultSet.getLong(ID));
-        student.setFirstName(resultSet.getString(FIRST_NAME));
-        student.setLastName(resultSet.getString(LAST_NAME));
-        student.setGroup(resultSet.getLong(GROUP_ID));
+        student.setId(resultSet.getLong(STUDENTS_STUDENT_ID));
+        student.setFirstName(resultSet.getString(STUDENTS_STUDENT_FIRST_NAME));
+        student.setLastName(resultSet.getString(STUDENTS_STUDENT_LAST_NAME));
+        student.setGroup(resultSet.getLong(STUDENTS_STUDENT_GROUP_ID));
         return student;
     }
 

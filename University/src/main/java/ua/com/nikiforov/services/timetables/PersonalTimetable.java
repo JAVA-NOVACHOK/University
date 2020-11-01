@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.timetables;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import ua.com.nikiforov.models.timetable.Timetable;
@@ -22,5 +23,9 @@ public interface PersonalTimetable {
     public List<Timetable> getDayTimetable(String date, long personId);
     
     public List<Timetable> getMonthTimetable(String stringDate, long studentId);
+     
+    
+    public Timestamp getTimestampFromString(String stringDate);
+       
     
 }

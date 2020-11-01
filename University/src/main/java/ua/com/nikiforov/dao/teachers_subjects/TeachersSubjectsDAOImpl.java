@@ -3,6 +3,8 @@ package ua.com.nikiforov.dao.teachers_subjects;
 import static ua.com.nikiforov.dao.SqlConstants.*;
 
 import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
+import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.*;
+import static ua.com.nikiforov.dao.SqlConstants.SubjectTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,63 +20,73 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.mappers.SubjectMapper;
 import ua.com.nikiforov.mappers.TeachersSubjectsMapper;
+import ua.com.nikiforov.mappers.persons.TeacherMapper;
+import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.TeachersSubjects;
+import ua.com.nikiforov.models.persons.Teacher;
 
 @Repository
 public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersSubjectsDAOImpl.class);
-    
-    private static final String GET_TEACHERS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
-            + SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
-            + TEACHER_ID + EQUALS_M + Q_MARK;
-    private static final String ADD_SUBJECT_FOR_TEACHER = INSERT + TEACHERS_SUBJECTS_TABLE + L_BRACKET + TEACHER_ID
-            + COMA + SUBJECT_ID + VALUES_2_QMARK;
-    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
-            + TEACHER_ID + EQUALS_M + Q_MARK + AND + SUBJECT_ID + EQUALS_M + Q_MARK;
 
-    private static final int PREPARE_STATEMENT_FIRST_INDEX = 1;
-    
-    private TeachersSubjectsMapper teachersSubjectsMapper;
+    private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
+            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + Q_MARK;
+    private static final String ADD_SUBJECT_FOR_TEACHER = "INSERT INTO teachers_subjects (teacher_id,subject_id) VALUES(?,?)";
+    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
+            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + Q_MARK + AND + TEACHERS_SUBJECTS_SUBJECT_ID + EQUALS_M + Q_MARK;
+
+    private static final String GET_TEACHERS_BY_SUBJECT_ID = SELECT + TEACHERS_TEACHER_ID + COMA + TEACHERS_FIRST_NAME
+            + COMA + TEACHERS_LAST_NAME + FROM + TABLE_SUBJECTS + INNER + JOIN + TEACHERS_SUBJECTS_TABLE + ON
+            + SUBJECTS_SUBJECT_ID + EQUALS_M + TEACHERS_SUBJECTS_SUBJECT_ID + INNER + JOIN + TABLE_TEACHERS + ON
+            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + TEACHERS_TEACHER_ID + WHERE + SUBJECTS_SUBJECT_ID + EQUALS_M
+            + Q_MARK;
+
+    private static final String GET_SUBJECTS_BY_TEACHER_ID = SELECT + SUBJECTS_SUBJECT_ID + COMA + SUBJECTS_SUBJECT_NAME + FROM
+            + TABLE_TEACHERS + INNER + JOIN + TEACHERS_SUBJECTS_TABLE + ON + TEACHERS_TEACHER_ID + EQUALS_M
+            + TEACHERS_SUBJECTS_TEACHER_ID + INNER + JOIN + TABLE_SUBJECTS + ON + TEACHERS_SUBJECTS_SUBJECT_ID
+            + EQUALS_M + SUBJECTS_SUBJECT_ID + WHERE + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
+
     private JdbcTemplate jdbcTemplate;
+    private TeacherMapper teacherMapper;
+    private SubjectMapper subjectMapper;
 
     @Autowired
-    public TeachersSubjectsDAOImpl(DataSource dataSource, TeachersSubjectsMapper teachersSubjectsMapper) {
+    public TeachersSubjectsDAOImpl(DataSource dataSource, SubjectMapper subjectMapper, TeacherMapper teacherMapper) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        this.teachersSubjectsMapper = teachersSubjectsMapper;
+        this.subjectMapper = subjectMapper;
+        this.teacherMapper = teacherMapper;
     }
 
     @Override
-    public List<Long> getTeachersIds(int subjectId) {
-        String subjectsTeacherIdsMSG = String.format("Subjects teacherIds by subjectId %d", subjectId);
+    public List<Teacher> getTeachers(int subjectId) {
+        String subjectsTeacherIdsMSG = String.format("Subjects Teachers by subjectId %d", subjectId);
         LOGGER.debug("Getting {}", subjectsTeacherIdsMSG);
-        List<TeachersSubjects> teachersSubjects = new ArrayList<>();
+        List<Teacher> teachers = new ArrayList<>();
         try {
-            teachersSubjects
-                    .addAll(jdbcTemplate.query(GET_TEACHERS_IDS, new Object[] { subjectId }, teachersSubjectsMapper));
+            teachers.addAll(jdbcTemplate.query(GET_TEACHERS_BY_SUBJECT_ID, new Object[] { subjectId }, teacherMapper));
             LOGGER.info("Got {}", subjectsTeacherIdsMSG);
         } catch (DataAccessException e) {
-            throw new DataOperationException("Couldn't get " + subjectsTeacherIdsMSG);
+            throw new DataOperationException("Couldn't get " + subjectsTeacherIdsMSG, e);
         }
-        return teachersSubjects.stream().map(TeachersSubjects::getTeachersId).collect(Collectors.toList());
+        return teachers;
     }
 
     @Override
-    public List<Integer> getSubjectsIds(long teacherId) {
-        String teachersSubjectIdsMSG = String.format("Teachers subjectIds by teacherIds %d", teacherId);
+    public List<Subject> getSubjects(long teacherId) {
+        String teachersSubjectIdsMSG = String.format("Teacher Subjects by teacherIds %d", teacherId);
         LOGGER.debug("Getting {}", teachersSubjectIdsMSG);
-        List<TeachersSubjects> teachersSubjects = new ArrayList<>();
+        List<Subject> subjects = new ArrayList<>();
         try {
-            teachersSubjects.addAll(jdbcTemplate.query(GET_SUBJECTS_IDS,
-                    ps -> ps.setLong(PREPARE_STATEMENT_FIRST_INDEX, teacherId), teachersSubjectsMapper));
+            subjects.addAll(jdbcTemplate.query(GET_SUBJECTS_BY_TEACHER_ID, new Object[] { teacherId }, subjectMapper));
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to get %s", teachersSubjectIdsMSG);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
-        return teachersSubjects.stream().map(TeachersSubjects::getSubjectId).collect(Collectors.toList());
+        return subjects;
     }
 
     @Override

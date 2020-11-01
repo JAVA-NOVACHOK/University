@@ -28,15 +28,14 @@ public class GroupDAOImpl implements GroupDAO {
     
     private static final String NO_AFFECTED_ROWS_MSG = "No affected rows";
 
-    private static final String ADD_GROUP = INSERT + TABLE_GROUPS + L_BRACKET + NAME + VALUES_1_QMARK;
-    private static final String FIND_GROUP_BY_ID = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M
-            + Q_MARK;
-    private static final String FIND_GROUP_BY_NAME = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + NAME + EQUALS_M
+    private static final String ADD_GROUP = "INSERT INTO groups  (group_name) VALUES(?)";
+    private static final String FIND_GROUP_BY_ID = "SELECT * FROM groups  WHERE groups.group_id =  ? ";
+    private static final String FIND_GROUP_BY_NAME = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + GROUPS_GROUP_NAME + EQUALS_M
             + Q_MARK;
     private static final String GET_ALL_GROUPS = SELECT + ASTERISK + FROM + TABLE_GROUPS;
-    private static final String UPDATE_GROUP = UPDATE + TABLE_GROUPS + SET + NAME + EQUALS_M + Q_MARK + WHERE + ID
+    private static final String UPDATE_GROUP = UPDATE + TABLE_GROUPS + SET + GROUPS_GROUP_NAME + EQUALS_M + Q_MARK + WHERE + GROUPS_GROUP_ID
             + EQUALS_M + Q_MARK;
-    private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + GROUPS_GROUP_ID + EQUALS_M + Q_MARK;
 
     private GroupMapper groupMapper;
     private JdbcTemplate jdbcTemplate;

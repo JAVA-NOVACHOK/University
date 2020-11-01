@@ -1,5 +1,6 @@
 package ua.com.nikiforov.dao.timetables;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import ua.com.nikiforov.models.timetable.Timetable;
@@ -22,5 +23,7 @@ public interface TimetableDAO {
     public List<Timetable> getDayTimetable(String date,long personId);
 
     public List<Timetable> getMonthTimetable(String date, long personId);
+    
+    public Timestamp getTimestampFromString(String stringDate);
 
 }
