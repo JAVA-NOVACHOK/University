@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dao.lesson.LessonDAO;
 import ua.com.nikiforov.models.lesson.Lesson;
+import ua.com.nikiforov.models.lesson.LessonInfo;
 
 @Service
 public class LessonServiceImpl implements LessonService {
@@ -21,6 +22,12 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public Lesson getLessonById(long id) {
         return lessonDAO.getLessonById(id);
+    }
+    
+    @Override
+    public LessonInfo getLessonInfoById(long lessonId) {
+        Lesson lesson = getLessonById(lessonId);
+        return lessonDAO.getLessonInfoById(lesson);
     }
 
     public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId) {

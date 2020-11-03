@@ -19,26 +19,37 @@
 
 
 	<div>
-		<h1 class="text-center text-success" th:text="|${teacher.firstName} ${teasher.lastName}|">Teacher</h1>
-		<h2 class="text-center text-info">Schedule</h2>
-		
+		<h1 class="text-center text-success"
+			th:text="|${teacher.firstName} ${teacher.lastName}|">Teacher</h1>
+		<h3 class="text-center text-info">Schedule</h3>
+		<h2 class="text-center text-warning"
+			th:text="|${weekDay}, ${month} ${monthDay}, ${year}|">Schedule</h2>
 	</div>
 
 	<div class="row justify-content-center">
 		<div class="col-auto">
-			<table class="table table-hover ">
-			<caption>Group list</caption>
-				<thead>
+			<table class="table table-hover table-bordered">
+				<caption>Timetable</caption>
+				<thead class="thead-info"> 
 					<tr>
-						<th scope="col">ID</th>
-						<th class="row centered" scope="col">Group name</th>
+						<th scope="col">Period</th>
+						<th scope="col">Subject</th>
+						<th scope="col">Room</th>
+						<th scope="col">Group</th>
+						<th scope="col">Edit</th>
+						<th scope="col">Delete</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="group, iterStat : ${groups}">
-						<td th:text="${iterStat.count}">ID</td>
-						<td><a class="btn btn-primary " th:text="${group.groupName}"
-							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
+					<tr th:each="timetable : ${dayTimetable}">
+						<td th:text="${timetable.period}"></td>
+						<td th:text="${lessonInfo.subjectName}"></td>
+						<td th:text="${lessonInfo.roomNumber}"></td>
+						<td th:text="${lessonInfo.groupName}"></td>
+						<td><a class="btn btn-success"
+							href="/#">Edit</a></td>
+						<td><a class="btn btn-danger "
+							href="/#">Delete</a></td>
 					</tr>
 				</tbody>
 			</table>

@@ -1,8 +1,5 @@
 package ua.com.nikiforov.dao.group;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.GroupsTable.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +27,10 @@ public class GroupDAOImpl implements GroupDAO {
 
     private static final String ADD_GROUP = "INSERT INTO groups  (group_name) VALUES(?)";
     private static final String FIND_GROUP_BY_ID = "SELECT * FROM groups  WHERE groups.group_id =  ? ";
-    private static final String FIND_GROUP_BY_NAME = SELECT + ASTERISK + FROM + TABLE_GROUPS + WHERE + GROUPS_GROUP_NAME + EQUALS_M
-            + Q_MARK;
-    private static final String GET_ALL_GROUPS = SELECT + ASTERISK + FROM + TABLE_GROUPS;
-    private static final String UPDATE_GROUP = UPDATE + TABLE_GROUPS + SET + GROUPS_GROUP_NAME + EQUALS_M + Q_MARK + WHERE + GROUPS_GROUP_ID
-            + EQUALS_M + Q_MARK;
-    private static final String DELETE_GROUP_BY_ID = DELETE + FROM + TABLE_GROUPS + WHERE + GROUPS_GROUP_ID + EQUALS_M + Q_MARK;
+    private static final String FIND_GROUP_BY_NAME = "SELECT  *  FROM groups  WHERE groups.group_name =  ? ";
+    private static final String GET_ALL_GROUPS = "SELECT  *  FROM groups ";
+    private static final String UPDATE_GROUP = "UPDATE groups  SET groups.group_name =  ?  WHERE groups.group_id =  ? ";
+    private static final String DELETE_GROUP_BY_ID = "DELETE  FROM groups  WHERE groups.group_id =  ? ";
 
     private GroupMapper groupMapper;
     private JdbcTemplate jdbcTemplate;

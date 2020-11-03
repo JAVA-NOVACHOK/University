@@ -14,10 +14,13 @@ import ua.com.nikiforov.services.persons.TeacherService;
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
-    
-    @Autowired
+
     private TeacherService teacherServise;
-      
+
+    @Autowired
+    public TeacherController(TeacherService teacherServise) {
+        this.teacherServise = teacherServise;
+    }
 
     @GetMapping("/")
     public String show(Model model) {

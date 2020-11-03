@@ -1,7 +1,5 @@
 package ua.com.nikiforov.dao.timetables;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersTimetableTable.*;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -29,7 +27,7 @@ import ua.com.nikiforov.services.timetables.Period;
 @Repository
 @Qualifier("teachersTimetableDAO")
 public class TeachersTimetableDAOImpl implements TimetableDAO {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
 
     private static final int DATE_STATEMENT_INDEX = 1;
@@ -38,23 +36,15 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     private static final int TEACHER_ID_STATEMENT_INDEX = 2;
     private static final int TEACHER_ID_STATEMENT_INDEX_GET_MONTH_TABLE = 1;
 
-    private static final String ADD_TEACHERS_TIMETABLE = 
-            "INSERT INTO teachers_timetable (lesson_id,person_id,date,period) VALUES(?,?,?,?)";
-    private static final String FIND_TEACHERS_TIMETABLE_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE
-            + WHERE + ID + EQUALS_M + Q_MARK;
-    private static final String FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = SELECT + ASTERISK + FROM
-            + TABLE_TEACHERS_TIMETABLE + WHERE + LESSON_ID + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK
-            + AND + DATE + EQUALS_M + Q_MARK + AND + PERIOD + EQUALS_M + Q_MARK;
-    private static final String GET_ALL_TEACHERS_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE;
-    private static final String UPDATE_TEACHERS_TIMETABLE = UPDATE + TABLE_TEACHERS_TIMETABLE + SET + LESSON_ID
-            + EQUALS_M + Q_MARK + COMA + PERSON_ID + EQUALS_M + Q_MARK + COMA + DATE + EQUALS_M + Q_MARK + COMA + PERIOD
-            + EQUALS_M + Q_MARK + WHERE + PERSON_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_TEACHERS_TIMETABLE_BY_ID = DELETE + FROM + TABLE_TEACHERS_TIMETABLE + WHERE + ID
-            + EQUALS_M + Q_MARK;
-    private static final String GET_DAY_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE + WHERE + DATE
-            + EQUALS_M + Q_MARK + AND + PERSON_ID + EQUALS_M + Q_MARK;
-    private static final String GET_MONTH_TIMETABLE = SELECT + ASTERISK + FROM + TABLE_TEACHERS_TIMETABLE + WHERE
-            + PERSON_ID + EQUALS_M + Q_MARK + AND + DATE + BETWEEN + Q_MARK + AND + Q_MARK;
+    private static final String ADD_TEACHERS_TIMETABLE = "INSERT INTO teachers_timetable (lesson_id,person_id,date,period) VALUES(?,?,?,?)";
+    private static final String FIND_TEACHERS_TIMETABLE_BY_ID = "SELECT  *  FROM teachers_timetable WHERE id =  ? ";
+    private static final String FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = "SELECT  *  FROM teachers_timetable "
+            + "WHERE lesson_id =  ?  AND person_id =  ?  AND date =  ?  AND period =  ? ";
+    private static final String GET_ALL_TEACHERS_TIMETABLE = "SELECT  *  FROM teachers_timetable";
+    private static final String UPDATE_TEACHERS_TIMETABLE = "UPDATE teachers_timetable SET lesson_id =  ? ,person_id =  ? ,date =  ? ,period =  ?  WHERE person_id =  ? ";
+    private static final String DELETE_TEACHERS_TIMETABLE_BY_ID = "DELETE  FROM teachers_timetable WHERE id =  ? ";
+    private static final String GET_DAY_TIMETABLE = "SELECT  *  FROM teachers_timetable WHERE date =  ?  AND person_id =  ? ";
+    private static final String GET_MONTH_TIMETABLE = "SELECT  *  FROM teachers_timetable WHERE person_id =  ?  AND date BETWEEN  ?  AND  ? ";
     private static final String GETTING = "Getting {}";
     private static final String FAILED_TO_GET = "Failed to get %s";
 
@@ -69,8 +59,9 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
 
     @Override
     public boolean addTimetable(long lessonId, long teacherId, String stringDate, Period period) {
-        String timetableMessage = String.format("TeachersTimetable with lessonId = %d, sudentId = %d, date = %s, period = %d",
-                lessonId, teacherId, stringDate, period.getPeriod());
+        String timetableMessage = String.format(
+                "TeachersTimetable with lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, teacherId,
+                stringDate, period.getPeriod());
         LOGGER.debug("Adding {}", timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
@@ -85,7 +76,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to add %s", timetableMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage,e);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }
@@ -101,7 +92,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format(FAILED_TO_GET, timetableMessage);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage, e);
         }
         return timetable;
     }
@@ -109,8 +100,9 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
             Period period) {
-        String timetableMessage = String.format("TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d",
-                lessonId, teacherId, stringDate, period.getPeriod());
+        String timetableMessage = String.format(
+                "TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, teacherId,
+                stringDate, period.getPeriod());
         LOGGER.debug(GETTING, timetableMessage);
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
@@ -121,7 +113,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format(FAILED_TO_GET, timetableMessage);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage, e);
         }
         return timetable;
     }
@@ -145,8 +137,8 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     public boolean updateTimetable(long lessonId, long teacherId, String stringDate, Period period,
             long teachersTimetableId) {
         String timetableMessage = String.format(
-                "TeachersTimetable with ID = %d and lessonId = %d, sudentId = %d, date = %s, period = %d", teachersTimetableId,
-                lessonId, teacherId, stringDate, period.getPeriod());
+                "TeachersTimetable with ID = %d and lessonId = %d, sudentId = %d, date = %s, period = %d",
+                teachersTimetableId, lessonId, teacherId, stringDate, period.getPeriod());
         Timestamp time = getTimestampFromString(stringDate);
         int periodNumber = period.getPeriod();
         LOGGER.debug("Updating {}", timetableMessage);
@@ -162,7 +154,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failMessage = "Failed to update" + timetableMessage;
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }
@@ -182,13 +174,14 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failDeleteMessage = String.format("Failed to delete %s", teachersTimetablMSG);
             LOGGER.error(failDeleteMessage);
-            throw new EntityNotFoundException(failDeleteMessage, e);
+            throw new DataOperationException(failDeleteMessage, e);
         }
         return actionResult;
     }
 
     public List<Timetable> getDayTimetable(String date, long teacherId) {
-        String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date, teacherId);
+        String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date,
+                teacherId);
         LOGGER.debug(GETTING, date);
         List<Timetable> dayTimetable = new ArrayList<>();
         try {
@@ -202,14 +195,15 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format(FAILED_TO_GET, dayTimetableMSG);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return dayTimetable;
     }
 
     @Override
     public List<Timetable> getMonthTimetable(String date, long teacherId) {
-        String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date, teacherId);
+        String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date,
+                teacherId);
         LOGGER.debug(GETTING, date);
         List<Timetable> monthTimetable = new ArrayList<>();
         Timestamp timestampFrom = Timestamp.valueOf(date + " 00:00:00");
@@ -227,7 +221,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to %s", monthTimetableMSG);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return monthTimetable;
     }

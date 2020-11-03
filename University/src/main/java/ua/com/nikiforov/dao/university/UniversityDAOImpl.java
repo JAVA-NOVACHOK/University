@@ -1,7 +1,5 @@
 package ua.com.nikiforov.dao.university;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.UniversityTable.*;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -23,17 +21,12 @@ public class UniversityDAOImpl implements UniversityDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UniversityDAOImpl.class);
 
-    private static final String ADD_UNIVERSITY = INSERT + TABLE_UNIVERSITIES + L_BRACKET + NAME + VALUES_1_QMARK;
-    private static final String FIND_UNIVERSITY_BY_ID = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES + WHERE + ID
-            + EQUALS_M + Q_MARK;
-    private static final String FIND_UNIVERSITY_BY_NAME = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES + WHERE + NAME
-            + EQUALS_M + Q_MARK;
-    private static final String GET_ALL_UNIVERSITIES = SELECT + ASTERISK + FROM + TABLE_UNIVERSITIES;
-    private static final String UPDATE_UNIVERSITY = UPDATE + TABLE_UNIVERSITIES + SET + NAME + EQUALS_M + Q_MARK + WHERE
-            + ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_UNIVERSITY_BY_ID = DELETE + FROM + TABLE_UNIVERSITIES + WHERE + ID + EQUALS_M
-            + Q_MARK;
-
+    private static final String ADD_UNIVERSITY = "INSERT INTO universities  (university_name) VALUES(?)";
+    private static final String FIND_UNIVERSITY_BY_ID = "SELECT  *  FROM universities  WHERE id =  ? ";
+    private static final String FIND_UNIVERSITY_BY_NAME = "SELECT  *  FROM universities  WHERE university_name =  ? ";
+    private static final String GET_ALL_UNIVERSITIES = "SELECT  *  FROM universities ";
+    private static final String UPDATE_UNIVERSITY = "UPDATE universities  SET university_name =  ?  WHERE id =  ? ";
+    private static final String DELETE_UNIVERSITY_BY_ID = "DELETE  FROM universities  WHERE id =  ? ";
     private static final String GETTING = "Getting {}";
 
     private UniversityMapper universityMapper;

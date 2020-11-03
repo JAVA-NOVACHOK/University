@@ -11,7 +11,7 @@ public interface LessonDAO {
 
     public Lesson getLessonById(long id);
 
-    public LessonInfo getLessonInfoById(long lessonId);
+    public LessonInfo getLessonInfoById(Lesson lesson);
 
     public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId);
 

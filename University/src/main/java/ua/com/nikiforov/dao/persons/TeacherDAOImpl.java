@@ -1,7 +1,5 @@
 package ua.com.nikiforov.dao.persons;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +25,11 @@ public class TeacherDAOImpl implements TeacherDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherDAOImpl.class);
 
     private static final String ADD_TEACHER = "INSERT INTO teachers (first_name,last_name) VALUES(?,?)";
-    private static final String FIND_TEACHER_BY_ID = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
-            + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
-    private static final String GET_TEACHER_BY_NAME = SELECT + ASTERISK + FROM + TABLE_TEACHERS + WHERE
-            + TEACHERS_FIRST_NAME + EQUALS_M + Q_MARK + AND + TEACHERS_LAST_NAME + EQUALS_M + Q_MARK;
-    private static final String GET_ALL_TEACHERS = SELECT + ASTERISK + FROM + TABLE_TEACHERS;
-    private static final String UPDATE_TEACHER = UPDATE + TABLE_TEACHERS + SET + TEACHERS_FIRST_NAME + EQUALS_M + Q_MARK
-            + COMA + TEACHERS_LAST_NAME + EQUALS_M + Q_MARK + WHERE + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_TEACHER_BY_ID = DELETE + FROM + TABLE_TEACHERS + WHERE + TEACHERS_TEACHER_ID
-            + EQUALS_M + Q_MARK;
+    private static final String FIND_TEACHER_BY_ID = "SELECT  *  FROM teachers WHERE teachers.teacher_id =  ? ";
+    private static final String GET_TEACHER_BY_NAME = "SELECT  *  FROM teachers WHERE teachers.first_name =  ?  AND teachers.last_name =  ? ";
+    private static final String GET_ALL_TEACHERS = "SELECT  *  FROM teachers";
+    private static final String UPDATE_TEACHER = "UPDATE teachers SET teachers.first_name =  ? ,teachers.last_name =  ?  WHERE teachers.teacher_id =  ? ";
+    private static final String DELETE_TEACHER_BY_ID = "DELETE  FROM teachers WHERE teachers.teacher_id =  ? ";
 
     private TeacherMapper teacherMapper;
     private JdbcTemplate jdbcTemplate;
@@ -69,12 +63,12 @@ public class TeacherDAOImpl implements TeacherDAO {
     @Override
     public Teacher getTeacherById(long teacherId) {
         LOGGER.debug("Getting Teacher by id '{}'", teacherId);
-        Teacher teacher;
+        Teacher teacher = null;
         try {
             teacher = jdbcTemplate.queryForObject(FIND_TEACHER_BY_ID, new Object[] { teacherId }, teacherMapper);
             LOGGER.info("Successfully retrived Teacher {}", teacher);
         } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get Teacher by Id %d", teacherId);
+            String failGetByIdMessage = String.format("Couldn't find Teacher by Id %d", teacherId);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }
@@ -85,14 +79,12 @@ public class TeacherDAOImpl implements TeacherDAO {
     public Teacher getTeacherByName(String firstName, String lastName) {
         String teacherMessage = String.format("Teacher with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug("Getting {}", teacherMessage);
-        Teacher teacher;
+        Teacher teacher = null;
         try {
             teacher = jdbcTemplate.queryForObject(GET_TEACHER_BY_NAME, new Object[] { firstName, lastName },
                     teacherMapper);
-            LOGGER.info("Successfully retrived {}", teacherMessage);
         } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get %s", teacherMessage);
-            LOGGER.error(failGetByIdMessage);
+            String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }
         return teacher;

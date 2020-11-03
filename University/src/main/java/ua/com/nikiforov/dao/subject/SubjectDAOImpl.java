@@ -1,7 +1,5 @@
 package ua.com.nikiforov.dao.subject;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-import static ua.com.nikiforov.dao.SqlConstants.SubjectTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +24,11 @@ public class SubjectDAOImpl implements SubjectDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectDAOImpl.class);
 
     private static final String ADD_SUBJECT = "INSERT INTO subjects  (subject_name) VALUES(?)";
-    private static final String GET_SUBJECT_BY_ID = SELECT + ASTERISK + FROM + TABLE_SUBJECTS + WHERE + SUBJECTS_SUBJECT_ID
-            + EQUALS_M + Q_MARK;
-    private static final String GET_SUBJECT_BY_NAME = SELECT + ASTERISK + FROM + TABLE_SUBJECTS + WHERE + SUBJECTS_SUBJECT_NAME
-            + EQUALS_M + Q_MARK;
-    private static final String GET_ALL_SUBJECTS = SELECT + ASTERISK + FROM + TABLE_SUBJECTS;
-    private static final String UPDATE_SUBJECT = UPDATE + TABLE_SUBJECTS + SET + SUBJECTS_SUBJECT_NAME + EQUALS_M + Q_MARK
-            + WHERE + SUBJECTS_SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_SUBJECT_BY_ID = DELETE + FROM + TABLE_SUBJECTS + WHERE + SUBJECTS_SUBJECT_ID + EQUALS_M
-            + Q_MARK;
+    private static final String GET_SUBJECT_BY_ID = "SELECT  *  FROM subjects  WHERE subjects.subject_id =  ? ";
+    private static final String GET_SUBJECT_BY_NAME = "SELECT  *  FROM subjects  WHERE subjects.subject_name =  ? ";
+    private static final String GET_ALL_SUBJECTS = "SELECT  *  FROM subjects ";
+    private static final String UPDATE_SUBJECT = "UPDATE subjects  SET subjects.subject_name =  ?  WHERE subjects.subject_id =  ? ";
+    private static final String DELETE_SUBJECT_BY_ID = "DELETE  FROM subjects  WHERE subjects.subject_id =  ? ";
 
     private SubjectMapper subjectMapper;
     private JdbcTemplate jdbcTemplate;

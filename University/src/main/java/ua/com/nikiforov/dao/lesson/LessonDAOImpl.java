@@ -1,24 +1,5 @@
 package ua.com.nikiforov.dao.lesson;
 
-import static ua.com.nikiforov.dao.SqlConstants.AND;
-import static ua.com.nikiforov.dao.SqlConstants.ASTERISK;
-import static ua.com.nikiforov.dao.SqlConstants.COMA;
-import static ua.com.nikiforov.dao.SqlConstants.DELETE;
-import static ua.com.nikiforov.dao.SqlConstants.EQUALS_M;
-import static ua.com.nikiforov.dao.SqlConstants.FROM;
-import static ua.com.nikiforov.dao.SqlConstants.INSERT;
-import static ua.com.nikiforov.dao.SqlConstants.L_BRACKET;
-import static ua.com.nikiforov.dao.SqlConstants.Q_MARK;
-import static ua.com.nikiforov.dao.SqlConstants.SELECT;
-import static ua.com.nikiforov.dao.SqlConstants.SET;
-import static ua.com.nikiforov.dao.SqlConstants.UPDATE;
-import static ua.com.nikiforov.dao.SqlConstants.VALUES_3_QMARK;
-import static ua.com.nikiforov.dao.SqlConstants.WHERE;
-import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.*;
-import static ua.com.nikiforov.dao.SqlConstants.SubjectTable.*;
-import static ua.com.nikiforov.dao.SqlConstants.GroupsTable.*;
-import static ua.com.nikiforov.dao.SqlConstants.RoomsTable.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,21 +26,12 @@ public class LessonDAOImpl implements LessonDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAOImpl.class);
 
     private static final String ADD_LESSON = "INSERT INTO lessons (group_id,subject_id,room_id) VALUES(?,?,?)";
-    private static final String GET_ALL_LESSONS = SELECT + ASTERISK + FROM + TABLE_LESSONS;
-    private static final String FIND_LESSON_BY_ID = SELECT + ASTERISK + FROM + TABLE_LESSONS + WHERE + LESSONS_LESSON_ID
-            + EQUALS_M + Q_MARK;
-    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = SELECT + ASTERISK + FROM + TABLE_LESSONS + WHERE
-            + LESSONS_GROUP_ID + EQUALS_M + Q_MARK + AND + LESSONS_ROOM_ID + EQUALS_M + Q_MARK + AND
-            + LESSONS_SUBJECT_ID + EQUALS_M + Q_MARK;
-    private static final String UPDATE_LESSON = UPDATE + TABLE_LESSONS + SET + LESSONS_GROUP_ID + EQUALS_M + Q_MARK
-            + COMA + LESSONS_ROOM_ID + EQUALS_M + Q_MARK + COMA + LESSONS_SUBJECT_ID + EQUALS_M + Q_MARK + WHERE
-            + LESSONS_LESSON_ID + EQUALS_M + Q_MARK;
-    private static final String DELETE_LESSON_BY_ID = DELETE + FROM + TABLE_LESSONS + WHERE + LESSONS_LESSON_ID
-            + EQUALS_M + Q_MARK;
-    private static final String GET_SUBJECT_GROUP_ROOM_DATA = SELECT + SUBJECTS_SUBJECT_NAME + COMA + ROOM_NUMBER + COMA
-            + GROUPS_GROUP_NAME + FROM + FROM + TABLE_SUBJECTS + COMA + TABLE_GROUPS + COMA + TABLE_ROOMS + WHERE
-            + SUBJECTS_SUBJECT_ID + EQUALS_M + Q_MARK + AND + ID + EQUALS_M + Q_MARK + AND + GROUPS_GROUP_ID + EQUALS_M
-            + Q_MARK;
+    private static final String GET_ALL_LESSONS = "SELECT  *  FROM lessons ";
+    private static final String FIND_LESSON_BY_ID = "SELECT  *  FROM lessons  WHERE lessons.lesson_id =  ? ";
+    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE lessons.group_id =  ?  AND lessons.room_id = ? AND lessons.subject_id = ?";
+    private static final String UPDATE_LESSON = "UPDATE lessons SET group_id = ?,room_id = ?,subject_id = ? WHERE lesson_id = ?";
+    private static final String DELETE_LESSON_BY_ID = "DELETE  FROM lessons  WHERE lesson_id =  ? ";
+    private static final String GET_SUBJECT_GROUP_ROOM_DATA = "SELECT subject_name,room_number,group_name FROM subjects ,groups ,rooms  WHERE subject_id =  ?  AND room_id =  ?  AND group_id =  ?";
 
     private JdbcTemplate jdbcTemplate;
     private LessonMapper lessonMapper;
@@ -68,7 +40,6 @@ public class LessonDAOImpl implements LessonDAO {
     @Autowired
     public LessonDAOImpl(LessonMapper lessonMapper, LessonInfoMapper lessonInfoMapper, DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        ;
         this.lessonMapper = lessonMapper;
         this.lessonInfoMapper = lessonInfoMapper;
     }
@@ -96,13 +67,14 @@ public class LessonDAOImpl implements LessonDAO {
 
     @Override
     public Lesson getLessonById(long id) {
-        LOGGER.debug("Getting Lesson by id '{}'", id);
+        String getlessonMessage = String.format("Lesson by id %d", id);
+        LOGGER.debug("Getting '{}'", getlessonMessage);
         Lesson lesson;
         try {
             lesson = jdbcTemplate.queryForObject(FIND_LESSON_BY_ID, new Object[] { id }, lessonMapper);
             LOGGER.info("Successfully retrived Lesson {}", lesson);
         } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get Lesson by Id %d", id);
+            String failGetByIdMessage = String.format("Couldn't get %s", getlessonMessage);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }
@@ -110,19 +82,20 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public LessonInfo getLessonInfoById(long lessonId) {
-        LOGGER.debug("Getting Lesson by id '{}'", lessonId);
-        LessonInfo lesson;
+    public LessonInfo getLessonInfoById(Lesson lesson) {
+        String lessonInfoMSG = String.format("LessonInfo by lesson with such data: %s", lesson);
+        LOGGER.debug("Getting '{}'", lessonInfoMSG);
+        LessonInfo lessonInfo;
         try {
-            lesson = jdbcTemplate.queryForObject(GET_SUBJECT_GROUP_ROOM_DATA, new Object[] { lessonId },
-                    lessonInfoMapper);
-            LOGGER.info("Successfully retrived Lesson {}", lesson);
+            lessonInfo = jdbcTemplate.queryForObject(GET_SUBJECT_GROUP_ROOM_DATA,
+                    new Object[] { lesson.getSubjectId(), lesson.getRoomId(), lesson.getGroupId() }, lessonInfoMapper);
+            LOGGER.info("Successfully retrived LessonInfo {}", lessonInfo);
         } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get Lesson by Id %d", lessonId);
+            String failGetByIdMessage = "Couldn't get " + lessonInfoMSG;
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }
-        return lesson;
+        return lessonInfo;
     }
 
     @Override

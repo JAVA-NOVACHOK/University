@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import ua.com.nikiforov.models.lesson.Lesson;
-import static ua.com.nikiforov.dao.SqlConstants.LessonsTable.*;
 
 @Component
 public class LessonMapper implements RowMapper<Lesson> {

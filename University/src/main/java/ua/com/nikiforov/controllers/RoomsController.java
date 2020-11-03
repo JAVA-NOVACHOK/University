@@ -15,8 +15,12 @@ import ua.com.nikiforov.services.room.RoomService;
 @RequestMapping("/rooms")
 public class RoomsController {
 
-    @Autowired
     private RoomService roomService;
+
+    @Autowired
+    public RoomsController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @GetMapping("/")
     public String roomsShow(Model model) {

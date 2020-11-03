@@ -1,14 +1,8 @@
 package ua.com.nikiforov.dao.teachers_subjects;
 
-import static ua.com.nikiforov.dao.SqlConstants.*;
-
-import static ua.com.nikiforov.dao.SqlConstants.TeachersSubjectsTable.*;
-import static ua.com.nikiforov.dao.SqlConstants.TeachersTable.*;
-import static ua.com.nikiforov.dao.SqlConstants.SubjectTable.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -21,10 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.mappers.SubjectMapper;
-import ua.com.nikiforov.mappers.TeachersSubjectsMapper;
 import ua.com.nikiforov.mappers.persons.TeacherMapper;
 import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.TeachersSubjects;
 import ua.com.nikiforov.models.persons.Teacher;
 
 @Repository
@@ -32,22 +24,23 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersSubjectsDAOImpl.class);
 
-    private static final String GET_SUBJECTS_IDS = SELECT + ASTERISK + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
-            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + Q_MARK;
+    private static final String GET_SUBJECTS_IDS = "SELECT  *  FROM teachers_subjects WHERE teachers_subjects.teacher_id =  ? ";
     private static final String ADD_SUBJECT_FOR_TEACHER = "INSERT INTO teachers_subjects (teacher_id,subject_id) VALUES(?,?)";
-    private static final String DELETE_SUBJECT_FROM_TEACHER = DELETE + FROM + TEACHERS_SUBJECTS_TABLE + WHERE
-            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + Q_MARK + AND + TEACHERS_SUBJECTS_SUBJECT_ID + EQUALS_M + Q_MARK;
+    private static final String DELETE_SUBJECT_FROM_TEACHER = "DELETE  FROM teachers_subjects WHERE teachers_subjects.teacher_id =  ?  AND teachers_subjects.subject_id =  ? ";
+    private static final String GET_TEACHERS_BY_SUBJECT_ID = "SELECT teachers.teacher_id,teachers.first_name,teachers.last_name FROM subjects"
+                + "  INNER  JOIN teachers_subjects "
+                + "ON subjects.subject_id = teachers_subjects.subject_id "
+                + "INNER  JOIN teachers "
+                + "ON teachers_subjects.teacher_id = teachers.teacher_id "
+                + "WHERE subjects.subject_id =  ? ";
 
-    private static final String GET_TEACHERS_BY_SUBJECT_ID = SELECT + TEACHERS_TEACHER_ID + COMA + TEACHERS_FIRST_NAME
-            + COMA + TEACHERS_LAST_NAME + FROM + TABLE_SUBJECTS + INNER + JOIN + TEACHERS_SUBJECTS_TABLE + ON
-            + SUBJECTS_SUBJECT_ID + EQUALS_M + TEACHERS_SUBJECTS_SUBJECT_ID + INNER + JOIN + TABLE_TEACHERS + ON
-            + TEACHERS_SUBJECTS_TEACHER_ID + EQUALS_M + TEACHERS_TEACHER_ID + WHERE + SUBJECTS_SUBJECT_ID + EQUALS_M
-            + Q_MARK;
-
-    private static final String GET_SUBJECTS_BY_TEACHER_ID = SELECT + SUBJECTS_SUBJECT_ID + COMA + SUBJECTS_SUBJECT_NAME + FROM
-            + TABLE_TEACHERS + INNER + JOIN + TEACHERS_SUBJECTS_TABLE + ON + TEACHERS_TEACHER_ID + EQUALS_M
-            + TEACHERS_SUBJECTS_TEACHER_ID + INNER + JOIN + TABLE_SUBJECTS + ON + TEACHERS_SUBJECTS_SUBJECT_ID
-            + EQUALS_M + SUBJECTS_SUBJECT_ID + WHERE + TEACHERS_TEACHER_ID + EQUALS_M + Q_MARK;
+    private static final String GET_SUBJECTS_BY_TEACHER_ID = "SELECT subjects.subject_id,subjects.subject_name "
+            + "FROM teachers INNER  JOIN teachers_subjects "
+            + "ON teachers.teacher_id = teachers_subjects.teacher_id "
+            + "INNER  JOIN subjects  "
+            + "ON teachers_subjects.subject_id = subjects.subject_id "
+            + "WHERE teachers.teacher_id =  ? ";
+            
 
     private JdbcTemplate jdbcTemplate;
     private TeacherMapper teacherMapper;
@@ -105,7 +98,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to assign %s", assignSubjectMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }
@@ -126,7 +119,7 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to unassign %s", assignSubjectMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
         return actionResult;
     }

@@ -7,19 +7,23 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import ua.com.nikiforov.models.persons.Student;
-import static ua.com.nikiforov.dao.SqlConstants.StudentsTable.*;
 
 
 @Component
 public class StudentMapper implements RowMapper<Student> {
+    
+    private static final int STUDENT_ID_INDEX = 1;
+    private static final int STUDENT_FIRST_NAME_INDEX = 2;
+    private static final int STUDENT_LAST_NAME_INDEX = 3;
+    private static final int STUDENT_GROUP_INDEX = 4;
 
     @Override
     public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Student student = new Student();
-        student.setId(resultSet.getLong(STUDENTS_STUDENT_ID));
-        student.setFirstName(resultSet.getString(STUDENTS_STUDENT_FIRST_NAME));
-        student.setLastName(resultSet.getString(STUDENTS_STUDENT_LAST_NAME));
-        student.setGroup(resultSet.getLong(STUDENTS_STUDENT_GROUP_ID));
+        student.setId(resultSet.getLong(STUDENT_ID_INDEX));
+        student.setFirstName(resultSet.getString(STUDENT_FIRST_NAME_INDEX));
+        student.setLastName(resultSet.getString(STUDENT_LAST_NAME_INDEX));
+        student.setGroup(resultSet.getLong(STUDENT_GROUP_INDEX));
         return student;
     }
 

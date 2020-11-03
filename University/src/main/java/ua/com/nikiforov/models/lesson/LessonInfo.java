@@ -4,16 +4,16 @@ public class LessonInfo {
 
     private long lessonId;
     protected String subjectName;
-    private int roomNamber;
+    private int roomNumber;
     private String groupName;
 
     public LessonInfo() {
     }
 
-    public LessonInfo(long lessonId, String subjectName, int roomNamber, String groupName) {
+    public LessonInfo(long lessonId, String subjectName, int roomNumber, String groupName) {
         this.lessonId = lessonId;
         this.subjectName = subjectName;
-        this.roomNamber = roomNamber;
+        this.roomNumber = roomNumber;
         this.groupName = groupName;
     }
 
@@ -33,12 +33,12 @@ public class LessonInfo {
         this.subjectName = subjectName;
     }
 
-    public int getRoomNamber() {
-        return roomNamber;
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setRoomNamber(int roomNamber) {
-        this.roomNamber = roomNamber;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     public String getGroupName() {
@@ -55,7 +55,7 @@ public class LessonInfo {
         int result = 1;
         result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
         result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
-        result = prime * result + roomNamber;
+        result = prime * result + roomNumber;
         result = prime * result + ((subjectName == null) ? 0 : subjectName.hashCode());
         return result;
     }
@@ -76,7 +76,7 @@ public class LessonInfo {
             return false;
         if (lessonId != other.lessonId)
             return false;
-        if (roomNamber != other.roomNamber)
+        if (roomNumber != other.roomNumber)
             return false;
         if (subjectName == null) {
             if (other.subjectName != null)

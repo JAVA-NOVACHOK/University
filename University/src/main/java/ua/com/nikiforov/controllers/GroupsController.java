@@ -16,11 +16,12 @@ import ua.com.nikiforov.services.persons.StudentsService;
 @RequestMapping("/groups")
 public class GroupsController {
 
-    @Autowired
     private GroupService groupService;
 
     @Autowired
-    private StudentsService studentService;
+    public GroupsController(GroupService groupService) {
+        this.groupService = groupService;
+    }
 
     @GetMapping("/")
     public String getGroups(Model model) {
