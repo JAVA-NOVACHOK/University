@@ -3,9 +3,7 @@ package ua.com.nikiforov.controllers;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +20,7 @@ import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.lesson.LessonInfo;
 import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.models.timetable.DateInfo;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.TeacherService;
@@ -36,7 +35,7 @@ public class ScheduleController {
 
     private static final String TIMEZONE = "Europe/Simferopol";
 
-    @ModelAttribute("scheduleFind")
+    @ModelAttribute("scheduleFindAttr")
     public ScheduleFindAttr getScheduleFindAttr() {
         return new ScheduleFindAttr();
     }
@@ -76,7 +75,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/find")
-    public String findSchedule(@ModelAttribute("scheduleFind") ScheduleFindAttr scheduleFindAttr, Model model) {
+    public String findSchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr, Model model) {
         Teacher teacher;
         try {
             teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
@@ -92,19 +91,8 @@ public class ScheduleController {
                 timetable.setLessonInfo(lessonService.getLessonInfoById(timetable.getLessonId()));
             }
             Timetable timetable = dayTimetable.get(0);
-            Instant instant = timetable.getTime();
-            ZonedDateTime zonedDateTime = getZonedDateTime(instant, TIMEZONE);
-            int monthDay = zonedDateTime.getDayOfMonth();
-            model.addAttribute("monthDay", monthDay);
-
-            String month = zonedDateTime.getMonth().toString();
-            model.addAttribute("month", month);
-
-            int year = zonedDateTime.getYear();
-            model.addAttribute("year", year);
-            
-            String weekDay = zonedDateTime.getDayOfWeek().name();
-            model.addAttribute("weekDay", weekDay);
+            DateInfo dateInfo = lessonService.parseInstantToDateInfo(timetable, TIMEZONE);
+            model.addAttribute("dateInfo", dateInfo);
             model.addAttribute("dayTimetable", dayTimetable);
             return "timetable/teacher_schedule";
         } else {

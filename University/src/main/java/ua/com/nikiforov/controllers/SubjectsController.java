@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 @Controller

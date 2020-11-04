@@ -1,5 +1,8 @@
 package ua.com.nikiforov.services.lesson;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +10,8 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dao.lesson.LessonDAO;
 import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.lesson.LessonInfo;
+import ua.com.nikiforov.models.timetable.DateInfo;
+import ua.com.nikiforov.models.timetable.Timetable;
 
 @Service
 public class LessonServiceImpl implements LessonService {
@@ -47,6 +52,22 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public boolean deleteLessonById(long id) {
         return lessonDAO.deleteLessonById(id);
+    }
+
+    @Override
+    public DateInfo parseInstantToDateInfo(Timetable timetable, String zone) {
+        Instant instant = timetable.getTime();
+        ZonedDateTime zonedDateTime = getZonedDateTime(instant, zone);
+        String weekDay = zonedDateTime.getDayOfWeek().name();
+        int monthDay = zonedDateTime.getDayOfMonth();
+        String month = zonedDateTime.getMonth().toString();
+        int year = zonedDateTime.getYear();
+        return new DateInfo(weekDay, monthDay, month, year);
+    }
+    
+    private ZonedDateTime getZonedDateTime(Instant instant, String zone) {
+        ZoneId zoneId = ZoneId.of(zone);
+        return ZonedDateTime.ofInstant(instant, zoneId);
     }
 
 }

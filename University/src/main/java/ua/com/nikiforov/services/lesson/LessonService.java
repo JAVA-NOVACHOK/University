@@ -4,6 +4,8 @@ import java.util.List;
 
 import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.lesson.LessonInfo;
+import ua.com.nikiforov.models.timetable.DateInfo;
+import ua.com.nikiforov.models.timetable.Timetable;
 
 public interface LessonService {
     
@@ -20,5 +22,7 @@ public interface LessonService {
     public boolean updateLesson(long groupId, int roomId, int subjectId, long lessonId);
 
     public boolean deleteLessonById(long id);
+    
+    public DateInfo parseInstantToDateInfo(Timetable timetable, String zone);
 
 }

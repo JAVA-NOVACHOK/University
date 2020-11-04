@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.services.group.GroupService;
-import ua.com.nikiforov.services.persons.StudentsService;
 
 @Controller
 @RequestMapping("/groups")
