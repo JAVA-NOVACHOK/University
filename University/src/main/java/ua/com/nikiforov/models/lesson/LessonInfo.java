@@ -1,62 +1,67 @@
 package ua.com.nikiforov.models.lesson;
 
+import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.models.Room;
+import ua.com.nikiforov.models.Subject;
+
 public class LessonInfo {
 
-    private long lessonId;
-    protected String subjectName;
-    private int roomNumber;
-    private String groupName;
+    private Subject subject;
+    private Room room;
+    private Group group;
 
     public LessonInfo() {
     }
 
-    public LessonInfo(long lessonId, String subjectName, int roomNumber, String groupName) {
-        this.lessonId = lessonId;
-        this.subjectName = subjectName;
-        this.roomNumber = roomNumber;
-        this.groupName = groupName;
+    public LessonInfo( Subject subject, Room room, Group group) {
+        this.subject = subject;
+        this.room = room;
+        this.group = group;
     }
 
-    public long getLessonId() {
-        return lessonId;
-    }
 
-    public void setLessonId(long lessonId) {
-        this.lessonId = lessonId;
+    public Subject getSubject() {
+        return subject;
     }
-
+    
     public String getSubjectName() {
-        return subjectName;
+        return subject.getName();
+    }
+    
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public Room getRoom() {
+        return room;
     }
 
     public int getRoomNumber() {
-        return roomNumber;
+        return room.getRoomNumber();
+    }
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public void setRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
+    public Group getGroup() {
+        return group;
     }
 
     public String getGroupName() {
-        return groupName;
+        return group.getGroupName();
     }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
-        result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
-        result = prime * result + roomNumber;
-        result = prime * result + ((subjectName == null) ? 0 : subjectName.hashCode());
+        result = prime * result + ((group == null) ? 0 : group.hashCode());
+        result = prime * result + ((room == null) ? 0 : room.hashCode());
+        result = prime * result + ((subject == null) ? 0 : subject.hashCode());
         return result;
     }
 
@@ -69,23 +74,22 @@ public class LessonInfo {
         if (getClass() != obj.getClass())
             return false;
         LessonInfo other = (LessonInfo) obj;
-        if (groupName == null) {
-            if (other.groupName != null)
+        if (group == null) {
+            if (other.group != null)
                 return false;
-        } else if (!groupName.equals(other.groupName))
+        } else if (!group.equals(other.group))
             return false;
-        if (lessonId != other.lessonId)
-            return false;
-        if (roomNumber != other.roomNumber)
-            return false;
-        if (subjectName == null) {
-            if (other.subjectName != null)
+        if (room == null) {
+            if (other.room != null)
                 return false;
-        } else if (!subjectName.equals(other.subjectName))
+        } else if (!room.equals(other.room))
+            return false;
+        if (subject == null) {
+            if (other.subject != null)
+                return false;
+        } else if (!subject.equals(other.subject))
             return false;
         return true;
     }
-
-   
 
 }

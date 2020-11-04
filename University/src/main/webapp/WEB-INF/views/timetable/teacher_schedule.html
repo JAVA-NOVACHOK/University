@@ -43,9 +43,9 @@
 				<tbody>
 					<tr th:each="timetable : ${dayTimetable}">
 						<td th:text="${timetable.period}"></td>
-						<td th:text="${lessonInfo.subjectName}"></td>
-						<td th:text="${lessonInfo.roomNumber}"></td>
-						<td th:text="${lessonInfo.groupName}"></td>
+						<td th:text="${timetable.lessonInfo.subject.name}"></td>
+						<td th:text="${timetable.lessonInfo.room.roomNumber}"></td>
+						<td th:text="${timetable.lessonInfo.group.groupName}"></td>
 						<td><a class="btn btn-success"
 							href="/#">Edit</a></td>
 						<td><a class="btn btn-danger "

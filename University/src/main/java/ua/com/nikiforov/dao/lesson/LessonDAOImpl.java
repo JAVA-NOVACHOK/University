@@ -31,7 +31,7 @@ public class LessonDAOImpl implements LessonDAO {
     private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE lessons.group_id =  ?  AND lessons.room_id = ? AND lessons.subject_id = ?";
     private static final String UPDATE_LESSON = "UPDATE lessons SET group_id = ?,room_id = ?,subject_id = ? WHERE lesson_id = ?";
     private static final String DELETE_LESSON_BY_ID = "DELETE  FROM lessons  WHERE lesson_id =  ? ";
-    private static final String GET_SUBJECT_GROUP_ROOM_DATA = "SELECT subject_name,room_number,group_name FROM subjects ,groups ,rooms  WHERE subject_id =  ?  AND room_id =  ?  AND group_id =  ?";
+    private static final String GET_SUBJECT_GROUP_ROOM_DATA = "SELECT subject_id, subject_name, room_id, room_number, seat_number, group_id, group_name FROM subjects, groups, rooms WHERE subject_id = ? AND room_id = ? AND group_id = ?";
 
     private JdbcTemplate jdbcTemplate;
     private LessonMapper lessonMapper;

@@ -2,11 +2,14 @@ package ua.com.nikiforov.models.timetable;
 
 import java.time.Instant;
 
-public class Timetable {
+import ua.com.nikiforov.models.lesson.LessonInfo;
+
+public class Timetable implements Comparable<Timetable>{
 
     private long id;
     private long personId;
     private long lessonId;
+    private LessonInfo lessonInfo;
     private Instant time;
     private int period;
 
@@ -19,6 +22,7 @@ public class Timetable {
         this.lessonId = lessonId;
         this.time = time;
         this.period = period;
+        lessonInfo = new LessonInfo();
     }
 
     public long getId() {
@@ -45,6 +49,14 @@ public class Timetable {
         this.lessonId = lessonId;
     }
 
+    public LessonInfo getLessonInfo() {
+        return lessonInfo;
+    }
+
+    public void setLessonInfo(LessonInfo lessonInfo) {
+        this.lessonInfo = lessonInfo;
+    }
+
     public Instant getTime() {
         return time;
     }
@@ -67,14 +79,10 @@ public class Timetable {
         int result = 1;
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
+        result = prime * result + ((lessonInfo == null) ? 0 : lessonInfo.hashCode());
         result = prime * result + period;
         result = prime * result + (int) (personId ^ (personId >>> 32));
-        if (time != null) {
-            long timeMillis = time.toEpochMilli();
-            result = prime * result + (int) (timeMillis ^ (timeMillis >>> 32));
-        } else {
-            result = prime * result;
-        }
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
         return result;
     }
 
@@ -90,6 +98,11 @@ public class Timetable {
         if (id != other.id)
             return false;
         if (lessonId != other.lessonId)
+            return false;
+        if (lessonInfo == null) {
+            if (other.lessonInfo != null)
+                return false;
+        } else if (!lessonInfo.equals(other.lessonInfo))
             return false;
         if (period != other.period)
             return false;
@@ -107,6 +120,14 @@ public class Timetable {
     public String toString() {
         return "id=" + id + ", personId=" + personId + ", lessonId=" + lessonId + ", time=" + time + ", period="
                 + period;
+    }
+
+    @Override
+    public int compareTo(Timetable o) {
+        if(period > o.getPeriod()) {
+            return 1;
+        }else
+         return 0;
     }
 
 }

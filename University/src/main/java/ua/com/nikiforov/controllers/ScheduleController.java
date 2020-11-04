@@ -88,20 +88,23 @@ public class ScheduleController {
         List<Timetable> dayTimetable = teachersTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
                 teacher.getId());
         if (!dayTimetable.isEmpty()) {
-            logger.debug("SIZE LIST = {}", dayTimetable.size());
-        Timetable timetable = dayTimetable.get(0);
-        Instant instant = timetable.getTime();
-        ZonedDateTime zonedDateTime = getZonedDateTime(instant, TIMEZONE);
-        int monthDay = zonedDateTime.getDayOfMonth();
-        model.addAttribute("monthDay", monthDay);
-        String month = zonedDateTime.getMonth().toString();
-        int year = zonedDateTime.getYear();
-        model.addAttribute("month", month);
-        model.addAttribute("year", year);
-            LessonInfo lessonInfo = lessonService.getLessonInfoById(timetable.getLessonId());
+            for (Timetable timetable : dayTimetable) {
+                timetable.setLessonInfo(lessonService.getLessonInfoById(timetable.getLessonId()));
+            }
+            Timetable timetable = dayTimetable.get(0);
+            Instant instant = timetable.getTime();
+            ZonedDateTime zonedDateTime = getZonedDateTime(instant, TIMEZONE);
+            int monthDay = zonedDateTime.getDayOfMonth();
+            model.addAttribute("monthDay", monthDay);
+
+            String month = zonedDateTime.getMonth().toString();
+            model.addAttribute("month", month);
+
+            int year = zonedDateTime.getYear();
+            model.addAttribute("year", year);
+            
             String weekDay = zonedDateTime.getDayOfWeek().name();
             model.addAttribute("weekDay", weekDay);
-            model.addAttribute("lessonInfo", lessonInfo);
             model.addAttribute("dayTimetable", dayTimetable);
             return "timetable/teacher_schedule";
         } else {
