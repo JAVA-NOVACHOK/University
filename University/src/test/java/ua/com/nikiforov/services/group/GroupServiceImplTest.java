@@ -18,13 +18,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.services.persons.StudentsService;
-import ua.com.nikiforov.config.UniversityConfig;
+import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
-@SpringJUnitConfig(UniversityConfig.class)
+@SpringJUnitConfig(DatabaseConfig.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class GroupServiceImplTest {

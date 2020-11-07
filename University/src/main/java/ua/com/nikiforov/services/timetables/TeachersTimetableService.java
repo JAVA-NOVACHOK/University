@@ -1,69 +1,62 @@
 package ua.com.nikiforov.services.timetables;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.dao.timetables.TimetableDAO;
+import ua.com.nikiforov.dao.timetables.TeachersTimetableDAO;
 import ua.com.nikiforov.models.timetable.Timetable;
 
 @Service
-public class TeachersTimetableService implements PersonalTimetable {
+public class TeachersTimetableService extends PersonalTimetable {
 
-    private TimetableDAO timetableDAO;
+    private Logger logger = LoggerFactory.getLogger(TeachersTimetableService.class);
+
+    private TeachersTimetableDAO teachersTimetableDAO;
 
     @Autowired
-    public TeachersTimetableService(@Qualifier("teachersTimetableDAO") TimetableDAO timetable) {
-        this.timetableDAO = timetable;
-    }
-
-    @Override
-    public boolean addTimetable(long lessonId, long teacherId, String date, Period period) {
-        return timetableDAO.addTimetable(lessonId, teacherId, date, period);
-    }
-
-    @Override
-    public Timetable getTimetableById(long id) {
-        return timetableDAO.getTimetableById(id);
-    }
-
-    @Override
-    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
-            Period period) {
-        return timetableDAO.getTimetableByLessonPersonTimePeriod(lessonId, teacherId, stringDate, period);
-    }
-
-    @Override
-    public List<Timetable> getAllTimetables() {
-        return timetableDAO.getAllTimetables();
-    }
-
-    @Override
-    public boolean updateTimetable(long lessonId, long teacherId, String date, Period period, long id) {
-        return timetableDAO.updateTimetable(lessonId, teacherId, date, period, id);
-    }
-
-    @Override
-    public boolean deleteTimetableById(long id) {
-        return timetableDAO.deleteTimetableById(id);
+    public TeachersTimetableService(TeachersTimetableDAO teachersTimetableDAO) {
+        this.teachersTimetableDAO = teachersTimetableDAO;
     }
 
     @Override
     public List<Timetable> getDayTimetable(String date, long teacherId) {
-        return timetableDAO.getDayTimetable(date, teacherId);
+        return teachersTimetableDAO.getDayTeacherTimetable(date, teacherId);
     }
 
     @Override
-    public List<Timetable> getMonthTimetable(String date, long teacherId) {
-        return timetableDAO.getMonthTimetable(date, teacherId);
-    }
+    public List<DayTimetable> getMonthTimetable(String date, long teacherId) {
+        List<Timetable> allTimetablesList = teachersTimetableDAO.getMonthTeacherTimetable(date, teacherId);
+        List<DayTimetable> monthTimetable = new ArrayList<>();
+        if (!allTimetablesList.isEmpty()) {
+            for (int i = 1; i <= allTimetablesList.size(); i++) {
+                DayTimetable dayTimetable = new DayTimetable();
+                Timetable previousTimetable = allTimetablesList.get(i - 1);
+                dayTimetable.addTimetable(previousTimetable);
+                dayTimetable.setDateInfo(parseInstantToDateInfo(previousTimetable));
+                monthTimetable.add(dayTimetable);
+                while (i < allTimetablesList.size()) {
+                    Timetable currentTimetable = allTimetablesList.get(i);
 
-    @Override
-    public Timestamp getTimestampFromString(String stringDate) {
-        return timetableDAO.getTimestampFromString(stringDate);
+                    if (previousTimetable.getTime().equals(currentTimetable.getTime())) {
+                        dayTimetable.addTimetable(currentTimetable);
+                        i++;
+                    } else {
+                        Collections.sort(dayTimetable.getTimetables(), new CompareByPeriod());
+                        logger.debug("In else dayTimetable table size is = {}", dayTimetable.getTimetables().size());
+                        break;
+                    }
+
+                }
+            }
+        }
+        return monthTimetable;
     }
 
 }

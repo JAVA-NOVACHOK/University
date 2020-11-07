@@ -16,12 +16,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.config.UniversityConfig;
+import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
 
-@SpringJUnitConfig(UniversityConfig.class)
+@SpringJUnitConfig(DatabaseConfig.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class RoomServiceImplTest {
@@ -33,7 +33,6 @@ class RoomServiceImplTest {
     private static final int TEST_SEAT_NUMBER_1 = 20;
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
-    private static final int TEST_SEAT_NUMBER_4 = 35;
 
     @Autowired
     private RoomServiceImpl roomService;

@@ -1,20 +1,26 @@
 package ua.com.nikiforov.models.lesson;
 
+import java.time.Instant;
+
 public class Lesson {
 
     private long id;
     private long groupId;
     protected int subjectId;
     private int roomId;
+    private Instant time;
+    private int period;
 
     public Lesson() {
     }
 
-    public Lesson(long id, long groupId, int subjectId, int roomId) {
+    public Lesson(long id, long groupId, int subjectId, int roomId, Instant time, int period) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
         this.roomId = roomId;
+        this.time = time;
+        this.period = period;
     }
 
     public long getId() {
@@ -49,14 +55,32 @@ public class Lesson {
         this.roomId = roomId;
     }
 
+    public Instant getTime() {
+        return time;
+    }
+
+    public void setTime(Instant time) {
+        this.time = time;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (groupId ^ (groupId >>> 32));
         result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + period;
         result = prime * result + roomId;
         result = prime * result + subjectId;
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
         return result;
     }
 
@@ -73,18 +97,18 @@ public class Lesson {
             return false;
         if (id != other.id)
             return false;
+        if (period != other.period)
+            return false;
         if (roomId != other.roomId)
             return false;
         if (subjectId != other.subjectId)
             return false;
+        if (time == null) {
+            if (other.time != null)
+                return false;
+        } else if (!time.equals(other.time))
+            return false;
         return true;
     }
-
-    @Override
-    public String toString() {
-        return "id=" + id + ", groupId=" + groupId + ", subjectId=" + subjectId + ", roomId=" + roomId;
-    }
-    
-    
 
 }

@@ -20,9 +20,12 @@ CREATE TABLE groups(
 DROP TABLE IF EXISTS lessons;
 CREATE TABLE lessons(
 	lesson_id serial PRIMARY KEY,
-	group_id BIGINT,
+	 period int,
 	subject_id int,
-	room_id int
+	room_id int,
+	group_id BIGINT,
+	time TIMESTAMP WITH TIME ZONE NOT NULL,
+	teacher_id BIGINT
 );
 DROP TABLE IF EXISTS subjects CASCADE;
 CREATE TABLE subjects(

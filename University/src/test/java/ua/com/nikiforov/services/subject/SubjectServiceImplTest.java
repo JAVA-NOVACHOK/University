@@ -14,14 +14,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.config.UniversityConfig;
+import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeacherService;
 
-@SpringJUnitConfig(UniversityConfig.class)
+@SpringJUnitConfig(DatabaseConfig.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class SubjectServiceImplTest {

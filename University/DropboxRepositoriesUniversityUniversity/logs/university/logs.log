@@ -1,0 +1,12 @@
+2020-11-05 13:18:35,5161372 [main] WARN  o.s.web.servlet.PageNotFound - No mapping for GET /homePage
+2020-11-05 13:25:45,0381601 [main] DEBUG u.c.n.dao.group.GroupDAOImpl - Retrieving all groups.
+2020-11-05 13:25:46,6063169 [main] INFO  u.c.n.dao.group.GroupDAOImpl - Successfully query for all groups
+2020-11-05 13:46:29,3431854 [main] DEBUG u.c.nikiforov.dao.room.RoomDAOImpl - Getting all rooms
+2020-11-05 13:46:30,9223433 [main] INFO  u.c.nikiforov.dao.room.RoomDAOImpl - Successfully query for all rooms
+2020-11-05 13:56:54,3171288 [main] DEBUG u.c.n.dao.group.GroupDAOImpl - Retrieving all groups.
+2020-11-05 13:56:55,6432614 [main] INFO  u.c.n.dao.group.GroupDAOImpl - Successfully query for all groups
+2020-11-05 14:12:59,2921158 [main] DEBUG u.c.n.dao.group.GroupDAOImpl - Retrieving all groups.
+2020-11-05 14:13:00,8072673 [main] INFO  u.c.n.dao.group.GroupDAOImpl - Successfully query for all groups
+2020-11-05 14:17:28,6431322 [main] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.bind.MissingServletRequestParameterException: Required long parameter 'id' is not present]
+2020-11-05 14:30:42,0661591 [main] WARN  o.s.web.servlet.PageNotFound - No mapping for GET /teacher/
+2020-11-05 14:31:14,9421791 [main] WARN  o.s.web.servlet.PageNotFound - No mapping for GET /teacher

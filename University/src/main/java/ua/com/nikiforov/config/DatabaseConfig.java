@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 @ComponentScan("ua.com.nikiforov")
 @PropertySource("classpath:university.properties")
-public class UniversityConfig {
+public class DatabaseConfig {
 
     @Value("url")
     private String url;

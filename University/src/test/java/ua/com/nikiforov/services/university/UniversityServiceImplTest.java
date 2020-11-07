@@ -11,11 +11,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.config.UniversityConfig;
+import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.University;
 
-@SpringJUnitConfig(UniversityConfig.class)
+@SpringJUnitConfig(DatabaseConfig.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class UniversityServiceImplTest {

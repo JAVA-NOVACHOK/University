@@ -1,8 +1,6 @@
 package ua.com.nikiforov.services.subject;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,21 +9,17 @@ import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.services.persons.TeacherService;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
 
     private SubjectDAO subjectDAO;
     private TeachersSubjectsDAO techersSubjectsDAO;
-    private TeacherService teacherService;
 
     @Autowired
-    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO,
-            TeacherService teacherService) {
+    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO) {
         this.subjectDAO = subjectDAO;
         this.techersSubjectsDAO = techersSubjectsDAO;
-        this.teacherService = teacherService;
     }
 
     @Override
@@ -38,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject = subjectDAO.getSubjectById(subjectId);
         return setTeachersToSubject(subject);
     }
-    
+
     private Subject setTeachersToSubject(Subject subject) {
         List<Teacher> teachers = techersSubjectsDAO.getTeachers(subject.getId());
         subject.setTeachers(teachers);

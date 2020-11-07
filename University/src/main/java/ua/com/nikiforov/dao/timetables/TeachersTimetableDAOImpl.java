@@ -1,55 +1,48 @@
 package ua.com.nikiforov.dao.timetables;
 
-
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
-import ua.com.nikiforov.services.timetables.Period;
 
 @Repository
-@Qualifier("teachersTimetableDAO")
-public class TeachersTimetableDAOImpl implements TimetableDAO {
+public class TeachersTimetableDAOImpl implements TeachersTimetableDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
 
-    private static final int DATE_STATEMENT_INDEX = 1;
-    private static final int FROM_DATE_STATEMENT_INDEX = 2;
-    private static final int TO_DATE_STATEMENT_INDEX = 3;
-    private static final int TEACHER_ID_STATEMENT_INDEX = 2;
-    private static final int TEACHER_ID_STATEMENT_INDEX_GET_MONTH_TABLE = 1;
+    private static final String GET_TEACHER_DAY_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
+            + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "
+            + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
+            + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
+            + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
+            + "WHERE lessons.teacher_id = ? AND time = ?";
 
-    private static final String ADD_TEACHERS_TIMETABLE = "INSERT INTO teachers_timetable (lesson_id,person_id,date,period) VALUES(?,?,?,?)";
-    private static final String FIND_TEACHERS_TIMETABLE_BY_ID = "SELECT  *  FROM teachers_timetable WHERE id =  ? ";
-    private static final String FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD = "SELECT  *  FROM teachers_timetable "
-            + "WHERE lesson_id =  ?  AND person_id =  ?  AND date =  ?  AND period =  ? ";
-    private static final String GET_ALL_TEACHERS_TIMETABLE = "SELECT  *  FROM teachers_timetable";
-    private static final String UPDATE_TEACHERS_TIMETABLE = "UPDATE teachers_timetable SET lesson_id =  ? ,person_id =  ? ,date =  ? ,period =  ?  WHERE person_id =  ? ";
-    private static final String DELETE_TEACHERS_TIMETABLE_BY_ID = "DELETE  FROM teachers_timetable WHERE id =  ? ";
-    private static final String GET_DAY_TIMETABLE = "SELECT  *  FROM teachers_timetable WHERE date =  ?  AND person_id =  ? ";
-    private static final String GET_MONTH_TIMETABLE = "SELECT  *  FROM teachers_timetable WHERE person_id =  ?  AND date BETWEEN  ?  AND  ? ";
-    private static final String GETTING = "Getting {}";
-    private static final String FAILED_TO_GET = "Failed to get %s";
+    private static final String GET_TEACHER_MONTH_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
+            + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "
+            + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
+            + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
+            + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
+            + "WHERE lessons.teacher_id = ? AND time BETWEEN ? AND ?";
 
-    private TimetableMapper timetableMapper;
     private JdbcTemplate jdbcTemplate;
+    private TimetableMapper timetableMapper;
 
     @Autowired
     public TeachersTimetableDAOImpl(DataSource dataSource, TimetableMapper timetableMapper) {
@@ -58,176 +51,55 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public boolean addTimetable(long lessonId, long teacherId, String stringDate, Period period) {
-        String timetableMessage = String.format(
-                "TeachersTimetable with lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, teacherId,
-                stringDate, period.getPeriod());
-        LOGGER.debug("Adding {}", timetableMessage);
-        Timestamp time = getTimestampFromString(stringDate);
-        int periodNumber = period.getPeriod();
-        boolean actionResult = false;
-        try {
-            actionResult = jdbcTemplate.update(ADD_TEACHERS_TIMETABLE, lessonId, teacherId, time, periodNumber) > 0;
-            if (actionResult) {
-                LOGGER.info("Successfully added {}", timetableMessage);
-            } else {
-                throw new DataOperationException("Couldn't add " + timetableMessage);
-            }
-        } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to add %s", timetableMessage);
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
-        }
-        return actionResult;
-    }
-
-    @Override
-    public Timetable getTimetableById(long timetableId) {
-        String timetableMessage = String.format("TeachersTimetable by Id %d", timetableId);
-        LOGGER.debug(GETTING, timetableMessage);
-        Timetable timetable;
-        try {
-            timetable = jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_ID, new Object[] { timetableId },
-                    timetableMapper);
-        } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format(FAILED_TO_GET, timetableMessage);
-            LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage, e);
-        }
-        return timetable;
-    }
-
-    @Override
-    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate,
-            Period period) {
-        String timetableMessage = String.format(
-                "TeachersTimetable by lessonId = %d, sudentId = %d, date = %s, period = %d", lessonId, teacherId,
-                stringDate, period.getPeriod());
-        LOGGER.debug(GETTING, timetableMessage);
-        Timestamp time = getTimestampFromString(stringDate);
-        int periodNumber = period.getPeriod();
-        Timetable timetable;
-        try {
-            timetable = jdbcTemplate.queryForObject(FIND_TEACHERS_TIMETABLE_BY_LESSON_TEACHER_TIME_PERIOD,
-                    new Object[] { lessonId, teacherId, time, periodNumber }, timetableMapper);
-        } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format(FAILED_TO_GET, timetableMessage);
-            LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage, e);
-        }
-        return timetable;
-    }
-
-    @Override
-    public List<Timetable> getAllTimetables() {
-        LOGGER.debug("Getting all TeachersTimetables");
-        List<Timetable> allTimetables = new ArrayList<>();
-        try {
-            allTimetables.addAll(jdbcTemplate.query(GET_ALL_TEACHERS_TIMETABLE, timetableMapper));
-            LOGGER.info("Successfully query for all timetables");
-        } catch (DataAccessException e) {
-            String failMessage = "Fail to get all timetables from DB.";
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
-        }
-        return allTimetables;
-    }
-
-    @Override
-    public boolean updateTimetable(long lessonId, long teacherId, String stringDate, Period period,
-            long teachersTimetableId) {
-        String timetableMessage = String.format(
-                "TeachersTimetable with ID = %d and lessonId = %d, sudentId = %d, date = %s, period = %d",
-                teachersTimetableId, lessonId, teacherId, stringDate, period.getPeriod());
-        Timestamp time = getTimestampFromString(stringDate);
-        int periodNumber = period.getPeriod();
-        LOGGER.debug("Updating {}", timetableMessage);
-        boolean actionResult = false;
-        try {
-            actionResult = jdbcTemplate.update(UPDATE_TEACHERS_TIMETABLE, lessonId, teacherId, time, periodNumber,
-                    teachersTimetableId) > 0;
-            if (actionResult) {
-                LOGGER.info("Successfylly updated {}", timetableMessage);
-            } else {
-                throw new DataOperationException("Couldn't update " + timetableMessage);
-            }
-        } catch (DataAccessException e) {
-            String failMessage = "Failed to update" + timetableMessage;
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
-        }
-        return actionResult;
-    }
-
-    @Override
-    public boolean deleteTimetableById(long teachersTimetableId) {
-        String teachersTimetablMSG = String.format("TeachersTimetable by id %d", teachersTimetableId);
-        LOGGER.debug("Deleting {}", teachersTimetablMSG);
-        boolean actionResult = false;
-        try {
-            actionResult = jdbcTemplate.update(DELETE_TEACHERS_TIMETABLE_BY_ID, teachersTimetableId) > 0;
-            if (actionResult) {
-                LOGGER.info("Successful deleting '{}'", teachersTimetablMSG);
-            } else {
-                throw new EntityNotFoundException("Couldn't delete " + teachersTimetablMSG);
-            }
-        } catch (DataAccessException e) {
-            String failDeleteMessage = String.format("Failed to delete %s", teachersTimetablMSG);
-            LOGGER.error(failDeleteMessage);
-            throw new DataOperationException(failDeleteMessage, e);
-        }
-        return actionResult;
-    }
-
-    public List<Timetable> getDayTimetable(String date, long teacherId) {
-        String dayTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date,
-                teacherId);
-        LOGGER.debug(GETTING, date);
+    public List<Timetable> getDayTeacherTimetable(String date, long teacherId) {
+        String timetableInfoMSG = String
+                .format("Teacher's timetable for day by date with such data: %s and teacherId %d", date, teacherId);
+        LOGGER.debug("Getting '{}'", timetableInfoMSG);
         List<Timetable> dayTimetable = new ArrayList<>();
+        Timestamp time = getTimestampFromString(date);
         try {
-            dayTimetable.addAll(jdbcTemplate.query(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(GET_DAY_TIMETABLE);
-                preparedStatement.setTimestamp(DATE_STATEMENT_INDEX, getTimestampFromString(date));
-                preparedStatement.setLong(TEACHER_ID_STATEMENT_INDEX, teacherId);
-                return preparedStatement;
-            }, timetableMapper));
-            LOGGER.info("Got {}", dayTimetableMSG);
-        } catch (DataAccessException e) {
-            String failMessage = String.format(FAILED_TO_GET, dayTimetableMSG);
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
+            dayTimetable.addAll(
+                    jdbcTemplate.query(GET_TEACHER_DAY_TIMETABLE, new Object[] { teacherId, time }, timetableMapper));
+            LOGGER.info("Successfully retrived {}", timetableInfoMSG);
+        } catch (EmptyResultDataAccessException e) {
+            String failGetByIdMessage = "Couldn't get " + timetableInfoMSG;
+            LOGGER.error(failGetByIdMessage);
+            throw new EntityNotFoundException(failGetByIdMessage, e);
         }
         return dayTimetable;
     }
 
     @Override
-    public List<Timetable> getMonthTimetable(String date, long teacherId) {
-        String monthTimetableMSG = String.format("TeachersTimetable for day by date %s and teacherId %d", date,
-                teacherId);
-        LOGGER.debug(GETTING, date);
-        List<Timetable> monthTimetable = new ArrayList<>();
-        Timestamp timestampFrom = Timestamp.valueOf(date + " 00:00:00");
-        LocalDate localDate = timestampFrom.toLocalDateTime().toLocalDate();
-        Timestamp timestampTo = Timestamp.valueOf(localDate.plusMonths(1).atTime(LocalTime.MIDNIGHT));
+    public List<Timetable> getMonthTeacherTimetable(String date, long teacherId) {
+        Timestamp timeFrom = getTimestampFromString(date);
+        LocalDate localDate = timeFrom.toLocalDateTime().toLocalDate();
+        Timestamp timeTo = Timestamp.valueOf(localDate.plusMonths(1).atTime(LocalTime.MIDNIGHT));
+        String timetableInfoMSG = String.format(
+                "Teacher's timetable for month by date with  teacherId %d and date between %s and %s", teacherId,
+                timeFrom.toString(), timeTo.toString());
+        LOGGER.debug("Getting '{}'", timetableInfoMSG);
+        List<Timetable> unsortedDayTimetable = new ArrayList<>();
         try {
-            monthTimetable.addAll(jdbcTemplate.query(connection -> {
-                PreparedStatement preparedStatement = connection.prepareStatement(GET_MONTH_TIMETABLE);
-                preparedStatement.setLong(TEACHER_ID_STATEMENT_INDEX_GET_MONTH_TABLE, teacherId);
-                preparedStatement.setTimestamp(FROM_DATE_STATEMENT_INDEX, timestampFrom);
-                preparedStatement.setTimestamp(TO_DATE_STATEMENT_INDEX, timestampTo);
-                return preparedStatement;
-            }, timetableMapper));
-            LOGGER.info("Got {}", monthTimetableMSG);
-        } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to %s", monthTimetableMSG);
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
+            unsortedDayTimetable.addAll(jdbcTemplate.query(GET_TEACHER_MONTH_TIMETABLE,
+                    new Object[] { teacherId, timeFrom, timeTo }, timetableMapper));
+            LOGGER.info("Successfully retrived {}", timetableInfoMSG);
+        } catch (EmptyResultDataAccessException e) {
+            String failGetByIdMessage = "Couldn't get " + timetableInfoMSG;
+            LOGGER.error(failGetByIdMessage);
+            throw new EntityNotFoundException(failGetByIdMessage, e);
         }
-        return monthTimetable;
+        
+        List<Timetable> sortedDayTimetable = unsortedDayTimetable.stream().sorted(Comparator.comparing(Timetable::getTime)).collect(Collectors.toList());
+//        Collections.sort(dayTimetable, (t1, t2) -> 
+//            (t1.getTime()).compareTo(t1.getTime())
+//        );
+        unsortedDayTimetable.stream().forEach(s -> LOGGER.debug("timetable date: {}", s.getTime()));
+        LOGGER.debug("DAY_TIMETABLE = {}", unsortedDayTimetable.size());
+        return sortedDayTimetable;
     }
 
-    @Override
-    public Timestamp getTimestampFromString(String stringDate) {
+    private Timestamp getTimestampFromString(String stringDate) {
         return Timestamp.valueOf(stringDate + " 00:00:00");
     }
+
 }

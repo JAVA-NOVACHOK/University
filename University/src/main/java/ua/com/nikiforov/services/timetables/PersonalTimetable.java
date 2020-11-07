@@ -1,31 +1,34 @@
 package ua.com.nikiforov.services.timetables;
 
-import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import ua.com.nikiforov.models.timetable.Timetable;
 
-public interface PersonalTimetable {
+public abstract class PersonalTimetable {
     
-    public boolean addTimetable(long lessonId, long teacherId, String time, Period period);
+    public static final String ZONE = "Europe/Simferopol";
+        
+    public abstract List<Timetable> getDayTimetable(String date, long personId);
+    
+    public abstract List<DayTimetable>  getMonthTimetable(String stringDate, long studentId);
+    
+    public DateInfo parseInstantToDateInfo(Timetable timetable) {
+        Instant instant = timetable.getTime();
+        ZonedDateTime zonedDateTime = getZonedDateTime(instant, ZONE);
+        String weekDay = zonedDateTime.getDayOfWeek().name();
+        int monthDay = zonedDateTime.getDayOfMonth();
+        String month = zonedDateTime.getMonth().toString();
+        int year = zonedDateTime.getYear();
+        return new DateInfo(weekDay, monthDay, month, year);
+    }
 
-    public Timetable getTimetableById(long id);
-    
-    public Timetable getTimetableByLessonPersonTimePeriod(long lessonId, long teacherId, String stringDate, Period period);
+    private ZonedDateTime getZonedDateTime(Instant instant, String zone) {
+        ZoneId zoneId = ZoneId.of(zone);
+        return ZonedDateTime.ofInstant(instant, zoneId);
+    }
 
-
-    public List<Timetable> getAllTimetables();
-
-    public boolean updateTimetable(long lessonId, long teacherId, String date, Period period, long id);
-
-    public boolean deleteTimetableById(long id);
-    
-    public List<Timetable> getDayTimetable(String date, long personId);
-    
-    public List<Timetable> getMonthTimetable(String stringDate, long studentId);
-     
-    
-    public Timestamp getTimestampFromString(String stringDate);
-       
-    
+        
 }

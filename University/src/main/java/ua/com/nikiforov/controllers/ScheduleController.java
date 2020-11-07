@@ -17,21 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import ua.com.nikiforov.controllers.model_atributes.ScheduleFindAttr;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.lesson.LessonInfo;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.models.timetable.DateInfo;
 import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
+import ua.com.nikiforov.services.timetables.DateInfo;
+import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
 @Controller
 @RequestMapping("/schedules")
 public class ScheduleController {
 
-    Logger logger = LoggerFactory.getLogger(ScheduleController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
     private static final String TIMEZONE = "Europe/Simferopol";
 
@@ -58,14 +57,12 @@ public class ScheduleController {
     }
 
     @GetMapping("/")
-    public String show(Model model) {
+    public String show() {
         return "timetable/schedule";
     }
 
     @GetMapping("/teacher")
-    public String teacherTimetable(Model model) {
-        List<Subject> subjects = subjectService.getAllSubjects();
-        model.addAttribute("subjects", subjects);
+    public String teacherTimetable() {
         return "timetable/teacher_timetable_form";
     }
 
@@ -74,31 +71,51 @@ public class ScheduleController {
         return "";
     }
 
-    @PostMapping("/find")
-    public String findSchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr, Model model) {
+    @PostMapping("/day")
+    public String findDaySchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr, Model model) {
         Teacher teacher;
         try {
             teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute("teacher", teacher);
         } catch (EntityNotFoundException e) {
+            LOGGER.error("Teacher not found in ScheduleConroller");
             model.addAttribute("scheduleFindAttr", scheduleFindAttr);
             return "timetable/teacher_not_found";
         }
         List<Timetable> dayTimetable = teachersTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
                 teacher.getId());
-        if (!dayTimetable.isEmpty()) {
-            for (Timetable timetable : dayTimetable) {
-                timetable.setLessonInfo(lessonService.getLessonInfoById(timetable.getLessonId()));
-            }
-            Timetable timetable = dayTimetable.get(0);
-            DateInfo dateInfo = lessonService.parseInstantToDateInfo(timetable, TIMEZONE);
-            model.addAttribute("dateInfo", dateInfo);
-            model.addAttribute("dayTimetable", dayTimetable);
-            return "timetable/teacher_schedule";
-        } else {
+        if (dayTimetable.isEmpty()) {
             model.addAttribute("scheduleFindAttr", scheduleFindAttr);
             return "timetable/schedule_not_found";
         }
+        Timetable timetable = dayTimetable.get(0);
+        DateInfo dateInfo = teachersTimetableService.parseInstantToDateInfo(timetable);
+        model.addAttribute("dateInfo", dateInfo);
+        model.addAttribute("dayTimetable", dayTimetable);
+        return "timetable/teacher_schedule";
+
+    }
+    
+    @PostMapping("/month")
+    public String findMonthSchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr, Model model) {
+        Teacher teacher;
+        try {
+            teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
+            model.addAttribute("teacher", teacher);
+        } catch (EntityNotFoundException e) {
+            LOGGER.error("Teacher not found in ScheduleConroller");
+            model.addAttribute("scheduleFindAttr", scheduleFindAttr);
+            return "timetable/teacher_not_found";
+        }
+        List<DayTimetable> monthTimetable = teachersTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
+                teacher.getId());
+        if (monthTimetable.isEmpty()) {
+            model.addAttribute("scheduleFindAttr", scheduleFindAttr);
+            return "timetable/schedule_not_found";
+        }
+        model.addAttribute("monthTimetable", monthTimetable);
+        return "timetable/teacher_schedule_month";
+
     }
 
     private ZonedDateTime getZonedDateTime(Instant instant, String zone) {

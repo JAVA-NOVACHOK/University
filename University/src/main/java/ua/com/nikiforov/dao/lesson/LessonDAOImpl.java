@@ -1,5 +1,6 @@
 package ua.com.nikiforov.dao.lesson;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,43 +16,43 @@ import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.LessonInfoMapper;
 import ua.com.nikiforov.mappers.LessonMapper;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.models.lesson.LessonInfo;
+import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.services.timetables.Period;
 
 @Repository
 public class LessonDAOImpl implements LessonDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAOImpl.class);
 
-    private static final String ADD_LESSON = "INSERT INTO lessons (group_id,subject_id,room_id) VALUES(?,?,?)";
-    private static final String GET_ALL_LESSONS = "SELECT  *  FROM lessons ";
-    private static final String FIND_LESSON_BY_ID = "SELECT  *  FROM lessons  WHERE lessons.lesson_id =  ? ";
-    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE lessons.group_id =  ?  AND lessons.room_id = ? AND lessons.subject_id = ?";
-    private static final String UPDATE_LESSON = "UPDATE lessons SET group_id = ?,room_id = ?,subject_id = ? WHERE lesson_id = ?";
-    private static final String DELETE_LESSON_BY_ID = "DELETE  FROM lessons  WHERE lesson_id =  ? ";
-    private static final String GET_SUBJECT_GROUP_ROOM_DATA = "SELECT subject_id, subject_name, room_id, room_number, seat_number, group_id, group_name FROM subjects, groups, rooms WHERE subject_id = ? AND room_id = ? AND group_id = ?";
+    private static final String ADD_LESSON = "INSERT INTO lessons (period,subject_id,group_id,room_id,time,teacher_id) VALUES(?,?,?,?,?,?)";
+    private static final String GET_ALL_LESSONS = "SELECT * FROM lessons ";
+    private static final String FIND_LESSON_BY_ID = "SELECT * FROM lessons WHERE lessons.lesson_id = ? ";
+    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE lessons.group_id = ? AND lessons.room_id = ? AND lessons.subject_id = ?";
+    private static final String UPDATE_LESSON = "UPDATE lessons SET period = ?, group_id = ?, subject_id = ?, room_id = ?, time = ?, teacher_id = ? WHERE lesson_id = ?";
+    private static final String DELETE_LESSON_BY_ID = "DELETE FROM lessons WHERE lesson_id = ? ";
 
     private JdbcTemplate jdbcTemplate;
     private LessonMapper lessonMapper;
-    private LessonInfoMapper lessonInfoMapper;
 
     @Autowired
-    public LessonDAOImpl(LessonMapper lessonMapper, LessonInfoMapper lessonInfoMapper, DataSource dataSource) {
+    public LessonDAOImpl(LessonMapper lessonMapper, DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
         this.lessonMapper = lessonMapper;
-        this.lessonInfoMapper = lessonInfoMapper;
     }
 
     @Override
-    public boolean addLesson(long groupId, int roomId, int subjectId) {
-        String lessonMessage = String.format("Lesson with groupId = %d, roomId = %d, subjectId = %d", groupId,
-                subjectId, roomId);
+    public boolean addLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+        String lessonMessage = String.format(
+                "Lesson with period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
+                period.getPeriod(), subjectId, roomId, groupId, date, teacherId);
         LOGGER.debug("Adding {}", lessonMessage);
         boolean actionResult = false;
+        Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(ADD_LESSON, groupId, subjectId, roomId) > 0;
+            actionResult = jdbcTemplate.update(ADD_LESSON, period.getPeriod(), subjectId, roomId, groupId, time,
+                    teacherId) > 0;
             if (actionResult) {
                 LOGGER.info("Successful adding {}", lessonMessage);
             } else {
@@ -81,23 +82,7 @@ public class LessonDAOImpl implements LessonDAO {
         return lesson;
     }
 
-    @Override
-    public LessonInfo getLessonInfoById(Lesson lesson) {
-        String lessonInfoMSG = String.format("LessonInfo by lesson with such data: %s", lesson);
-        LOGGER.debug("Getting '{}'", lessonInfoMSG);
-        LessonInfo lessonInfo;
-        try {
-            lessonInfo = jdbcTemplate.queryForObject(GET_SUBJECT_GROUP_ROOM_DATA,
-                    new Object[] { lesson.getSubjectId(), lesson.getRoomId(), lesson.getGroupId() }, lessonInfoMapper);
-            LOGGER.info("Successfully retrived LessonInfo {}", lessonInfo);
-        } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = "Couldn't get " + lessonInfoMSG;
-            LOGGER.error(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage, e);
-        }
-        return lessonInfo;
-    }
-
+    
     @Override
     public Lesson getLessonByGroupRoomSubjectIds(long groupId, int subjectId, int roomId) {
         String lessonMessage = String.format("Lesson by groupId = %d, roomId = %d, subjectId = %d", groupId, roomId,
@@ -132,13 +117,17 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public boolean updateLesson(long groupId, int roomId, int subjectId, long lessonId) {
-        String lessonMessage = String.format("Lesson with ID = %d and groupId = %d, roomId = %d, subjectId = %d",
-                lessonId, groupId, roomId, subjectId);
+    public boolean updateLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId,
+            long lessonId) {
+        String lessonMessage = String.format(
+                "Lesson with ID = %d and period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
+                lessonId, period.getPeriod(), subjectId, roomId, groupId, date, teacherId);
         LOGGER.debug("Updating {}", lessonMessage);
         boolean actionResult = false;
+        Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(UPDATE_LESSON, groupId, roomId, subjectId, lessonId) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_LESSON, period.getPeriod(), subjectId, roomId, groupId, time,
+                    teacherId, lessonId) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated {}", lessonMessage);
             } else {
@@ -170,6 +159,26 @@ public class LessonDAOImpl implements LessonDAO {
             throw new DataOperationException(failDeleteMessage, e);
         }
         return actionResult;
+    }
+
+    private Timestamp getTimestampFromString(String stringDate) {
+        return Timestamp.valueOf(stringDate + " 00:00:00");
+    }
+
+    
+
+    @Override
+    public List<Timetable> getDayStudentTimetable(String date, long studentId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+   
+
+    @Override
+    public List<Timetable> getMonthStudentTimetable(String stringDate, long studentId) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
