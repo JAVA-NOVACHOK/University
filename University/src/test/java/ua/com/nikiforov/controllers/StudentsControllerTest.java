@@ -1,18 +1,12 @@
 package ua.com.nikiforov.controllers;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +43,6 @@ class StudentsControllerTest {
     private static final String LAST_NAME_3 = "Sparrow";
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
-    private static final String TEST_GROUP_NAME_2 = "AA-13";
 
     @Autowired
     private TableCreator tableCreator;
@@ -61,7 +54,6 @@ class StudentsControllerTest {
     private GroupService groupService;
 
     private Group testGroup_1;
-    private Group testGroup_2;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -77,18 +69,18 @@ class StudentsControllerTest {
     void init() {
         tableCreator.createTables();
         testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        testGroup_2 = insertGroup(TEST_GROUP_NAME_2);
     }
 
     @Test
     void givenStudentPageURI_whenMockMVC_thenReturnsStudentViewName() throws Exception {
-        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getId());
-        this.mockMvc.perform(get("/students/?id={id}", student.getId()))
+        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getId());
+        Student student_2 = insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getId());
+        Student student_3 = insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroup_1.getId());
+        this.mockMvc.perform(get("/students/?id={id}", testGroup_1.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().size(2))
-                .andExpect(model().attributeExists("group"))
-                .andExpect(model().attributeExists("students"))
+                .andExpect(model().attribute("students", hasItems(student_1,student_2,student_3)))
                 .andExpect(model().attribute("group", testGroup_1))
                 .andExpect(view().name("students"));
     }
