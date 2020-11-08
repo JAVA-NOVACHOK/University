@@ -15,7 +15,10 @@ import ua.com.nikiforov.services.subject.SubjectService;
 @RequestMapping("/subjects")
 public class SubjectsController {
 
-    @Autowired
+    private static final String MAPPING_SLASH = "/";
+    private static final String SUBJECTS_ATTR = "subjects";
+    private static final String VIEW_SUBJECTS = "subjects";
+
     private SubjectService subjectService;
 
     @Autowired
@@ -23,12 +26,12 @@ public class SubjectsController {
         this.subjectService = subjectService;
     }
 
-    @GetMapping("/")
+    @GetMapping(MAPPING_SLASH)
     public String showSubjects(Model model) {
 
         List<Subject> subjects = subjectService.getAllSubjects();
-        model.addAttribute("subjects", subjects);
-        return "subjects";
+        model.addAttribute(SUBJECTS_ATTR, subjects);
+        return VIEW_SUBJECTS;
 
     }
 

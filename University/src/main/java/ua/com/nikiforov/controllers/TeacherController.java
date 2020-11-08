@@ -15,6 +15,10 @@ import ua.com.nikiforov.services.persons.TeacherService;
 @RequestMapping("/teachers")
 public class TeacherController {
 
+    private static final String MAPPING_SLASH = "/";
+    private static final String TEACHERS_ATTR = "teachers";
+    private static final String VIEW_TEACHERS = "teachers";
+
     private TeacherService teacherServise;
 
     @Autowired
@@ -22,11 +26,11 @@ public class TeacherController {
         this.teacherServise = teacherServise;
     }
 
-    @GetMapping("/")
+    @GetMapping(MAPPING_SLASH)
     public String show(Model model) {
         List<Teacher> teachers = teacherServise.getAllTeachers();
-        model.addAttribute("teachers", teachers);
-        return "teachers";
+        model.addAttribute(TEACHERS_ATTR, teachers);
+        return VIEW_TEACHERS;
     }
 
 }

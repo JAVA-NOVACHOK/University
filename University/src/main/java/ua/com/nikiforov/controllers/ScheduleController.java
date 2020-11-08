@@ -40,11 +40,22 @@ public class ScheduleController {
     private static final String DATE_INFO = "dateInfo";
     private static final String DAY_TIMETABLE = "dayTimetable";
     private static final String MONTH_TIMETABLE = "monthTimetable";
-    
+
     private static final String MAPPING_SLASH = "/";
-            private static final String MAPPING_TEACHER = "/teacher";
-            private static final String MAPPING_SCHEDULE = "timetable/schedule";
-            private static final String MAPPING_TEACHER_TIMETABLE_FORM = "timetable/teacher_timetable_form";
+    private static final String MAPPING_TEACHER = "/teacher";
+    private static final String MAPPING_TEACHER_DAY = "/teachers_day";
+    private static final String MAPPING_STUDENT = "/student";
+    private static final String MAPPING_STUDENTS_DAY = "/students_day";
+    private static final String MAPPING_STUDENTS_MONTH = "/students_month";
+    private static final String MAPPING_TEACHERS_MONTH = "/teachers_month";
+
+    private static final String VIEW_SCHEDULE = "timetable/schedule";
+    private static final String VIEW_TEACHER_TIMETABLE_FORM = "timetable/teacher_timetable_form";
+    private static final String VIEW_STUDENT_TIMETABLE_FORM = "timetable/student_timetable_form";
+    private static final String VIEW_TEACHER_SCHEDULE = "timetable/teacher_schedule";
+    private static final String VIEW_STUDENT_SCHEDULE = "timetable/student_schedule";
+    private static final String VIEW_STUDENT_SCHEDULE_MONTH = "timetable/student_schedule_month";
+    private static final String VIEW_TEACHER_SCHEDULE_MONTH = "timetable/teacher_schedule_month";
 
     @ModelAttribute(SCHEDULE_FIND_ATTR)
     public ScheduleFindAttr getScheduleFindAttr() {
@@ -70,15 +81,15 @@ public class ScheduleController {
 
     @GetMapping(MAPPING_SLASH)
     public String show() {
-        return MAPPING_SCHEDULE;
+        return VIEW_SCHEDULE;
     }
 
     @GetMapping(MAPPING_TEACHER)
-    public String teacherTimetable() {
-        return MAPPING_TEACHER_TIMETABLE_FORM;
+    public String getTeacherTimetableForm() {
+        return VIEW_TEACHER_TIMETABLE_FORM;
     }
 
-    @PostMapping("/teachers_day")
+    @PostMapping(MAPPING_TEACHER_DAY)
     public String findTeacherDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Teacher teacher;
@@ -100,15 +111,15 @@ public class ScheduleController {
         DateInfo dateInfo = teachersTimetableService.parseInstantToDateInfo(timetable);
         model.addAttribute(DATE_INFO, dateInfo);
         model.addAttribute(DAY_TIMETABLE, dayTimetable);
-        return "timetable/teacher_schedule";
+        return VIEW_TEACHER_SCHEDULE;
     }
 
-    @GetMapping("/student")
-    public String studentTimetable() {
-        return "timetable/student_timetable_form";
+    @GetMapping(MAPPING_STUDENT)
+    public String getStudentTimetableForm() {
+        return VIEW_STUDENT_TIMETABLE_FORM;
     }
 
-    @PostMapping("/students_day")
+    @PostMapping(MAPPING_STUDENTS_DAY)
     public String findStudentDaySchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Student student;
@@ -130,10 +141,10 @@ public class ScheduleController {
         DateInfo dateInfo = studentTimetableService.parseInstantToDateInfo(timetable);
         model.addAttribute(DATE_INFO, dateInfo);
         model.addAttribute(DAY_TIMETABLE, dayTimetable);
-        return "timetable/student_schedule";
+        return VIEW_STUDENT_SCHEDULE;
     }
 
-    @PostMapping("/students_month")
+    @PostMapping(MAPPING_STUDENTS_MONTH)
     public String findStudentsMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Student student;
@@ -152,11 +163,11 @@ public class ScheduleController {
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         model.addAttribute(MONTH_TIMETABLE, monthTimetable);
-        return "timetable/student_schedule_month";
+        return VIEW_STUDENT_SCHEDULE_MONTH;
 
     }
-    
-    @PostMapping("/teachers_month")
+
+    @PostMapping(MAPPING_TEACHERS_MONTH)
     public String findMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Teacher teacher;
@@ -175,8 +186,7 @@ public class ScheduleController {
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         model.addAttribute(MONTH_TIMETABLE, monthTimetable);
-        return "timetable/teacher_schedule_month";
-        
+        return VIEW_TEACHER_SCHEDULE_MONTH;
     }
 
 }

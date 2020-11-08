@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.timetables.TimetableDAO;
 import ua.com.nikiforov.models.timetable.Timetable;
-import ua.com.nikiforov.services.lesson.LessonService;
 
 @Service
 public class StudentTimetableService extends PersonalTimetable {

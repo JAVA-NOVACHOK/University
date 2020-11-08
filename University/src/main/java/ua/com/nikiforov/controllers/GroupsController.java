@@ -14,6 +14,10 @@ import ua.com.nikiforov.services.group.GroupService;
 @Controller
 @RequestMapping("/groups")
 public class GroupsController {
+    
+    private static final String GROUPS_ATTR = "groups";
+    private static final String MAPPING_SLASH = "/";
+    private static final String VIEW_GROUPS = "groups";
 
     private GroupService groupService;
 
@@ -22,12 +26,12 @@ public class GroupsController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/")
+    @GetMapping(MAPPING_SLASH)
     public String getGroups(Model model) {
 
         List<Group> groups = groupService.getAllGroups();
-        model.addAttribute("groups", groups);
-        return "groups";
+        model.addAttribute(GROUPS_ATTR, groups);
+        return VIEW_GROUPS;
     }
 
 }

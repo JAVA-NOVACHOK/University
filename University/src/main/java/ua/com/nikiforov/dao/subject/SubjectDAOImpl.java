@@ -29,6 +29,11 @@ public class SubjectDAOImpl implements SubjectDAO {
     private static final String GET_ALL_SUBJECTS = "SELECT  *  FROM subjects ";
     private static final String UPDATE_SUBJECT = "UPDATE subjects  SET subjects.subject_name =  ?  WHERE subjects.subject_id =  ? ";
     private static final String DELETE_SUBJECT_BY_ID = "DELETE  FROM subjects  WHERE subjects.subject_id =  ? ";
+    
+    private static final String ADDING_MSG =  "Adding  {}";
+    private static final String FAILED_MSG =  "Fail to get %s";
+    private static final String GETTING_MSG =  "Getting '{}'";
+    private static final String SUCCESSFULLY_RETRIVED_MSG =  "Successfully retrived {}";
 
     private SubjectMapper subjectMapper;
     private JdbcTemplate jdbcTemplate;
@@ -42,7 +47,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     @Override
     public boolean addSubject(String subjectName) {
         String subjectMessage = String.format("Subject with name %s", subjectName);
-        LOGGER.debug("Adding  '{}'", subjectName);
+        LOGGER.debug(ADDING_MSG, subjectName);
         boolean actionResult = jdbcTemplate.update(ADD_SUBJECT, subjectName) > 0;
         try {
             if (actionResult) {
@@ -62,13 +67,13 @@ public class SubjectDAOImpl implements SubjectDAO {
     @Override
     public Subject getSubjectById(int subjectId) {
         String subjectMessage = String.format("Subject by id %d", subjectId);
-        LOGGER.debug("Getting '{}'", subjectMessage);
+        LOGGER.debug(GETTING_MSG, subjectMessage);
         Subject subject;
         try {
             subject = jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { subjectId }, subjectMapper);
             LOGGER.info("Successfully retrieved '{}'", subject);
         } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format("Fail to get %s", subjectMessage);
+            String failMessage = String.format(FAILED_MSG, subjectMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage, e);
         }
@@ -78,13 +83,13 @@ public class SubjectDAOImpl implements SubjectDAO {
     @Override
     public Subject getSubjectByName(String subjectName) {
         String subjectMessage = String.format("Subject by name %s", subjectName);
-        LOGGER.debug("Getting '{}'", subjectMessage);
+        LOGGER.debug(GETTING_MSG, subjectMessage);
         Subject subject;
         try {
             subject = jdbcTemplate.queryForObject(GET_SUBJECT_BY_NAME, new Object[] { subjectName }, subjectMapper);
             LOGGER.info("Successfully retrieved '{}'", subject);
         } catch (EmptyResultDataAccessException e) {
-            String failMessage = String.format("Fail to get %s", subjectMessage);
+            String failMessage = String.format(FAILED_MSG, subjectMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage, e);
         }
@@ -93,7 +98,7 @@ public class SubjectDAOImpl implements SubjectDAO {
 
     @Override
     public List<Subject> getAllSubjects() {
-        LOGGER.debug("Getting all Subjects. ");
+        LOGGER.debug("Getting all Subjects.");
         List<Subject> allSubjects = new ArrayList<>();
         try {
             allSubjects.addAll(jdbcTemplate.query(GET_ALL_SUBJECTS, subjectMapper));

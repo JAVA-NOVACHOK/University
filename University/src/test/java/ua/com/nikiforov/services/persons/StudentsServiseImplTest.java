@@ -35,22 +35,21 @@ class StudentsServiseImplTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
-
+    
     @Autowired
-    private GroupService groupService;
-
+    private TableCreator tableCreator;
+    
     @Autowired
     private StudentsService studentsService;
 
     @Autowired
-    private TableCreator tableCreator;
+    private GroupService groupService;
 
     private long testGroupName_1;
     private long testGroupName_2;
 
     @BeforeEach
     void init() {
-        System.out.println("Create Tables");
         tableCreator.createTables();
         testGroupName_1 = insertGroup(TEST_GROUP_NAME_1).getId();
         testGroupName_2 = insertGroup(TEST_GROUP_NAME_2).getId();

@@ -6,7 +6,7 @@ import ua.com.nikiforov.models.timetable.Timetable;
 
 public interface TimetableDAO {
     
-    public List<Timetable> getDayTimetable(String date, long Id);
+    public List<Timetable> getDayTimetable(String date, long id);
 
-    public List<Timetable> getMonthTimetable(String date, long Id);
+    public List<Timetable> getMonthTimetable(String date, long id);
 }

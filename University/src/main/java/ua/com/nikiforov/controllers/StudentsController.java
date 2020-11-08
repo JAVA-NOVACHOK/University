@@ -18,6 +18,11 @@ import ua.com.nikiforov.services.persons.StudentsService;
 @Controller
 @RequestMapping("/students")
 public class StudentsController {
+    
+    private static final String MAPPING_SLASH = "/";
+    private static final String GROUP_ATTR = "group";
+    private static final String STUDENTS_ATTR = "students";
+    private static final String VIEW_STUDENTS = "students";
 
     private StudentsService studentService;
 
@@ -29,15 +34,15 @@ public class StudentsController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/")
+    @GetMapping(MAPPING_SLASH)
     public String showStudents(@RequestParam long id, Model model) {
 
         Group group = groupService.getGroupById(id);
         List<Student> students = studentService.getStudentsByGroupId(id);
         Collections.sort(students);
-        model.addAttribute("group", group);
-        model.addAttribute("students", students);
-        return "students";
+        model.addAttribute(GROUP_ATTR, group);
+        model.addAttribute(STUDENTS_ATTR, students);
+        return VIEW_STUDENTS;
     }
 
 }

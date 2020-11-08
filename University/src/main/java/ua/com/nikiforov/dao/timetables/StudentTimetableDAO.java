@@ -41,6 +41,13 @@ public class StudentTimetableDAO implements TimetableDAO {
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
             + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
             + "WHERE lessons.group_id = ? AND time BETWEEN ? AND ?";
+    
+    private static final String FAILED_MSG =  "Failed to get ";
+    private static final String GETTING_MSG =  "Getting '{}'";
+    private static final String SUCCESSFULLY_RETRIVED_MSG =  "Successfully retrived {}";
+    private static final String TIMESTAMP_ENDING =  " 00:00:00";
+    
+    
 
     private JdbcTemplate jdbcTemplate;
     private TimetableMapper timetableMapper;
@@ -55,15 +62,15 @@ public class StudentTimetableDAO implements TimetableDAO {
     public List<Timetable> getDayTimetable(String date, long groupId) {
         String timetableInfoMSG = String
                 .format("Student's timetable for day by date with such data: %s and groupId %d", date, groupId);
-        LOGGER.debug("Getting '{}'", timetableInfoMSG);
+        LOGGER.debug(GETTING_MSG, timetableInfoMSG);
         List<Timetable> dayTimetable = new ArrayList<>();
         Timestamp time = getTimestampFromString(date);
         try {
             dayTimetable.addAll(
                     jdbcTemplate.query(GET_STUDENT_DAY_TIMETABLE, new Object[] { groupId, time }, timetableMapper));
-            LOGGER.info("Successfully retrived {}", timetableInfoMSG);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, timetableInfoMSG);
         } catch (DataAccessException e) {
-            String failMessage = "Failed to get " + timetableInfoMSG;
+            String failMessage = FAILED_MSG + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
@@ -78,14 +85,14 @@ public class StudentTimetableDAO implements TimetableDAO {
         String timetableInfoMSG = String.format(
                 "Student's timetable for month by date with  groupId %d and date between %s and %s", groupId,
                 timeFrom.toString(), timeTo.toString());
-        LOGGER.debug("Getting '{}'", timetableInfoMSG);
+        LOGGER.debug(GETTING_MSG, timetableInfoMSG);
         List<Timetable> unsortedDayTimetable = new ArrayList<>();
         try {
             unsortedDayTimetable.addAll(jdbcTemplate.query(GET_STUDENT_MONTH_TIMETABLE,
                     new Object[] { groupId, timeFrom, timeTo }, timetableMapper));
-            LOGGER.info("Successfully retrived {}", timetableInfoMSG);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, timetableInfoMSG);
         } catch (DataAccessException e) {
-            String failMessage = "Failed to get " + timetableInfoMSG;
+            String failMessage = FAILED_MSG + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
@@ -94,7 +101,7 @@ public class StudentTimetableDAO implements TimetableDAO {
     }
     
     private Timestamp getTimestampFromString(String stringDate) {
-        return Timestamp.valueOf(stringDate + " 00:00:00");
+        return Timestamp.valueOf(stringDate + TIMESTAMP_ENDING);
     }
 
 }
