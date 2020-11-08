@@ -3,6 +3,8 @@ package ua.com.nikiforov.services.timetables;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ua.com.nikiforov.models.timetable.Timetable;
@@ -14,6 +16,30 @@ public abstract class PersonalTimetable {
     public abstract List<Timetable> getDayTimetable(String date, long personId);
     
     public abstract List<DayTimetable>  getMonthTimetable(String stringDate, long studentId);
+    
+    public List<DayTimetable> createMonthTimetable(List<Timetable> allTimetablesList){
+        List<DayTimetable> monthTimetable = new ArrayList<>();
+        if (!allTimetablesList.isEmpty()) {
+            for (int i = 1; i <= allTimetablesList.size(); i++) {
+                DayTimetable dayTimetable = new DayTimetable();
+                Timetable previousTimetable = allTimetablesList.get(i - 1);
+                dayTimetable.addTimetable(previousTimetable);
+                dayTimetable.setDateInfo(parseInstantToDateInfo(previousTimetable));
+                monthTimetable.add(dayTimetable);
+                while (i < allTimetablesList.size()) {
+                    Timetable currentTimetable = allTimetablesList.get(i);
+                    if (previousTimetable.getTime().equals(currentTimetable.getTime())) {
+                        dayTimetable.addTimetable(currentTimetable);
+                        i++;
+                    } else {
+                        Collections.sort(dayTimetable.getTimetables(), new CompareByPeriod());
+                        break;
+                    }
+                }
+            }
+        }
+        return monthTimetable;
+    }
     
     public DateInfo parseInstantToDateInfo(Timetable timetable) {
         Instant instant = timetable.getTime();

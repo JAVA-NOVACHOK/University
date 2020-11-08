@@ -27,6 +27,10 @@ public class StudentsServiseImpl implements StudentsService {
     public Student getStudentById(long studentId) {
         return studentDAO.getStudentById(studentId);
     }
+    
+    public Student getStudentByName(String firstName, String lastName) {
+        return studentDAO.getStudentByName(firstName, lastName);
+    }
 
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
         return studentDAO.getStudentByNameGroupId(firstName, lastName, groupId);

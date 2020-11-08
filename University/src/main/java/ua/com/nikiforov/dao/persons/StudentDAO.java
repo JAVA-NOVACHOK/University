@@ -16,6 +16,8 @@ public interface StudentDAO {
     public List<Student> getStudentsByGroupId(long groupId);
 
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
+    
+    public Student getStudentByName(String firstName, String lastName);
 
     public List<Student> getAllStudents();
 

@@ -12,6 +12,8 @@ public interface StudentsService {
     
     public List<Student> getStudentsByGroupId(long groupId);
     
+    public Student getStudentByName(String firstName, String lastName);
+    
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
 
     public List<Student> getAllStudents();
