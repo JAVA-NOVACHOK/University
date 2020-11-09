@@ -111,7 +111,7 @@ class StudentsServiseImplTest {
         return groupService.getGroupByName(groupName);
     }
 
-    private Student insertStudent(String firstName, String lastaName, long groupName) {
+    public Student insertStudent(String firstName, String lastaName, long groupName) {
         studentsService.addStudent(firstName, lastaName, groupName);
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }

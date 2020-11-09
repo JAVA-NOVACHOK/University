@@ -25,10 +25,10 @@ public class LessonDAOImpl implements LessonDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAOImpl.class);
 
-    private static final String ADD_LESSON = "INSERT INTO lessons (period,subject_id,group_id,room_id,time,teacher_id) VALUES(?,?,?,?,?,?)";
+    private static final String ADD_LESSON = "INSERT INTO lessons (period,subject_id,room_id,group_id,time,teacher_id) VALUES(?,?,?,?,?,?)";
     private static final String GET_ALL_LESSONS = "SELECT * FROM lessons ";
     private static final String FIND_LESSON_BY_ID = "SELECT * FROM lessons WHERE lessons.lesson_id = ? ";
-    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE lessons.group_id = ? AND lessons.room_id = ? AND lessons.subject_id = ?";
+    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE subject_id = ? AND room_id = ?  AND group_id = ?";
     private static final String UPDATE_LESSON = "UPDATE lessons SET period = ?, group_id = ?, subject_id = ?, room_id = ?, time = ?, teacher_id = ? WHERE lesson_id = ?";
     private static final String DELETE_LESSON_BY_ID = "DELETE FROM lessons WHERE lesson_id = ? ";
 
@@ -81,16 +81,15 @@ public class LessonDAOImpl implements LessonDAO {
         return lesson;
     }
 
-    
     @Override
-    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int subjectId, int roomId) {
-        String lessonMessage = String.format("Lesson by groupId = %d, roomId = %d, subjectId = %d", groupId, roomId,
-                subjectId);
+    public Lesson getLessonByGroupRoomSubjectIds(int subjectId, int roomId, long groupId) {
+        String lessonMessage = String.format("Lesson by subjectId = %d, roomId = %d, groupId = %d  ", subjectId, roomId,
+                groupId);
         LOGGER.debug("Getting {}", lessonMessage);
         Lesson lesson;
         try {
             lesson = jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS,
-                    new Object[] { groupId, subjectId, roomId }, lessonMapper);
+                    new Object[] { subjectId, roomId, groupId }, lessonMapper);
             LOGGER.info("Successfully retrived {}", lessonMessage);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Failed to get %s", lessonMessage);

@@ -12,20 +12,20 @@ CREATE TABLE students(
 	group_id BIGINT,
 	UNIQUE(first_name,last_name,group_id)
 );
-DROP TABLE IF EXISTS groups CASCADE;
+DROP TABLE IF EXISTS groups ;
 CREATE TABLE groups(
 	group_id serial PRIMARY KEY,
 	group_name varchar(255) UNIQUE
 );
-DROP TABLE IF EXISTS lessons;
+DROP TABLE IF EXISTS lessons ;
 CREATE TABLE lessons(
 	lesson_id serial PRIMARY KEY,
-	 period int,
+	period int,
 	subject_id int,
 	room_id int,
 	group_id BIGINT,
 	time TIMESTAMP WITH TIME ZONE NOT NULL,
-	teacher_id BIGINT
+	teacher_id BIGINT NOT NULL
 );
 DROP TABLE IF EXISTS subjects CASCADE;
 CREATE TABLE subjects(
@@ -68,11 +68,5 @@ CREATE TABLE teachers_subjects(
 	PRIMARY KEY(teacher_id,subject_id),
 	UNIQUE(teacher_id,subject_id)
 );
-DROP TABLE IF EXISTS groups_students;
-CREATE TABLE groups_students(
-	group_id BIGINT NOT NULL REFERENCES groups (group_id) ON UPDATE CASCADE ON DELETE CASCADE,
-	student_id BIGINT NOT NULL REFERENCES students (student_id) ON UPDATE CASCADE ON DELETE CASCADE,
-	PRIMARY KEY(group_id,student_id),
-	UNIQUE(group_id,student_id)
-);
+
 	

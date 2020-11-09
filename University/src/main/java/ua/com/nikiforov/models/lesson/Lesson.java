@@ -10,17 +10,19 @@ public class Lesson {
     private int roomId;
     private Instant time;
     private int period;
+    private long teacherId;
 
     public Lesson() {
     }
 
-    public Lesson(long id, long groupId, int subjectId, int roomId, Instant time, int period) {
+    public Lesson(long id,int period, long groupId, int subjectId, int roomId, Instant time, long teacherId) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
         this.roomId = roomId;
         this.time = time;
         this.period = period;
+        this.teacherId = teacherId;
     }
 
     public long getId() {
@@ -71,11 +73,20 @@ public class Lesson {
         this.period = period;
     }
 
+    public long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (groupId ^ (groupId >>> 32));
+        result = prime * result + (int) (teacherId ^ (teacherId >>> 32));
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + period;
         result = prime * result + roomId;
@@ -94,6 +105,8 @@ public class Lesson {
             return false;
         Lesson other = (Lesson) obj;
         if (groupId != other.groupId)
+            return false;
+        if (teacherId != other.teacherId)
             return false;
         if (id != other.id)
             return false;

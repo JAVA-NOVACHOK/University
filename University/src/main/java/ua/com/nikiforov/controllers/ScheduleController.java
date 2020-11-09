@@ -97,7 +97,7 @@ public class ScheduleController {
             teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(TEACHER_NOT_FOUND_MSG);
+            LOGGER.error(TEACHER_NOT_FOUND_MSG,e);
             model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
@@ -120,7 +120,7 @@ public class ScheduleController {
     }
 
     @PostMapping(MAPPING_STUDENTS_DAY)
-    public String findStudentDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
+    public String findStudentDaySchedule(@ModelAttribute("SCHEDULE_FIND_ATTR") ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Student student;
         try {

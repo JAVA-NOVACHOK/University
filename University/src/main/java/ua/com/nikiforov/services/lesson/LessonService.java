@@ -11,7 +11,7 @@ public interface LessonService {
 
     public Lesson getLessonById(long id);
     
-    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId);
+    public Lesson getLessonByGroupRoomSubjectIds(int subjectId, int roomId, long groupId);
 
     public List<Lesson> getAllLessons();
 

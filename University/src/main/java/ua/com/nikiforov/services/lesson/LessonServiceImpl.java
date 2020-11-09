@@ -25,8 +25,8 @@ public class LessonServiceImpl implements LessonService {
         return lessonDAO.getLessonById(id);
     }
 
-    public Lesson getLessonByGroupRoomSubjectIds(long groupId, int roomId, int subjectId) {
-        return lessonDAO.getLessonByGroupRoomSubjectIds(groupId, roomId, subjectId);
+    public Lesson getLessonByGroupRoomSubjectIds(int subjectId, int roomId, long groupId) {
+        return lessonDAO.getLessonByGroupRoomSubjectIds(subjectId, roomId, groupId);
     }
 
     @Override

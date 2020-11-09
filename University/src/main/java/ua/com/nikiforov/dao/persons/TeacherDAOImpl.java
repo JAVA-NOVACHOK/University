@@ -26,7 +26,7 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     private static final String ADD_TEACHER = "INSERT INTO teachers (first_name,last_name) VALUES(?,?)";
     private static final String FIND_TEACHER_BY_ID = "SELECT  *  FROM teachers WHERE teachers.teacher_id =  ? ";
-    private static final String GET_TEACHER_BY_NAME = "SELECT  *  FROM teachers WHERE teachers.first_name =  ?  AND teachers.last_name =  ? ";
+    private static final String GET_TEACHER_BY_NAME = "SELECT  *  FROM teachers WHERE first_name =  ?  AND last_name =  ? ";
     private static final String GET_ALL_TEACHERS = "SELECT  *  FROM teachers";
     private static final String UPDATE_TEACHER = "UPDATE teachers SET teachers.first_name =  ? ,teachers.last_name =  ?  WHERE teachers.teacher_id =  ? ";
     private static final String DELETE_TEACHER_BY_ID = "DELETE  FROM teachers WHERE teachers.teacher_id =  ? ";

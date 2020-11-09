@@ -53,6 +53,43 @@ public class DateInfo {
     public String toString() {
         return "DateInfo [weekDay=" + weekDay + ", monthDay=" + monthDay + ", month=" + month + ", year=" + year + "]";
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((month == null) ? 0 : month.hashCode());
+        result = prime * result + monthDay;
+        result = prime * result + ((weekDay == null) ? 0 : weekDay.hashCode());
+        result = prime * result + year;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DateInfo other = (DateInfo) obj;
+        if (month == null) {
+            if (other.month != null)
+                return false;
+        } else if (!month.equals(other.month))
+            return false;
+        if (monthDay != other.monthDay)
+            return false;
+        if (weekDay == null) {
+            if (other.weekDay != null)
+                return false;
+        } else if (!weekDay.equals(other.weekDay))
+            return false;
+        if (year != other.year)
+            return false;
+        return true;
+    }
     
     
 

@@ -178,7 +178,7 @@ class GroupServiceImplTest {
 
     }
 
-    private Group insertGroup(String groupName) {
+    public Group insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }

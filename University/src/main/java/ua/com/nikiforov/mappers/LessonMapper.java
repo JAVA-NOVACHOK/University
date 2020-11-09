@@ -2,6 +2,8 @@ package ua.com.nikiforov.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,8 @@ public class LessonMapper implements RowMapper<Lesson> {
     private static final int SUBJECT_ID_INDEX = 3;
     private static final int ROOM_ID_INDEX = 4;
     private static final int GROUP_ID_INDEX = 5;
-    private static final int TEACHER_ID_INDEX = 5;
+    private static final int TIME_ID_INDEX = 6;
+    private static final int TEACHER_ID_INDEX = 7;
 
     @Override
     public Lesson mapRow(ResultSet resultSet, int rowNum)  throws SQLException{
@@ -25,7 +28,8 @@ public class LessonMapper implements RowMapper<Lesson> {
         lesson.setSubjectId(resultSet.getInt(SUBJECT_ID_INDEX));
         lesson.setRoomId(resultSet.getInt(ROOM_ID_INDEX));
         lesson.setGroupId(resultSet.getLong(GROUP_ID_INDEX));
-        lesson.setGroupId(resultSet.getLong(TEACHER_ID_INDEX));
+        lesson.setTime((resultSet.getTimestamp(TIME_ID_INDEX)).toInstant());
+        lesson.setTeacherId(resultSet.getLong(TEACHER_ID_INDEX));
         return lesson;
     }
 
