@@ -53,8 +53,6 @@ class StudentsControllerTest {
     @Autowired
     private GroupService groupService;
 
-    private Group testGroup_1;
-
     @Autowired
     private WebApplicationContext webApplicationContext;
 
@@ -68,19 +66,17 @@ class StudentsControllerTest {
     @BeforeEach
     void init() {
         tableCreator.createTables();
-        testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
     }
 
     @Test
-    void givenStudentPageURI_whenMockMVC_thenReturnsStudentViewName() throws Exception {
+    void givenStudentPageURI_whenMockMVC_thenReturnsStudentViewName_WithStudentGroupModelAttributes() throws Exception {
+        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getId());
         Student student_2 = insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getId());
         Student student_3 = insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroup_1.getId());
-        this.mockMvc.perform(get("/students/?id={id}", testGroup_1.getId()))
-                .andDo(print())
-                .andExpect(status().isOk())
+        this.mockMvc.perform(get("/students/?id={id}", testGroup_1.getId())).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().size(2))
-                .andExpect(model().attribute("students", hasItems(student_1,student_2,student_3)))
+                .andExpect(model().attribute("students", hasItems(student_1, student_2, student_3)))
                 .andExpect(model().attribute("group", testGroup_1))
                 .andExpect(view().name("students"));
     }

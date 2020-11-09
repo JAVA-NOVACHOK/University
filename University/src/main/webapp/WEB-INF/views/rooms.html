@@ -16,34 +16,30 @@
 	<div class="topnav">
 		<div th:replace="fragments/navbar_fr :: topnav"></div>
 	</div>
-	<div>
-		<h1 class="text-center text-success">List of all subjects</h1>
-	</div>
 
-	<div th:each="subject : ${subjects}">
-		<div class="row justify-content-center">
-			<h3 class="text-primary" th:text="${subject.name}"></h3>
-			<p></p>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col-auto">
-				<table class="table">
-				<caption>Teacher's subjects</caption>
-					<thead class="thead-light">
-						<tr>
-							<th scope="col"></th>
-							<th class="row centered" scope="col">Teachers</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="teacher, iterStat : ${subject.teachers}">
-							<td th:text="|${iterStat.count}.|"></td>
-							<td th:text="|${teacher.lastName} ${teacher.firstName}|">Teacher's
-								name</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+
+	<div>
+		<h1 class="text-center text-warning">Welcome to Rooms</h1>
+	</div>
+	<div class="row justify-content-center">
+		<div class="col-auto">
+			<table class="table table-hover ">
+			<caption>Rooms</caption>
+				<thead>
+					<tr>
+						<th scope="col">ID</th>
+						<th class="row centered" scope="col">Room number</th>
+						<th scope="col">Seats</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="room : ${rooms}">
+						<td th:text="${room.id}">№</td>
+						<td th:text="${room.roomNumber}">Number</td>
+						<td th:text="${room.seatNumber}">Seats</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 
@@ -54,6 +50,7 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
 		crossorigin="anonymous"></script>
+
 </body>
 </html>
 

@@ -120,7 +120,7 @@ public class ScheduleController {
     }
 
     @PostMapping(MAPPING_STUDENTS_DAY)
-    public String findStudentDaySchedule(@ModelAttribute("scheduleFindAttr") ScheduleFindAttr scheduleFindAttr,
+    public String findStudentDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Student student;
         try {

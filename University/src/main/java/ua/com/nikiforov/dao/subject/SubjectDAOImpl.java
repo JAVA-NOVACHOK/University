@@ -71,7 +71,7 @@ public class SubjectDAOImpl implements SubjectDAO {
         Subject subject;
         try {
             subject = jdbcTemplate.queryForObject(GET_SUBJECT_BY_ID, new Object[] { subjectId }, subjectMapper);
-            LOGGER.info("Successfully retrieved '{}'", subject);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, subject);
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format(FAILED_MSG, subjectMessage);
             LOGGER.error(failMessage);
@@ -87,7 +87,7 @@ public class SubjectDAOImpl implements SubjectDAO {
         Subject subject;
         try {
             subject = jdbcTemplate.queryForObject(GET_SUBJECT_BY_NAME, new Object[] { subjectName }, subjectMapper);
-            LOGGER.info("Successfully retrieved '{}'", subject);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, subject);
         } catch (EmptyResultDataAccessException e) {
             String failMessage = String.format(FAILED_MSG, subjectMessage);
             LOGGER.error(failMessage);

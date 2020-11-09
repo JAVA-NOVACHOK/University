@@ -3,7 +3,6 @@ package ua.com.nikiforov.dao.lesson;
 import java.util.List;
 
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
 
 public interface LessonDAO {
@@ -20,9 +19,5 @@ public interface LessonDAO {
             long lessonId);
 
     public boolean deleteLessonById(long id);
-
-    public List<Timetable> getDayStudentTimetable(String date, long studentId);
-
-    public List<Timetable> getMonthStudentTimetable(String stringDate, long studentId);
 
 }

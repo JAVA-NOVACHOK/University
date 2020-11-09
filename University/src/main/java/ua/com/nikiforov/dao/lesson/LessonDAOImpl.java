@@ -18,7 +18,6 @@ import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.LessonMapper;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.timetables.Period;
 
 @Repository
@@ -163,22 +162,6 @@ public class LessonDAOImpl implements LessonDAO {
 
     private Timestamp getTimestampFromString(String stringDate) {
         return Timestamp.valueOf(stringDate + " 00:00:00");
-    }
-
-    
-
-    @Override
-    public List<Timetable> getDayStudentTimetable(String date, long studentId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-   
-
-    @Override
-    public List<Timetable> getMonthStudentTimetable(String stringDate, long studentId) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

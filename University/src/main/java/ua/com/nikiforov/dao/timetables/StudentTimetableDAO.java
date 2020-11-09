@@ -26,7 +26,7 @@ import ua.com.nikiforov.models.timetable.Timetable;
 @Qualifier("studentTimetable")
 public class StudentTimetableDAO implements TimetableDAO {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentTimetableDAO.class);
 
     private static final String GET_STUDENT_DAY_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
             + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "

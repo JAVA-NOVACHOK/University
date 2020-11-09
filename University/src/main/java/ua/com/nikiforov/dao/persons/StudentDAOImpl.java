@@ -30,6 +30,11 @@ public class StudentDAOImpl implements StudentDAO {
     private static final String GET_ALL_STUDENTS = "SELECT * FROM students";
     private static final String UPDATE_STUDENT = "UPDATE students SET students.first_name = ? ,students.last_name = ? ,students.group_id = ? WHERE students.student_id = ? ";
     private static final String DELETE_STUDENT_BY_ID = "DELETE FROM students WHERE students.student_id = ? ";
+    
+    private static final String SUCCESSFULLY_RETRIVED_STUDENT = "Successfully retrived Student {}";
+    private static final String GETTING = "Getting {}";
+    
+    
 
     private StudentMapper studentMapper;
     private JdbcTemplate jdbcTemplate;
@@ -67,7 +72,7 @@ public class StudentDAOImpl implements StudentDAO {
         Student student;
         try {
             student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, studentMapper);
-            LOGGER.info("Successfully retrived Student {}", student);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Couldn't get Student by Id %d", studentId);
             LOGGER.error(failGetByIdMessage);
@@ -80,12 +85,12 @@ public class StudentDAOImpl implements StudentDAO {
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId) {
         String studentMessage = String.format("Student with firstName = %s, lastname = %s, groupId = %d", firstName,
                 lastName, groupId);
-        LOGGER.debug("Getting {}", studentMessage);
+        LOGGER.debug(GETTING, studentMessage);
         Student student;
         try {
             student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME_GROUP_ID,
                     new Object[] { firstName, lastName, groupId }, studentMapper);
-            LOGGER.info("Successfully retrived Student {}", student);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Couldn't get %s", studentMessage);
             LOGGER.error(failGetByIdMessage);
@@ -97,12 +102,12 @@ public class StudentDAOImpl implements StudentDAO {
     @Override
     public Student getStudentByName(String firstName, String lastName) {
         String studentMessage = String.format("Student with firstName = %s, lastname = %s", firstName, lastName);
-        LOGGER.debug("Getting {}", studentMessage);
+        LOGGER.debug(GETTING, studentMessage);
         Student student;
         try {
             student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME,
                     new Object[] { firstName, lastName }, studentMapper);
-            LOGGER.info("Successfully retrived Student {}", student);
+            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Couldn't get %s", studentMessage);
             LOGGER.error(failGetByIdMessage);
@@ -170,7 +175,7 @@ public class StudentDAOImpl implements StudentDAO {
     @Override
     public List<Student> getStudentsByGroupId(long groupId) {
         String studentsInGroupMSG = String.format("students from group with ID = %d", groupId);
-        LOGGER.debug("Getting {}", studentsInGroupMSG);
+        LOGGER.debug(GETTING, studentsInGroupMSG);
         List<Student> studentsInGroup = new ArrayList<>();
         try {
             studentsInGroup

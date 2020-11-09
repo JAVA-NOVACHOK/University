@@ -109,7 +109,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    private void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
+     void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
