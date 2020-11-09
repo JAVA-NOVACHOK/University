@@ -9,7 +9,7 @@
 		</encoder>
 	</appender>
 	<property name="LOG_FILE" value="logs" />
-	<property name="LOG_DIR" value="D:\Dropbox\Repositories\University\University/logs/university" />
+	<property name="LOG_DIR" value="logs/university" />
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_DIR}/${LOG_FILE}.log</file>
