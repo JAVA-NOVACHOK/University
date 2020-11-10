@@ -90,8 +90,8 @@ class LessonServiceImplTest {
     void whenUpdateLessonIfSuccessThenGetLessonByIdAfterUpdateReturnChangedLesson() {
         long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
         lessonService.updateLesson(Period.SECOND, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId);
-        Lesson expectedUpdatedLesson = lessonService.getLessonByGroupRoomSubjectIds(TEST_GROUP_ID_2, TEST_ROOM_ID_2,
-                TEST_SUBJECT_ID_2);
+        Lesson expectedUpdatedLesson = lessonService.getLessonByGroupRoomSubjectIds(TEST_SUBJECT_ID_2,TEST_ROOM_ID_2,TEST_GROUP_ID_2
+                );
         Lesson actualUpdatedLesson = lessonService.getLessonById(lessonId);
         assertEquals(expectedUpdatedLesson, actualUpdatedLesson);
     }
@@ -111,7 +111,7 @@ class LessonServiceImplTest {
 
     private Lesson insertLesson(Period period, int subjectId, int roomId, long groupId,String date, long teacherId) {
         lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
-        return lessonService.getLessonByGroupRoomSubjectIds(groupId, roomId, subjectId);
+        return lessonService.getLessonByGroupRoomSubjectIds(subjectId, roomId, groupId);
     }
 
 }

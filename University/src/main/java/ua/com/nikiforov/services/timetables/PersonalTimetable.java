@@ -41,7 +41,7 @@ public abstract class PersonalTimetable {
         return monthTimetable;
     }
     
-    public DateInfo parseInstantToDateInfo(Timetable timetable) {
+    public static DateInfo parseInstantToDateInfo(Timetable timetable) {
         Instant instant = timetable.getTime();
         ZonedDateTime zonedDateTime = getZonedDateTime(instant, ZONE);
         String weekDay = zonedDateTime.getDayOfWeek().name();
@@ -51,7 +51,7 @@ public abstract class PersonalTimetable {
         return new DateInfo(weekDay, monthDay, month, year);
     }
 
-    private ZonedDateTime getZonedDateTime(Instant instant, String zone) {
+    private static ZonedDateTime getZonedDateTime(Instant instant, String zone) {
         ZoneId zoneId = ZoneId.of(zone);
         return ZonedDateTime.ofInstant(instant, zoneId);
     }

@@ -1,6 +1,7 @@
 package ua.com.nikiforov.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.timetables.DateInfo;
 import ua.com.nikiforov.services.timetables.DayTimetable;
+import ua.com.nikiforov.services.timetables.PersonalTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
@@ -98,17 +100,15 @@ public class ScheduleController {
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
             LOGGER.error(TEACHER_NOT_FOUND_MSG,e);
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
         List<Timetable> dayTimetable = teachersTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
                 teacher.getId());
         if (dayTimetable.isEmpty()) {
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         Timetable timetable = dayTimetable.get(0);
-        DateInfo dateInfo = teachersTimetableService.parseInstantToDateInfo(timetable);
+        DateInfo dateInfo = PersonalTimetable.parseInstantToDateInfo(timetable);
         model.addAttribute(DATE_INFO, dateInfo);
         model.addAttribute(DAY_TIMETABLE, dayTimetable);
         return VIEW_TEACHER_SCHEDULE;
@@ -120,7 +120,7 @@ public class ScheduleController {
     }
 
     @PostMapping(MAPPING_STUDENTS_DAY)
-    public String findStudentDaySchedule(@ModelAttribute("SCHEDULE_FIND_ATTR") ScheduleFindAttr scheduleFindAttr,
+    public String findStudentDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Student student;
         try {
@@ -128,19 +128,18 @@ public class ScheduleController {
             model.addAttribute(STUDENT, student);
         } catch (EntityNotFoundException e) {
             LOGGER.error(STUDENT_NOT_FOUND_MSG);
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
         List<Timetable> dayTimetable = studentTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
                 student.getGroupId());
         if (dayTimetable.isEmpty()) {
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         Timetable timetable = dayTimetable.get(0);
         DateInfo dateInfo = studentTimetableService.parseInstantToDateInfo(timetable);
         model.addAttribute(DATE_INFO, dateInfo);
         model.addAttribute(DAY_TIMETABLE, dayTimetable);
+        Map<String,Object> models = model.asMap();
         return VIEW_STUDENT_SCHEDULE;
     }
 
@@ -153,13 +152,11 @@ public class ScheduleController {
             model.addAttribute(STUDENT, student);
         } catch (EntityNotFoundException e) {
             LOGGER.error(TEACHER_NOT_FOUND_MSG);
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
         List<DayTimetable> monthTimetable = studentTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
                 student.getGroupId());
         if (monthTimetable.isEmpty()) {
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         model.addAttribute(MONTH_TIMETABLE, monthTimetable);
@@ -168,7 +165,7 @@ public class ScheduleController {
     }
 
     @PostMapping(MAPPING_TEACHERS_MONTH)
-    public String findMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
+    public String findTeacherMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         Teacher teacher;
         try {
@@ -176,13 +173,11 @@ public class ScheduleController {
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
             LOGGER.error(TEACHER_NOT_FOUND_MSG);
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
         List<DayTimetable> monthTimetable = teachersTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
                 teacher.getId());
         if (monthTimetable.isEmpty()) {
-            model.addAttribute(SCHEDULE_FIND_ATTR, scheduleFindAttr);
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         model.addAttribute(MONTH_TIMETABLE, monthTimetable);

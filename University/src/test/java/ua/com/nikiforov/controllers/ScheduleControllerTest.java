@@ -91,6 +91,12 @@ class ScheduleControllerTest {
     private static final String DATE_1_ADD_21_DAYS = "2020-10-06";
     private static final String DATE_1_ADD_33_DAYS = "2020-11-18";
     private static final String DATE = "2020-10-13";
+    
+    private static final String WEEK_DAY_FOR_DATE_2020_10_13 = "Tuesday";
+    private static final String MONTH_NAME_FOR_DATE_2020_10_13 = "OCTOBER";
+    
+    private static final int MONTH_DAY_FOR_DATE_2020_10_13 = 13;
+    private static final int YEAR_2020 = 2020;
 
     @Autowired
     private RoomService roomService;
@@ -125,6 +131,10 @@ class ScheduleControllerTest {
     private MockMvc mockMvc;
     
     private Teacher teacher;
+    
+    private Student student;
+    
+    private DateInfo dateInfo;
 
     @BeforeAll
     public void setup() {
@@ -145,12 +155,13 @@ class ScheduleControllerTest {
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
 
         teacher = insertTeacher(TEACHERS_FIRST_NAME_1, TEACHERS_LAST_NAME_1);
-        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
 
-        Student student_1 = insertStudent(STUDENTS_LAST_NAME_1, STUDENTS_LAST_NAME_1, group_1.getId());
-        Student student_2 = insertStudent(STUDENTS_LAST_NAME_2, STUDENTS_LAST_NAME_2, group_1.getId());
-        Student student_3 = insertStudent(STUDENTS_LAST_NAME_3, STUDENTS_LAST_NAME_3, group_1.getId());
+        student = insertStudent(STUDENTS_FIRST_NAME_1, STUDENTS_LAST_NAME_1, group_1.getId());
+        insertStudent(STUDENTS_FIRST_NAME_2, STUDENTS_LAST_NAME_2, group_1.getId());
+        insertStudent(STUDENTS_FIRST_NAME_3, STUDENTS_LAST_NAME_3, group_1.getId());
+        
+        dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13,
+                MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
 
         lessonService.addLesson(Period.FIRST, subject_1.getId(), room_1.getId(), group_1.getId(), DATE,
                 teacher.getId());
@@ -183,7 +194,6 @@ class ScheduleControllerTest {
     void givenScheduleTeachersDayPageURI_ThenReturnsTimetableTeacherScheduleViewName_WithDateInfo_DayTimetable_Models()
             throws Exception {
        
-        DateInfo dateInfo = new DateInfo("Tuesday", 13, "OCTOBER", 2020);
 
         this.mockMvc
                 .perform(post("/schedules/teachers_day")
@@ -193,6 +203,7 @@ class ScheduleControllerTest {
                 .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
                 .andExpect(model().attribute("dateInfo", dateInfo))
                 .andExpect(model().attribute("teacher", teacher))
+                .andExpect(model().attributeExists("dayTimetable"))
                 .andExpect(model().size(4))
                 .andExpect(status().isOk())
                 .andExpect(view().name("timetable/teacher_schedule"));
@@ -202,19 +213,55 @@ class ScheduleControllerTest {
     void givenScheduleTeachersMonthPageURI_ThenReturnsTimetableTeacherScheduleViewName_WithDateInfo_DayTimetable_Models()
             throws Exception {
        
-        DateInfo dateInfo = new DateInfo("Tuesday", 13, "OCTOBER", 2020);
-
         this.mockMvc
                 .perform(post("/schedules/teachers_month")
                 .param("firstName", TEACHERS_FIRST_NAME_1)
                 .param("lastName", TEACHERS_LAST_NAME_1)
                 .param("time", DATE)
                 .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
-                .andExpect(model().attribute("dateInfo", dateInfo))
-                .andExpect(model().attribute("teacher", teacher))
-                .andExpect(model().size(4))
                 .andExpect(status().isOk())
-                .andExpect(view().name("timetable/teacher_schedule"));
+                .andExpect(model().attributeExists("monthTimetable"))
+                .andExpect(model().attribute("teacher",teacher))
+                .andExpect(model().size(3))
+                .andExpect(view().name("timetable/teacher_schedule_month"));
+    }
+    
+    @Test
+    void givenScheduleStudentsDayPageURI_ThenReturnsTimetableStudentScheduleViewName_WithStudent_DateInfo_DayTimetable_Models()
+            throws Exception {
+       
+        DateInfo dateInfo = new DateInfo("Tuesday", 13, "OCTOBER", 2020);
+
+        this.mockMvc
+                .perform(post("/schedules/students_day")
+                .param("firstName", STUDENTS_FIRST_NAME_1)
+                .param("lastName", STUDENTS_LAST_NAME_1)
+                .param("time", DATE)
+                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
+                .andExpect(status().isOk())
+                .andExpect(model().size(4))
+                .andExpect(model().attribute("student", student))
+                .andExpect(model().attributeExists("dayTimetable"))
+                .andExpect(model().attributeExists("scheduleFindAttr"))
+                .andExpect(model().attribute("dateInfo", dateInfo))
+                .andExpect(view().name("timetable/student_schedule"));
+    }
+    
+    @Test
+    void givenScheduleStudentsMonthPageURI_ThenReturnsTimetableStudentScheduleViewName_WithDateInfo_DayTimetable_Models()
+            throws Exception {
+       
+        this.mockMvc
+                .perform(post("/schedules/students_month")
+                .param("firstName", STUDENTS_FIRST_NAME_1)
+                .param("lastName", STUDENTS_LAST_NAME_1)
+                .param("time", DATE)
+                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("monthTimetable"))
+                .andExpect(model().attribute("student",student))
+                .andExpect(model().size(3))
+                .andExpect(view().name("timetable/student_schedule_month"));
     }
 
     private Group insertGroup(String groupName) {
