@@ -189,7 +189,7 @@ class StudentTimetableServiceTest {
     }
 
     @Test
-    void whenGetDayTimetableByDateAndStudentGroupIdShouldReturnListOfTimetablesOfChosenDate() {
+    void whenGetDayTimetableByDateAndGroupIdShouldReturnListOfTimetables() {
         List<Timetable> expectedTimetables = new ArrayList<>();
         expectedTimetables.add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_1,
                 TEST_GROUP_NAME_1, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
@@ -203,7 +203,7 @@ class StudentTimetableServiceTest {
     }
 
     @Test
-    void whenGetMonthTimetableByDateAndStudentGroupIdShouldReturnListOfTimetablesWithinMonthOrderdByDate() {
+    void whenGetMonthTimetableByDateAndStudentGroupIdShouldReturnListOfTimetables() {
 
         List<DayTimetable> expectedMonthTimetable = new ArrayList<>();
 

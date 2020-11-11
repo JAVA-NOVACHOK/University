@@ -180,18 +180,18 @@ class ScheduleControllerTest {
     }
 
     @Test
-    void givenSchedulePageURI_whenMockMVC_thenReturnsScheduleViewName() throws Exception {
+    void givenScheduleURI_whenMockMVC_thenReturnScheduleView() throws Exception {
         this.mockMvc.perform(get("/schedules/")).andDo(print()).andExpect(view().name("timetable/schedule"));
     }
 
     @Test
-    void givenScheduleTeacherPageURI_whenMockMVC_thenReturnsTeacherTimetableFormViewName() throws Exception {
+    void givenTeacherURI_whenMockMVC_thenReturnsTeacherTimetableFormView() throws Exception {
         this.mockMvc.perform(get("/schedules/teacher")).andDo(print())
                 .andExpect(view().name("timetable/teacher_timetable_form"));
     }
 
     @Test
-    void givenScheduleTeachersDayPageURI_ThenReturnsTimetableTeacherScheduleViewName_WithDateInfo_DayTimetable_Models()
+    void givenTeachersDayURI_ThenReturnsTeacherScheduleView_WithDateInfo_DayTimetable_Models()
             throws Exception {
        
 

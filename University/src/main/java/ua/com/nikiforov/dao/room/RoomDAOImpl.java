@@ -29,7 +29,7 @@ public class RoomDAOImpl implements RoomDAO {
     private static final String FIND_ROOM_BY_ROOM_NUMBER = "SELECT  *  FROM rooms  WHERE room_number =  ? ";
     private static final String GET_ALL_ROOMS = "SELECT  *  FROM rooms ";
     private static final String UPDATE_ROOM = "UPDATE rooms  SET room_number =  ? ,seat_number =  ?  WHERE room_id =  ? ";
-    private static final String DELETE_ROOM_BY_ID = "UPDATE rooms  SET room_number =  ? ,seat_number =  ?  WHERE room_id =  ? ";
+    private static final String DELETE_ROOM_BY_ID = "DELETE FROM rooms  WHERE room_id =  ? ";
 
     private RoomMapper roomMapper;
     private JdbcTemplate jdbcTemplate;

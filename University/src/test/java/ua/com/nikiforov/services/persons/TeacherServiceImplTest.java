@@ -60,13 +60,13 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void afterAddTeacherGetTeacherByIdReturnCorrectTeacherObject() {
+    void afterAddTeacherReturnCorrectTeacherObject() {
         Teacher expectedTeacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         assertEquals(expectedTeacher, teacherService.getTeacherById(expectedTeacher.getId()));
     }
 
     @Test
-    void whenGetAllTeachersIfPresentReturnListOfAllTeachers() {
+    void whenGetAllTeachersReturnListOfAllTeachers() {
         List<Teacher> expectedTeachers = new ArrayList<>();
         expectedTeachers.add(insertTeacher(FIRST_NAME_1, LAST_NAME_1));
         expectedTeachers.add(insertTeacher(FIRST_NAME_2, LAST_NAME_2));
@@ -81,7 +81,7 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void afterUpdateTeacherIfSuccessThenGetTeacherByIdReturnUpdatedTeacher() {
+    void afterUpdateTeacherThenTeacherHasUpdatedTeacher() {
         long TeacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
         teacherService.updateTeacher(FIRST_NAME_2, LAST_NAME_2, TeacherId);
         Teacher expectedTeacher = teacherService.getTeacherByName(FIRST_NAME_2, LAST_NAME_2);
@@ -96,7 +96,7 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void afterDeleteTeacherByIdIfSearchForItReturnEmptyResultDataAccessException() {
+    void afterDeleteTeacherByIdIfSearchReturnEntityNotFoundException() {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
         teacherService.deleteTeacherById(teacherId);
@@ -111,7 +111,7 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void afterAssignSubjectsToTeacherTeacherHasListOfSubjectIds() {
+    void afterAssignSubjectsToTeacher_ItHasListOfSubjectIds() {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
 
@@ -137,7 +137,7 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void afterUnAssignSubjectsFromTeacherTeacherHasNoThatSubjectInListOfSubjectIds() {
+    void afterUnAssignSubjectsFromTeacher_HeHasNoSubjectInListOfSubjects() {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         long teacherId = teacher.getId();
 

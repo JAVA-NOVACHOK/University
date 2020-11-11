@@ -69,7 +69,7 @@ class StudentsControllerTest {
     }
 
     @Test
-    void givenStudentPageURI_whenMockMVC_thenReturnsStudentViewName_WithStudentGroupModelAttributes() throws Exception {
+    void givenStudentURI_whenMockMVC_thenReturnStudentView_WithStudentGroupModelAttributes() throws Exception {
         Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getId());
         Student student_2 = insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getId());

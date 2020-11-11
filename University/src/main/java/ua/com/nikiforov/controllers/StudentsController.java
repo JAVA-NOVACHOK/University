@@ -19,7 +19,6 @@ import ua.com.nikiforov.services.persons.StudentsService;
 @RequestMapping("/students")
 public class StudentsController {
     
-    private static final String MAPPING_SLASH = "/";
     private static final String GROUP_ATTR = "group";
     private static final String STUDENTS_ATTR = "students";
     private static final String VIEW_STUDENTS = "students";
@@ -34,7 +33,7 @@ public class StudentsController {
         this.groupService = groupService;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String showStudents(@RequestParam long id, Model model) {
 
         Group group = groupService.getGroupById(id);

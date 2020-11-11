@@ -58,7 +58,7 @@ class SubjectsControllerTest {
     }
 
     @Test
-    void givenSubjectPageURI_whenMockMVC_thenReturnsSubjectsViewName_WithSubjectsModelAttributes() throws Exception {
+    void givenSubjectURI_whenMockMVC_thenReturnsSubjectsView_WithSubjectsModelAttributes() throws Exception {
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);

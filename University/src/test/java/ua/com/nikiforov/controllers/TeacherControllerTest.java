@@ -61,7 +61,7 @@ class TeacherControllerTest {
     }
 
     @Test
-    void givenTeachersPageURI_whenMockMVC_thenReturnsTeachersViewName_WithTeachersModelAttribute() throws Exception {
+    void givenTeachersURI_whenMockMVC_thenReturnTeachersView_WithTeachersModelAttribute() throws Exception {
         Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);

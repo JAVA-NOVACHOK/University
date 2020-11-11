@@ -87,7 +87,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void whenUpdateGroupIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
+    void whenUpdateGroupThenGroupHasChangedName() {
         long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.updateGroup(groupId, TEST_GROUP_NAME_2);
         Group expectedUpdatedGroup = groupService.getGroupById(groupId);
@@ -102,7 +102,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void afterDeleteGroupByIdIfSearchForItReturnEntityNotFoundException() {
+    void afterDeleteGroupIfSearchReturnEntityNotFoundException() {
         long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
         groupService.deleteGroup(groupId);
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(groupId));
@@ -129,7 +129,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void whenDeleteStudentReturnListOfStudentsInGroupWithoutThisStudent() {
+    void whenDeleteStudentListOfStudentsWithoutStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
@@ -151,7 +151,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    void whenTransferStudentReturnListOfStudentsInGroupTransferedStudent() {
+    void whenTransferStudentListOfStudentsInGroupWithTransferedStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);

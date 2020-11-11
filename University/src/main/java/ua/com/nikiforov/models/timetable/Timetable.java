@@ -126,7 +126,7 @@ public class Timetable implements Comparable<Timetable> {
     @Override
     public String toString() {
         return "Timetable [period=" + period + ", subjectName=" + subjectName + ", roomNumber=" + roomNumber
-                + ", groupName=" + groupName + ", time=" + time.toEpochMilli() + ", teachersName=" + teachersName + "]";
+                + ", groupName=" + groupName + ", time=" + time + ", teachersName=" + teachersName + "]";
     }
 
     @Override

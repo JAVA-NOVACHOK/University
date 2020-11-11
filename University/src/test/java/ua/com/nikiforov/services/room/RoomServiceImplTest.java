@@ -66,7 +66,7 @@ class RoomServiceImplTest {
     }
 
     @Test
-    void whenUpdateRoomIfSuccessThenGetGroupByIdAfterUpdateReturnChangedName() {
+    void whenUpdateRoomThenGroupHasUpdatedName() {
         Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
         roomService.updateRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2, roomId);
@@ -82,7 +82,7 @@ class RoomServiceImplTest {
     }
 
     @Test
-    void afterDeleteRoomByIdIfSearchForItReturnEmptyResultDataAccessException() {
+    void afterDeleteRoomByIdIfSearchReturnEntityNotFoundException() {
         Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
         roomService.deleteRoomById(roomId);

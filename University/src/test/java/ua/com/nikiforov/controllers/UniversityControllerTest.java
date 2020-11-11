@@ -36,7 +36,7 @@ class UniversityControllerTest {
     }
 
     @Test
-    void givenWac_whenServletContext_thenItProvidesUniversityController() throws Exception {
+    void givenUniversityURI_whenMockMVC_thenReturnWelcomeView() throws Exception {
         this.mockMvc.perform(get("/")).andDo(print()).andExpect(view().name("welcome_page"));
     }
 

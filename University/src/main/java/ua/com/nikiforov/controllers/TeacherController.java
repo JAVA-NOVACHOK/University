@@ -15,7 +15,6 @@ import ua.com.nikiforov.services.persons.TeacherService;
 @RequestMapping("/teachers")
 public class TeacherController {
 
-    private static final String MAPPING_SLASH = "/";
     private static final String TEACHERS_ATTR = "teachers";
     private static final String VIEW_TEACHERS = "teachers";
 
@@ -26,7 +25,7 @@ public class TeacherController {
         this.teacherServise = teacherServise;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String show(Model model) {
         List<Teacher> teachers = teacherServise.getAllTeachers();
         model.addAttribute(TEACHERS_ATTR, teachers);

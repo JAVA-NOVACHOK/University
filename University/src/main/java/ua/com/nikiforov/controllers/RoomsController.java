@@ -15,7 +15,6 @@ import ua.com.nikiforov.services.room.RoomService;
 @RequestMapping("/rooms")
 public class RoomsController {
     
-    private static final String MAPPING_SLASH = "/";
     private static final String ROOM_ATTR = "rooms";
     private static final String VIEW_ROOMS= "rooms";
 
@@ -26,7 +25,7 @@ public class RoomsController {
         this.roomService = roomService;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String roomsShow(Model model) {
         List<Room> rooms = roomService.getAllRooms();
         model.addAttribute(ROOM_ATTR, rooms);

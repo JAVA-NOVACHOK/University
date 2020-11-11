@@ -16,7 +16,6 @@ import ua.com.nikiforov.services.group.GroupService;
 public class GroupsController {
     
     private static final String GROUPS_ATTR = "groups";
-    private static final String MAPPING_SLASH = "/";
     private static final String VIEW_GROUPS = "groups";
 
     private GroupService groupService;
@@ -26,7 +25,7 @@ public class GroupsController {
         this.groupService = groupService;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String getGroups(Model model) {
 
         List<Group> groups = groupService.getAllGroups();

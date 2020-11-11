@@ -1,7 +1,6 @@
 package ua.com.nikiforov.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +42,6 @@ public class ScheduleController {
     private static final String DAY_TIMETABLE = "dayTimetable";
     private static final String MONTH_TIMETABLE = "monthTimetable";
 
-    private static final String MAPPING_SLASH = "/";
     private static final String MAPPING_TEACHER = "/teacher";
     private static final String MAPPING_TEACHER_DAY = "/teachers_day";
     private static final String MAPPING_STUDENT = "/student";
@@ -81,7 +79,7 @@ public class ScheduleController {
         this.studentTimetableService = studentTimetableService;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String show() {
         return VIEW_SCHEDULE;
     }
@@ -136,10 +134,9 @@ public class ScheduleController {
             return TIMETABLE_SCHEDULE_NOT_FOUND;
         }
         Timetable timetable = dayTimetable.get(0);
-        DateInfo dateInfo = studentTimetableService.parseInstantToDateInfo(timetable);
+        DateInfo dateInfo = PersonalTimetable.parseInstantToDateInfo(timetable);
         model.addAttribute(DATE_INFO, dateInfo);
         model.addAttribute(DAY_TIMETABLE, dayTimetable);
-        Map<String,Object> models = model.asMap();
         return VIEW_STUDENT_SCHEDULE;
     }
 

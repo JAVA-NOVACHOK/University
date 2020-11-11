@@ -87,7 +87,7 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void whenUpdateLessonIfSuccessThenGetLessonByIdAfterUpdateReturnChangedLesson() {
+    void whenUpdateLessonThenLessonIsChanged() {
         long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
         lessonService.updateLesson(Period.SECOND, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId);
         Lesson expectedUpdatedLesson = lessonService.getLessonByGroupRoomSubjectIds(TEST_SUBJECT_ID_2,TEST_ROOM_ID_2,TEST_GROUP_ID_2
@@ -103,7 +103,7 @@ class LessonServiceImplTest {
     }
 
     @Test
-    void afterDeleteLessonByIdIfSearchForItReturnEntityNotFoundException() {
+    void afterDeleteLessonIfSearchReturnEntityNotFoundException() {
         long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
         lessonService.deleteLessonById(lessonId);
         assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(lessonId));

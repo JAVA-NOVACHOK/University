@@ -15,7 +15,6 @@ import ua.com.nikiforov.services.subject.SubjectService;
 @RequestMapping("/subjects")
 public class SubjectsController {
 
-    private static final String MAPPING_SLASH = "/";
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String VIEW_SUBJECTS = "subjects";
 
@@ -26,7 +25,7 @@ public class SubjectsController {
         this.subjectService = subjectService;
     }
 
-    @GetMapping(MAPPING_SLASH)
+    @GetMapping()
     public String showSubjects(Model model) {
 
         List<Subject> subjects = subjectService.getAllSubjects();

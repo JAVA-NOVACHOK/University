@@ -61,7 +61,7 @@ class StudentsServiseImplTest {
     }
 
     @Test
-    void afterAddStudentGetStudentByIdReturnCorrectStudentObject() {
+    void afterAddStudentReturnCorrectStudentObject() {
         Student expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getId()));
     }
@@ -98,7 +98,7 @@ class StudentsServiseImplTest {
     }
 
     @Test
-    void afterDeleteStudentByIdIfSearchForItReturnEntityNotFoundException() {
+    void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
         studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         Student student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         long studentId = student.getId();

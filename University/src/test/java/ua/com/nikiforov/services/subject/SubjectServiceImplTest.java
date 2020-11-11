@@ -80,7 +80,7 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void whenUpdateSubjectIfSuccessThenGetSubjectByIdAfterUpdateReturnChangedName() {
+    void whenUpdateSubjectThenSubjectHasUpdatedName() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         subjectService.updateSubject(SUBJECT_NAME_2, subjectId);
@@ -104,7 +104,7 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    void afterAssignSubjectsToTeachersSubjectHasListOfTeachers() {
+    void afterAssignSubjectsToTeachers_SubjectHasListOfTeachers() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         

@@ -13,6 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.University;
 
 @SpringJUnitConfig(DatabaseConfig.class)
@@ -85,7 +86,7 @@ class UniversityServiceImplTest {
     void afterDeleteUniversityByIdIfSearchForItReturnEmptyResultDataAccessException() {
         int universityId = insertUniversity(UNIVERSITY_NAME_1);
         universityService.deleteUniversityById(universityId);
-        assertThrows(EmptyResultDataAccessException.class, () -> universityService.getUniversityById(universityId));
+        assertThrows(EntityNotFoundException.class, () -> universityService.getUniversityById(universityId));
     }
 
     private int insertUniversity(String UniversityName) {
