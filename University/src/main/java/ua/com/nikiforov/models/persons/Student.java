@@ -7,7 +7,7 @@ public class Student extends Person {
     public Student() {
     }
 
-    public Student(long id, String firstName, String lastName, int groupId) {
+    public Student(long id, String firstName, String lastName, long groupId) {
         super(id, firstName, lastName);
         this.groupId = groupId;
     }
@@ -44,8 +44,8 @@ public class Student extends Person {
 
     @Override
     public String toString() {
-        return "groupId=" + groupId + ", getId()=" + getId() + ", getFirstName()=" + getFirstName() + ", getLastName()="
-                + getLastName();
+        return String.format("Student with ID = %d and firstName = %s, lastname = %s, groupId = %d",
+                this.getId(), this.getFirstName(), this.getLastName(), groupId);
     }
 
 }

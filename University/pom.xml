@@ -17,7 +17,7 @@
 		<spring.version>5.2.9.RELEASE</spring.version>
 		<logback.version>1.2.3</logback.version>
 		<thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
-		<bootstrap.version>3.3.6</bootstrap.version>
+		<bootstrap.version>4.5.3</bootstrap.version>
 		<bootstrap.datepicker.version>1.9.0</bootstrap.datepicker.version>
 		<j.query.version>3.5.1</j.query.version>
 	</properties>

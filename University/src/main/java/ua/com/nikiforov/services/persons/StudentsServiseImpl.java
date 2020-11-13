@@ -42,8 +42,8 @@ public class StudentsServiseImpl implements StudentsService {
     }
 
     @Override
-    public boolean updateStudent(String firstName, String lastName, long groupId, long studentId) {
-        return studentDAO.updateStudent(firstName, lastName, groupId, studentId);
+    public boolean updateStudent(Student student) {
+        return studentDAO.updateStudent(student);
     }
 
     @Override
@@ -59,7 +59,8 @@ public class StudentsServiseImpl implements StudentsService {
     @Override
     public boolean transferStudent(long studentId, long groupIdTo) {
         Student student = studentDAO.getStudentById(studentId);
-        return studentDAO.updateStudent(student.getFirstName(), student.getLastName(), groupIdTo, studentId);
+        Student newStudent = new Student(studentId,student.getFirstName(), student.getLastName(), groupIdTo);
+        return studentDAO.updateStudent(newStudent);
     }
 
 }

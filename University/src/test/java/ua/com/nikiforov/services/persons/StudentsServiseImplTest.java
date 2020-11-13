@@ -78,13 +78,13 @@ class StudentsServiseImplTest {
     @Test
     void whenUpdateStudentIfSuccessThenReturnTrue() {
         long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getId();
-        assertTrue(studentsService.updateStudent(FIRST_NAME_2, LAST_NAME_2, testGroupName_2, studentId));
+        assertTrue(studentsService.updateStudent(new Student(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2)));
     }
 
     @Test
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
         long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getId();
-        studentsService.updateStudent(FIRST_NAME_2, LAST_NAME_2, testGroupName_2, studentId);
+        studentsService.updateStudent(new Student( studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
         Student expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
         Student actualStudent = studentsService.getStudentById(studentId);
         assertEquals(expectedStudent, actualStudent);

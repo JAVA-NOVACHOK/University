@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,10 +27,10 @@ public class GroupDAOImpl implements GroupDAO {
     private static final String NO_AFFECTED_ROWS_MSG = "No affected rows";
 
     private static final String ADD_GROUP = "INSERT INTO groups  (group_name) VALUES(?)";
-    private static final String FIND_GROUP_BY_ID = "SELECT * FROM groups  WHERE groups.group_id =  ? ";
-    private static final String FIND_GROUP_BY_NAME = "SELECT  *  FROM groups  WHERE groups.group_name =  ? ";
-    private static final String GET_ALL_GROUPS = "SELECT  *  FROM groups ";
-    private static final String UPDATE_GROUP = "UPDATE groups  SET groups.group_name =  ?  WHERE groups.group_id =  ? ";
+    private static final String FIND_GROUP_BY_ID = "SELECT * FROM groups  WHERE group_id =  ? ";
+    private static final String FIND_GROUP_BY_NAME = "SELECT  *  FROM groups  WHERE group_name =  ? ";
+    private static final String GET_ALL_GROUPS = "SELECT  *  FROM groups ORDER BY group_name";
+    private static final String UPDATE_GROUP = "UPDATE groups  SET group_name =  ?  WHERE group_id =  ? ";
     private static final String DELETE_GROUP_BY_ID = "DELETE  FROM groups  WHERE groups.group_id =  ? ";
 
     private GroupMapper groupMapper;
@@ -116,7 +117,9 @@ public class GroupDAOImpl implements GroupDAO {
             } else {
                 throw new DataOperationException(NO_AFFECTED_ROWS_MSG);
             }
-        } catch (DataAccessException e) {
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Group with name " + groupName +" already exists",e);
+        }catch (DataAccessException e) {
             String failMessage = String.format("Couldn't add Group with name %s", groupName);
             LOGGER.error(failMessage,e);
             throw new DataOperationException(failMessage, e);
@@ -136,7 +139,9 @@ public class GroupDAOImpl implements GroupDAO {
                 String failMessage = String.format("Couldn't update Group with id %d name %s",id, groupName);
                 throw new DataOperationException(failMessage);
             }
-        } catch (DataAccessException e) {
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Group already exists with name = " + groupName);
+        }catch (DataAccessException e) {
             String failMessage = String.format("Couldn't update Group with id %d name %s",id, groupName);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);

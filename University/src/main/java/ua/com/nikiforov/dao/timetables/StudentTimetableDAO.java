@@ -33,14 +33,14 @@ public class StudentTimetableDAO implements TimetableDAO {
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
             + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
-            + "WHERE lessons.group_id = ? AND time = ?";
+            + "WHERE lessons.group_id = ? AND time = ? ORDER BY period";
 
     private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
             + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
             + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
-            + "WHERE lessons.group_id = ? AND time BETWEEN ? AND ?";
+            + "WHERE lessons.group_id = ? AND time BETWEEN ? AND ? ORDER BY time";
     
     private static final String FAILED_MSG =  "Failed to get ";
     private static final String GETTING_MSG =  "Getting '{}'";

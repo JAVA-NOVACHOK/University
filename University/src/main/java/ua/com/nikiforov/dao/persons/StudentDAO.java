@@ -21,7 +21,7 @@ public interface StudentDAO {
 
     public List<Student> getAllStudents();
 
-    public boolean updateStudent(String firstName, String lastName, long groupId, long studentId);
+    public boolean updateStudent(Student student);
 
     public boolean deleteStudentById(long studentId);
 }

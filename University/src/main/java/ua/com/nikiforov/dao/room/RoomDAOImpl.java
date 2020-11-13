@@ -2,6 +2,8 @@ package ua.com.nikiforov.dao.room;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,7 +30,7 @@ public class RoomDAOImpl implements RoomDAO {
     private static final String ADD_ROOM = "INSERT INTO rooms (room_number,seat_number) VALUES(?,?)";
     private static final String FIND_ROOM_BY_ID = "SELECT  *  FROM rooms  WHERE room_id =  ? ";
     private static final String FIND_ROOM_BY_ROOM_NUMBER = "SELECT  *  FROM rooms  WHERE room_number =  ? ";
-    private static final String GET_ALL_ROOMS = "SELECT  *  FROM rooms ";
+    private static final String GET_ALL_ROOMS = "SELECT  *  FROM rooms ORDER BY room_number";
     private static final String UPDATE_ROOM = "UPDATE rooms  SET room_number =  ? ,seat_number =  ?  WHERE room_id =  ? ";
     private static final String DELETE_ROOM_BY_ID = "DELETE FROM rooms  WHERE room_id =  ? ";
 
@@ -42,17 +45,21 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     public boolean addRoom(int roomNumber, int seatNumber) {
-        LOGGER.debug("Adding Room with number '{}' with {} seats", roomNumber, seatNumber);
-        boolean actionResult = jdbcTemplate.update(ADD_ROOM, roomNumber, seatNumber) > 0;
+        String roomMessage = String.format("Room with number '%d' with '%d' seats", roomNumber, seatNumber);
+        LOGGER.debug("Adding {} ", roomMessage);
+        boolean actionResult = false;
         try {
+            actionResult = jdbcTemplate.update(ADD_ROOM, roomNumber, seatNumber) > 0;
             if (actionResult) {
-                LOGGER.info("Successful adding room '{}' ", roomNumber);
+                LOGGER.info("Successfully added {}", roomMessage);
             } else {
-                String failMessage = String.format("Fail to add room with number %d", roomNumber);
+                String failMessage = String.format("Fail to add {}", roomMessage);
                 throw new DataOperationException(failMessage);
             }
-        } catch (DataAccessException e) {
-            String message = String.format("Couldn't add Room number %d to DB", roomNumber);
+        }catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Room with name " + roomNumber +" already exists",e);
+        }catch (DataAccessException e) {
+            String message = String.format("Couldn't add %s to DB", roomMessage);
             LOGGER.error(message);
             throw new DataOperationException(message, e);
         }
@@ -101,6 +108,7 @@ public class RoomDAOImpl implements RoomDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        Collections.sort(allRooms);
         return allRooms;
     }
 

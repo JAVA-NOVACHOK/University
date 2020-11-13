@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.room;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean addRoom(int groupNumber, int seatNumber) {
-        return roomDAO.addRoom(groupNumber,seatNumber);
+    public boolean addRoom(int roomNumber, int seatNumber) {
+        return roomDAO.addRoom(roomNumber, seatNumber);
     }
 
     @Override
@@ -35,12 +36,15 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<Room> getAllRooms() {
-        return roomDAO.getAllRooms();
+        List<Room> rooms = roomDAO.getAllRooms();
+        Collections.sort(rooms,(r1,r2) -> r1.compareTo(r2));
+        return rooms;
+
     }
 
     @Override
     public boolean updateRoom(int number, int seatNumber, int id) {
-        return roomDAO.updateRoom(number,seatNumber, id);
+        return roomDAO.updateRoom(number, seatNumber, id);
     }
 
     @Override

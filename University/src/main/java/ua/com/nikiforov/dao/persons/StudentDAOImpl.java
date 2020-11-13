@@ -23,13 +23,13 @@ public class StudentDAOImpl implements StudentDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAOImpl.class);
 
     private static final String ADD_STUDENT = "INSERT INTO students (first_name,last_name,group_id) VALUES(?,?,?)";
-    private static final String FIND_STUDENT_BY_ID = "SELECT * FROM students WHERE students.student_id = ? ";
+    private static final String FIND_STUDENT_BY_ID = "SELECT * FROM students WHERE student_id = ? ";
     private static final String FIND_STUDENT_BY_GROUP_ID = "SELECT * FROM students WHERE students.group_id = ? ";
-    private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT * FROM students WHERE students.first_name = ? AND students.last_name = ? AND students.group_id = ? ";
-    private static final String FIND_STUDENT_BY_NAME = "SELECT * FROM students WHERE students.first_name = ? AND students.last_name = ?";
+    private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND group_id = ? ";
+    private static final String FIND_STUDENT_BY_NAME = "SELECT * FROM students WHERE first_name = ? AND last_name = ?";
     private static final String GET_ALL_STUDENTS = "SELECT * FROM students";
-    private static final String UPDATE_STUDENT = "UPDATE students SET students.first_name = ? ,students.last_name = ? ,students.group_id = ? WHERE students.student_id = ? ";
-    private static final String DELETE_STUDENT_BY_ID = "DELETE FROM students WHERE students.student_id = ? ";
+    private static final String UPDATE_STUDENT = "UPDATE students SET first_name = ? ,last_name = ? ,group_id = ? WHERE student_id = ? ";
+    private static final String DELETE_STUDENT_BY_ID = "DELETE FROM students WHERE student_id = ? ";
     
     private static final String SUCCESSFULLY_RETRIVED_STUDENT = "Successfully retrived Student {}";
     private static final String GETTING = "Getting {}";
@@ -132,20 +132,18 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public boolean updateStudent(String firstName, String lastName, long groupId, long studentId) {
-        String studentMessage = String.format("Student with ID = %d and firstName = %s, lastname = %s, groupId = %d",
-                studentId, firstName, lastName, groupId);
-        LOGGER.debug("Updating {}", studentMessage);
+    public boolean updateStudent(Student student) {
+        LOGGER.debug("Updating {}", student);
         boolean actionResult = false;
         try {
-            actionResult = jdbcTemplate.update(UPDATE_STUDENT, firstName, lastName, groupId, studentId) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_STUDENT, student.getFirstName(), student.getLastName(), student.getGroupId(), student.getId()) > 0;
             if (actionResult) {
-                LOGGER.info("Successfully updated {}", studentMessage);
+                LOGGER.info("Successfully updated {}", student);
             } else {
-                throw new DataOperationException("Couldn't update " + studentMessage);
+                throw new DataOperationException("Couldn't update " + student);
             }
         } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to update %s", studentMessage);
+            String failMessage = String.format("Failed to update %s", student);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }

@@ -19,29 +19,25 @@
 
 
 	<div>
-		<h1 class="text-center">List of all groups</h1>
+		<h1 class="text-center">Group updating</h1>
+		<h6 class="text-center text-danger"
+			th:text="${failMessage == 0}?'':${failMessage}"></h6>
+		<h6 class="text-center text-success"
+			th:text="${success == 0}?'':${success}"></h6>
+	</div>
+	<div class="form-row mt-3 justify-content-center">
+		<form class="form-inline" action="/University/groups/edit"
+			method="post">
+			<input type="text" class="form-control" hidden="true" th:value="${group.id}" name="id">
+			<input type="text" class="form-control mr-2" th:value="${group.groupName}" name="groupName">
+			<button type="submit" class="btn mr-2 btn-danger position-relative">
+				Edit</button>
+			<a type="button" class="btn btn-warning position-relative"
+				th:href="@{/groups/}"> Cancel </a>
+		</form>
 	</div>
 
-	<div class="row justify-content-center">
-		<div class="col-auto">
-			<table class="table table-hover ">
-			<caption>Group list</caption>
-				<thead>
-					<tr>
-						<th scope="col">ID</th>
-						<th class="row centered" scope="col">Group name</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="group, iterStat : ${groups}">
-						<td th:text="${iterStat.count}">ID</td>
-						<td><a class="btn btn-primary " th:text="${group.groupName}"
-							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
 		crossorigin="anonymous"></script>

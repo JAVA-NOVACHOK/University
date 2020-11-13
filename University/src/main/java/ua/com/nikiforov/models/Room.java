@@ -1,6 +1,7 @@
 package ua.com.nikiforov.models;
 
-public class Room {
+
+public class Room implements Comparable<Room> {
 
     private int id;
     private int roomNumber;
@@ -39,13 +40,13 @@ public class Room {
         this.seatNumber = seatNumber;
     }
 
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + id;
         result = prime * result + roomNumber;
-        result = prime * result + seatNumber;
         return result;
     }
 
@@ -58,11 +59,7 @@ public class Room {
         if (getClass() != obj.getClass())
             return false;
         Room other = (Room) obj;
-        if (id != other.id)
-            return false;
         if (roomNumber != other.roomNumber)
-            return false;
-        if (seatNumber != other.seatNumber)
             return false;
         return true;
     }
@@ -72,5 +69,13 @@ public class Room {
         return "id=" + id + ", roomNumber=" + roomNumber + ", seatNumber=" + seatNumber;
     }
 
-   
+    @Override
+    public int compareTo(Room r) {
+        if (this.getRoomNumber() > r.getRoomNumber()) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
 }
