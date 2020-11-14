@@ -41,16 +41,17 @@
 				<thead>
 					<tr>
 						<th scope="col">ID</th>
-						<th class="row centered" scope="col">Group name</th>
+						<th class="text-center" scope="col">Group name</th>
+						<th class="text-center" scope="col">Edit</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="group, iterStat : ${groups}">
-						<td th:text="${iterStat.count}">ID</td>
-						<td><a class="btn btn-primary " th:text="${group.groupName}"
+						<td class="text-center" th:text="${iterStat.count}">ID</td>
+						<td class="text-center" ><a class="btn btn-primary " th:text="${group.groupName}"
 							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
-						<td><a type="button"
-			class="btn btn-warning position-relative" th:href="@{/groups/edit/?groupId=__${group.id}__}">
+						<td class="text-center" ><a type="button"
+			class="btn btn-warning mb-1 position-relative btn-sm" th:href="@{/groups/edit/?groupId=__${group.id}__}">
 			<i class="fa fa-edit"></i></a></td>
 					</tr>
 				</tbody>

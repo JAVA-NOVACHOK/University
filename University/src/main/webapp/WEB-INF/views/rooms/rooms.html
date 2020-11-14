@@ -35,20 +35,20 @@
 				<caption>Rooms</caption>
 				<thead class="thead-light">
 					<tr>
-						<th class="row centered" scope="col">Room number</th>
-						<th scope="col">Seats</th>
-						<th scope="col">Delete</th>
-						<th scope="col">Edit</th>
+						<th class="text-center" scope="col">Number</th>
+						<th class="text-center" scope="col">Seats</th>
+						<th class="text-center" scope="col">Delete</th>
+						<th class="text-center" scope="col">Edit</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr th:each="room : ${rooms}">
-						<td class="font-weight-bold" th:text="${room.roomNumber}">Number</td>
-						<td th:text="${room.seatNumber}">Seats</td>
-						<td><a class="btn btn btn-outline-danger btn-sm"
+						<td class="font-weight-bold text-center" th:text="${room.roomNumber}">Number</td>
+						<td class="text-center" th:text="${room.seatNumber}">Seats</td>
+						<td class="text-center"><a class="btn btn btn-outline-danger btn-sm"
 							type="button" th:href="@{/rooms/delete/?roomId=__${room.id}__}"><i
 								class="fa fa-trash"></i></a></td>
-						<td><a class="btn btn btn-outline-info btn-sm" type="button"
+						<td class="text-center"><a class="btn btn btn-outline-info btn-sm" type="button"
 							th:href="@{/rooms/edit/?roomId=__${room.id}__}"><i
 								class="fa fa-edit"></i></a></td>
 					</tr>

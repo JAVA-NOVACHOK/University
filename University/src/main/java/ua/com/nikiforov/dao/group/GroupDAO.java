@@ -17,5 +17,6 @@ public interface GroupDAO {
     public boolean addGroup(String groupName);
 
     public boolean updateGroup(String groupName, Long id);
-
+    
+    public Group getGroupByStudentId(long studentId);
 }

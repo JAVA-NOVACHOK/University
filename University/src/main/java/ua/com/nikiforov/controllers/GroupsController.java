@@ -92,7 +92,7 @@ public class GroupsController {
             model.addAttribute(FAIL_MSG, String.format(
                     "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
                     groupName, NEW_LINE, NEW_LINE));
-            return "students";
+            return "students/students";
         }
         if (groupService.deleteGroup(groupId)) {
             model.addAttribute(SUCCESS_MSG, "Successfully deleted group " + groupName);

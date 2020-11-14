@@ -20,5 +20,7 @@ public interface GroupService {
     public boolean deleteGroup(long id);
     
     public List<Student> getStudentsByGroupId(long groupId);
+    
+    public Group getGroupByStudentId(long studentId);
 }
 

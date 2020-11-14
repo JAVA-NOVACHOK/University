@@ -24,4 +24,5 @@ public interface StudentDAO {
     public boolean updateStudent(Student student);
 
     public boolean deleteStudentById(long studentId);
+    
 }

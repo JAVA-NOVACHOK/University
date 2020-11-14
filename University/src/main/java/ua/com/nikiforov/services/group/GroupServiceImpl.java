@@ -60,4 +60,9 @@ public class GroupServiceImpl implements GroupService {
         return studentDAO.getStudentsByGroupId(groupId);
     }
 
+    @Override
+    public Group getGroupByStudentId(long studentId) {
+        return groupDAO.getGroupByStudentId(studentId);
+    }
+
 }

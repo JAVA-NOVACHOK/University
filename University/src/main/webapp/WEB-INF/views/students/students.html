@@ -37,7 +37,7 @@
 			<caption>Students</caption>
 				<thead>
 					<tr>
-						<th scope="col"></th>
+						<th scope="col">#</th>
 						<th scope="col">Surname</th>
 						<th scope="col">Name</th>
 						<th scope="col">Edit</th>
@@ -50,9 +50,9 @@
 						<td th:text="${iterStat.count}"></td>
 						<td th:text="${student.lastName}">last name</td>
 						<td th:text="${student.firstName}">first name</td>
-						<td class="text-center"> <a type="button" class="btn btn btn-outline-success" th:href=@{edit/?id=__${student.id}__}><i class="fa fa-edit"></i></a></td>
-						<td class="text-center"> <a type="button" class="btn btn btn-outline-info" th:href=@{transfer/?id=__${student.id}__}><i class="fa fa-arrow-right"></i></a></td>
-						<td class="text-center"> <a type="button" class="btn btn btn-outline-danger" th:href=@{delete/?id=__${student.id}__}><i class="fa fa-remove"></i></a></td>
+						<td class="text-center"> <a type="button" class="btn btn btn-outline-success" th:href=@{/students/edit/?id=__${student.id}__}><i class="fa fa-edit"></i></a></td>
+						<td class="text-center"> <a type="button" class="btn btn btn-outline-info" th:href=@{/students/transfer/?id=__${student.id}__}><i class="fa fa-arrow-right"></i></a></td>
+						<td class="text-center"> <a type="button" class="btn btn btn-outline-danger" th:href=@{/students/delete/?id=__${student.id}__}><i class="fa fa-remove"></i></a></td>
 					</tr>
 				</tbody>
 			</table>

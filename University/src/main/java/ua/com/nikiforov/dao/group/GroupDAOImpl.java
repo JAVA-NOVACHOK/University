@@ -32,6 +32,12 @@ public class GroupDAOImpl implements GroupDAO {
     private static final String GET_ALL_GROUPS = "SELECT  *  FROM groups ORDER BY group_name";
     private static final String UPDATE_GROUP = "UPDATE groups  SET group_name =  ?  WHERE group_id =  ? ";
     private static final String DELETE_GROUP_BY_ID = "DELETE  FROM groups  WHERE groups.group_id =  ? ";
+    private static final String FIND_GROUP_BY_STUDENT_ID = 
+            "SELECT groups.group_id, groups.group_name "
+            + "FROM students "
+            + "INNER JOIN groups "
+            + "ON students.group_id = groups.group_id "
+            + "WHERE student_id =  ?";
 
     private GroupMapper groupMapper;
     private JdbcTemplate jdbcTemplate;
@@ -147,6 +153,21 @@ public class GroupDAOImpl implements GroupDAO {
             throw new DataOperationException(failMessage, e);
         }
         return actionResult;
+    }
+
+    @Override
+    public Group getGroupByStudentId(long studentId) {
+        LOGGER.debug("Getting group by student's id '{}'", studentId);
+        Group group;
+        try {
+            group =  jdbcTemplate.queryForObject(FIND_GROUP_BY_STUDENT_ID, new Object[] {studentId}, groupMapper);
+        } catch (EmptyResultDataAccessException e) {
+            String failGetByIdMessage = String.format("Couldn't get group student's id %d", studentId);
+            LOGGER.error(failGetByIdMessage);
+            throw new EntityNotFoundException(failGetByIdMessage, e);
+        }
+        return group;
+            
     }
 
 }
