@@ -60,18 +60,20 @@ public class SubjectsController {
 
     @PostMapping("/add")
     public String processSubject(@RequestParam String subjectName, Model model) {
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         try {
             subjectService.addSubject(subjectName);
         } catch (DuplicateKeyException e) {
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG, String.format("Warning! Subject with name'%s' already exists", subjectName));
             return VIEW_SUBJECTS;
         } catch (DataOperationException e) {
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add subject with name '%s' ", subjectName));
             return VIEW_SUBJECTS;
         }
         model.addAttribute(SUCCESS_MSG, String.format("Subject with name '%s' successfully added!", subjectName));
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         return VIEW_SUBJECTS;
     }
 
@@ -85,17 +87,19 @@ public class SubjectsController {
     public String processEditing(@ModelAttribute("subject") Subject subject, Model model) {
         Subject oldSubject;
         String subjectName = subject.getName();
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         try {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             subjectService.updateSubject(subject);
         } catch (DuplicateKeyException e) {
             oldSubject = subjectService.getSubjectById(subject.getId());
             model.addAttribute(SUBJECT_ATTR, oldSubject);
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG, String.format("Warning! Subject with name'%s' already exists", subjectName));
             return VIEW_SUBJECTS;
         } catch (DataOperationException e) {
             oldSubject = subjectService.getSubjectById(subject.getId());
             model.addAttribute(SUBJECT_ATTR, oldSubject);
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG,
                     String.format("Warning! Failed to change subject with name '%s' ", subjectName));
             return VIEW_SUBJECTS;
@@ -107,31 +111,34 @@ public class SubjectsController {
 
     @GetMapping("/delete")
     public String processDelete(@RequestParam int id, Model model) {
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         Subject subject;
         try {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             subject = subjectService.getSubjectById(id);
             subjectService.deleteSubjectById(id);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject with name '%s' successfully deleted!", subject.getName()));
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Warning! Failed to delete subject!");
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+            return VIEW_SUBJECTS;
         }
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         return VIEW_SUBJECTS;
     }
-    
+
     @PostMapping("/assign")
     public String assignSubjectToTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+        if (teacherId == 0) {
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+            model.addAttribute(FAIL_MSG, "Warning! To assign subject to teacher you must choose teacher!");
+            return VIEW_SUBJECTS;
+        }
         Subject subject = subjectService.getSubjectById(subjectId);
         Teacher teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-        if (teacherId == 0) {
-            model.addAttribute(FAIL_MSG, "Warning! To assign subject to teacher you must choose teacher!");
-            return VIEW_SUBJECTS;
-        }
         try {
             teacherService.assignSubjectToTeacher(subjectId, teacherId);
             model.addAttribute(SUCCESS_MSG,
@@ -172,6 +179,4 @@ public class SubjectsController {
         return VIEW_SUBJECTS;
     }
 
-
-   
 }

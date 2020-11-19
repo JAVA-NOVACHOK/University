@@ -76,7 +76,7 @@ class StudentsControllerTest {
         Student student_3 = insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroup_1.getId());
         this.mockMvc.perform(get("/students/?id={id}", testGroup_1.getId())).andDo(print()).andExpect(status().isOk())
                 .andExpect(model().size(2))
-                .andExpect(model().attribute("students", hasItems(student_1, student_2, student_3)))
+                .andExpect(model().attribute("students", hasItems(student_2, student_1, student_3)))
                 .andExpect(model().attribute("group", testGroup_1))
                 .andExpect(view().name("students"));
     }

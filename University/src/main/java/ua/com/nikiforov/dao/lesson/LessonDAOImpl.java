@@ -42,15 +42,15 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public boolean addLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+    public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         String lessonMessage = String.format(
                 "Lesson with period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
-                period.getPeriod(), subjectId, roomId, groupId, date, teacherId);
+                period, subjectId, roomId, groupId, date, teacherId);
         LOGGER.debug("Adding {}", lessonMessage);
         boolean actionResult = false;
         Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(ADD_LESSON, period.getPeriod(), subjectId, roomId, groupId, time,
+            actionResult = jdbcTemplate.update(ADD_LESSON, period, subjectId, roomId, groupId, time,
                     teacherId) > 0;
             if (actionResult) {
                 LOGGER.info("Successful adding {}", lessonMessage);
@@ -115,16 +115,16 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public boolean updateLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId,
+    public boolean updateLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId,
             long lessonId) {
         String lessonMessage = String.format(
                 "Lesson with ID = %d and period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
-                lessonId, period.getPeriod(), subjectId, roomId, groupId, date, teacherId);
+                lessonId, period, subjectId, roomId, groupId, date, teacherId);
         LOGGER.debug("Updating {}", lessonMessage);
         boolean actionResult = false;
         Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(UPDATE_LESSON, period.getPeriod(), subjectId, roomId, groupId, time,
+            actionResult = jdbcTemplate.update(UPDATE_LESSON, period, subjectId, roomId, groupId, time,
                     teacherId, lessonId) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated {}", lessonMessage);

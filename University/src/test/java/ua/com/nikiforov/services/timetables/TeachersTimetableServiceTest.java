@@ -50,6 +50,10 @@ class TeachersTimetableServiceTest {
     private static final int TEST_ROOM_NUMBER_3 = 14;
 
     private static final int TEST_SEAT_NUMBER_1 = 20;
+    
+    private static final int PERIOD_1 = 1;
+    private static final int PERIOD_2 = 2;
+    private static final int PERIOD_3 = 3;
 
     private static final String TEACHERS_FIRST_NAME_1 = "Bob";
     private static final String TEACHERS_FIRST_NAME_2 = "Mike";
@@ -118,61 +122,61 @@ class TeachersTimetableServiceTest {
         teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
 
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_1.getId(), group_1.getId(), DATE,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE,
                 teacher_1.getId());
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_2.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getId(), DATE,
                 teacher_1.getId());
-        lessonService.addLesson(Period.THIRD, subject_1.getId(), room_2.getId(), group_3.getId(), DATE,
+        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_2.getId(), group_3.getId(), DATE,
                 teacher_1.getId());
 
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_2.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_2.getId(), group_2.getId(), DATE,
                 teacher_2.getId());
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_3.getId(), group_3.getId(), DATE,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_3.getId(), group_3.getId(), DATE,
                 teacher_3.getId());
-        lessonService.addLesson(Period.THIRD, subject_3.getId(), room_2.getId(), group_1.getId(), DATE,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_2.getId(), group_1.getId(), DATE,
                 teacher_2.getId());
 
-        lessonService.addLesson(Period.FIRST, subject_3.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_1_DAY,
                 teacher_1.getId());
-        lessonService.addLesson(Period.THIRD, subject_3.getId(), room_3.getId(), group_2.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_2.getId(), DATE_1_ADD_1_DAY,
                 teacher_1.getId());
         
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_1_DAY,
                 teacher_2.getId());
 
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(Period.SECOND, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(Period.THIRD, subject_2.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
                 teacher_3.getId());
 
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_2.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(Period.SECOND, subject_1.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
                 teacher_3.getId());
-        lessonService.addLesson(Period.THIRD, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(Period.THIRD, subject_3.getId(), room_1.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_1.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
                 teacher_3.getId());
 
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(Period.THIRD, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
                 teacher_3.getId());
         
-        lessonService.addLesson(Period.THIRD, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(Period.FIRST, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(Period.SECOND, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId());
 
     }
@@ -180,11 +184,11 @@ class TeachersTimetableServiceTest {
     @Test
     void whenGetDayTimetableByDateAndTeacherIdShouldReturnListOfTimetables() {
         List<Timetable> expectedTimetables = new ArrayList<>();
-        expectedTimetables.add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_1,
+        expectedTimetables.add(new Timetable(PERIOD_1, SUBJECT_NAME_1, TEST_ROOM_NUMBER_1,
                 TEST_GROUP_NAME_1, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
-        expectedTimetables.add(new Timetable(Period.SECOND.getPeriod(), SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
+        expectedTimetables.add(new Timetable(PERIOD_2, SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
                 TEST_GROUP_NAME_2, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
-        expectedTimetables.add(new Timetable(Period.THIRD.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_2,
+        expectedTimetables.add(new Timetable(PERIOD_3, SUBJECT_NAME_1, TEST_ROOM_NUMBER_2,
                 TEST_GROUP_NAME_3, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
 
         List<Timetable> actualTimetables = teacherTimetableService.getDayTimetable(DATE, teacher_1.getId());
@@ -197,47 +201,47 @@ class TeachersTimetableServiceTest {
         List<DayTimetable> expectedMonthTimetable = new ArrayList<>();
 
         List<Timetable> expectedTimetables_DATE = new ArrayList<>();
-        expectedTimetables_DATE.add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_1,
+        expectedTimetables_DATE.add(new Timetable(PERIOD_1, SUBJECT_NAME_1, TEST_ROOM_NUMBER_1,
                 TEST_GROUP_NAME_1, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
-        expectedTimetables_DATE.add(new Timetable(Period.SECOND.getPeriod(), SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
+        expectedTimetables_DATE.add(new Timetable(PERIOD_2, SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
                 TEST_GROUP_NAME_2, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
-        expectedTimetables_DATE.add(new Timetable(Period.THIRD.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_2,
+        expectedTimetables_DATE.add(new Timetable(PERIOD_3, SUBJECT_NAME_1, TEST_ROOM_NUMBER_2,
                 TEST_GROUP_NAME_3, getInstantFromString(DATE), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         DateInfo dateInfo_DATE = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE, dateInfo_DATE));
 
         List<Timetable> expectedTimetables_DATE_ADD_1_DAY = new ArrayList<>();
         expectedTimetables_DATE_ADD_1_DAY
-                .add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_3, TEST_ROOM_NUMBER_2, TEST_GROUP_NAME_1,
+                .add(new Timetable(PERIOD_1, SUBJECT_NAME_3, TEST_ROOM_NUMBER_2, TEST_GROUP_NAME_1,
                         getInstantFromString(DATE_1_ADD_1_DAY), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         expectedTimetables_DATE_ADD_1_DAY
-                .add(new Timetable(Period.THIRD.getPeriod(), SUBJECT_NAME_3, TEST_ROOM_NUMBER_3, TEST_GROUP_NAME_2,
+                .add(new Timetable(PERIOD_3, SUBJECT_NAME_3, TEST_ROOM_NUMBER_3, TEST_GROUP_NAME_2,
                         getInstantFromString(DATE_1_ADD_1_DAY), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         DateInfo dateInfo_DATE_ADD_1_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_1_DAY, dateInfo_DATE_ADD_1_DAY));
 
         List<Timetable> expectedTimetables_DATE_ADD_3_DAYS = new ArrayList<>();
         expectedTimetables_DATE_ADD_3_DAYS
-                .add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_1, TEST_GROUP_NAME_1,
+                .add(new Timetable(PERIOD_1, SUBJECT_NAME_1, TEST_ROOM_NUMBER_1, TEST_GROUP_NAME_1,
                         getInstantFromString(DATE_1_ADD_3_DAYS), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         expectedTimetables_DATE_ADD_3_DAYS
-                .add(new Timetable(Period.SECOND.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_1, TEST_GROUP_NAME_1,
+                .add(new Timetable(PERIOD_2, SUBJECT_NAME_1, TEST_ROOM_NUMBER_1, TEST_GROUP_NAME_1,
                         getInstantFromString(DATE_1_ADD_3_DAYS), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         DateInfo dateInfo_DATE_ADD_3_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_3_DAYS, dateInfo_DATE_ADD_3_DAY));
 
         List<Timetable> expectedTimetables_DATE_ADD_13_DAYS = new ArrayList<>();
         expectedTimetables_DATE_ADD_13_DAYS
-                .add(new Timetable(Period.FIRST.getPeriod(), SUBJECT_NAME_1, TEST_ROOM_NUMBER_3, TEST_GROUP_NAME_1,
+                .add(new Timetable(PERIOD_1, SUBJECT_NAME_1, TEST_ROOM_NUMBER_3, TEST_GROUP_NAME_1,
                         getInstantFromString(DATE_1_ADD_13_DAYS), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         expectedTimetables_DATE_ADD_13_DAYS
-        .add(new Timetable(Period.SECOND.getPeriod(), SUBJECT_NAME_2, TEST_ROOM_NUMBER_2, TEST_GROUP_NAME_2,
+        .add(new Timetable(PERIOD_2, SUBJECT_NAME_2, TEST_ROOM_NUMBER_2, TEST_GROUP_NAME_2,
                 getInstantFromString(DATE_1_ADD_13_DAYS), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         DateInfo dateInfo_DATE_ADD_13_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_13_DAYS, dateInfo_DATE_ADD_13_DAY));
 
         List<Timetable> expectedTimetables_DATE_ADD_21_DAYS = new ArrayList<>();
-        expectedTimetables_DATE_ADD_21_DAYS.add(new Timetable(Period.SECOND.getPeriod(), SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
+        expectedTimetables_DATE_ADD_21_DAYS.add(new Timetable(PERIOD_2, SUBJECT_NAME_2, TEST_ROOM_NUMBER_2,
                 TEST_GROUP_NAME_1, getInstantFromString(DATE_1_ADD_21_DAYS), TEACHERS_FIRST_NAME_1 + " " + TEACHERS_LAST_NAME_1));
         DateInfo dateInfo_DATE_ADD_21_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_21_DAYS, dateInfo_DATE_ADD_21_DAY));

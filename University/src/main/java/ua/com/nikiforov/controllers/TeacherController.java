@@ -48,8 +48,8 @@ public class TeacherController {
 
     @GetMapping()
     public String show(Model model) {
-        List<Teacher> teachers = teacherService.getAllTeachers();
-        model.addAttribute(TEACHERS_ATTR, teachers);
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         return VIEW_TEACHERS;
     }
 
@@ -61,18 +61,21 @@ public class TeacherController {
 
     @PostMapping("/add")
     public String processAdding(@RequestParam String firstName, @RequestParam String lastName, Model model) {
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
             teacherService.addTeacher(firstName, lastName);
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s added successfully!", firstName, lastName));
         } catch (DuplicateKeyException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG,
                     String.format("Warning! Teacher with %s %s already exists", firstName, lastName));
             return VIEW_TEACHERS;
         } catch (DataOperationException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add Teacher %s %s ", firstName, lastName));
             return VIEW_TEACHERS;
         }
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         return VIEW_TEACHERS;
     }
 
@@ -80,15 +83,17 @@ public class TeacherController {
     public String editTeacher(@ModelAttribute("teacher") Teacher teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
             teacherService.updateTeacher(teacher);
             model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s changed successfully", firstName, lastName));
         } catch (DuplicateKeyException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Warning! Teacher %s %s already exists.", firstName, lastName));
             return VIEW_TEACHERS;
         } catch (DataAccessException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Failed to update teacher %s %s.", firstName, lastName));
             return VIEW_TEACHERS;
         }
@@ -101,9 +106,11 @@ public class TeacherController {
         Teacher teacher = teacherService.getTeacherById(id);
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
             teacherService.deleteTeacherById(id);
         } catch (DataOperationException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add Teacher %s %s ", firstName, lastName));
             return VIEW_TEACHERS;
         }
@@ -118,21 +125,24 @@ public class TeacherController {
         Teacher teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-        if (teacherId == 0) {
+        if (subjectId == 0) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, "Warning! To assign teacher  to subject you must choose subject!");
             return VIEW_TEACHERS;
         }
         try {
             teacherService.assignSubjectToTeacher(subjectId, teacherId);
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
         } catch (DuplicateKeyException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG,
                     String.format("Subject %s is already assigned to %s!", subjectName, teachersName));
             return VIEW_TEACHERS;
         } catch (DataOperationException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG,
                     String.format("Couldn't assign subject %s to teacher %s!", subjectName, teachersName));
             return VIEW_TEACHERS;
@@ -150,9 +160,13 @@ public class TeacherController {
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
             teacherService.unassignSubjectFromTeacher(subjectId, teacherId);
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully unassigned from %s!", subjectName, teachersName));
         } catch (DataOperationException e) {
+            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG,
                     String.format("Couldn't unassign subject %s from teacher %s!", subjectName, teachersName));
             return VIEW_TEACHERS;

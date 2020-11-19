@@ -5,20 +5,28 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.controllers.model_atributes.ScheduleFindAttr;
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.services.group.GroupService;
+import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
+import ua.com.nikiforov.services.room.RoomService;
+import ua.com.nikiforov.services.subject.SubjectService;
 import ua.com.nikiforov.services.timetables.DateInfo;
 import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.PersonalTimetable;
@@ -32,6 +40,11 @@ public class ScheduleController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ScheduleController.class);
 
     private static final String SCHEDULE_FIND_ATTR = "scheduleFindAttr";
+    private static final String ROOMS_ATTR = "rooms";
+    private static final String SUBJECTS_ATTR = "subjects";
+    private static final String GROUPS_ATTR = "groups";
+    private static final String TEACHERS_ATTR = "teachers";
+    
     private static final String TEACHER_NOT_FOUND_MSG = "Teacher not found from ScheduleConroller";
     private static final String STUDENT_NOT_FOUND_MSG = "Student not found from ScheduleConroller";
     private static final String TIMETABLE_TEACHER_NOT_FOUND = "timetable/teacher_not_found";
@@ -56,6 +69,9 @@ public class ScheduleController {
     private static final String VIEW_STUDENT_SCHEDULE = "timetable/student_schedule";
     private static final String VIEW_STUDENT_SCHEDULE_MONTH = "timetable/student_schedule_month";
     private static final String VIEW_TEACHER_SCHEDULE_MONTH = "timetable/teacher_schedule_month";
+    
+    private static final String SUCCESS_MSG = "success";
+    private static final String FAIL_MSG = "failMessage";
 
     @ModelAttribute(SCHEDULE_FIND_ATTR)
     public ScheduleFindAttr getScheduleFindAttr() {
@@ -70,17 +86,40 @@ public class ScheduleController {
 
     private StudentTimetableService studentTimetableService;
 
-    @Autowired
+    private LessonService lessonService;
+    
+    private SubjectService subjectService;
+    
+    private RoomService roomService;
+    
+    private GroupService groupService;
+
+   @Autowired
     public ScheduleController(StudentsService studentsService, TeacherService teacherService,
-            TeachersTimetableService teachersTimetableService, StudentTimetableService studentTimetableService) {
+            TeachersTimetableService teachersTimetableService, StudentTimetableService studentTimetableService,
+            LessonService lessonService, SubjectService subjectService, RoomService roomService,
+            GroupService groupService) {
         this.studentsService = studentsService;
         this.teacherService = teacherService;
         this.teachersTimetableService = teachersTimetableService;
         this.studentTimetableService = studentTimetableService;
+        this.lessonService = lessonService;
+        this.subjectService = subjectService;
+        this.roomService = roomService;
+        this.groupService = groupService;
+    }
+
+    @ModelAttribute("lesson")
+    public Lesson getLesson() {
+        return new Lesson();
     }
 
     @GetMapping()
-    public String show() {
+    public String show(Model model) {
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         return VIEW_SCHEDULE;
     }
 
@@ -97,7 +136,7 @@ public class ScheduleController {
             teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(TEACHER_NOT_FOUND_MSG,e);
+            LOGGER.error(TEACHER_NOT_FOUND_MSG, e);
             return TIMETABLE_TEACHER_NOT_FOUND;
         }
         List<Timetable> dayTimetable = teachersTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
@@ -179,6 +218,31 @@ public class ScheduleController {
         }
         model.addAttribute(MONTH_TIMETABLE, monthTimetable);
         return VIEW_TEACHER_SCHEDULE_MONTH;
+    }
+
+    @PostMapping("/add")
+    public String addSchedule(@RequestParam int period,
+                              @RequestParam int subjectId,
+                              @RequestParam int roomId,
+                              @RequestParam long groupId,
+                              @RequestParam String date,
+                              @RequestParam long teacherId,
+                              Model model) {
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+        try {
+            lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+            model.addAttribute(SUCCESS_MSG, "Lesson successfully added to schedule!");
+        }catch (DuplicateKeyException e) {
+           model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
+           return VIEW_SCHEDULE;
+        }catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, "ERROR! Couldn't add lesson to schedule!");
+            return VIEW_SCHEDULE;
+        }
+        return VIEW_SCHEDULE;
     }
 
 }

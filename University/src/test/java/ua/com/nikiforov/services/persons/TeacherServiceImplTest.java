@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -71,6 +72,7 @@ class TeacherServiceImplTest {
         expectedTeachers.add(insertTeacher(FIRST_NAME_1, LAST_NAME_1));
         expectedTeachers.add(insertTeacher(FIRST_NAME_2, LAST_NAME_2));
         expectedTeachers.add(insertTeacher(FIRST_NAME_3, LAST_NAME_3));
+        Collections.sort(expectedTeachers);
         assertIterableEquals(expectedTeachers, teacherService.getAllTeachers());
     }
 

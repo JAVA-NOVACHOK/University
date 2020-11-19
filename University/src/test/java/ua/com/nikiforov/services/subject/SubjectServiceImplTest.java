@@ -69,6 +69,7 @@ class SubjectServiceImplTest {
         expectedSubjects.add(insertSubject(SUBJECT_NAME_1));
         expectedSubjects.add(insertSubject(SUBJECT_NAME_2));
         expectedSubjects.add(insertSubject(SUBJECT_NAME_3));
+        Collections.sort(expectedSubjects);
         List<Subject> actualSubjects = subjectService.getAllSubjects();
         assertEquals(expectedSubjects, actualSubjects);
     }

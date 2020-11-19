@@ -37,15 +37,12 @@ class LessonServiceImplTest {
     private static final int TEST_ROOM_ID_2 = 2;
     private static final int TEST_ROOM_ID_3 = 3;
     
-    private static final long TEACHER_ID_1 = 1;
-    private static final long TEACHER_ID_2 = 2;
+    private static final int PERIOD_1 = 1;
+    private static final int PERIOD_2 = 2;
+    private static final int PERIOD_3 = 3;
     
-    private static final String DATE_1 = "2020-09-15";
-    private static final String DATE_1_ADD_1_DAY = "2020-09-16";
-    private static final String DATE_1_ADD_3_DAYS = "2020-09-18";
-    private static final String DATE_1_ADD_13_DAYS = "2020-09-28";
-    private static final String DATE_1_ADD_21_DAYS = "2020-10-06";
-    private static final String DATE_1_ADD_33_DAYS = "2020-11-18";
+    private static final long TEACHER_ID_1 = 1;
+    
     private static final String DATE = "2020-10-15";
 
     @Autowired
@@ -61,35 +58,35 @@ class LessonServiceImplTest {
 
     @Test
     void whenAddLessonIfSuccessThenReturnTrue() {
-        assertTrue(lessonService.addLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1));
+        assertTrue(lessonService.addLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1));
     }
 
     @Test
     void whenGetLessonByIdReturnCorrectLesson() {
-        Lesson expectedlesson = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1);
+        Lesson expectedlesson = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1);
         assertEquals(expectedlesson, lessonService.getLessonById(expectedlesson.getId()));
     }
 
     @Test
     void whenGetAllLessonsIfPresentReturnListOfAllLessons() {
         List<Lesson> expectedLessons = new ArrayList<>();
-        expectedLessons.add(insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1));
-        expectedLessons.add(insertLesson(Period.SECOND, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1));
-        expectedLessons.add(insertLesson(Period.THIRD, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3,TEST_GROUP_ID_3,DATE,TEACHER_ID_1));
+        expectedLessons.add(insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1));
+        expectedLessons.add(insertLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1));
+        expectedLessons.add(insertLesson(PERIOD_3, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3,TEST_GROUP_ID_3,DATE,TEACHER_ID_1));
         List<Lesson> actualLessons = lessonService.getAllLessons();
         assertIterableEquals(expectedLessons, actualLessons);
     }
 
     @Test
     void whenUpdateLessonIfSuccessThenReturnTrue() {
-        long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
-        assertTrue(lessonService.updateLesson(Period.SECOND, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId));
+        long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
+        assertTrue(lessonService.updateLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId));
     }
 
     @Test
     void whenUpdateLessonThenLessonIsChanged() {
-        long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
-        lessonService.updateLesson(Period.SECOND, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId);
+        long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
+        lessonService.updateLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2,DATE,TEACHER_ID_1, lessonId);
         Lesson expectedUpdatedLesson = lessonService.getLessonByGroupRoomSubjectIds(TEST_SUBJECT_ID_2,TEST_ROOM_ID_2,TEST_GROUP_ID_2
                 );
         Lesson actualUpdatedLesson = lessonService.getLessonById(lessonId);
@@ -98,18 +95,18 @@ class LessonServiceImplTest {
 
     @Test
     void whenDeleteLessonByIdIfSuccessThenReturnTrue() {
-        long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
+        long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
         assertTrue(lessonService.deleteLessonById(lessonId));
     }
 
     @Test
     void afterDeleteLessonIfSearchReturnEntityNotFoundException() {
-        long lessonId = insertLesson(Period.FIRST, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
+        long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,TEST_GROUP_ID_1,DATE,TEACHER_ID_1).getId();
         lessonService.deleteLessonById(lessonId);
         assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(lessonId));
     }
 
-    private Lesson insertLesson(Period period, int subjectId, int roomId, long groupId,String date, long teacherId) {
+    private Lesson insertLesson(int period, int subjectId, int roomId, long groupId,String date, long teacherId) {
         lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
         return lessonService.getLessonByGroupRoomSubjectIds(subjectId, roomId, groupId);
     }

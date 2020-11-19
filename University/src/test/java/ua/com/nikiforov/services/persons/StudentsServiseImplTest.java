@@ -3,6 +3,7 @@ package ua.com.nikiforov.services.persons;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -72,6 +73,7 @@ class StudentsServiseImplTest {
         expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroupName_1));
         expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroupName_1));
+        Collections.sort(expectedStudents);
         assertIterableEquals(expectedStudents, studentsService.getAllStudents());
     }
 

@@ -16,7 +16,7 @@ public class LessonServiceImpl implements LessonService {
     private LessonDAO lessonDAO;
 
     @Override
-    public boolean addLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+    public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         return lessonDAO.addLesson(period, subjectId, roomId, groupId, date, teacherId);
     }
 
@@ -35,7 +35,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public boolean updateLesson(Period period, int subjectId, int roomId, long groupId, String date, long teacherId,
+    public boolean updateLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId,
             long lessonId) {
         return lessonDAO.updateLesson(period, subjectId, roomId, groupId, date, teacherId,
                 lessonId);

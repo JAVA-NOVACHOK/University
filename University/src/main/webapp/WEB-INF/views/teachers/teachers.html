@@ -47,9 +47,6 @@
 
 						<button id="day" type="submit"
 							class="btn mr-2 btn-outline-success">Submit Teacher</button>
-						<a type="button" th:href="@{/teachers}"
-							class="btn btn-outline-danger">Cancel</a>
-
 					</div>
 				</form>
 			</div>
@@ -86,7 +83,7 @@
 							</a>
 							<button type="button"
 								class="btn mr-2 btn-secondary position-relative"
-								th:attr="data-url=|delete/?id=__${teacher.id}__|"
+								th:attr="data-url=|/University/teachers/delete/?id=__${teacher.id}__|"
 								th:onclick="deleteTeacher(this.getAttribute('data-url'));"
 								data-toggle="modal" data-target="#deleteTeacher">
 								Delete teacher</button>
@@ -101,8 +98,7 @@
 											<input type="number" class="form-control" hidden="true"
 												th:value="${teacher.id}" name="id"> <input
 												type="text" class="mr-2 form-control" required="required"
-												th:value="${teacher.firstName}" name="firstName">
-												<input
+												th:value="${teacher.firstName}" name="firstName"> <input
 												type="text" class="mr-2 form-control" required="required"
 												th:value="${teacher.lastName}" name="lastName">
 											<button type="submit" class="btn btn-outline-success">Edit
@@ -147,22 +143,22 @@
 									data-toggle="collapse"
 									th:href="|#collapseAssignTeacher${teacher.id}|" role="button"
 									aria-expanded="false"
-									th:attr="aria-controls='collapseAssignTeacher' + ${teacher.id}">Assign subject</a>
+									th:attr="aria-controls='collapseAssignTeacher' + ${teacher.id}">Assign
+									subject</a>
 							</div>
 						</div>
 						<div class="collapse" th:id="|collapseAssignTeacher${teacher.id}|">
 							<div class="card mt-3 card-body">
 								<div class="row justify-content-center">
-									<form class="form-inline "
-										action="assign" method="post">
+									<form class="form-inline " action="/University/teachers/assign"
+										method="post">
 										<input type="number" class="form-control" hidden="true"
 											th:value="${teacher.id}" name="teacherId"> <select
-											id="groupTo" class="form-control mr-2" required="required"
-											name="teacherId">
+											class="form-control mr-2" required="required"
+											name="subjectId">
 											<option th:selected="true" th:value=0>Choose teacher</option>
 											<option th:each="subject : ${subjects}"
-												th:value="${subject.id}"
-												th:text="|${subject.name}|"></option>
+												th:value="${subject.id}" th:text="|${subject.name}|"></option>
 										</select>
 										<button type="submit" class="btn btn-outline-success">Assign</button>
 									</form>
@@ -174,7 +170,6 @@
 			</div>
 		</div>
 	</div>
-
 	<div class="modal fade" id="deleteTeacher" tabindex="-1" role="dialog"
 		aria-labelledby="deleteTeacher" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -191,14 +186,14 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="modal fade" id="unassign" tabindex="-1" role="dialog"
 		aria-labelledby="unassign" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-body edit-content">
-					<h5 class="text-center">Are you sure you want unassign teacher from
-						subject?</h5>
+					<h5 class="text-center">Are you sure you want unassign teacher
+						from subject?</h5>
 				</div>
 				<div class="modal-footer">
 					<a id="teacher" type="button" href=""
