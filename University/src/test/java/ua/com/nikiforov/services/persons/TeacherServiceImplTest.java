@@ -76,16 +76,16 @@ class TeacherServiceImplTest {
 
     @Test
     void whenUpdateTeacherIfSuccessThenReturnTrue() {
-        long TeacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        assertTrue(teacherService.updateTeacher(FIRST_NAME_2, LAST_NAME_2, TeacherId));
+        long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
+        assertTrue(teacherService.updateTeacher(new Teacher(teacherId, FIRST_NAME_2, LAST_NAME_2)));
     }
 
     @Test
     void afterUpdateTeacherThenTeacherHasUpdatedTeacher() {
-        long TeacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        teacherService.updateTeacher(FIRST_NAME_2, LAST_NAME_2, TeacherId);
+        long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
+        teacherService.updateTeacher(new Teacher(teacherId,FIRST_NAME_2, LAST_NAME_2));
         Teacher expectedTeacher = teacherService.getTeacherByName(FIRST_NAME_2, LAST_NAME_2);
-        Teacher actualTeacher = teacherService.getTeacherById(TeacherId);
+        Teacher actualTeacher = teacherService.getTeacherById(teacherId);
         assertEquals(expectedTeacher, actualTeacher);
     }
 

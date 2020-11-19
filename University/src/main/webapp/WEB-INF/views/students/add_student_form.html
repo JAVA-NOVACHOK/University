@@ -16,28 +16,30 @@
 	<div class="topnav">
 		<div th:replace="fragments/navbar_fr :: topnav"></div>
 	</div>
-
-
 	<div>
-		<h1 class="text-center text-primary">Student Editing</h1>
+		<h1 class="text-center text-primary">Student Adding</h1>
 		<h6 class="text-center text-danger"
 			th:text="${failMessage == 0}?'':${failMessage}"></h6>
 	</div>
 	<div class="row justify-content-center">
-		<form class="form-inline" action="/University/students/edit"
-			method="post">
-			<input type="number" class="form-control" hidden="true"
-				th:value="${student.id}" name="id"> <input type="number"
-				class="form-control" hidden="true" th:value="${student.groupId}"
-				name="groupId"> <input type="text" class="form-control mr-2"
-				required="required" th:value="${student.firstName}" name="firstName">
-			<input type="text" class="form-control  mr-2" required="required"
-				th:value="${student.lastName}" name="lastName">
-			<button type="submit" class="btn mr-2 btn-outline-success">Edit</button>
-			<a type="button" th:href="@{/students/?id=__${student.groupId}__}" class="btn btn-outline-danger">Cancel</a>
+		<form class="form-inline" action="/University/students/add" method="post">
+			<div class="row">
+					<input type="text" class="form-control mr-2" th:value="${firstName != null} ? ${firstName} : ''" required="required"
+						placeholder="First name" autofocus="autofocus" name="firstName">
+					<input type="text" class="form-control mr-2" th:value="${lastName != null} ? ${lastName} : ''"required="required"
+						placeholder="Last name" name="lastName">
+					<select id="groupTo" class="form-control mr-2" required="required"
+						name="groupId">
+						<option th:selected="true" th:value=0>Choose group</option>
+						<option th:each="group : ${groups}" th:value="${group.id}"
+							th:text="${group.groupName}"></option>
+					</select>
+					<button id="day" type="submit" class="btn mr-2 btn-outline-success">Add
+						student</button>
+						<a type="button" class="btn btn-danger position-relative" th:href="@{/students/?id=__${student.groupId}__}">Cancel</a>
+			</div>
 		</form>
 	</div>
-	
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
 		crossorigin="anonymous"></script>
@@ -45,7 +47,6 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
 		crossorigin="anonymous"></script>
-
 </body>
 </html>
 

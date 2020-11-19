@@ -53,10 +53,16 @@ public class SubjectServiceImpl implements SubjectService {
         }
         return subjects;
     }
+    
+    @Override
+    public List<Subject> getAllSubjectsWithoutTeachers(){
+        return subjectDAO.getAllSubjects();
+    }
+
 
     @Override
-    public boolean updateSubject(String subjectName, int subjectId) {
-        return subjectDAO.updateSubject(subjectName, subjectId);
+    public boolean updateSubject(Subject subject) {
+        return subjectDAO.updateSubject(subject);
     }
 
     @Override

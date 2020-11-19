@@ -54,8 +54,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public boolean updateTeacher(String firstName, String lastName, long teacherId) {
-        return teacherDAO.updateTeacher(firstName, lastName, teacherId);
+    public boolean updateTeacher(Teacher teacher) {
+        return teacherDAO.updateTeacher(teacher);
     }
 
     @Override

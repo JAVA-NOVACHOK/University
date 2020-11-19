@@ -67,6 +67,7 @@ class GroupsControllerTest {
         .andExpect(model().attribute("groups", hasItems(group_1, group_2, group_3)))
         .andDo(print()).andExpect(view().name("groups"));
     }
+    
 
     private Group insertGroup(String groupName) {
         groupService.addGroup(groupName);

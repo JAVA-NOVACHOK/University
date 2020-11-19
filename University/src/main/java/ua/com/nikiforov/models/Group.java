@@ -12,6 +12,7 @@ public class Group implements Comparable<Group>{
     private List<Student> groupStudents;
 
     public Group() {
+        groupStudents = new ArrayList<>();
     }
 
     public Group(long id, String groupName) {
@@ -41,7 +42,18 @@ public class Group implements Comparable<Group>{
     }
 
     public void setGroupStudents(List<Student> groupStudents) {
-        this.groupStudents = groupStudents;
+        this.groupStudents.clear();
+        this.groupStudents.addAll(groupStudents);
+    }
+    
+    public Student getStudentById(long studentId) {
+        Student student = new Student();
+        for(Student s : groupStudents) {
+            if(s.getId() == studentId) {
+                student = s;
+            }
+        }
+        return student;
     }
 
     @Override

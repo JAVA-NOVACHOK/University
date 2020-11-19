@@ -1,6 +1,6 @@
 package ua.com.nikiforov.models.persons;
 
-public class Student extends Person {
+public class Student extends Person{
 
     private long groupId;
 

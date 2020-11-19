@@ -2,6 +2,7 @@ package ua.com.nikiforov.dao.subject;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,7 +29,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     private static final String GET_SUBJECT_BY_ID = "SELECT  *  FROM subjects  WHERE subjects.subject_id =  ? ";
     private static final String GET_SUBJECT_BY_NAME = "SELECT  *  FROM subjects  WHERE subjects.subject_name =  ? ";
     private static final String GET_ALL_SUBJECTS = "SELECT  *  FROM subjects ";
-    private static final String UPDATE_SUBJECT = "UPDATE subjects  SET subjects.subject_name =  ?  WHERE subjects.subject_id =  ? ";
+    private static final String UPDATE_SUBJECT = "UPDATE subjects  SET subject_name =  ?  WHERE subject_id =  ? ";
     private static final String DELETE_SUBJECT_BY_ID = "DELETE  FROM subjects  WHERE subjects.subject_id =  ? ";
     
     private static final String ADDING_MSG =  "Adding  {}";
@@ -56,6 +58,8 @@ public class SubjectDAOImpl implements SubjectDAO {
                 String failMessage = String.format("Fail to add %s", subjectMessage);
                 throw new DataOperationException(failMessage);
             }
+        }catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Subject already exists with name " + subjectName,e);
         } catch (DataAccessException e) {
             String message = String.format("Couldn't add %s", subjectMessage);
             LOGGER.error(message);
@@ -108,22 +112,25 @@ public class SubjectDAOImpl implements SubjectDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        Collections.sort(allSubjects);
         return allSubjects;
     }
 
     @Override
-    public boolean updateSubject(String subjectName, int subjectId) {
-        String updateMessage = String.format("Subject with name %s by id %d", subjectName, subjectId);
+    public boolean updateSubject(Subject subject) {
+        String updateMessage = String.format("Subject with name %s by id %d", subject.getName(), subject.getId());
         LOGGER.debug("Updating {}", updateMessage);
         boolean actionResult = false;
         try {
-            actionResult = jdbcTemplate.update(UPDATE_SUBJECT, subjectName, subjectId) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_SUBJECT, subject.getName(), subject.getId()) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated '{}'", updateMessage);
             } else {
                 String failMessage = String.format("Couldn't update %s", updateMessage);
                 throw new DataOperationException(failMessage);
             }
+        }catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Fail to update Subject!",e);
         } catch (DataAccessException e) {
             String failMessage = String.format("Couldn't update %s", updateMessage);
             LOGGER.error(failMessage);

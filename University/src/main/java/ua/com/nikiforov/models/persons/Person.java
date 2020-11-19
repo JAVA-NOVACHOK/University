@@ -1,7 +1,6 @@
 package ua.com.nikiforov.models.persons;
 
-
-public abstract class Person implements Comparable<Person>{
+public abstract class Person implements Comparable<Person> {
 
     protected long id;
     private String firstName;
@@ -73,11 +72,10 @@ public abstract class Person implements Comparable<Person>{
             return false;
         return true;
     }
-    
+
     @Override
-    public int compareTo(Person person) 
-    { 
+    public int compareTo(Person person) {
         return lastName.compareTo(person.lastName);
-    } 
+    }
 
 }

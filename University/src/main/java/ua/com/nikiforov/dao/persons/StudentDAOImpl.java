@@ -1,6 +1,7 @@
 package ua.com.nikiforov.dao.persons;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -24,7 +25,7 @@ public class StudentDAOImpl implements StudentDAO {
 
     private static final String ADD_STUDENT = "INSERT INTO students (first_name,last_name,group_id) VALUES(?,?,?)";
     private static final String FIND_STUDENT_BY_ID = "SELECT * FROM students WHERE student_id = ? ";
-    private static final String FIND_STUDENT_BY_GROUP_ID = "SELECT * FROM students WHERE students.group_id = ? ";
+    private static final String FIND_STUDENTS_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ? ";
     private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND group_id = ? ";
     private static final String FIND_STUDENT_BY_NAME = "SELECT * FROM students WHERE first_name = ? AND last_name = ?";
     private static final String GET_ALL_STUDENTS = "SELECT * FROM students";
@@ -128,6 +129,7 @@ public class StudentDAOImpl implements StudentDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        Collections.sort(allStudents);
         return allStudents;
     }
 
@@ -177,8 +179,8 @@ public class StudentDAOImpl implements StudentDAO {
         List<Student> studentsInGroup = new ArrayList<>();
         try {
             studentsInGroup
-                    .addAll(jdbcTemplate.query(FIND_STUDENT_BY_GROUP_ID, new Object[] { groupId }, studentMapper));
-            LOGGER.info("Successfully query {}", studentsInGroupMSG);
+                    .addAll(jdbcTemplate.query(FIND_STUDENTS_BY_GROUP_ID, new Object[] { groupId }, studentMapper));
+            LOGGER.info("Successfully query {} with size of list '{}'", studentsInGroupMSG,studentsInGroup.size());
         } catch (DataAccessException e) {
             String failMessage = String.format("Fail to get %s", studentsInGroupMSG);
             LOGGER.error(failMessage);

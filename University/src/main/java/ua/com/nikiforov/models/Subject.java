@@ -5,7 +5,7 @@ import java.util.List;
 
 import ua.com.nikiforov.models.persons.Teacher;
 
-public class Subject {
+public class Subject implements Comparable<Subject>{
 
     private int id;
     private String name;
@@ -35,6 +35,10 @@ public class Subject {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public void addTeacher(Teacher teacher) {
+        teachers.add(teacher);
     }
 
     public List<Teacher> getTeachers() {
@@ -71,6 +75,11 @@ public class Subject {
         } else if (!name.equals(other.name))
             return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(Subject o) {
+        return this.getName().compareTo(o.getName()) ;
     }
 
 }

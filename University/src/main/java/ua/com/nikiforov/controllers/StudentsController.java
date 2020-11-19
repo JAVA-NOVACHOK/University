@@ -1,6 +1,5 @@
 package ua.com.nikiforov.controllers;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -23,10 +22,22 @@ import ua.com.nikiforov.services.persons.StudentsService;
 @RequestMapping("/students")
 public class StudentsController {
 
-    private static final Logger LOOGER = LoggerFactory.getLogger(StudentsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StudentsController.class);
+
+    private static final String STUDENT_ATTR = "student";
     private static final String GROUP_ATTR = "group";
+    private static final String GROUPS_ATTR = "groups";
     private static final String STUDENTS_ATTR = "students";
+    private static final String FIRST_NAME_ATTR = "firstName";
+    private static final String LAST_NAME_ATTR = "lastName";
+
     private static final String VIEW_STUDENTS = "students/students";
+    private static final String VIEW_TRANSFER_FORM = "students/transfer_form";
+    private static final String VIEW_EDIT_FORM = "students/edit_form";
+    private static final String VIEW_ADD_FORM = "students/add_student_form";
+
+    private static final String SUCCESS_MSG = "success";
+    private static final String FAIL_MSG = "failMessage";
 
     private StudentsService studentService;
 
@@ -45,20 +56,16 @@ public class StudentsController {
 
     @GetMapping()
     public String showStudents(@RequestParam long id, Model model) {
-        Group group = groupService.getGroupById(id);
-        List<Student> students = studentService.getStudentsByGroupId(id);
-        Collections.sort(students);
-        model.addAttribute(GROUP_ATTR, group);
-        model.addAttribute(STUDENTS_ATTR, students);
+        model.addAttribute(GROUP_ATTR, groupService.getGroupById(id));
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_STUDENTS;
     }
 
     @GetMapping("/edit")
     public String edit(@RequestParam long id, Model model) {
         Student student = studentService.getStudentById(id);
-        model.addAttribute("student", student);
-        LOOGER.debug("Get Edit. Student's groupId = {}", student.getGroupId());
-        return "students/edit_form";
+        model.addAttribute(STUDENT_ATTR, student);
+        return VIEW_EDIT_FORM;
     }
 
     @PostMapping("/edit")
@@ -67,12 +74,11 @@ public class StudentsController {
         boolean actionResult = false;
         actionResult = studentService.updateStudent(new Student(id, firstName, lastName, groupId));
         if (actionResult) {
-            model.addAttribute("success", String.format("Student %s %s is successfully edited", firstName, lastName));
+            model.addAttribute(SUCCESS_MSG, String.format("Student %s %s is successfully edited", firstName, lastName));
         } else {
-            model.addAttribute("failMessage", String.format("Failed to edit student '%s' '%s'", firstName, lastName));
-            return "students/edit_form";
+            model.addAttribute(FAIL_MSG, String.format("Failed to edit student '%s' '%s'", firstName, lastName));
+            return VIEW_EDIT_FORM;
         }
-        LOOGER.debug("Post Edit. Updated student's groupId = {}", groupId);
         Group group = groupService.getGroupById(groupId);
         List<Student> students = studentService.getStudentsByGroupId(groupId);
         model.addAttribute(GROUP_ATTR, group);
@@ -86,35 +92,77 @@ public class StudentsController {
         Group group = groupService.getGroupByStudentId(id);
         List<Group> groups = groupService.getAllGroups();
         groups.remove(group);
-        model.addAttribute("student", student);
-        model.addAttribute("group", group);
-        model.addAttribute("groups", groups);
-        return "students/transfer_form";
+        model.addAttribute(STUDENT_ATTR, student);
+        model.addAttribute(GROUP_ATTR, group);
+        model.addAttribute(GROUPS_ATTR, groups);
+        return VIEW_TRANSFER_FORM;
     }
 
     @PostMapping("/transfer")
-    public String processTransfer(
-            @RequestParam long studentId, 
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam long groupToId,
-            @RequestParam String groupName,
-            Model model){
+    public String processTransfer(@RequestParam long studentId, @RequestParam String firstName,
+            @RequestParam String lastName, @RequestParam long groupToId, @RequestParam String groupName, Model model) {
+        if (groupToId == 0) {
+            model.addAttribute(FAIL_MSG, "Choose group from the list");
+            return VIEW_TRANSFER_FORM;
+        }
         boolean actionResult = false;
         actionResult = studentService.transferStudent(studentId, groupToId);
         Group groupTo = groupService.getGroupById(groupToId);
-        if(!actionResult) {
-            model.addAttribute("failMessage", 
-                    String.format("Failed to transfer Student %s %s from group %s to group %s",
-                            firstName,lastName,groupName,groupTo.getGroupName()));
-            return "students/transfer_form";
+        if (!actionResult) {
+            model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s",
+                    firstName, lastName, groupName, groupTo.getGroupName()));
+            return VIEW_TRANSFER_FORM;
         }
         List<Student> students = studentService.getStudentsByGroupId(groupToId);
         model.addAttribute(STUDENTS_ATTR, students);
-        model.addAttribute("group", groupTo);
-        model.addAttribute("success", 
-                String.format("Student %s %s was transferd successfully to group %s", 
-                        firstName,lastName,groupTo.getGroupName()));
+        model.addAttribute(GROUP_ATTR, groupTo);
+        model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s", firstName,
+                lastName, groupTo.getGroupName()));
+        return VIEW_STUDENTS;
+    }
+
+    @GetMapping("/delete")
+    public String deleteStudent(@RequestParam long id, Model model) {
+        Group group = groupService.getGroupByStudentId(id);
+        List<Student> students = group.getGroupStudents();
+        Student student = group.getStudentById(id);
+        boolean actionResult = false;
+        actionResult = studentService.deleteStudentById(id);
+        model.addAttribute(GROUP_ATTR, group);
+        if (!actionResult) {
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete Student %s %s from group %s",
+                    student.getFirstName(), student.getLastName(), group.getGroupName()));
+            return VIEW_STUDENTS;
+        }
+        students.remove(student);
+        model.addAttribute(STUDENT_ATTR, students);
+        model.addAttribute(GROUPS_ATTR , groupService.getAllGroups());
+        model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was deleted successfully from group %s",
+                student.getFirstName(), student.getLastName(), group.getGroupName()));
+        return VIEW_STUDENTS;
+    }
+
+    @GetMapping("/add")
+    public String addStudent(Model model) {
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        return VIEW_ADD_FORM;
+    }
+
+    @PostMapping("/add")
+    public String processAdding(@RequestParam String firstName, @RequestParam String lastName,
+            @RequestParam long groupId, Model model) {
+        if(groupId == 0) {
+            model.addAttribute(FIRST_NAME_ATTR, firstName);
+            model.addAttribute(LAST_NAME_ATTR, lastName);
+            model.addAttribute(FAIL_MSG,"Choose group name for student!");
+            return VIEW_ADD_FORM;
+        }
+        studentService.addStudent(firstName, lastName, groupId);
+        Group group = groupService.getGroupById(groupId);
+        model.addAttribute(GROUP_ATTR, group);
+        model.addAttribute(GROUPS_ATTR , groupService.getAllGroups());
+        model.addAttribute(SUCCESS_MSG, String.format("Student %s %s successfully added to group %s", firstName, lastName,
+                group.getGroupName()));
         return VIEW_STUDENTS;
     }
 

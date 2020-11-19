@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.group.GroupService;
@@ -48,9 +49,7 @@ public class GroupsController {
 
     @GetMapping()
     public String getGroups(Model model) {
-
-        List<Group> groups = groupService.getAllGroups();
-        model.addAttribute(GROUPS_ATTR, groups);
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 
@@ -69,15 +68,13 @@ public class GroupsController {
                     String.format("Cannot add group! Group with name '%s' already exists!", groupName));
             return VIEW_ADD_GROUP;
         }
-        List<Group> groups = groupService.getAllGroups();
-        model.addAttribute(GROUPS_ATTR, groups);
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 
     @GetMapping("/delete")
     public String delete(Model model) {
-        List<Group> groups = groupService.getAllGroups();
-        model.addAttribute(GROUPS_ATTR, groups);
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return "groups/delete_form";
     }
 
@@ -99,36 +96,31 @@ public class GroupsController {
         } else {
             model.addAttribute(FAIL_MSG, "Couldn't delete group " + groupName);
         }
-        List<Group> groups = groupService.getAllGroups();
-        model.addAttribute(GROUPS_ATTR, groups);
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 
     @GetMapping("/edit")
     public String editGroup(@RequestParam long groupId, Model model) {
-        Group group = groupService.getGroupById(groupId);
-        model.addAttribute(GROUP, group);
+        model.addAttribute(GROUP, groupService.getGroupById(groupId));
         return VIEW_EDIT_GROUP;
     }
 
     @PostMapping("/edit")
     public String processEdit(@ModelAttribute(GROUP) Group group, Model model) {
-        boolean actionResult = false;
         String groupName = group.getGroupName();
         try {
-        actionResult = groupService.updateGroup(group.getId(), groupName);
-        }catch (DuplicateKeyException e) {
+            groupService.updateGroup(group.getId(), groupName);
+        } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot edit group. Group with name '%s' already exists", groupName));
             return VIEW_EDIT_GROUP;
-        }
-        if(!actionResult) {
-            model.addAttribute(FAIL_MSG,String.format("Cannot edit group with name '%s'",groupName));
+        } catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, String.format("Cannot edit group with name '%s'", groupName));
             return VIEW_EDIT_GROUP;
         }
         model.addAttribute(SUCCESS_MSG, "Successfully edited group " + groupName);
-        List<Group> groups = groupService.getAllGroups();
-        model.addAttribute(GROUPS_ATTR, groups);
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 

@@ -16,35 +16,28 @@
 	<div class="topnav">
 		<div th:replace="fragments/navbar_fr :: topnav"></div>
 	</div>
+
+
 	<div>
-		<h1 class="text-center text-success">List of all subjects</h1>
+		<h1 class="text-center text-primary" th:value="|Teacher ${action}|"> Teacher Action</h1>
+		<h6 class="text-center text-danger"
+			th:text="${failMessage == 0}?'':${failMessage}"></h6>
 	</div>
 
-	<div th:each="subject : ${subjects}">
-		<div class="row justify-content-center">
-			<h3 class="text-primary" th:text="${subject.name}"></h3>
-			<p></p>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col-auto">
-				<table class="table">
-				<caption>Teacher's subjects</caption>
-					<thead class="thead-light">
-						<tr>
-							<th scope="col"></th>
-							<th class="row centered" scope="col">Teachers</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="teacher, iterStat : ${subject.teachers}">
-							<td th:text="|${iterStat.count}.|"></td>
-							<td th:text="|${teacher.lastName} ${teacher.firstName}|">Teacher's
-								name</td>
-						</tr>
-					</tbody>
-				</table>
+	<div class="row justify-content-center">
+		<form class="form-inline" action="/University/teachers/add" method="post">
+			<div class="row">
+					<input type="text" class="form-control mr-2" autofocus="autofocus" th:value="${firstName != null} ? ${firstName} : ''" required="required"
+						placeholder="First name" name="firstName">
+					<input type="text" class="form-control mr-2" th:value="${lastName != null} ? ${lastName} : ''"required="required"
+						placeholder="Last name" name="lastName">
+				
+					<button id="day" type="submit" class="btn mr-2 btn-outline-success">Submit 
+						Teacher</button>
+				<a type="button" th:href="@{/teachers}" class="btn btn-outline-danger">Cancel</a>
+
 			</div>
-		</div>
+		</form>
 	</div>
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -54,6 +47,7 @@
 		src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
 		crossorigin="anonymous"></script>
+
 </body>
 </html>
 

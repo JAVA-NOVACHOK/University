@@ -19,22 +19,18 @@
 
 
 	<div>
-		<h1 class="text-center text-primary">Student Editing</h1>
+		<h1 class="text-center text-primary">Subject Adding</h1>
 		<h6 class="text-center text-danger"
 			th:text="${failMessage == 0}?'':${failMessage}"></h6>
 	</div>
-	<div class="row justify-content-center">
-		<form class="form-inline" action="/University/students/edit"
-			method="post">
-			<input type="number" class="form-control" hidden="true"
-				th:value="${student.id}" name="id"> <input type="number"
-				class="form-control" hidden="true" th:value="${student.groupId}"
-				name="groupId"> <input type="text" class="form-control mr-2"
-				required="required" th:value="${student.firstName}" name="firstName">
-			<input type="text" class="form-control  mr-2" required="required"
-				th:value="${student.lastName}" name="lastName">
-			<button type="submit" class="btn mr-2 btn-outline-success">Edit</button>
-			<a type="button" th:href="@{/students/?id=__${student.groupId}__}" class="btn btn-outline-danger">Cancel</a>
+
+	<div class="row mt-3 justify-content-center">
+		<form class="form-inline" action="/University/subjects/add" method="post">
+			<div class="row">
+					<input type="text" class="form-control mr-2" autofocus="autofocus" required="required" placeholder="Subject name" name="subjectName">
+					<button type="submit" class="btn mr-2 btn-outline-success">Add subject</button>
+					
+			</div>
 		</form>
 	</div>
 	

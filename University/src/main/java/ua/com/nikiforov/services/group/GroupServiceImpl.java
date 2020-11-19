@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.group;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group getGroupById(long groupId) {
         Group group = groupDAO.getGroupById(groupId);
-        group.setGroupStudents(getStudentsByGroupId(groupId));
+        List<Student> students = getStudentsByGroupId(groupId);
+        Collections.sort(students);
+        group.setGroupStudents(students);
         return group;
     }
 
@@ -62,7 +65,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getGroupByStudentId(long studentId) {
-        return groupDAO.getGroupByStudentId(studentId);
+        Group group = groupDAO.getGroupByStudentId(studentId);
+        group.setGroupStudents(getStudentsByGroupId(group.getId()));
+        return group;
     }
 
 }

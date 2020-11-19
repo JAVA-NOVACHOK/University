@@ -25,15 +25,11 @@
 	</div>
 
 	<div class="row justify-content-center">
-		<form action="/University/groups/add_group" method="post">
+		<form class="form-inline" action="/University/groups/add_group" method="post">
 			<div class="row">
-				<div class="col">
-					<input type="text" class="form-control" required="required" placeholder="group name" name="groupName">
-				</div>
-								
-				<div class="col">
-					<button id="day" type="submit" class="btn btn-outline-success">add group</button>
-				</div>
+					<input type="text" class="form-control mr-2" autofocus="autofocus" required="required" placeholder="group name" name="groupName">
+					<button id="day" type="submit" class="btn mr-2 btn-outline-success">Add group</button>
+				<a type="button" th:href="@{/groups}" class="btn btn-outline-danger">Cancel</a>
 				
 			</div>
 		</form>

@@ -76,14 +76,14 @@ class SubjectServiceImplTest {
     @Test
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
-        assertTrue(subjectService.updateSubject(SUBJECT_NAME_2, subject.getId()));
+        assertTrue(subjectService.updateSubject(new Subject(subject.getId(),SUBJECT_NAME_2)));
     }
 
     @Test
     void whenUpdateSubjectThenSubjectHasUpdatedName() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
-        subjectService.updateSubject(SUBJECT_NAME_2, subjectId);
+        subjectService.updateSubject(new Subject(subjectId,SUBJECT_NAME_2));
         Subject expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
         Subject actualSubject = subjectService.getSubjectById(subjectId);
         assertEquals(expectedSubject, actualSubject);

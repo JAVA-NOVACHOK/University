@@ -14,7 +14,7 @@ public interface TeacherService {
 
     public List<Teacher> getAllTeachers();
 
-    public boolean updateTeacher(String firstName, String lastName, long teacherId);
+    public boolean updateTeacher(Teacher teacher);
 
     public boolean deleteTeacherById(long teacherId);
     

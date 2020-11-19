@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -95,7 +96,9 @@ public class TeachersSubjectsDAOImpl implements TeachersSubjectsDAO {
             } else {
                 throw new DataOperationException("Couldn't assign " + assignSubjectMessage);
             }
-        } catch (DataAccessException e) {
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("Already assined " + assignSubjectMessage,e);
+        }catch (DataAccessException e) {
             String failMessage = String.format("Failed to assign %s", assignSubjectMessage);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);

@@ -14,7 +14,7 @@ public interface SubjectDAO {
 
     public List<Subject> getAllSubjects();
 
-    public boolean updateSubject(String subjectName, int subjectId);
+    public boolean updateSubject(Subject subject);
 
     public boolean deleteSubjectById(int subjectId);
 }

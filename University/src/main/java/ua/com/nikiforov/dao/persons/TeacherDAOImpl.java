@@ -1,7 +1,7 @@
 package ua.com.nikiforov.dao.persons;
 
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -25,11 +26,11 @@ public class TeacherDAOImpl implements TeacherDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherDAOImpl.class);
 
     private static final String ADD_TEACHER = "INSERT INTO teachers (first_name,last_name) VALUES(?,?)";
-    private static final String FIND_TEACHER_BY_ID = "SELECT  *  FROM teachers WHERE teachers.teacher_id =  ? ";
-    private static final String GET_TEACHER_BY_NAME = "SELECT  *  FROM teachers WHERE first_name =  ?  AND last_name =  ? ";
-    private static final String GET_ALL_TEACHERS = "SELECT  *  FROM teachers";
-    private static final String UPDATE_TEACHER = "UPDATE teachers SET teachers.first_name =  ? ,teachers.last_name =  ?  WHERE teachers.teacher_id =  ? ";
-    private static final String DELETE_TEACHER_BY_ID = "DELETE  FROM teachers WHERE teachers.teacher_id =  ? ";
+    private static final String FIND_TEACHER_BY_ID = "SELECT * FROM teachers WHERE teachers.teacher_id = ? ";
+    private static final String GET_TEACHER_BY_NAME = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? ";
+    private static final String GET_ALL_TEACHERS = "SELECT * FROM teachers";
+    private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name = ?,last_name = ? WHERE teacher_id = ? ";
+    private static final String DELETE_TEACHER_BY_ID = "DELETE FROM teachers WHERE teachers.teacher_id = ? ";
 
     private TeacherMapper teacherMapper;
     private JdbcTemplate jdbcTemplate;
@@ -102,22 +103,26 @@ public class TeacherDAOImpl implements TeacherDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        Collections.sort(allTeachers);
         return allTeachers;
     }
 
     @Override
-    public boolean updateTeacher(String firstName, String lastName, long teacherId) {
-        String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", teacherId,
-                firstName, lastName);
+    public boolean updateTeacher(Teacher teacher) {
+        String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", teacher.getId(),
+                teacher.getFirstName(), teacher.getLastName());
         LOGGER.debug("Updating '{}'", teacherMessage);
         boolean actionResult = false;
         try {
-            actionResult = jdbcTemplate.update(UPDATE_TEACHER, firstName, lastName, teacherId) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(),
+                    teacher.getId()) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated '{}'", teacherMessage);
             } else {
                 throw new DataOperationException("Couldn't update " + teacherMessage);
             }
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateKeyException("%s already exists", e);
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to update %s", teacherMessage);
             LOGGER.error(failMessage);
