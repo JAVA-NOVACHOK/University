@@ -21,8 +21,9 @@ public class StudentTimetableService extends PersonalTimetable {
 
     
     @Override
-    public List<Timetable> getDayTimetable(String date, long groupId) {
-        return studentsTimetable.getDayTimetable(date, groupId);
+    public List<DayTimetable>  getDayTimetable(String date, long groupId) {
+        List<Timetable> allTimetablesList = studentsTimetable.getDayTimetable(date, groupId);
+        return createMonthTimetable(allTimetablesList);
     }
 
     @Override

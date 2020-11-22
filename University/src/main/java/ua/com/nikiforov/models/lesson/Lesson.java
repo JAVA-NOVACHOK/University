@@ -11,6 +11,7 @@ public class Lesson {
     private Instant time;
     private int period;
     private long teacherId;
+    private String date;
 
     public Lesson() {
     }
@@ -23,6 +24,17 @@ public class Lesson {
         this.time = time;
         this.period = period;
         this.teacherId = teacherId;
+        date = "";
+    }
+    
+    
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public long getId() {

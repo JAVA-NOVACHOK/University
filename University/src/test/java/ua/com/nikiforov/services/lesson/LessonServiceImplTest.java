@@ -1,6 +1,9 @@
 package ua.com.nikiforov.services.lesson;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,6 @@ import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.services.timetables.Period;
 
 
 @SpringJUnitConfig(DatabaseConfig.class)

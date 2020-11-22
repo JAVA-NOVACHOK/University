@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+	integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Start</title>
+</head>
+
+</head>
+<body>
+	<div class="topnav">
+		<div th:replace="fragments/navbar_fr :: topnav"></div>
+	</div>
+
+	<div>
+		<h1 class="text-center text-success"
+			th:text="|${teacher.firstName} ${teacher.lastName}|">Teacher</h1>
+		<h6 class="text-center text-danger"
+			th:text="${failMessage == 0}?'':${failMessage}"></h6>
+		<h6 class="text-center text-success"
+			th:text="${success == 0}?'':${success}"></h6>
+	</div>
+
+	<div class="row mt-3 justify-content-center">
+		<a type="button" class="btn mr-2 btn-primary position-relative"
+			data-toggle="collapse" href="#collapseAdd" role="button"
+			aria-expanded="false" aria-controls="collapseAdd">Add Teacher</a>
+	</div>
+
+	<div class="collapse" id="collapseAdd">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline" action="/University/teachers/add"
+					method="post">
+					<div class="row">
+						<input type="text" class="form-control mr-2" autofocus="autofocus"
+							th:value="${firstName != null} ? ${firstName} : ''"
+							required="required" placeholder="First name" name="firstName">
+						<input type="text" class="form-control mr-2"
+							th:value="${lastName != null} ? ${lastName} : ''"
+							required="required" placeholder="Last name" name="lastName">
+
+						<button id="day" type="submit"
+							class="btn mr-2 btn-outline-success">Submit Teacher</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="row text-warning  justify-content-center">
+		<h4>Find Schedule</h4>
+	</div>
+
+	<div class="row justify-content-center">
+		<form class="form-inline" action="/University/schedules/teachers_day"
+			method="post">
+			<input type="text" hidden="true" placeholder="First name"
+				name="firstName" th:value="${teacher.firstName}"> <input
+				type="text" hidden="true" required="required"
+				th:value="${teacher.lastName}" name="lastName"> <input
+				type="date" class="form-control mr-2" required="required"
+				name="time"> <label for="day" class="mr-3">schedule</label>
+			<button id="day" type="submit" class="btn mr-2 btn-outline-success">For
+				day</button>
+			<button id="month" type="submit"
+				formaction="/University/schedules/teachers_month"
+				class="btn mr-2 btn-outline-warning">For month</button>
+		</form>
+	</div>
+
+
+
+
+
+	<div class="row mt-3 justify-content-center">
+		<a type="button" class="btn mr-2 btn-success position-relative"
+			data-toggle="collapse" th:href="|#collapseEditTeacher${teacher.id}|"
+			role="button" aria-expanded="false"
+			th:attr="aria-controls='collapseEditTeacher' + ${teacher.id}">Edit
+		</a>
+		<button type="button" class="btn mr-2 btn-secondary position-relative"
+			th:attr="data-url=|/University/teachers/delete/?id=__${teacher.id}__|"
+			th:onclick="deleteTeacher(this.getAttribute('data-url'));"
+			data-toggle="modal" data-target="#deleteTeacher">Delete
+			teacher</button>
+	</div>
+
+	<div class="collapse" th:id="|collapseEditTeacher${teacher.id}|">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline" action="/University/teachers/edit"
+					method="post">
+					<div class="row">
+						<input type="number" class="form-control" hidden="true"
+							th:value="${teacher.id}" name="id"> <input type="text"
+							class="mr-2 form-control" required="required"
+							th:value="${teacher.firstName}" name="firstName"> <input
+							type="text" class="mr-2 form-control" required="required"
+							th:value="${teacher.lastName}" name="lastName">
+						<button type="submit" class="btn btn-outline-success">Edit
+							teacher</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row mt-3 justify-content-center">
+		<div class="col-auto">
+			<table class="table">
+				<caption>Teachers assigned to subjects</caption>
+				<thead class="thead-light">
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">Subject</th>
+						<th scope="col">Unassign</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="subject, iterStat : ${teacher.subjects}">
+						<td th:text="|${iterStat.count}.|"></td>
+						<td th:text="|${subject.name}|">Subject's name</td>
+						<td class="text-center">
+							<button type="button"
+								class="btn btn-warning mb-1 position-relative btn-sm"
+								th:attr="data-url=|/University/teachers/unassign/?subjectId=__${subject.id}__&teacherId=__${teacher.id}__|"
+								th:onclick="unassign(this.getAttribute('data-url'));"
+								data-toggle="modal" data-target="#unassign">
+								<i class="fa fa-trash"></i>
+							</button>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+			<div class="row mt-3 justify-content-center">
+				<div class="col-auto">
+					<a type="button"
+						class="btn mr-2 btn-outline-success position-relative"
+						data-toggle="collapse"
+						th:href="|#collapseAssignTeacher${teacher.id}|" role="button"
+						aria-expanded="false"
+						th:attr="aria-controls='collapseAssignTeacher' + ${teacher.id}">Assign
+						subject</a> <a type="button"
+						class="btn mr-2 btn-info position-relative" data-toggle="collapse"
+						th:href="|#collapseTimetable${teacher.id}|" role="button"
+						aria-expanded="false"
+						th:attr="aria-controls='collapseTimetable'+${teacher.id}">Add
+						Timetable</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapse" th:id="|collapseAssignTeacher${teacher.id}|">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline " action="/University/teachers/assign"
+					method="post">
+					<input type="number" class="form-control" hidden="true"
+						th:value="${teacher.id}" name="teacherId"> <select
+						class="form-control mr-2" required="required" name="subjectId">
+						<option th:selected="true" th:value=0>Choose teacher</option>
+						<option th:each="subject : ${subjects}" th:value="${subject.id}"
+							th:text="|${subject.name}|"></option>
+					</select>
+					<button type="submit" class="btn btn-outline-success">Assign</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="collapse" th:id="|collapseTimetable${teacher.id}|">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline" action="/University/schedules/add"
+					method="post">
+					<div class="row">
+						<input type="number" hidden="true" name="id" value=1> <label
+							class="font-weight-bold mr-2" for="group">Group</label> <select
+							class="form-control mr-2" id="group" required="required"
+							name="groupId">
+							<option th:each="group : ${groups}" th:value="${group.id}"
+								th:text="${group.groupName}"></option>
+						</select> <label class="font-weight-bold mr-2" for="subject">Subject</label>
+						<select class="form-control mr-2" id="subject" required="required"
+							name="subjectId">
+							<option th:each="subject : ${teacher.subjects}" th:value="${subject.id}"
+								th:text="${subject.name}"></option>
+						</select> <label class="font-weight-bold mr-2" for="room">Room</label> <select
+							class="form-control mr-2" id="room" required="required"
+							name="roomId">
+							<option th:each="room : ${rooms}" th:value="${room.id}"
+								th:text="${room.roomNumber}"></option>
+						</select> <label class="font-weight-bold mr-2" for="date">Date</label> <input
+							type="date" class="form-control mr-2" id="date"
+							required="required" name="date"> <label
+							class="font-weight-bold mr-2" for="period">Period</label> <select
+							class="form-control mr-2" id="period" name="period">
+							<option th:each="i : ${#numbers.sequence(1, 6)}" th:value="${i}"
+								th:text="${i}" th:selected="${i==1}"></option>
+						</select> 
+							<input th:value="${teacher.id}" hidden="true" name="teacherId">
+						<button id="day" type="submit"
+							class="btn mr-2 btn-outline-success">Submit timetable</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="modal fade" id="deleteTeacher" tabindex="-1" role="dialog"
+		aria-labelledby="deleteTeacher" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body edit-content">
+					<h5 class="text-center">Are you sure you want to delete this
+						Teacher?</h5>
+				</div>
+				<div class="modal-footer">
+					<a id="item" type="button" href="" class="btn btn-danger pull-left">Yes,
+						I am sure</a>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="unassign" tabindex="-1" role="dialog"
+		aria-labelledby="unassign" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body edit-content">
+					<h5 class="text-center">Are you sure you want unassign teacher
+						from subject?</h5>
+				</div>
+				<div class="modal-footer">
+					<a id="teacher" type="button" href=""
+						class="btn btn-danger pull-left">Yes, I am sure</a>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+        function deleteTeacher(url) {
+            $("#item").attr("href", url);
+        }
+        function unassign(url) {
+            $("#teacher").attr("href", url);
+        }
+    </script>
+
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+		crossorigin="anonymous"></script>
+</body>
+</html>
+

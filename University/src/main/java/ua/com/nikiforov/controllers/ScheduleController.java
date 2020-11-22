@@ -44,16 +44,16 @@ public class ScheduleController {
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String GROUPS_ATTR = "groups";
     private static final String TEACHERS_ATTR = "teachers";
-    
+    private static final String TEACHER_ATTR = "teacher";
+
     private static final String TEACHER_NOT_FOUND_MSG = "Teacher not found from ScheduleConroller";
     private static final String STUDENT_NOT_FOUND_MSG = "Student not found from ScheduleConroller";
     private static final String TIMETABLE_TEACHER_NOT_FOUND = "timetable/teacher_not_found";
     private static final String TIMETABLE_SCHEDULE_NOT_FOUND = "timetable/schedule_not_found";
     private static final String TEACHER = "teacher";
     private static final String STUDENT = "student";
-    private static final String DATE_INFO = "dateInfo";
-    private static final String DAY_TIMETABLE = "dayTimetable";
-    private static final String MONTH_TIMETABLE = "monthTimetable";
+    private static final String DAY_TIMETABLE = "timetables";
+    private static final String MONTH_TIMETABLE = "timetables";
 
     private static final String MAPPING_TEACHER = "/teacher";
     private static final String MAPPING_TEACHER_DAY = "/teachers_day";
@@ -65,18 +65,12 @@ public class ScheduleController {
     private static final String VIEW_SCHEDULE = "timetable/schedule";
     private static final String VIEW_TEACHER_TIMETABLE_FORM = "timetable/teacher_timetable_form";
     private static final String VIEW_STUDENT_TIMETABLE_FORM = "timetable/student_timetable_form";
-    private static final String VIEW_TEACHER_SCHEDULE = "timetable/teacher_schedule";
     private static final String VIEW_STUDENT_SCHEDULE = "timetable/student_schedule";
-    private static final String VIEW_STUDENT_SCHEDULE_MONTH = "timetable/student_schedule_month";
-    private static final String VIEW_TEACHER_SCHEDULE_MONTH = "timetable/teacher_schedule_month";
-    
+    private static final String VIEW_TEACHER_SCHEDULE = "timetable/teacher_schedule";
+    private static final String VIEW_TEACHER_ONE = "teachers/one_teacher";
+
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
-
-    @ModelAttribute(SCHEDULE_FIND_ATTR)
-    public ScheduleFindAttr getScheduleFindAttr() {
-        return new ScheduleFindAttr();
-    }
 
     private StudentsService studentsService;
 
@@ -87,14 +81,14 @@ public class ScheduleController {
     private StudentTimetableService studentTimetableService;
 
     private LessonService lessonService;
-    
+
     private SubjectService subjectService;
-    
+
     private RoomService roomService;
-    
+
     private GroupService groupService;
 
-   @Autowired
+    @Autowired
     public ScheduleController(StudentsService studentsService, TeacherService teacherService,
             TeachersTimetableService teachersTimetableService, StudentTimetableService studentTimetableService,
             LessonService lessonService, SubjectService subjectService, RoomService roomService,
@@ -114,6 +108,16 @@ public class ScheduleController {
         return new Lesson();
     }
 
+    @ModelAttribute(SCHEDULE_FIND_ATTR)
+    public ScheduleFindAttr getScheduleFindAttr() {
+        return new ScheduleFindAttr();
+    }
+
+    @ModelAttribute("timetable")
+    public Timetable getTimetable() {
+        return new Timetable();
+    }
+
     @GetMapping()
     public String show(Model model) {
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
@@ -131,23 +135,30 @@ public class ScheduleController {
     @PostMapping(MAPPING_TEACHER_DAY)
     public String findTeacherDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
+        String firstName = scheduleFindAttr.getFirstName();
+        String lastName = scheduleFindAttr.getLastName();
+        String date = scheduleFindAttr.getTime();
         Teacher teacher;
         try {
-            teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
+            teacher = teacherService.getTeacherByName(firstName, lastName);
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(TEACHER_NOT_FOUND_MSG, e);
-            return TIMETABLE_TEACHER_NOT_FOUND;
+            model.addAttribute(FAIL_MSG,
+                    String.format("Cannot find teacher with name '%s %s! Check spelling.", firstName, lastName));
+            return VIEW_TEACHER_SCHEDULE;
         }
-        List<Timetable> dayTimetable = teachersTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
-                teacher.getId());
-        if (dayTimetable.isEmpty()) {
-            return TIMETABLE_SCHEDULE_NOT_FOUND;
+        List<DayTimetable> timetables = teachersTimetableService.getDayTimetable(date, teacher.getId());
+        for (DayTimetable t : timetables) {
+            for (Timetable t2 : t.getTimetables()) {
+                LOGGER.debug("TEACCHER DAY CONTROLLER TIMETABLE {}", t2);
+            }
         }
-        Timetable timetable = dayTimetable.get(0);
-        DateInfo dateInfo = PersonalTimetable.parseInstantToDateInfo(timetable);
-        model.addAttribute(DATE_INFO, dateInfo);
-        model.addAttribute(DAY_TIMETABLE, dayTimetable);
+        if (timetables.isEmpty()) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+            return VIEW_TEACHER_TIMETABLE_FORM;
+        }
+        model.addAttribute(DAY_TIMETABLE, timetables);
         return VIEW_TEACHER_SCHEDULE;
     }
 
@@ -159,90 +170,133 @@ public class ScheduleController {
     @PostMapping(MAPPING_STUDENTS_DAY)
     public String findStudentDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
+        String firstName = scheduleFindAttr.getFirstName();
+        String lastName = scheduleFindAttr.getLastName();
+        String date = scheduleFindAttr.getTime();
         Student student;
         try {
             student = studentsService.getStudentByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(STUDENT, student);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(STUDENT_NOT_FOUND_MSG);
-            return TIMETABLE_TEACHER_NOT_FOUND;
+            model.addAttribute(FAIL_MSG,
+                    String.format("Cannot find student with name '%s %s! Check spelling.", firstName, lastName));
+            return VIEW_STUDENT_TIMETABLE_FORM;
+
         }
-        List<Timetable> dayTimetable = studentTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
+        List<DayTimetable> timetables = studentTimetableService.getDayTimetable(scheduleFindAttr.getTime(),
                 student.getGroupId());
-        if (dayTimetable.isEmpty()) {
-            return TIMETABLE_SCHEDULE_NOT_FOUND;
+        if (timetables.isEmpty()) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+            return VIEW_STUDENT_TIMETABLE_FORM;
         }
-        Timetable timetable = dayTimetable.get(0);
-        DateInfo dateInfo = PersonalTimetable.parseInstantToDateInfo(timetable);
-        model.addAttribute(DATE_INFO, dateInfo);
-        model.addAttribute(DAY_TIMETABLE, dayTimetable);
+        model.addAttribute(DAY_TIMETABLE, timetables);
         return VIEW_STUDENT_SCHEDULE;
     }
 
     @PostMapping(MAPPING_STUDENTS_MONTH)
     public String findStudentsMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
+        String firstName = scheduleFindAttr.getFirstName();
+        String lastName = scheduleFindAttr.getLastName();
+        String date = scheduleFindAttr.getTime();
         Student student;
         try {
             student = studentsService.getStudentByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(STUDENT, student);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(TEACHER_NOT_FOUND_MSG);
-            return TIMETABLE_TEACHER_NOT_FOUND;
+            model.addAttribute(FAIL_MSG,
+                    String.format("Cannot find student with name '%s %s! Check spelling.", firstName, lastName));
+            return VIEW_STUDENT_TIMETABLE_FORM;
+
         }
-        List<DayTimetable> monthTimetable = studentTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
+        List<DayTimetable> timetables = studentTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
                 student.getGroupId());
-        if (monthTimetable.isEmpty()) {
-            return TIMETABLE_SCHEDULE_NOT_FOUND;
+        if (timetables.isEmpty()) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+            return VIEW_STUDENT_TIMETABLE_FORM;
         }
-        model.addAttribute(MONTH_TIMETABLE, monthTimetable);
-        return VIEW_STUDENT_SCHEDULE_MONTH;
+        model.addAttribute(DAY_TIMETABLE, timetables);
+        return VIEW_STUDENT_SCHEDULE;
 
     }
 
     @PostMapping(MAPPING_TEACHERS_MONTH)
     public String findTeacherMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
+        String firstName = scheduleFindAttr.getFirstName();
+        String lastName = scheduleFindAttr.getLastName();
+        String date = scheduleFindAttr.getTime();
         Teacher teacher;
         try {
-            teacher = teacherService.getTeacherByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
+            teacher = teacherService.getTeacherByName(firstName, lastName);
             model.addAttribute(TEACHER, teacher);
         } catch (EntityNotFoundException e) {
-            LOGGER.error(TEACHER_NOT_FOUND_MSG);
-            return TIMETABLE_TEACHER_NOT_FOUND;
+            model.addAttribute(FAIL_MSG,
+                    String.format("Cannot find teacher with name '%s %s! Check spelling.", firstName, lastName));
+            return VIEW_TEACHER_SCHEDULE;
         }
-        List<DayTimetable> monthTimetable = teachersTimetableService.getMonthTimetable(scheduleFindAttr.getTime(),
-                teacher.getId());
-        if (monthTimetable.isEmpty()) {
-            return TIMETABLE_SCHEDULE_NOT_FOUND;
+        List<DayTimetable> timetables = teachersTimetableService.getMonthTimetable(date, teacher.getId());
+        if (timetables.isEmpty()) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+            return VIEW_TEACHER_TIMETABLE_FORM;
         }
-        model.addAttribute(MONTH_TIMETABLE, monthTimetable);
-        return VIEW_TEACHER_SCHEDULE_MONTH;
+        model.addAttribute(DAY_TIMETABLE, timetables);
+        return VIEW_TEACHER_SCHEDULE;
     }
 
     @PostMapping("/add")
-    public String addSchedule(@RequestParam int period,
-                              @RequestParam int subjectId,
-                              @RequestParam int roomId,
-                              @RequestParam long groupId,
-                              @RequestParam String date,
-                              @RequestParam long teacherId,
-                              Model model) {
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+    public String addSchedule(@RequestParam int period, @RequestParam int subjectId, @RequestParam int roomId,
+            @RequestParam long groupId, @RequestParam String date, @RequestParam long teacherId, Model model) {
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacherId));
         try {
             lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
             model.addAttribute(SUCCESS_MSG, "Lesson successfully added to schedule!");
-        }catch (DuplicateKeyException e) {
-           model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
-           return VIEW_SCHEDULE;
-        }catch (DataOperationException e) {
+        } catch (DuplicateKeyException e) {
+            model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
+            return VIEW_SCHEDULE;
+        } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "ERROR! Couldn't add lesson to schedule!");
             return VIEW_SCHEDULE;
         }
-        return VIEW_SCHEDULE;
+        return VIEW_TEACHER_ONE;
+    }
+
+    @GetMapping("/edit")
+    public String editSchedule(@ModelAttribute("timetable") Timetable timetable, @RequestParam String dateString,
+            Model model) {
+        LOGGER.debug("=========Timetable {}", timetable);
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachersWithoutSubjects());
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(timetable.getTeacherId()));
+        timetable.setDate(PersonalTimetable.getLocalDate(dateString));
+        model.addAttribute("timetable", timetable);
+        return "timetable/edit_schedule";
+    }
+    
+    @PostMapping("/edit")
+    public String processEdit(@ModelAttribute("lesson") Lesson lesson,Model model){
+       try {
+           model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
+           lessonService.updateLesson(lesson.getPeriod(), lesson.getSubjectId(), lesson.getRoomId(), lesson.getGroupId(), lesson.getDate(), lesson.getTeacherId(), lesson.getId());
+           model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDate(), lesson.getTeacherId()));
+           model.addAttribute(SUCCESS_MSG, "Seccess updating timetable!!!!");
+       }catch (DuplicateKeyException e) {
+           model.addAttribute(FAIL_MSG, "Warning! Failed to update timetsble, already exists!!!!");
+           return VIEW_TEACHER_SCHEDULE;
+    }catch (DataOperationException e) {
+        model.addAttribute(FAIL_MSG, "Warning! Failed to update timetsble!!!!");
+        return VIEW_TEACHER_SCHEDULE;
+    }
+        return VIEW_TEACHER_SCHEDULE;
     }
 
 }

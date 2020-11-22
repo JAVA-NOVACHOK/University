@@ -2,6 +2,8 @@ package ua.com.nikiforov.controllers;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,29 +18,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.TeacherService;
+import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TeacherController.class); 
 
+    private static final String ROOMS_ATTR = "rooms";
+    private static final String GROUPS_ATTR = "groups";
     private static final String TEACHERS_ATTR = "teachers";
+    private static final String TEACHER_ATTR = "teacher";
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String ACTION_ATTR = "action";
     private static final String VIEW_TEACHERS = "teachers/teachers";
-    private static final String VIEW_TEACHER_FORM = "teachers/teacher_form";
+    private static final String VIEW_TEACHER_ONE = "teachers/one_teacher";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
 
     private TeacherService teacherService;
     private SubjectService subjectService;
+    private RoomService roomService;
+    private GroupService groupService;
 
     @Autowired
-    public TeacherController(TeacherService teacherServise, SubjectService subjectService) {
-        this.teacherService = teacherServise;
+    public TeacherController(TeacherService teacherService, SubjectService subjectService, RoomService roomService,
+            GroupService groupService) {
+        this.teacherService = teacherService;
         this.subjectService = subjectService;
+        this.roomService = roomService;
+        this.groupService = groupService;
     }
 
     @ModelAttribute("teacher")
@@ -48,15 +61,16 @@ public class TeacherController {
 
     @GetMapping()
     public String show(Model model) {
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         return VIEW_TEACHERS;
     }
 
-    @GetMapping("/add")
-    public String addTeacher(Model model) {
-        model.addAttribute(ACTION_ATTR, "adding");
-        return VIEW_TEACHER_FORM;
+    @GetMapping("/teacher")
+    public String showTeacher(@RequestParam long id, Model model) {
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(id));
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        return VIEW_TEACHER_ONE;
     }
 
     @PostMapping("/add")
@@ -83,21 +97,21 @@ public class TeacherController {
     public String editTeacher(@ModelAttribute("teacher") Teacher teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacher.getId()));
         try {
             teacherService.updateTeacher(teacher);
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s changed successfully", firstName, lastName));
         } catch (DuplicateKeyException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Warning! Teacher %s %s already exists.", firstName, lastName));
-            return VIEW_TEACHERS;
+            return VIEW_TEACHER_ONE;
         } catch (DataAccessException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, String.format("Failed to update teacher %s %s.", firstName, lastName));
-            return VIEW_TEACHERS;
+            return VIEW_TEACHER_ONE;
         }
-        return VIEW_TEACHERS;
+        return VIEW_TEACHER_ONE;
 
     }
 
@@ -125,29 +139,29 @@ public class TeacherController {
         Teacher teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        model.addAttribute(TEACHER_ATTR, teacher);
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         if (subjectId == 0) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG, "Warning! To assign teacher  to subject you must choose subject!");
-            return VIEW_TEACHERS;
+            return VIEW_TEACHER_ONE;
         }
         try {
             teacherService.assignSubjectToTeacher(subjectId, teacherId);
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+            teacher.getSubjects().add(subject);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
         } catch (DuplicateKeyException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG,
                     String.format("Subject %s is already assigned to %s!", subjectName, teachersName));
-            return VIEW_TEACHERS;
+            return VIEW_TEACHER_ONE;
         } catch (DataOperationException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(FAIL_MSG,
                     String.format("Couldn't assign subject %s to teacher %s!", subjectName, teachersName));
-            return VIEW_TEACHERS;
+            return VIEW_TEACHER_ONE;
         }
-        return VIEW_TEACHERS;
+        return VIEW_TEACHER_ONE;
     }
 
     @GetMapping("/unassign")
@@ -156,19 +170,34 @@ public class TeacherController {
         Teacher teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        model.addAttribute(TEACHER_ATTR, teacher);
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
             teacherService.unassignSubjectFromTeacher(subjectId, teacherId);
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+            teacher.getSubjects().remove(subject);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully unassigned from %s!", subjectName, teachersName));
         } catch (DataOperationException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG,
                     String.format("Couldn't unassign subject %s from teacher %s!", subjectName, teachersName));
+            return VIEW_TEACHER_ONE;
+        }
+        return VIEW_TEACHER_ONE;
+    }
+
+    @PostMapping("/find")
+    public String findTeacher(@RequestParam String firstName, @RequestParam String lastName, Model model) {
+        try {
+            List<Teacher> teachers = teacherService.getTeacherByLikeName(firstName, lastName);
+            LOGGER.debug("TEACCHERS SIZE = {}",  teachers.size());
+            model.addAttribute(TEACHERS_ATTR, teachers);
+        } catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, String.format(
+                    "ERROR! Couldn't fulfil search for teacher with searching parameters firstname = %s, lastname = %s!",
+                    firstName, lastName));
             return VIEW_TEACHERS;
         }
         return VIEW_TEACHERS;

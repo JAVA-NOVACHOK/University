@@ -20,7 +20,7 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherServiceImpl(TeacherDAO teacherDAO, TeachersSubjectsDAO techersSubjectsDAO) {
         this.teacherDAO = teacherDAO;
         this.techersSubjectsDAO = techersSubjectsDAO;
-       
+
     }
 
     @Override
@@ -71,6 +71,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public boolean unassignSubjectFromTeacher(int subjectId, long teacherId) {
         return techersSubjectsDAO.unassignSubjectFromTeacher(teacherId, subjectId);
+    }
+
+    @Override
+    public List<Teacher> getTeacherByLikeName(String firstName, String lastName) {
+        return teacherDAO.getTeacherByLikeName(firstName, lastName);
+    }
+
+    @Override
+    public List<Teacher> getAllTeachersWithoutSubjects() {
+        return teacherDAO.getAllTeachers();
     }
 
 }

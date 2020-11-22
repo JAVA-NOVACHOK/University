@@ -7,14 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.plaf.multi.MultiViewportUI;
-
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -33,10 +26,8 @@ import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -44,7 +35,6 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 import ua.com.nikiforov.services.timetables.DateInfo;
-import ua.com.nikiforov.services.timetables.Period;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 

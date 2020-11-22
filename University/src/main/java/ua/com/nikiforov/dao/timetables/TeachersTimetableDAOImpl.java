@@ -28,15 +28,17 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
 
-    private static final String GET_TEACHER_DAY_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
-            + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "
+    private static final String GET_TEACHER_DAY_TIMETABLE = "SELECT period, subject_name, "
+            + "room_number, group_name, time, first_name, last_name,lesson_id,teachers.teacher_id FROM lessons "
+            + "INNER JOIN groups ON lessons.group_id = groups.group_id "
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
             + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
             + "WHERE lessons.teacher_id = ? AND time = ?";
 
-    private static final String GET_TEACHER_MONTH_TIMETABLE = "SELECT period, subject_name, room_number, group_name, time, first_name, last_name "
-            + "FROM lessons " + "INNER JOIN groups ON lessons.group_id = groups.group_id "
+    private static final String GET_TEACHER_MONTH_TIMETABLE = "SELECT period, subject_name, "
+            + "room_number, group_name, time, first_name, last_name,lesson_id,teachers.teacher_id FROM lessons "
+            + "INNER JOIN groups ON lessons.group_id = groups.group_id "
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
             + "INNER JOIN teachers ON lessons.teacher_id = teachers.teacher_id "
@@ -89,7 +91,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
-        return unsortedDayTimetable.stream().sorted(Comparator.comparing(Timetable::getTime))
+        return unsortedDayTimetable.stream().sorted(Comparator.comparing(Timetable::getDate))
                 .collect(Collectors.toList());
     }
 

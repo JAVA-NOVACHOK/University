@@ -28,6 +28,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     private static final String ADD_TEACHER = "INSERT INTO teachers (first_name,last_name) VALUES(?,?)";
     private static final String FIND_TEACHER_BY_ID = "SELECT * FROM teachers WHERE teachers.teacher_id = ? ";
     private static final String GET_TEACHER_BY_NAME = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? ";
+    private static final String GET_TEACHER_BY_LIKE_NAME = "SELECT * FROM teachers WHERE UPPER(first_name) LIKE UPPER(?) OR UPPER(last_name) LIKE UPPER(?)";
     private static final String GET_ALL_TEACHERS = "SELECT * FROM teachers";
     private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name = ?,last_name = ? WHERE teacher_id = ? ";
     private static final String DELETE_TEACHER_BY_ID = "DELETE FROM teachers WHERE teachers.teacher_id = ? ";
@@ -150,4 +151,22 @@ public class TeacherDAOImpl implements TeacherDAO {
         }
         return actionResult;
     }
+
+    @Override
+    public List<Teacher> getTeacherByLikeName(String firstName, String lastName) {
+        firstName = firstName + "%";
+        lastName = lastName + "%";
+        String teacherMessage = String.format("Teacher with searching parameters firstName = %s, lastname = %s", firstName, lastName);
+        LOGGER.debug("Getting {}", teacherMessage);
+        List<Teacher> teachers = null;
+        try {
+            teachers = jdbcTemplate.query(GET_TEACHER_BY_LIKE_NAME, new Object[] { firstName, lastName },
+                    teacherMapper);
+        } catch (DataOperationException e) {
+            String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
+            throw new DataOperationException(failGetByIdMessage, e);
+        }
+        return teachers;
+    }
+
 }

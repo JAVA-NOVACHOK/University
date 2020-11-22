@@ -11,9 +11,11 @@ public interface TeacherDAO {
     public Teacher getTeacherById(long teacherId);
     
     public Teacher getTeacherByName(String firstName, String lastName);
+    
+    public List<Teacher> getTeacherByLikeName(String firstName, String lastName);
 
     public List<Teacher> getAllTeachers();
-
+    
     public boolean updateTeacher(Teacher teacher);
 
     public boolean deleteTeacherById(long teacherId);

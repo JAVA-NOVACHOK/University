@@ -3,7 +3,6 @@ package ua.com.nikiforov.services.lesson;
 import java.util.List;
 
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.services.timetables.Period;
 
 public interface LessonService {
     

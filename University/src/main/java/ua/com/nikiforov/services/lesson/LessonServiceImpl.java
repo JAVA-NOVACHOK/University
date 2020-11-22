@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.lesson.LessonDAO;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.services.timetables.Period;
 
 @Service
 public class LessonServiceImpl implements LessonService {

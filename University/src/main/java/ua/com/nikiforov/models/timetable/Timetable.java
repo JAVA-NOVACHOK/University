@@ -1,27 +1,57 @@
 package ua.com.nikiforov.models.timetable;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class Timetable implements Comparable<Timetable> {
 
+    private long lessonId;
     private int period;
     private String subjectName;
     private int roomNumber;
     private String groupName;
-    private Instant time;
     private String teachersName;
+    private long teacherId;
+    private LocalDate date;
 
     public Timetable() {
     }
 
-    public Timetable(int period, String subjectName, int roomNumber, String groupName, Instant time,
-            String teachersName) {
+    public Timetable(long lessonId, int period, String subjectName, int roomNumber, String groupName,
+            String teachersName, long teacherId, LocalDate date) {
+        this.lessonId = lessonId;
         this.period = period;
         this.subjectName = subjectName;
         this.roomNumber = roomNumber;
         this.groupName = groupName;
-        this.time = time;
         this.teachersName = teachersName;
+        this.teacherId = teacherId;
+        this.date = date;
+    }
+
+
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public long getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(long lessonId) {
+        this.lessonId = lessonId;
     }
 
     public int getPeriod() {
@@ -56,14 +86,6 @@ public class Timetable implements Comparable<Timetable> {
         this.groupName = groupName;
     }
 
-    public Instant getTime() {
-        return time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
-    }
-
     public String getTeachersName() {
         return teachersName;
     }
@@ -71,17 +93,26 @@ public class Timetable implements Comparable<Timetable> {
     public void setTeachersName(String teachersName) {
         this.teachersName = teachersName;
     }
+    
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
         result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
+        result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
         result = prime * result + period;
         result = prime * result + roomNumber;
         result = prime * result + ((subjectName == null) ? 0 : subjectName.hashCode());
+        result = prime * result + (int) (teacherId ^ (teacherId >>> 32));
         result = prime * result + ((teachersName == null) ? 0 : teachersName.hashCode());
-        result = prime * result + ((time == null) ? 0 : time.hashCode());
         return result;
     }
 
@@ -94,10 +125,17 @@ public class Timetable implements Comparable<Timetable> {
         if (getClass() != obj.getClass())
             return false;
         Timetable other = (Timetable) obj;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
         if (groupName == null) {
             if (other.groupName != null)
                 return false;
         } else if (!groupName.equals(other.groupName))
+            return false;
+        if (lessonId != other.lessonId)
             return false;
         if (period != other.period)
             return false;
@@ -108,25 +146,23 @@ public class Timetable implements Comparable<Timetable> {
                 return false;
         } else if (!subjectName.equals(other.subjectName))
             return false;
+        if (teacherId != other.teacherId)
+            return false;
         if (teachersName == null) {
             if (other.teachersName != null)
                 return false;
         } else if (!teachersName.equals(other.teachersName))
             return false;
-        if (time == null) {
-            if (other.time != null)
-                return false;
-        } else if (!time.equals(other.time))
-            return false;
         return true;
     }
-    
+
     
 
     @Override
     public String toString() {
-        return "Timetable [period=" + period + ", subjectName=" + subjectName + ", roomNumber=" + roomNumber
-                + ", groupName=" + groupName + ", time=" + time + ", teachersName=" + teachersName + "]";
+        return "Timetable [lessonId=" + lessonId + ", period=" + period + ", subjectName=" + subjectName
+                + ", roomNumber=" + roomNumber + ", groupName=" + groupName + ", teachersName=" + teachersName
+                + ", teacherId=" + teacherId + ", date=" + date + "]";
     }
 
     @Override

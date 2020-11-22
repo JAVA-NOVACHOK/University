@@ -18,7 +18,6 @@ import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.LessonMapper;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.services.timetables.Period;
 
 @Repository
 public class LessonDAOImpl implements LessonDAO {
@@ -59,7 +58,8 @@ public class LessonDAOImpl implements LessonDAO {
             }
         } catch (DataAccessException e) {
             String failMessage = ("Failed to add " + lessonMessage);
-            LOGGER.error(failMessage);
+            LOGGER.error(failMessage + e);
+            e.printStackTrace();
             throw new DataOperationException(failMessage, e);
         }
         return actionResult;
@@ -133,6 +133,7 @@ public class LessonDAOImpl implements LessonDAO {
             }
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to update %s", lessonMessage);
+            e.printStackTrace();
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
@@ -160,6 +161,7 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     private Timestamp getTimestampFromString(String stringDate) {
+//        return Timestamp.valueOf(stringDate + " 12:00:00");
         return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 

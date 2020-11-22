@@ -20,19 +20,26 @@
 
 	<div>
 		<h1 class="text-center text-primary">Teacher's schedule</h1>
+		<h6 class="text-center text-danger"
+			th:text="${failMessage == 0}?'':${failMessage}"></h6>
+		<h6 class="text-center text-success"
+			th:text="${success == 0}?'':${success}"></h6>
 	</div>
 
 	<div class="row justify-content-center">
 		<form action="/University/schedules/teachers_day" method="post">
 			<div class="row">
 				<div class="col">
-					<input type="text" class="form-control" placeholder="First name" name="firstName">
+					<input type="text" class="form-control" placeholder="First name"
+						name="firstName">
 				</div>
 				<div class="col">
-					<input type="text" class="form-control" required="required" placeholder="Last name" name="lastName">
+					<input type="text" class="form-control" required="required"
+						placeholder="Last name" name="lastName">
 				</div>
 				<div>
-					<input type="date" class="form-control" required="required" name="time">
+					<input type="date" class="form-control" required="required"
+						name="time">
 				</div>
 				<div class="col">
 					<label for="day">schedule</label>
@@ -40,15 +47,42 @@
 						day</button>
 				</div>
 				<div class="col">
-					<button id="month" type="submit" formaction="/University/schedules/teachers_month" class="btn btn-outline-warning">For
-						month</button>
+					<button id="month" type="submit"
+						formaction="/University/schedules/teachers_month"
+						class="btn btn-outline-warning">For month</button>
 				</div>
 			</div>
 		</form>
 	</div>
+
 	<div class="row mt-3 justify-content-center">
-		<a type="button" class="btn btn-primary position-relative">Add
-			timetable</a>
+		<a type="button" class="btn mr-2 btn-primary position-relative"
+			data-toggle="collapse" href="#collapseAdd" role="button"
+			aria-expanded="false" aria-controls="collapseAdd">Add timetable</a>
+	</div>
+
+	<div class="collapse" id="collapseAdd">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<h6 class="text-center mt-3 text-primary">Find teacher first</h6>
+			</div>
+			<div class="row justify-content-center">
+
+				<form class="form-inline" action="/University/teachers/find"
+					method="post">
+					<div class="row">
+						<input type="text" class="form-control mr-2" autofocus="autofocus"
+							th:value="${firstName != null} ? ${firstName} : ''"
+							required="required" placeholder="First name" name="firstName">
+						<input type="text" class="form-control mr-2"
+							th:value="${lastName != null} ? ${lastName} : ''"
+							required="required" placeholder="Last name" name="lastName">
+
+						<button type="submit" class="btn mr-2 btn-outline-success">Find</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"

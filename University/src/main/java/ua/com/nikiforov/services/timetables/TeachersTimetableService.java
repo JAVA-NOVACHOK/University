@@ -20,8 +20,9 @@ public class TeachersTimetableService extends PersonalTimetable {
     }
 
     @Override
-    public List<Timetable> getDayTimetable(String date, long teacherId) {
-        return teachersTimetable.getDayTimetable(date, teacherId);
+    public List<DayTimetable>  getDayTimetable(String date, long teacherId) {
+        List<Timetable> allTimetablesList = teachersTimetable.getDayTimetable(date, teacherId);
+        return createMonthTimetable(allTimetablesList);
     }
 
     @Override

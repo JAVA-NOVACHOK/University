@@ -65,7 +65,7 @@ class GroupsControllerTest {
         Group group_3 = insertGroup(TEST_GROUP_NAME_3);
         this.mockMvc.perform(get("/groups/"))
         .andExpect(model().attribute("groups", hasItems(group_1, group_2, group_3)))
-        .andDo(print()).andExpect(view().name("groups"));
+        .andDo(print()).andExpect(view().name("groups/groups"));
     }
     
 

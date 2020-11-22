@@ -26,6 +26,27 @@
 		<h6 class="text-center text-success"
 			th:text="${success == 0}?'':${success}"></h6>
 	</div>
+
+	<div class="row justify-content-center">
+		<h6 class="text-center mt-3 text-primary">Find teacher first</h6>
+	</div>
+	<div class="row justify-content-center">
+
+		<form class="form-inline" action="/University/teachers/find"
+			method="post">
+			<div class="row">
+				<input type="text" class="form-control mr-2" autofocus="autofocus"
+					th:value="${firstName != null} ? ${firstName} : ''"
+					required="required" placeholder="First name" name="firstName">
+				<input type="text" class="form-control mr-2"
+					th:value="${lastName != null} ? ${lastName} : ''"
+					required="required" placeholder="Last name" name="lastName">
+
+				<button type="submit" class="btn mr-2 btn-outline-success">Find</button>
+			</div>
+		</form>
+	</div>
+
 	<div class="row mt-3 justify-content-center">
 		<a type="button" class="btn mr-2 btn-primary position-relative"
 			data-toggle="collapse" href="#collapseAdd" role="button"
@@ -53,166 +74,25 @@
 		</div>
 	</div>
 
-	<div class="container-fluid mt-3">
-		<div class="justify-content-center">
-			<div class="w-50 text-center" id="accordion"
+	<div class="row centered-form center-block">
+		<div class=" container-fluid mt-3 col-md-10 col-md-offset-10">
+			<div class="w-50 text-center"
 				th:each="teacher, iterStat : ${teachers}">
 				<div class="card text-center">
 					<div class="card-header text-center"
 						th:id="|teacher${iterStat.count}|">
 						<h5>
-							<button class="btn btn-info w-50" data-toggle="collapse"
-								aria-expanded="false"
-								th:attr="data-target='#collapse'+${iterStat.count},aria-controls='collapse'+${iterStat.count}"
+							<a class="btn btn-info w-50"
+								th:href="@{/teachers/teacher/?id=__${teacher.id}__}"
 								th:text="|${teacher.firstName} ${teacher.lastName}|">Teacher
-								name</button>
+								name</a>
 						</h5>
 					</div>
 				</div>
 
-				<div th:id="|collapse${iterStat.count}|" class="collapse"
-					aria-labelledby="|teacher${iterStat.count}|"
-					data-parent="#accordion">
-					<div class="card-body">
-						<div class="row mt-3 justify-content-center">
-							<a type="button" class="btn mr-2 btn-success position-relative"
-								data-toggle="collapse"
-								th:href="|#collapseEditTeacher${teacher.id}|" role="button"
-								aria-expanded="false"
-								th:attr="aria-controls='collapseEditTeacher' + ${teacher.id}">Edit
-							</a>
-							<button type="button"
-								class="btn mr-2 btn-secondary position-relative"
-								th:attr="data-url=|/University/teachers/delete/?id=__${teacher.id}__|"
-								th:onclick="deleteTeacher(this.getAttribute('data-url'));"
-								data-toggle="modal" data-target="#deleteTeacher">
-								Delete teacher</button>
-						</div>
-
-						<div class="collapse" th:id="|collapseEditTeacher${teacher.id}|">
-							<div class="card mt-3 card-body">
-								<div class="row justify-content-center">
-									<form class="form-inline" action="/University/teachers/edit"
-										method="post">
-										<div class="row">
-											<input type="number" class="form-control" hidden="true"
-												th:value="${teacher.id}" name="id"> <input
-												type="text" class="mr-2 form-control" required="required"
-												th:value="${teacher.firstName}" name="firstName"> <input
-												type="text" class="mr-2 form-control" required="required"
-												th:value="${teacher.lastName}" name="lastName">
-											<button type="submit" class="btn btn-outline-success">Edit
-												teacher</button>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-
-
-						<div class="row mt-3 justify-content-center">
-
-							<div class="col-auto">
-								<table class="table">
-									<caption>Teachers assigned to subjects</caption>
-									<thead class="thead-light">
-										<tr>
-											<th scope="col"></th>
-											<th scope="col">Subject</th>
-											<th scope="col">Unassign</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="subject, iterStat : ${teacher.subjects}">
-											<td th:text="|${iterStat.count}.|"></td>
-											<td th:text="|${subject.name}|">Subject's name</td>
-											<td class="text-center">
-												<button type="button"
-													class="btn btn-warning mb-1 position-relative btn-sm"
-													th:attr="data-url=|/University/teachers/unassign/?subjectId=__${subject.id}__&teacherId=__${teacher.id}__|"
-													th:onclick="unassign(this.getAttribute('data-url'));"
-													data-toggle="modal" data-target="#unassign">
-													<i class="fa fa-trash"></i>
-												</button>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<a type="button"
-									class="btn mr-2 btn-outline-success position-relative"
-									data-toggle="collapse"
-									th:href="|#collapseAssignTeacher${teacher.id}|" role="button"
-									aria-expanded="false"
-									th:attr="aria-controls='collapseAssignTeacher' + ${teacher.id}">Assign
-									subject</a>
-							</div>
-						</div>
-						<div class="collapse" th:id="|collapseAssignTeacher${teacher.id}|">
-							<div class="card mt-3 card-body">
-								<div class="row justify-content-center">
-									<form class="form-inline " action="/University/teachers/assign"
-										method="post">
-										<input type="number" class="form-control" hidden="true"
-											th:value="${teacher.id}" name="teacherId"> <select
-											class="form-control mr-2" required="required"
-											name="subjectId">
-											<option th:selected="true" th:value=0>Choose teacher</option>
-											<option th:each="subject : ${subjects}"
-												th:value="${subject.id}" th:text="|${subject.name}|"></option>
-										</select>
-										<button type="submit" class="btn btn-outline-success">Assign</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="deleteTeacher" tabindex="-1" role="dialog"
-		aria-labelledby="deleteTeacher" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-body edit-content">
-					<h5 class="text-center">Are you sure you want to delete this
-						Teacher?</h5>
-				</div>
-				<div class="modal-footer">
-					<a id="item" type="button" href="" class="btn btn-danger pull-left">Yes,
-						I am sure</a>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="modal fade" id="unassign" tabindex="-1" role="dialog"
-		aria-labelledby="unassign" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-body edit-content">
-					<h5 class="text-center">Are you sure you want unassign teacher
-						from subject?</h5>
-				</div>
-				<div class="modal-footer">
-					<a id="teacher" type="button" href=""
-						class="btn btn-danger pull-left">Yes, I am sure</a>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<script>
-        function deleteTeacher(url) {
-            $("#item").attr("href", url);
-        }
-        function unassign(url) {
-            $("#teacher").attr("href", url);
-        }
-    </script>
-
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
