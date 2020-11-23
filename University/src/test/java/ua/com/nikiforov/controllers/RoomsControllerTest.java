@@ -2,8 +2,10 @@ package ua.com.nikiforov.controllers;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.model_atributes.ScheduleFindAttr;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.services.room.RoomServiceImpl;
@@ -34,10 +37,29 @@ class RoomsControllerTest {
     private static final int TEST_ROOM_NUMBER_1 = 12;
     private static final int TEST_ROOM_NUMBER_2 = 13;
     private static final int TEST_ROOM_NUMBER_3 = 14;
+    private static final int TEST_ROOM_NUMBER_4 = 15;
 
     private static final int TEST_SEAT_NUMBER_1 = 20;
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
+    private static final int TEST_SEAT_NUMBER_4 = 39;
+    
+    private static final String ROOM_ATTR = "room";
+    private static final String ROOMS_ATTR = "rooms";
+    private static final String ROOM_NUMBER_ATTR = "roomNumber";
+    private static final String ROOM_SEAT_ATTR = "seatNumber";
+    private static final String ROOM_ID_ATTR = "roomId";
+    private static final String VIEW_ROOMS = "rooms/rooms";
+    private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
+    
+    private static final String URL_ROOMS = "/rooms/";
+    private static final String URL_ADD = "/rooms/add/";
+    private static final String URL_DELETE = "/rooms/delete/";
+    private static final String URL_EDIT = "/rooms/edit/";
+
+    private static final String SUCCESS_MSG = "success";
+    private static final String FAIL_MSG = "failMessage";
+    private static final String STR = "";
 
     @Autowired
     private RoomServiceImpl roomService;
@@ -56,20 +78,68 @@ class RoomsControllerTest {
     }
 
     @BeforeEach
-    void init() {
+    public void init() {
         tableCreator.createTables();
     }
 
     @Test
-    void givenRoomsPageURI_whenMockMVC_thenReturnsRoomsViewName_WithRoomsModelAttribute() throws Exception {
+    void givenRoomsPageURI_ReturnsRoomsViewName_WithRoomsModelAttribute() throws Exception {
         Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
         Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
-        this.mockMvc.perform(get("/rooms/"))
-                .andExpect(model().attribute("rooms", hasItems(room_1, room_2, room_3)))
-                .andDo(print()).andExpect(view().name("rooms"));
+        this.mockMvc.perform(get(URL_ROOMS)).andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1, room_2, room_3)))
+                .andDo(print()).andExpect(view().name(VIEW_ROOMS));
+    }
+
+    @Test
+    void givenRoomAddUriWithParams_AddsRoom() throws Exception {
+        this.mockMvc
+                .perform(post(URL_ADD)
+                        .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_1 + STR)
+                        .param(ROOM_SEAT_ATTR,
+                        TEST_SEAT_NUMBER_1 + STR))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ROOMS_ATTR))
+                .andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(view().name(VIEW_ROOMS));
+    }
+
+    @Test
+    void givenRoomDeleteUriWithRoomId_DeletesRoom() throws Exception {
+        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        this.mockMvc
+        .perform(get(URL_DELETE).param(ROOM_ID_ATTR, room.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(ROOMS_ATTR))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(VIEW_ROOMS));
     }
     
+    @Test
+    void givenRoomEditUriWithRoomId_ReturnsEditForm() throws Exception {
+        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        this.mockMvc
+        .perform(get(URL_EDIT).param(ROOM_ID_ATTR, room.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(ROOM_ATTR))
+        .andExpect(view().name(VIEW_EDIT_ROOM));
+    }
+    
+    @Test
+    void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception{
+        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        this.mockMvc
+        .perform(post(URL_EDIT)
+                .requestAttr(ROOM_ID_ATTR, room.getId())
+                .requestAttr(ROOM_NUMBER_ATTR, room.getRoomNumber())
+                .requestAttr(ROOM_SEAT_ATTR, room.getSeatNumber())
+                .sessionAttr(ROOM_ATTR, new Room()))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(VIEW_ROOMS));;
+    }
+    
+
     private Room insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);

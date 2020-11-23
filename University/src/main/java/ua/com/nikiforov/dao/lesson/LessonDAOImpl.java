@@ -124,7 +124,7 @@ public class LessonDAOImpl implements LessonDAO {
         boolean actionResult = false;
         Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(UPDATE_LESSON, period, subjectId, roomId, groupId, time,
+            actionResult = jdbcTemplate.update(UPDATE_LESSON, period,groupId, subjectId, roomId,  time,
                     teacherId, lessonId) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated {}", lessonMessage);

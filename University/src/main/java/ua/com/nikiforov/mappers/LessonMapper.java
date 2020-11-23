@@ -2,6 +2,7 @@ package ua.com.nikiforov.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,8 @@ public class LessonMapper implements RowMapper<Lesson> {
         lesson.setSubjectId(resultSet.getInt(SUBJECT_ID_INDEX));
         lesson.setRoomId(resultSet.getInt(ROOM_ID_INDEX));
         lesson.setGroupId(resultSet.getLong(GROUP_ID_INDEX));
-        lesson.setTime((resultSet.getTimestamp(TIME_ID_INDEX)).toInstant());
+        Timestamp timestamp = resultSet.getTimestamp(TIME_ID_INDEX);
+        lesson.setTime(timestamp.toLocalDateTime().toLocalDate());
         lesson.setTeacherId(resultSet.getLong(TEACHER_ID_INDEX));
         return lesson;
     }

@@ -58,10 +58,6 @@ public abstract class PersonalTimetable {
         return LocalDate.parse(date, dateTimeFormatter);
     }
 
-//    private static ZonedDateTime getZonedDateTime(Instant instant, String zone) {
-//        ZoneId zoneId = ZoneId.of(zone);
-//        return ZonedDateTime.ofInstant(instant, zoneId);
-//    }
 
         
 }

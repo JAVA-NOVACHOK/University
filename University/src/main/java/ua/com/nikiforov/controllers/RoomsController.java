@@ -25,7 +25,7 @@ public class RoomsController {
     private static final String ROOM_ATTR = "rooms";
     private static final String VIEW_ROOMS = "rooms/rooms";
     private static final String VIEW_ADD_ROOM = "rooms/add_room_form";
-    private static final String REDIRECT_ROOMS = "redirect:/rooms";
+    private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
     private static final String MODEL_ATTR_ROOM = "room";
 
     private static final String SUCCESS_MSG = "success";
@@ -52,19 +52,14 @@ public class RoomsController {
         return VIEW_ROOMS;
     }
 
-    @GetMapping("/add")
-    public String add() {
-        return VIEW_ADD_ROOM;
-    }
-
-    @PostMapping("/add_room")
+    @PostMapping("/add")
     public String addRoom(@RequestParam int roomNumber, @RequestParam int seatNumber, Model model) {
         try {
             roomService.addRoom(roomNumber, seatNumber);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Room number '%d' with seats number '%d' added successfuly", roomNumber, seatNumber));
         } catch (DuplicateKeyException e) {
-            model.addAttribute("message",
+            model.addAttribute(FAIL_MSG,
                     String.format("Cannot add room. Room with number '%d' already exists", roomNumber));
             return VIEW_ADD_ROOM;
         }
@@ -90,20 +85,20 @@ public class RoomsController {
     public String editRoom(@RequestParam int roomId, Model model) {
         Room room = roomService.getRoomById(roomId);
         model.addAttribute("room", room);
-        return "rooms/edit_room_form";
+        return VIEW_EDIT_ROOM;
     }
 
-    @PostMapping("/edit_room")
+    @PostMapping("/edit")
     public String processEdit(@ModelAttribute(MODEL_ATTR_ROOM) Room room, Model model) {
         try {
             roomService.updateRoom(room.getRoomNumber(), room.getSeatNumber(), room.getId());
             model.addAttribute(SUCCESS_MSG,
                     String.format("Room number '%d' updated successfuly", room.getRoomNumber()));
         } catch (DuplicateKeyException e) {
-            model.addAttribute("message", String.format(
+            model.addAttribute(FAIL_MSG, String.format(
                     "Warning! Failed to update room with number '%d'. It already exists!", room.getRoomNumber()));
         } catch (DataOperationException e) {
-            model.addAttribute("message",
+            model.addAttribute(FAIL_MSG,
                     String.format("Error! Couldn't update room with number '%d'.", room.getRoomNumber()));
         }
         model.addAttribute(ROOM_ATTR, roomService.getAllRooms());

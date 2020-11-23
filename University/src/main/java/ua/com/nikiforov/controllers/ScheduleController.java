@@ -46,10 +46,7 @@ public class ScheduleController {
     private static final String TEACHERS_ATTR = "teachers";
     private static final String TEACHER_ATTR = "teacher";
 
-    private static final String TEACHER_NOT_FOUND_MSG = "Teacher not found from ScheduleConroller";
-    private static final String STUDENT_NOT_FOUND_MSG = "Student not found from ScheduleConroller";
-    private static final String TIMETABLE_TEACHER_NOT_FOUND = "timetable/teacher_not_found";
-    private static final String TIMETABLE_SCHEDULE_NOT_FOUND = "timetable/schedule_not_found";
+    private static final String NOT_CLASSES_MSG = "There are no classes for %s %s on date %s.";
     private static final String TEACHER = "teacher";
     private static final String STUDENT = "student";
     private static final String DAY_TIMETABLE = "timetables";
@@ -148,14 +145,9 @@ public class ScheduleController {
             return VIEW_TEACHER_SCHEDULE;
         }
         List<DayTimetable> timetables = teachersTimetableService.getDayTimetable(date, teacher.getId());
-        for (DayTimetable t : timetables) {
-            for (Timetable t2 : t.getTimetables()) {
-                LOGGER.debug("TEACCHER DAY CONTROLLER TIMETABLE {}", t2);
-            }
-        }
         if (timetables.isEmpty()) {
             model.addAttribute(FAIL_MSG,
-                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+                    String.format(NOT_CLASSES_MSG, firstName, lastName, date));
             return VIEW_TEACHER_TIMETABLE_FORM;
         }
         model.addAttribute(DAY_TIMETABLE, timetables);
@@ -187,7 +179,7 @@ public class ScheduleController {
                 student.getGroupId());
         if (timetables.isEmpty()) {
             model.addAttribute(FAIL_MSG,
-                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+                    String.format(NOT_CLASSES_MSG, firstName, lastName, date));
             return VIEW_STUDENT_TIMETABLE_FORM;
         }
         model.addAttribute(DAY_TIMETABLE, timetables);
@@ -214,7 +206,7 @@ public class ScheduleController {
                 student.getGroupId());
         if (timetables.isEmpty()) {
             model.addAttribute(FAIL_MSG,
-                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+                    String.format(NOT_CLASSES_MSG, firstName, lastName, date));
             return VIEW_STUDENT_TIMETABLE_FORM;
         }
         model.addAttribute(DAY_TIMETABLE, timetables);
@@ -240,7 +232,7 @@ public class ScheduleController {
         List<DayTimetable> timetables = teachersTimetableService.getMonthTimetable(date, teacher.getId());
         if (timetables.isEmpty()) {
             model.addAttribute(FAIL_MSG,
-                    String.format("There are no classes for %s %s on date %s.", firstName, lastName, date));
+                    String.format(NOT_CLASSES_MSG, firstName, lastName, date));
             return VIEW_TEACHER_TIMETABLE_FORM;
         }
         model.addAttribute(DAY_TIMETABLE, timetables);
@@ -271,7 +263,6 @@ public class ScheduleController {
     @GetMapping("/edit")
     public String editSchedule(@ModelAttribute("timetable") Timetable timetable, @RequestParam String dateString,
             Model model) {
-        LOGGER.debug("=========Timetable {}", timetable);
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
@@ -296,6 +287,20 @@ public class ScheduleController {
         model.addAttribute(FAIL_MSG, "Warning! Failed to update timetsble!!!!");
         return VIEW_TEACHER_SCHEDULE;
     }
+        return VIEW_TEACHER_SCHEDULE;
+    }
+    
+    @GetMapping("/delete")
+    public String deleteLesson(@RequestParam long lessonId, Model model){
+        try {
+            Lesson lesson = lessonService.getLessonById(lessonId);
+            model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
+            lessonService.deleteLessonById(lessonId);
+            model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDateFromLocalDate(), lesson.getTeacherId()));
+        }catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, "Warning! Couldn't delete timetable!");
+            return VIEW_TEACHER_SCHEDULE;
+        }
         return VIEW_TEACHER_SCHEDULE;
     }
 

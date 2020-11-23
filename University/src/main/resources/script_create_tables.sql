@@ -54,13 +54,13 @@ CREATE TABLE universities(
 );
 DROP TABLE IF EXISTS lessons ;
 CREATE TABLE lessons(
+	lesson_id serial PRIMARY KEY,
 	period int,
-	subject_id int NOT NULL REFERENCES subjects (subject_id) ON UPDATE CASCADE ON DELETE CASCADE,
-	room_id int NOT NULL REFERENCES rooms (room_id) ON UPDATE CASCADE ON DELETE CASCADE,
-	group_id BIGINT NOT NULL REFERENCES groups (group_id) ON UPDATE CASCADE ON DELETE CASCADE,
+	subject_id int NOT NULL REFERENCES subjects (subject_id)  ON DELETE CASCADE,
+	room_id int NOT NULL REFERENCES rooms (room_id)  ON DELETE CASCADE,
+	group_id BIGINT NOT NULL REFERENCES groups (group_id)  ON DELETE CASCADE,
 	time TIMESTAMP WITH TIME ZONE NOT NULL,
-	teacher_id BIGINT NOT NULL REFERENCES teachers (teacher_id) ON UPDATE CASCADE ON DELETE CASCADE,
-	PRIMARY KEY(period,subject_id,teacher_id,room_id,group_id,group_id,teacher_id),
+	teacher_id BIGINT NOT NULL REFERENCES teachers (teacher_id) ON DELETE CASCADE,
 	UNIQUE(period,subject_id,teacher_id,room_id,group_id,group_id,time,teacher_id)
 );
 DROP TABLE IF EXISTS teachers_subjects;

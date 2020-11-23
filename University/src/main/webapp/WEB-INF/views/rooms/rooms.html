@@ -31,8 +31,30 @@
 	</div>
 	<div class="row mt-3 justify-content-center">
 		<a type="button" class="btn btn-primary position-relative"
-			th:href="@{/rooms/add}">Add Room</a>
+			data-toggle="collapse" href="#collapseAdd" role="button"
+			aria-expanded="false" aria-controls="collapseAdd">Add Room</a>
 	</div>
+
+	<div class="collapse" id="collapseAdd">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline" action="/University/rooms/add"
+					method="post">
+					<div class="row">
+						<input type="text" class="form-control mr-2" autofocus="autofocus"
+							required="required" placeholder="Room number" name="roomNumber">
+						<input type="text" class="form-control mr-2" required="required"
+							placeholder="Seats number" name="seatNumber">
+						<button id="day" type="submit"
+							class="btn mr-2 btn-outline-success">Add room</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
 	<div class="row mt-3 justify-content-center">
 		<div class="col-auto">
 			<table class="table table-striped table-hover">
@@ -47,14 +69,17 @@
 				</thead>
 				<tbody>
 					<tr th:each="room : ${rooms}">
-						<td class="font-weight-bold text-center" th:text="${room.roomNumber}">Number</td>
+						<td class="font-weight-bold text-center"
+							th:text="${room.roomNumber}">Number</td>
 						<td class="text-center" th:text="${room.seatNumber}">Seats</td>
-						<td class="text-center"><a class="btn btn btn-outline-danger btn-sm"
-							type="button" th:attr="data-url=|delete/?roomId=__${room.id}__|"
+						<td class="text-center"><a
+							class="btn btn btn-outline-danger btn-sm" type="button"
+							th:attr="data-url=|delete/?roomId=__${room.id}__|"
 							th:onclick="deleteRoom(this.getAttribute('data-url'));"
 							data-toggle="modal" data-target="#deleteModal"><i
 								class="fa fa-trash"></i></a></td>
-						<td class="text-center"><a class="btn btn btn-outline-info btn-sm" type="button"
+						<td class="text-center"><a
+							class="btn btn btn-outline-info btn-sm" type="button"
 							th:href="@{/rooms/edit/?roomId=__${room.id}__}"><i
 								class="fa fa-edit"></i></a></td>
 					</tr>
@@ -63,7 +88,7 @@
 		</div>
 	</div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
 		aria-labelledby="deleteModal" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">

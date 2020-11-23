@@ -1,6 +1,6 @@
 package ua.com.nikiforov.models.lesson;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 public class Lesson {
 
@@ -8,7 +8,7 @@ public class Lesson {
     private long groupId;
     protected int subjectId;
     private int roomId;
-    private Instant time;
+    private LocalDate time;
     private int period;
     private long teacherId;
     private String date;
@@ -16,7 +16,7 @@ public class Lesson {
     public Lesson() {
     }
 
-    public Lesson(long id,int period, long groupId, int subjectId, int roomId, Instant time, long teacherId) {
+    public Lesson(long id,int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
@@ -27,6 +27,11 @@ public class Lesson {
         date = "";
     }
     
+    
+    public String getDateFromLocalDate() {
+        String[] dateArr = time.toString().split("T"); 
+        return dateArr[0];
+    }
     
 
     public String getDate() {
@@ -69,11 +74,12 @@ public class Lesson {
         this.roomId = roomId;
     }
 
-    public Instant getTime() {
+
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(Instant time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 

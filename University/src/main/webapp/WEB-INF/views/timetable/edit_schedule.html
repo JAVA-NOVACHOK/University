@@ -21,7 +21,7 @@
 	<div>
 		<h2 class="text-center text-info"
 			th:text="|Edition schedule of ${teacher.firstName} ${teacher.lastName}|">Schedules</h2>
-			<h6 class="text-center text-danger"
+		<h6 class="text-center text-danger"
 			th:text="${failMessage == 0}?'':${failMessage}"></h6>
 		<h6 class="text-center text-success"
 			th:text="${success == 0}?'':${success}"></h6>
@@ -29,10 +29,11 @@
 
 	<div class="card mt-3 card-body">
 		<div class="row justify-content-center">
-			<form class="form-inline" action="/University/schedules/edit"
+			<form class="form-inline mr-2" action="/University/schedules/edit"
 				method="post">
 				<div class="row">
-					<input type="number" hidden="true" name="id" th:value=${timetable.lessonId}> <label
+					<input type="number" hidden="true" name="id"
+						th:value=${timetable.lessonId}> <label
 						class="font-weight-bold mr-2" for="group">Group</label> <select
 						class="form-control mr-2" id="group" required="required"
 						name="groupId">
@@ -65,22 +66,22 @@
 							th:text="|${teacher.firstName} ${teacher.lastName}|"
 							th:selected="${teacher.id==timetable.teacherId}"></option>
 					</select>
-					<button id="day" type="submit" class="btn mr-2 btn-outline-success">Submit
-						timetable</button>
+					<button id="day" type="submit" class="btn mr-2 btn-outline-success">EDIT</button>
 				</div>
 			</form>
+			<div>
+				<button class="btn mr-2 btn-outline-danger" onclick="goBack()">Cancel</button>
+			</div>
 		</div>
 	</div>
 
-	<div class="d-block mt-3">
-		<div class="col-lg-12 offset-sm-3">
-			<a type="button"
-				class="btn btn-primary btn-lg btn-block justify-content-center w-50"
-				th:href="@{/schedules/student}">I am Student</a> <a type="button"
-				class="btn btn-warning btn-lg btn-block justify-content-center w-50"
-				th:href="@{/schedules/teacher}">I am Teacher</a>
-		</div>
-	</div>
+	<script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+
+
 
 
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

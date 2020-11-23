@@ -53,11 +53,11 @@
 							<td>
 								<form action="/University/schedules/edit" method="get">
 									<input type="number" hidden="true"
-										th:value="${timetable.lessonId}" name="lessonId"> <input type="number"
-										hidden="true" th:value="${timetable.period}"> <input
-										type="text" hidden="true" name="subjectName"
-										th:value="${timetable.subjectName}"> <input
-										type="text" hidden="true" name="roomNumber"
+										th:value="${timetable.lessonId}" name="lessonId"> <input
+										type="number" hidden="true" th:value="${timetable.period}"
+										name="period"> <input type="text" hidden="true"
+										name="subjectName" th:value="${timetable.subjectName}">
+									<input type="text" hidden="true" name="roomNumber"
 										th:value="${timetable.roomNumber}"> <input type="text"
 										hidden="true" name="groupName"
 										th:value="${timetable.groupName}"> <input
@@ -65,61 +65,46 @@
 										th:value="${timetable.teacherId}"> <input type="text"
 										hidden="true" name="teachersName"
 										th:value="${timetable.teachersName}"> <input
-										type="date" name="dateString"
-										th:value="${timetable.date}"> <button type="submit"
-										class="btn btn-success">Edit</button>
+										type="date" hidden="true" name="dateString"
+										th:value="${timetable.date}">
+									<button type="submit" class="btn btn-success">Edit</button>
 								</form>
 							</td>
-							<td><a class="btn btn-danger " href="/#">Delete</a></td>
+							<td><a class="btn btn btn-outline-danger btn-sm"
+								type="button"
+								th:attr="data-url=|/University/schedules/delete/?lessonId=__${timetable.lessonId}__|"
+								th:onclick="deleteLesson(this.getAttribute('data-url'));"
+								data-toggle="modal" data-target="#deleteModal">Delete</a></td>
 						</tr>
 					</tbody>
 				</table>
-				<div class="collapse" id="collapseAdd">
-					<div class="card mt-3 card-body">
-						<div class="row justify-content-center">
-							<form class="form-inline" action="/University/schedules/add"
-								method="post">
-								<div class="row">
-									<input type="number" hidden="true" name="id" value=1> <label
-										class="font-weight-bold mr-2" for="group">Group</label> <select
-										class="form-control mr-2" id="group" required="required"
-										name="groupId">
-										<option th:each="group : ${groups}" th:value="${group.id}"
-											th:text="${group.groupName}"></option>
-									</select> <label class="font-weight-bold mr-2" for="subject">Subject</label>
-									<select class="form-control mr-2" id="subject"
-										required="required" name="subjectId">
-										<option th:each="subject : ${subjects}"
-											th:value="${subject.id}" th:text="${subject.name}"></option>
-									</select> <label class="font-weight-bold mr-2" for="room">Room</label> <select
-										class="form-control mr-2" id="room" required="required"
-										name="roomId">
-										<option th:each="room : ${rooms}" th:value="${room.id}"
-											th:text="${room.roomNumber}"></option>
-									</select> <label class="font-weight-bold mr-2" for="date">Date</label> <input
-										type="date" class="form-control mr-2" id="date"
-										required="required" name="date"> <label
-										class="font-weight-bold mr-2" for="period">Period</label> <select
-										class="form-control mr-2" id="period" name="period">
-										<option th:each="i : ${#numbers.sequence(1, 6)}"
-											th:value="${i}" th:text="${i}" th:selected="${i==1}"></option>
-									</select> <label class="font-weight-bold mr-2" for="teacher">Teacher</label>
-									<select class="form-control mr-2" id="teacher"
-										required="required" name="teacherId">
-										<option th:each="teacher : ${teachers}"
-											th:value="${teacher.id}"
-											th:text="|${teacher.firstName} ${teacher.lastName}|"></option>
-									</select>
-									<button id="day" type="submit"
-										class="btn mr-2 btn-outline-success">Submit timetable</button>
-								</div>
-							</form>
+
+				<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+					aria-labelledby="deleteModal" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-body edit-content">
+								<h5 class="text-center">Are you sure you want to delete
+									this lesson?</h5>
+							</div>
+							<div class="modal-footer">
+								<a id="item" type="button" href=""
+									class="btn btn-danger pull-left">Yes, I am sure</a>
+								<button type="button" class="btn btn-primary"
+									data-dismiss="modal">Cancel</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+	<script>
+        function deleteLesson(url) {
+            $("#item").attr("href", url);
+        }
+    </script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
 		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
 		crossorigin="anonymous"></script>
