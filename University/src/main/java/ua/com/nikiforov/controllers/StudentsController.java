@@ -74,6 +74,7 @@ public class StudentsController {
     @PostMapping("/edit")
     public String processEdit(@RequestParam long id, @RequestParam String firstName, @RequestParam String lastName,
             @RequestParam long groupId, Model model) {
+        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         Group group = groupService.getGroupById(groupId);
         model.addAttribute(GROUP_IN_ATTR, group);
         try {
@@ -86,21 +87,21 @@ public class StudentsController {
             return VIEW_STUDENTS;
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, String.format("Failed to edit student '%s' '%s'", firstName, lastName));
-            return VIEW_EDIT_FORM;
+            return VIEW_STUDENTS;
         }
         model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupId));
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_STUDENTS;
     }
 
     @GetMapping("/transfer")
-    public String transfer(@RequestParam long id, Model model) {
+    public String transfer(@RequestParam long id, String message, Model model) {
         Student student = studentService.getStudentById(id);
         Group group = groupService.getGroupByStudentId(id);
         List<Group> groups = groupService.getAllGroups();
         groups.remove(group);
+        model.addAttribute(FAIL_MSG, message);
         model.addAttribute(STUDENT_ATTR, student);
-        model.addAttribute(GROUP_IN_ATTR, group);
+        model.addAttribute(GROUP_ATTR, group);
         model.addAttribute(GROUPS_ATTR, groups);
         return VIEW_TRANSFER_FORM;
     }
@@ -109,23 +110,25 @@ public class StudentsController {
     public String processTransfer(@RequestParam long studentId, @RequestParam String firstName,
             @RequestParam String lastName, @RequestParam long groupToId, @RequestParam String groupName, Model model) {
         if (groupToId == 0) {
-            model.addAttribute(FAIL_MSG, "Choose group from the list");
-            return VIEW_TRANSFER_FORM;
+            return "redirect:/students/transfer/?id=" + studentId + "&message=Choose group from list";
         }
-        boolean actionResult = false;
-        actionResult = studentService.transferStudent(studentId, groupToId);
+        Group groupFrom = groupService.getGroupByName(groupName);
         Group groupTo = groupService.getGroupById(groupToId);
-        if (!actionResult) {
+        List<Group> groups = groupService.getAllGroups();
+        model.addAttribute(GROUP_IN_ATTR, groupTo);
+        model.addAttribute(GROUPS_ATTR, groups);
+        try {
+            studentService.transferStudent(studentId, groupToId);
+            model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s",
+                    firstName, lastName, groupTo.getGroupName()));
+        } catch (DataOperationException e) {
+            model.addAttribute(GROUP_IN_ATTR, groupFrom);
             model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s",
                     firstName, lastName, groupName, groupTo.getGroupName()));
-            return VIEW_TRANSFER_FORM;
+            return VIEW_STUDENTS;
         }
-        List<Student> students = studentService.getStudentsByGroupId(groupToId);
-        model.addAttribute(STUDENTS_ATTR, students);
-        model.addAttribute(GROUP_IN_ATTR, groupTo);
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-        model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s", firstName,
-                lastName, groupTo.getGroupName()));
+        groups.remove(groupFrom);
+        model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupToId));
         return VIEW_STUDENTS;
     }
 
@@ -133,28 +136,26 @@ public class StudentsController {
     public String deleteStudent(@RequestParam long id, Model model) {
         Group group = groupService.getGroupByStudentId(id);
         Student student = group.getStudentById(id);
-       try {
-        studentService.deleteStudentById(id);
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-        model.addAttribute(GROUP_IN_ATTR, groupService.getGroupByStudentId(id));
-        model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was deleted successfully from group %s",
-                student.getFirstName(), student.getLastName(), group.getGroupName()));
-       }catch (DataOperationException e) {
-           model.addAttribute(GROUP_IN_ATTR, group);
-           model.addAttribute(FAIL_MSG, String.format("Failed to delete Student %s %s from group %s",
+        try {
+            studentService.deleteStudentById(id);
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(student.getGroupId()));
+            model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was deleted successfully from group %s",
+                    student.getFirstName(), student.getLastName(), group.getGroupName()));
+        } catch (DataOperationException e) {
+            model.addAttribute(GROUP_IN_ATTR, group);
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete Student %s %s from group %s",
                     student.getFirstName(), student.getLastName(), group.getGroupName()));
             return VIEW_STUDENTS;
-    }
+        }
         return VIEW_STUDENTS;
     }
-
-   
 
     @PostMapping("/add")
     public String processAdding(@RequestParam String firstName, @RequestParam String lastName,
             @RequestParam long groupId, Model model) {
         Group group = groupService.getGroupById(groupId);
-        model.addAttribute(GROUP_IN_ATTR,group);
+        model.addAttribute(GROUP_IN_ATTR, group);
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             if (groupId == 0) {

@@ -94,9 +94,6 @@ class StudentsControllerTest {
     @Test
     void givenStudentURI_thenReturnStudentView_WithGroupAttrs() throws Exception {
         Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
-        Student student_2 = insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getGroupId());
-        Student student_3 = insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroup_1.getGroupId());
         this.mockMvc.perform(get("/students").param(GROUP_ID_ATTR, testGroup_1.getGroupId() + ""))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -118,13 +115,14 @@ class StudentsControllerTest {
     }
     
     @Test
-    void givenStudentPostEditURI_EditStudent() throws Exception {
+    void givenStudentPostEditURI_IfEditOnExistingStudent_FailMSGAttr() throws Exception{
         Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getGroupId());
         this.mockMvc
             .perform(post("/students/edit")
                     .param(ID, student_1.getId() + "")
-                    .param(FIRST_NAME_ATTR, FIRST_NAME_1)
+                    .param(FIRST_NAME_ATTR, FIRST_NAME_2)
                     .param(LAST_NAME_ATTR, LAST_NAME_2)
                     .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
             .andDo(print())
@@ -132,8 +130,27 @@ class StudentsControllerTest {
             .andExpect(model().size(4))
             .andExpect(model().attributeExists(GROUPS_ATTR))
             .andExpect(model().attributeExists(GROUP_IN_ATTR))
-            .andExpect(model().attributeExists(SUCCESS_MSG))
+            .andExpect(model().attributeExists(FAIL_MSG))
             .andExpect(view().name(VIEW_STUDENTS));
+    }
+    
+    @Test
+    void givenStudentPostEditURI_EditStudent() throws Exception {
+        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        this.mockMvc
+        .perform(post("/students/edit")
+                .param(ID, student_1.getId() + "")
+                .param(FIRST_NAME_ATTR, FIRST_NAME_1)
+                .param(LAST_NAME_ATTR, LAST_NAME_2)
+                .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(model().size(4))
+        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attributeExists(GROUP_IN_ATTR))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(VIEW_STUDENTS));
     }
     
     @Test
@@ -171,9 +188,22 @@ class StudentsControllerTest {
         .andExpect(view().name(VIEW_STUDENTS));
     }
     
+    @Test
+    void givenStudentGetDeleteURI_DeleteStudent_Success() throws Exception {
+        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        this.mockMvc
+        .perform(get("/students/delete")
+                .param(ID, student.getId() + STR))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(model().size(4))
+        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attributeExists(GROUP_IN_ATTR))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(VIEW_STUDENTS));
+    }
     
-    
-
     private Group insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);

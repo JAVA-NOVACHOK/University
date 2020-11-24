@@ -117,8 +117,8 @@ class GroupServiceImplTest {
         long groupId_2 = group_2.getGroupId();
 
         List<Student> expectedStudents = new ArrayList<>();
-        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
         expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1));
 
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
@@ -146,7 +146,7 @@ class GroupServiceImplTest {
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
-        studentsService.deleteStudentById(studentToRemove.getGroupId());
+        studentsService.deleteStudentById(studentToRemove.getId());
         List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
         assertIterableEquals(expectedStudents, actualStudents);
 

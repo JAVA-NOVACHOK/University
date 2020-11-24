@@ -64,7 +64,7 @@ class SubjectsControllerTest {
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/subjects/")).andDo(print())
                 .andExpect(model().attribute("subjects", hasItems(subject_1, subject_2, subject_3)))
-                .andExpect(view().name("subjects"));
+                .andExpect(view().name("subjects/subjects"));
     }
 
     private Subject insertSubject(String subjectName) {
