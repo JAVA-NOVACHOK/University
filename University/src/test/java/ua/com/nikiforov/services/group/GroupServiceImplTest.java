@@ -67,7 +67,7 @@ class GroupServiceImplTest {
     @Test
     void whenGetGroupByIdReturnCorrectGroup() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
-        assertEquals(group, groupService.getGroupById(group.getId()));
+        assertEquals(group, groupService.getGroupById(group.getGroupId()));
     }
 
     @Test
@@ -83,13 +83,14 @@ class GroupServiceImplTest {
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
-        assertTrue(groupService.updateGroup(group.getId(), TEST_GROUP_NAME_2));
+        assertTrue(groupService.updateGroup(new Group(group.getGroupId(), TEST_GROUP_NAME_2)));
     }
 
     @Test
     void whenUpdateGroupThenGroupHasChangedName() {
-        long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
-        groupService.updateGroup(groupId, TEST_GROUP_NAME_2);
+        Group group = insertGroup(TEST_GROUP_NAME_1);
+        long groupId = group.getGroupId();
+        groupService.updateGroup(new Group(group.getGroupId(), TEST_GROUP_NAME_2));
         Group expectedUpdatedGroup = groupService.getGroupById(groupId);
         Group actualUpdatedGroup = groupService.getGroupByName(TEST_GROUP_NAME_2);
         assertEquals(expectedUpdatedGroup, actualUpdatedGroup);
@@ -98,12 +99,12 @@ class GroupServiceImplTest {
     @Test
     void whenDeleteGroupByIdIfSuccessThenReturnTrue() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
-        assertTrue(groupService.deleteGroup(group.getId()));
+        assertTrue(groupService.deleteGroup(group.getGroupId()));
     }
 
     @Test
     void afterDeleteGroupIfSearchReturnEntityNotFoundException() {
-        long groupId = insertGroup(TEST_GROUP_NAME_1).getId();
+        long groupId = insertGroup(TEST_GROUP_NAME_1).getGroupId();
         groupService.deleteGroup(groupId);
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(groupId));
     }
@@ -111,9 +112,9 @@ class GroupServiceImplTest {
     @Test
      void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        long groupId_1 = group_1.getId();
+        long groupId_1 = group_1.getGroupId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        long groupId_2 = group_2.getId();
+        long groupId_2 = group_2.getGroupId();
 
         List<Student> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
@@ -131,20 +132,21 @@ class GroupServiceImplTest {
     @Test
     void whenDeleteStudentListOfStudentsWithoutStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        long groupId_1 = group_1.getId();
+        long groupId_1 = group_1.getGroupId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        long groupId_2 = group_2.getId();
+        long groupId_2 = group_2.getGroupId();
 
         List<Student> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
+        Collections.sort(expectedStudents);
+        
         Student studentToRemove = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1);
 
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
-        studentsService.deleteStudentById(studentToRemove.getId());
-
+        studentsService.deleteStudentById(studentToRemove.getGroupId());
         List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
         assertIterableEquals(expectedStudents, actualStudents);
 
@@ -153,14 +155,14 @@ class GroupServiceImplTest {
     @Test
     void whenTransferStudentListOfStudentsInGroupWithTransferedStudent() {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        long groupId_1 = group_1.getId();
+        long groupId_1 = group_1.getGroupId();
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        long groupId_2 = group_2.getId();
+        long groupId_2 = group_2.getGroupId();
 
         insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1);
         insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1);
 
-        long transferedStudentId = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1).getId();
+        long transferedStudentId = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1).getGroupId();
 
         List<Student> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2));

@@ -108,9 +108,12 @@ class GroupsControllerTest {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         Group group_2 = insertGroup(TEST_GROUP_NAME_2);
         Group group_3 = insertGroup(TEST_GROUP_NAME_3);
-        this.mockMvc.perform(get(URL_DELETE))
+        this.mockMvc.perform(
+                get(URL_DELETE))
+        .andExpect(status().isOk())
         .andExpect(model().attribute(GROUPS_ATTR, hasItems(group_1, group_2, group_3)))
-        .andDo(print()).andExpect(view().name(VIEW_DELETE_GROUP));
+        .andDo(print())
+        .andExpect(view().name(VIEW_DELETE_GROUP));
     }
     
     @Test
@@ -120,7 +123,7 @@ class GroupsControllerTest {
         Group group_3 = insertGroup(TEST_GROUP_NAME_3);
         this.mockMvc
                 .perform(post(URL_DELETE)
-                        .param(GROUP_ID_ATTR,group_1.getId() + STR))
+                        .param(GROUP_ID_ATTR,group_1.getGroupId() + STR))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_2,group_3)))
                 .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -145,7 +148,7 @@ class GroupsControllerTest {
     void givenGroupEditGetURI_ReturnsGroupEditViewForm() throws Exception {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
         this.mockMvc
-        .perform(get(URL_EDIT).param(GROUP_ID_ATTR,group_1.getId() + STR))
+        .perform(get(URL_EDIT).param(GROUP_ID_ATTR,group_1.getGroupId() + STR))
         .andExpect(model().attribute(GROUP_ATTR, group_1))
         .andDo(print())
         .andExpect(view().name(VIEW_EDIT_GROUP));
@@ -154,12 +157,13 @@ class GroupsControllerTest {
     @Test
     void givenGroupEditPostURI_EditGroupAndReturnsGroupsView() throws Exception {
         Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group updatedGroup = new Group(group_1.getId(), TEST_GROUP_NAME_2);
+        Group updatedGroup = new Group(group_1.getGroupId(), TEST_GROUP_NAME_2);
         this.mockMvc
         .perform(post(URL_EDIT)
-                .param(GROUP_ID_ATTR, group_1.getId() + STR)
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
                 .param(GROUP_NAME_ATTR, TEST_GROUP_NAME_2)
                 .sessionAttr(GROUP_ATTR, new Group()))
+        .andExpect(status().isOk())
         .andExpect(model().attribute(GROUPS_ATTR,hasItem(updatedGroup)))
         .andDo(print())
         .andExpect(view().name(VIEW_GROUPS));

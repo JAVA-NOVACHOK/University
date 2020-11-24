@@ -150,25 +150,25 @@ class ScheduleControllerTest {
 
         teacher = insertTeacher(TEACHERS_FIRST_NAME_1, TEACHERS_LAST_NAME_1);
 
-        student = insertStudent(STUDENTS_FIRST_NAME_1, STUDENTS_LAST_NAME_1, group_1.getId());
-        insertStudent(STUDENTS_FIRST_NAME_2, STUDENTS_LAST_NAME_2, group_1.getId());
-        insertStudent(STUDENTS_FIRST_NAME_3, STUDENTS_LAST_NAME_3, group_1.getId());
+        student = insertStudent(STUDENTS_FIRST_NAME_1, STUDENTS_LAST_NAME_1, group_1.getGroupId());
+        insertStudent(STUDENTS_FIRST_NAME_2, STUDENTS_LAST_NAME_2, group_1.getGroupId());
+        insertStudent(STUDENTS_FIRST_NAME_3, STUDENTS_LAST_NAME_3, group_1.getGroupId());
         
         dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13,
                 MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getGroupId(), DATE,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_3.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_3.getId(), group_2.getGroupId(), DATE,
                 teacher.getId());
         
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_3.getId(), DATE_1,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_3.getGroupId(), DATE_1,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getGroupId(), DATE_1_ADD_3_DAYS,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_3.getId(), group_3.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_3.getId(), group_3.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher.getId());
 
     }

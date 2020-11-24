@@ -67,10 +67,10 @@
 						<td class="text-center" th:text="${iterStat.count}">ID</td>
 						<td class="text-center"><a class="btn btn-primary "
 							th:text="${group.groupName}"
-							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
+							th:href="@{/students/?groupId=__${group.groupId}__}">Group name</a></td>
 						<td class="text-center"><a type="button"
 							class="btn btn-warning mb-1 position-relative btn-sm"
-							th:href="@{/groups/edit/?groupId=__${group.id}__}"> <i
+							th:href="@{/groups/edit/?groupId=__${group.groupId}__}"> <i
 								class="fa fa-edit"></i></a></td>
 					</tr>
 				</tbody>

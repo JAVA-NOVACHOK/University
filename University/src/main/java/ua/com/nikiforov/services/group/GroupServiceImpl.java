@@ -33,7 +33,6 @@ public class GroupServiceImpl implements GroupService {
     public Group getGroupById(long groupId) {
         Group group = groupDAO.getGroupById(groupId);
         List<Student> students = getStudentsByGroupId(groupId);
-        Collections.sort(students);
         group.setGroupStudents(students);
         return group;
     }
@@ -66,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Group getGroupByStudentId(long studentId) {
         Group group = groupDAO.getGroupByStudentId(studentId);
-        group.setGroupStudents(getStudentsByGroupId(group.getId()));
+        group.setGroupStudents(getStudentsByGroupId(group.getGroupId()));
         return group;
     }
 

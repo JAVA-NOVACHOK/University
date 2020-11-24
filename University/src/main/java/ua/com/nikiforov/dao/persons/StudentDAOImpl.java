@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -59,7 +60,10 @@ public class StudentDAOImpl implements StudentDAO {
             } else {
                 throw new DataOperationException("Couldn't add " + studentMessage);
             }
-        } catch (DataAccessException e) {
+        } catch (DuplicateKeyException e) {
+            LOGGER.error("ERROR! Cannot add {} already exists!",studentMessage);
+            throw new DuplicateKeyException(e.getMessage(),e);
+        }catch (DataAccessException e) {
             String failMessage = String.format("Failed to add %s", studentMessage);
             LOGGER.error(failMessage, e);
             throw new DataOperationException(failMessage, e);
@@ -144,6 +148,9 @@ public class StudentDAOImpl implements StudentDAO {
             } else {
                 throw new DataOperationException("Couldn't update " + student);
             }
+        } catch (DuplicateKeyException e) {
+            LOGGER.error("ERROR! Cannot add {} already exists!",student.toString());
+            throw new DuplicateKeyException(e.getMessage(),e);
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to update %s", student);
             LOGGER.error(failMessage);
@@ -186,6 +193,7 @@ public class StudentDAOImpl implements StudentDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        Collections.sort(studentsInGroup);
         return studentsInGroup;
     }
 }

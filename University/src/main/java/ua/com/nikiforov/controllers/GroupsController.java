@@ -32,6 +32,7 @@ public class GroupsController {
     private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";
     private static final String VIEW_DELETE_GROUP = "groups/delete_group_form";
     private static final String NEW_LINE = System.lineSeparator();
+    private static final String GROUP_IN_ATTR = "groupIn";
     private static final String GROUP = "group";
     private static final String FAIL_MSG = "failMessage";
     private static final String SUCCESS_MSG = "success";
@@ -86,7 +87,7 @@ public class GroupsController {
             Group group = groupService.getGroupById(groupId);
             String groupName = group.getGroupName();
             if (!students.isEmpty()) {
-                model.addAttribute(GROUP, group);
+                model.addAttribute(GROUP_IN_ATTR, group);
                 model.addAttribute(STUDENTS_ATTR, students);
                 model.addAttribute(FAIL_MSG, String.format(
                         "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
@@ -123,6 +124,7 @@ public class GroupsController {
                     String.format("Cannot edit group. Group with name '%s' already exists", groupName));
             return VIEW_EDIT_GROUP;
         } catch (DataOperationException e) {
+            e.printStackTrace();
             model.addAttribute(FAIL_MSG, String.format("Cannot edit group with name '%s'", groupName));
             return VIEW_EDIT_GROUP;
         }

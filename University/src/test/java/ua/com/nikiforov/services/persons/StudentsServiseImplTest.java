@@ -52,8 +52,8 @@ class StudentsServiseImplTest {
     @BeforeEach
     void init() {
         tableCreator.createTables();
-        testGroupName_1 = insertGroup(TEST_GROUP_NAME_1).getId();
-        testGroupName_2 = insertGroup(TEST_GROUP_NAME_2).getId();
+        testGroupName_1 = insertGroup(TEST_GROUP_NAME_1).getGroupId();
+        testGroupName_2 = insertGroup(TEST_GROUP_NAME_2).getGroupId();
     }
 
     @Test
@@ -64,7 +64,7 @@ class StudentsServiseImplTest {
     @Test
     void afterAddStudentReturnCorrectStudentObject() {
         Student expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getId()));
+        assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getGroupId()));
     }
 
     @Test
@@ -79,13 +79,13 @@ class StudentsServiseImplTest {
 
     @Test
     void whenUpdateStudentIfSuccessThenReturnTrue() {
-        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getId();
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
         assertTrue(studentsService.updateStudent(new Student(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2)));
     }
 
     @Test
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
-        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getId();
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
         studentsService.updateStudent(new Student( studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
         Student expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
         Student actualStudent = studentsService.getStudentById(studentId);
@@ -96,14 +96,14 @@ class StudentsServiseImplTest {
     void whenDeleteStudentByIdIfSuccessThenReturnTrue() {
         studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         Student student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        assertTrue(studentsService.deleteStudentById(student.getId()));
+        assertTrue(studentsService.deleteStudentById(student.getGroupId()));
     }
 
     @Test
     void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
         studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         Student student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        long studentId = student.getId();
+        long studentId = student.getGroupId();
         studentsService.deleteStudentById(studentId);
         assertThrows(EntityNotFoundException.class, () -> studentsService.getStudentById(studentId));
     }

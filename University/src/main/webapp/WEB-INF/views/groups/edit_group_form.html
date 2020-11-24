@@ -28,7 +28,7 @@
 	<div class="form-row mt-3 justify-content-center">
 		<form class="form-inline" action="/University/groups/edit"
 			method="post">
-			<input type="text" class="form-control" hidden="true" th:value="${group.id}" name="id">
+			<input type="text" class="form-control" hidden="true" th:value="${group.groupId}" name="groupId">
 			<input type="text" class="form-control mr-2" th:value="${group.groupName}" name="groupName">
 			<button type="submit" class="btn mr-2 btn-danger position-relative">
 				Edit</button>

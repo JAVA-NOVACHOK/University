@@ -34,7 +34,7 @@
 			<input type="text" class="form-control  mr-2" required="required"
 				th:value="${student.lastName}" name="lastName">
 			<button type="submit" class="btn mr-2 btn-outline-success">Edit</button>
-			<a type="button" th:href="@{/students/?id=__${student.groupId}__}" class="btn btn-outline-danger">Cancel</a>
+			<a type="button" th:href="@{/students/?groupId=__${student.groupId}__}" class="btn btn-outline-danger">Cancel</a>
 		</form>
 	</div>
 	

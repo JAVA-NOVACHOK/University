@@ -133,7 +133,7 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public boolean updateGroup(Group group) {
         String groupName = group.getGroupName();
-        long groupId = group.getId();
+        long groupId = group.getGroupId();
         LOGGER.debug("Updating group '{}'", groupName);
         boolean actionResult = false;
         try {

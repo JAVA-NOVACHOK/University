@@ -5,9 +5,9 @@ import java.util.List;
 
 import ua.com.nikiforov.models.persons.Student;
 
-public class Group implements Comparable<Group>{
+public class Group implements Comparable<Group> {
 
-    private long id;
+    private long groupId;
     private String groupName;
     private List<Student> groupStudents;
 
@@ -16,17 +16,17 @@ public class Group implements Comparable<Group>{
     }
 
     public Group(long id, String groupName) {
-        this.id = id;
+        this.groupId = id;
         this.groupName = groupName;
         groupStudents = new ArrayList<>();
     }
 
-    public long getId() {
-        return id;
+    public long getGroupId() {
+        return groupId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
     }
 
     public String getGroupName() {
@@ -36,20 +36,24 @@ public class Group implements Comparable<Group>{
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
-    
+
     public List<Student> getGroupStudents() {
         return groupStudents;
+    }
+    
+    public void addStudent(Student student) {
+        groupStudents.add(student);
     }
 
     public void setGroupStudents(List<Student> groupStudents) {
         this.groupStudents.clear();
         this.groupStudents.addAll(groupStudents);
     }
-    
+
     public Student getStudentById(long studentId) {
         Student student = new Student();
-        for(Student s : groupStudents) {
-            if(s.getId() == studentId) {
+        for (Student s : groupStudents) {
+            if (s.getId() == studentId) {
                 student = s;
             }
         }
@@ -61,7 +65,7 @@ public class Group implements Comparable<Group>{
         final int prime = 31;
         int result = 1;
         result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
-        result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + (int) (groupId ^ (groupId >>> 32));
         return result;
     }
 
@@ -79,14 +83,14 @@ public class Group implements Comparable<Group>{
                 return false;
         } else if (!groupName.equals(other.groupName))
             return false;
-        if (id != other.id)
+        if (groupId != other.groupId)
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "id=" + id + ", groupName=" + groupName + "]";
+        return "id=" + groupId + ", groupName=" + groupName + "]";
     }
 
     @Override

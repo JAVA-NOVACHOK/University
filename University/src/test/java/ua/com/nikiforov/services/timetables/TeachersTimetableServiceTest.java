@@ -122,61 +122,61 @@ class TeachersTimetableServiceTest {
         teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getGroupId(), DATE,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_2.getId(), group_3.getId(), DATE,
+        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_2.getId(), group_3.getGroupId(), DATE,
                 teacher_1.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_2.getId(), group_2.getId(), DATE,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_2.getId(), group_2.getGroupId(), DATE,
                 teacher_2.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_3.getId(), group_3.getId(), DATE,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_3.getId(), group_3.getGroupId(), DATE,
                 teacher_3.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_2.getId(), group_1.getId(), DATE,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_2.getId(), group_1.getGroupId(), DATE,
                 teacher_2.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_2.getId(), group_1.getGroupId(), DATE_1_ADD_1_DAY,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_2.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_2.getGroupId(), DATE_1_ADD_1_DAY,
                 teacher_1.getId());
         
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_1_DAY,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getGroupId(), DATE_1_ADD_1_DAY,
                 teacher_2.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE_1_ADD_3_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE_1_ADD_3_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_3_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_3.getId(), group_1.getGroupId(), DATE_1_ADD_3_DAYS,
                 teacher_3.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_3.getId(), group_1.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_1.getId(), room_2.getId(), group_1.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher_3.getId());
-        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_2.getId(), room_2.getId(), group_1.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_1.getId(), group_2.getId(), DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_1.getId(), group_2.getGroupId(), DATE_1_ADD_13_DAYS,
                 teacher_3.getId());
 
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_1.getGroupId(), DATE_1_ADD_21_DAYS,
                 teacher_1.getId());
         
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE_1_ADD_21_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_21_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(), DATE_1_ADD_21_DAYS,
                 teacher_3.getId());
         
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(), DATE_1_ADD_33_DAYS,
                 teacher_2.getId());
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getId(), DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getGroupId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId());
 
     }
