@@ -28,10 +28,27 @@
 			th:text="${success == 0}?'':${success}"></h6>
 	</div>
 	<div class="row mt-3 justify-content-center">
-		<a type="button" class="btn mr-2 btn-success position-relative"
-			th:href="@{/groups/add}">Add Group</a> <a type="button"
-			class="btn mr-2 btn-danger position-relative"
-			th:href="@{/groups/delete}"> Delete </a> 
+		<a type="button" class="btn mr-2 btn-primary position-relative"
+			data-toggle="collapse" href="#collapseAdd" role="button"
+			aria-expanded="false" aria-controls="collapseAdd">Add Group</a> <a
+			type="button" class="btn mr-2 btn-danger position-relative"
+			th:href="@{/groups/delete}"> Delete </a>
+	</div>
+
+	<div class="collapse" id="collapseAdd">
+		<div class="card mt-3 card-body">
+			<div class="row justify-content-center">
+				<form class="form-inline" action="/University/groups/add"
+					method="post">
+					<div class="row">
+						<input type="text" class="form-control mr-2" autofocus="autofocus"
+							required="required" placeholder="group name" name="groupName">
+						<button id="day" type="submit"
+							class="btn mr-2 btn-outline-success">Add group</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
 
 	<div class="row mt-3 justify-content-center">
@@ -48,11 +65,13 @@
 				<tbody>
 					<tr th:each="group, iterStat : ${groups}">
 						<td class="text-center" th:text="${iterStat.count}">ID</td>
-						<td class="text-center" ><a class="btn btn-primary " th:text="${group.groupName}"
+						<td class="text-center"><a class="btn btn-primary "
+							th:text="${group.groupName}"
 							th:href="@{/students/?id=__${group.id}__}">Group name</a></td>
-						<td class="text-center" ><a type="button"
-			class="btn btn-warning mb-1 position-relative btn-sm" th:href="@{/groups/edit/?groupId=__${group.id}__}">
-			<i class="fa fa-edit"></i></a></td>
+						<td class="text-center"><a type="button"
+							class="btn btn-warning mb-1 position-relative btn-sm"
+							th:href="@{/groups/edit/?groupId=__${group.id}__}"> <i
+								class="fa fa-edit"></i></a></td>
 					</tr>
 				</tbody>
 			</table>

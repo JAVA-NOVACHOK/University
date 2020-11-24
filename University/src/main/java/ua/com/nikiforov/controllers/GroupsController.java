@@ -3,17 +3,18 @@ package ua.com.nikiforov.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.group.GroupService;
@@ -24,9 +25,12 @@ import ua.com.nikiforov.services.persons.StudentsService;
 public class GroupsController {
 
     private static final String GROUPS_ATTR = "groups";
+    private static final String STUDENTS_ATTR = "students";
     private static final String VIEW_GROUPS = "groups/groups";
+    private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_ADD_GROUP = "groups/add_group_form";
-    private static final String VIEW_EDIT_GROUP = "groups/edit_form";
+    private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";
+    private static final String VIEW_DELETE_GROUP = "groups/delete_group_form";
     private static final String NEW_LINE = System.lineSeparator();
     private static final String GROUP = "group";
     private static final String FAIL_MSG = "failMessage";
@@ -53,12 +57,7 @@ public class GroupsController {
         return VIEW_GROUPS;
     }
 
-    @GetMapping("/add")
-    public String add() {
-        return VIEW_ADD_GROUP;
-    }
-
-    @PostMapping("/add_group")
+    @PostMapping("/add")
     public String addGroup(@RequestParam String groupName, Model model) {
         try {
             groupService.addGroup(groupName);
@@ -75,28 +74,36 @@ public class GroupsController {
     @GetMapping("/delete")
     public String delete(Model model) {
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-        return "groups/delete_form";
+        return VIEW_DELETE_GROUP;
     }
 
     @PostMapping("/delete")
     public String processingDelete(@RequestParam long groupId, Model model) {
-        List<Student> students = studentsService.getStudentsByGroupId(groupId);
-        Group group = groupService.getGroupById(groupId);
-        String groupName = group.getGroupName();
-        if (!students.isEmpty()) {
-            model.addAttribute(GROUP, group);
-            model.addAttribute("students", students);
-            model.addAttribute(FAIL_MSG, String.format(
-                    "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
-                    groupName, NEW_LINE, NEW_LINE));
-            return "students/students";
-        }
-        if (groupService.deleteGroup(groupId)) {
+        try {
+            List<Student> students = studentsService.getStudentsByGroupId(groupId);
+            List<Group> groups = groupService.getAllGroups();
+            model.addAttribute(GROUPS_ATTR, groups);
+            Group group = groupService.getGroupById(groupId);
+            String groupName = group.getGroupName();
+            if (!students.isEmpty()) {
+                model.addAttribute(GROUP, group);
+                model.addAttribute(STUDENTS_ATTR, students);
+                model.addAttribute(FAIL_MSG, String.format(
+                        "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
+                        groupName, NEW_LINE, NEW_LINE));
+                return VIEW_STUDENTS;
+            }
+            groupService.deleteGroup(groupId);
             model.addAttribute(SUCCESS_MSG, "Successfully deleted group " + groupName);
-        } else {
-            model.addAttribute(FAIL_MSG, "Couldn't delete group " + groupName);
+            groups.remove(group);
+            model.addAttribute(GROUPS_ATTR, groups);
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, "Error!Couldn't finde group with id " + groupId);
+            return VIEW_GROUPS;
+        }catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, "Error!Couldn't delete group. Try later.");
+            return VIEW_GROUPS;
         }
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 
@@ -110,7 +117,7 @@ public class GroupsController {
     public String processEdit(@ModelAttribute(GROUP) Group group, Model model) {
         String groupName = group.getGroupName();
         try {
-            groupService.updateGroup(group.getId(), groupName);
+            groupService.updateGroup(group);
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot edit group. Group with name '%s' already exists", groupName));

@@ -15,7 +15,7 @@ public interface GroupService {
     
     public List<Group> getAllGroups();
     
-    public boolean updateGroup(long id, String groupName);
+    public boolean updateGroup(Group group);
     
     public boolean deleteGroup(long id);
     

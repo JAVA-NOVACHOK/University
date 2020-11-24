@@ -49,8 +49,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean updateGroup(long id, String groupName) {
-        return groupDAO.updateGroup(groupName, id);
+    public boolean updateGroup(Group group) {
+        return groupDAO.updateGroup(group);
     }
 
     @Override
