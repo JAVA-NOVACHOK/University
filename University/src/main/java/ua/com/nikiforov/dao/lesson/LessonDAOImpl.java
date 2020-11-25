@@ -18,16 +18,17 @@ import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.LessonMapper;
 import ua.com.nikiforov.models.lesson.Lesson;
+import ua.com.nikiforov.services.timetables.PersonalTimetable;
 
 @Repository
 public class LessonDAOImpl implements LessonDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAOImpl.class);
-
+//    int period, int subjectId, int roomId, long groupId, String date, long teacherId
     private static final String ADD_LESSON = "INSERT INTO lessons (period,subject_id,room_id,group_id,time,teacher_id) VALUES(?,?,?,?,?,?)";
     private static final String GET_ALL_LESSONS = "SELECT * FROM lessons ";
     private static final String FIND_LESSON_BY_ID = "SELECT * FROM lessons WHERE lessons.lesson_id = ? ";
-    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE subject_id = ? AND room_id = ?  AND group_id = ?";
+    private static final String FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS = "SELECT * FROM lessons WHERE period = ? AND subject_id = ? AND room_id = ?  AND group_id = ? AND time = ? AND teacher_id = ?";
     private static final String UPDATE_LESSON = "UPDATE lessons SET period = ?, group_id = ?, subject_id = ?, room_id = ?, time = ?, teacher_id = ? WHERE lesson_id = ?";
     private static final String DELETE_LESSON_BY_ID = "DELETE FROM lessons WHERE lesson_id = ? ";
 
@@ -82,14 +83,15 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public Lesson getLessonByGroupRoomSubjectIds(int subjectId, int roomId, long groupId) {
+    public Lesson getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         String lessonMessage = String.format("Lesson by subjectId = %d, roomId = %d, groupId = %d  ", subjectId, roomId,
                 groupId);
         LOGGER.debug("Getting {}", lessonMessage);
+        Timestamp time = PersonalTimetable.getTimestampFromString(date);
         Lesson lesson;
         try {
             lesson = jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS,
-                    new Object[] { subjectId, roomId, groupId }, lessonMapper);
+                    new Object[] {period, subjectId, roomId, groupId, time, teacherId}, lessonMapper);
             LOGGER.info("Successfully retrived {}", lessonMessage);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Failed to get %s", lessonMessage);

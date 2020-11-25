@@ -37,12 +37,10 @@ class RoomsControllerTest {
     private static final int TEST_ROOM_NUMBER_1 = 12;
     private static final int TEST_ROOM_NUMBER_2 = 13;
     private static final int TEST_ROOM_NUMBER_3 = 14;
-    private static final int TEST_ROOM_NUMBER_4 = 15;
 
     private static final int TEST_SEAT_NUMBER_1 = 20;
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
-    private static final int TEST_SEAT_NUMBER_4 = 39;
     
     private static final String ROOM_ATTR = "room";
     private static final String ROOMS_ATTR = "rooms";
@@ -94,7 +92,7 @@ class RoomsControllerTest {
     @Test
     void givenRoomAddUriWithParams_AddsRoom() throws Exception {
         this.mockMvc
-                .perform(post(URL_ADD)
+                .perform(post("/rooms/add/")
                         .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_1 + STR)
                         .param(ROOM_SEAT_ATTR,
                         TEST_SEAT_NUMBER_1 + STR))
@@ -108,7 +106,7 @@ class RoomsControllerTest {
     void givenRoomDeleteUriWithRoomId_DeletesRoom() throws Exception {
         Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
-        .perform(get(URL_DELETE).param(ROOM_ID_ATTR, room.getId() + STR))
+        .perform(get("/rooms/delete/").param(ROOM_ID_ATTR, room.getId() + STR))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(ROOMS_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -119,7 +117,7 @@ class RoomsControllerTest {
     void givenRoomEditUriWithRoomId_ReturnsEditForm() throws Exception {
         Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
-        .perform(get(URL_EDIT).param(ROOM_ID_ATTR, room.getId() + STR))
+        .perform(get("/rooms/edit/").param(ROOM_ID_ATTR, room.getId() + STR))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(ROOM_ATTR))
         .andExpect(view().name(VIEW_EDIT_ROOM));
@@ -129,7 +127,7 @@ class RoomsControllerTest {
     void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception{
         Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
-        .perform(post(URL_EDIT)
+        .perform(post("/rooms/edit/")
                 .requestAttr(ROOM_ID_ATTR, room.getId())
                 .requestAttr(ROOM_NUMBER_ATTR, room.getRoomNumber())
                 .requestAttr(ROOM_SEAT_ATTR, room.getSeatNumber())

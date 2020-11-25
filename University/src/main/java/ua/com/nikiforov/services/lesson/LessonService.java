@@ -10,7 +10,7 @@ public interface LessonService {
 
     public Lesson getLessonById(long id);
     
-    public Lesson getLessonByGroupRoomSubjectIds(int subjectId, int roomId, long groupId);
+    public Lesson getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId);
 
     public List<Lesson> getAllLessons();
 

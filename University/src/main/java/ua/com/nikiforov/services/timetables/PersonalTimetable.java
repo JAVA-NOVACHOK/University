@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.timetables;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -56,6 +57,10 @@ public abstract class PersonalTimetable {
     public static LocalDate getLocalDate(String date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, dateTimeFormatter);
+    }
+    
+    public static Timestamp getTimestampFromString(String stringDate) {
+        return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 
 

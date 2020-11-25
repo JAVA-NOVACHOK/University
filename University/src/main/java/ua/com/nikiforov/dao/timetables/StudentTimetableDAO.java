@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
 import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.services.timetables.PersonalTimetable;
 
 @Repository
 @Qualifier("studentTimetable")
@@ -29,7 +30,7 @@ public class StudentTimetableDAO implements TimetableDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentTimetableDAO.class);
 
     private static final String GET_STUDENT_DAY_TIMETABLE = "SELECT period, subject_name, "
-            + "room_number, group_name, time, first_name, last_name,lesson_id,teacher_id " + "FROM lessons "
+            + "room_number, group_name, time, first_name, last_name,lesson_id,teachers.teacher_id " + "FROM lessons "
             + "INNER JOIN groups ON lessons.group_id = groups.group_id "
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
@@ -37,7 +38,7 @@ public class StudentTimetableDAO implements TimetableDAO {
             + "WHERE lessons.group_id = ? AND time = ? ORDER BY period";
 
     private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT period, subject_name, "
-            + "room_number, group_name, time, first_name, last_name,lesson_id,teacher_id " + "FROM lessons "
+            + "room_number, group_name, time, first_name, last_name,lesson_id,teachers.teacher_id " + "FROM lessons "
             + "INNER JOIN groups ON lessons.group_id = groups.group_id "
             + "INNER JOIN subjects ON lessons.subject_id = subjects.subject_id "
             + "INNER JOIN rooms ON lessons.room_id = rooms.room_id "
@@ -47,7 +48,6 @@ public class StudentTimetableDAO implements TimetableDAO {
     private static final String FAILED_MSG = "Failed to get ";
     private static final String GETTING_MSG = "Getting '{}'";
     private static final String SUCCESSFULLY_RETRIVED_MSG = "Successfully retrived {}";
-    private static final String TIMESTAMP_ENDING = " 00:00:00";
 
     private JdbcTemplate jdbcTemplate;
     private TimetableMapper timetableMapper;
@@ -64,7 +64,7 @@ public class StudentTimetableDAO implements TimetableDAO {
                 date, groupId);
         LOGGER.debug(GETTING_MSG, timetableInfoMSG);
         List<Timetable> dayTimetable = new ArrayList<>();
-        Timestamp time = getTimestampFromString(date);
+        Timestamp time = PersonalTimetable.getTimestampFromString(date);
         try {
             dayTimetable.addAll(
                     jdbcTemplate.query(GET_STUDENT_DAY_TIMETABLE, new Object[] { groupId, time }, timetableMapper));
@@ -79,7 +79,7 @@ public class StudentTimetableDAO implements TimetableDAO {
 
     @Override
     public List<Timetable> getMonthTimetable(String date, long groupId) {
-        Timestamp timeFrom = getTimestampFromString(date);
+        Timestamp timeFrom = PersonalTimetable.getTimestampFromString(date);
         LocalDate localDate = timeFrom.toLocalDateTime().toLocalDate();
         Timestamp timeTo = Timestamp.valueOf(localDate.plusMonths(1).atTime(LocalTime.MIDNIGHT));
         String timetableInfoMSG = String.format(
@@ -100,8 +100,6 @@ public class StudentTimetableDAO implements TimetableDAO {
                 .collect(Collectors.toList());
     }
 
-    private Timestamp getTimestampFromString(String stringDate) {
-        return Timestamp.valueOf(stringDate + TIMESTAMP_ENDING);
-    }
+   
 
 }
