@@ -2,8 +2,10 @@ package ua.com.nikiforov.controllers;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.config.WebConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
@@ -35,9 +38,30 @@ class SubjectsControllerTest {
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
+    
+    private static final String SUBJECT_NAME_ATTR = "subjectName";
+    private static final String NAME_ATTR = "name";
+    private static final String SUBJECTS_ATTR = "subjects";
+    private static final String SUBJECT_ATTR = "subject";
+    private static final String ID_ATTR = "id";
+    private static final String SUBJECT_ID_ATTR = "subjectId";
+    private static final String TEACHER_ID_ATTR = "teacherId";
+    
+    private static final String SUBJECTS_VIEW = "subjects/subjects";
+    private static final String VIEW_SUBJECTS_EDIT_FORM = "subjects/edit_subject_form";
+
+    private static final String SUCCESS_MSG = "success";
+    private static final String FAIL_MSG = "failMessage";
+    private static final String STR = "";
+    
+    private static final String FIRST_NAME_1 = "Tom";
+    private static final String LAST_NAME_1 = "Hanks";
 
     @Autowired
     private SubjectService subjectService;
+    
+    @Autowired
+    private TeacherService teacherService;
 
     @Autowired
     private TableCreator tableCreator;
@@ -58,18 +82,105 @@ class SubjectsControllerTest {
     }
 
     @Test
-    void givenSubjectURI_whenMockMVC_thenReturnsSubjectsView_WithSubjectsModelAttributes() throws Exception {
+    void givenSubjectURI_thenReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/subjects/")).andDo(print())
                 .andExpect(model().attribute("subjects", hasItems(subject_1, subject_2, subject_3)))
-                .andExpect(view().name("subjects/subjects"));
+                .andExpect(view().name(SUBJECTS_VIEW));
     }
+    
+    @Test
+    void givenAddSubjectURI_thenAddSubjects_WithSubjectsAttrs() throws Exception {
+        this.mockMvc
+        .perform(post("/subjects/add/")
+                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+        .andDo(print())
+        .andExpect(model().attributeExists(SUBJECTS_ATTR))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    @Test
+    void editSubjectURI_thenReturnViewEditForm() throws Exception {
+        Subject subject = insertSubject(SUBJECT_NAME_1);
+        this.mockMvc
+        .perform(get("/subjects/edit/")
+                .param(ID_ATTR,subject.getId() + STR))
+        .andDo(print())
+        .andExpect(model().attributeExists(SUBJECT_ATTR))
+        .andExpect(view().name(VIEW_SUBJECTS_EDIT_FORM));
+    }
+    
+    @Test
+    void editSubjectURIWithSubjectParam_thenReturnSuccessSubject() throws Exception {
+        Subject subject = insertSubject(SUBJECT_NAME_1);
+        Subject updatedSubject = new Subject(subject.getId(), SUBJECT_NAME_2);
+        this.mockMvc
+        .perform(post("/subjects/edit/")
+                .param(ID_ATTR,subject.getId() + STR)
+                .param(NAME_ATTR, SUBJECT_NAME_2)
+                .sessionAttr(SUBJECT_ATTR, new Subject()))
+        .andExpect(status().isOk())
+        .andDo(print())
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(updatedSubject)))
+        .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    @Test
+    void deleteSubjectURIWithSubjectIdParam_thenReturnSuccessDelete() throws Exception {
+        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
+        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
+        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        this.mockMvc
+            .perform(get("/subjects/delete")
+                    .param(ID_ATTR, subject_1.getId() + STR))
+            .andExpect(status().isOk())
+            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_2,subject_3)))
+            .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    @Test
+    void assignSubjectToTeacher_thenReturnSuccessAsignedSubject() throws Exception {
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        Subject subject = insertSubject(SUBJECT_NAME_1);
+        subject.addTeacher(teacher);
+        this.mockMvc
+            .perform(post("/subjects/assign/")
+                    .param(SUBJECT_ID_ATTR, subject.getId() + STR)
+                    .param(TEACHER_ID_ATTR, teacher.getId() + STR))
+            .andExpect(status().isOk())
+            .andExpect(model().attributeExists(SUCCESS_MSG))
+            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject)))
+            .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    @Test
+    void unassignSubjectFromTeacher_thenReturnSuccessMSG() throws Exception {
+        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        Subject subject = insertSubject(SUBJECT_NAME_1);
+        teacherService.assignSubjectToTeacher(subject.getId(), teacher.getId());
+        this.mockMvc
+        .perform(get("/subjects/unassign/")
+                .param(SUBJECT_ID_ATTR, subject.getId() + STR)
+                .param(TEACHER_ID_ATTR, teacher.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject)))
+        .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
 
     private Subject insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
+    }
+    
+    private Teacher insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(firstName, lastName);
+        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }

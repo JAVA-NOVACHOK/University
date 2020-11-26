@@ -45,6 +45,8 @@ public class ScheduleController {
     private static final String GROUPS_ATTR = "groups";
     private static final String TEACHERS_ATTR = "teachers";
     private static final String TEACHER_ATTR = "teacher";
+    private static final String TIMETABLE_ATTR = "timetable";
+    private static final String LESSON_ATTR = "lesson";
 
     private static final String NOT_CLASSES_MSG = "There are no classes for %s %s on date %s.";
     private static final String TEACHER = "teacher";
@@ -52,16 +54,10 @@ public class ScheduleController {
     private static final String DAY_TIMETABLE = "timetables";
     private static final String MONTH_TIMETABLE = "timetables";
 
-    private static final String MAPPING_TEACHER = "/teacher";
-    private static final String MAPPING_TEACHER_DAY = "/teachers_day";
-    private static final String MAPPING_STUDENT = "/student";
-    private static final String MAPPING_STUDENTS_DAY = "/students_day";
-    private static final String MAPPING_STUDENTS_MONTH = "/students_month";
-    private static final String MAPPING_TEACHERS_MONTH = "/teachers_month";
-
     private static final String VIEW_SCHEDULE = "timetable/schedule";
     private static final String VIEW_TEACHER_TIMETABLE_FORM = "timetable/teacher_timetable_form";
     private static final String VIEW_STUDENT_TIMETABLE_FORM = "timetable/student_timetable_form";
+    private static final String VIEW_TIMETABLE_EDIT_SCHEDULE = "timetable/edit_schedule";
     private static final String VIEW_STUDENT_SCHEDULE = "timetable/student_schedule";
     private static final String VIEW_TEACHER_SCHEDULE = "timetable/teacher_schedule";
     private static final String VIEW_TEACHER_ONE = "teachers/one_teacher";
@@ -100,7 +96,7 @@ public class ScheduleController {
         this.groupService = groupService;
     }
 
-    @ModelAttribute("lesson")
+    @ModelAttribute(LESSON_ATTR)
     public Lesson getLesson() {
         return new Lesson();
     }
@@ -110,7 +106,7 @@ public class ScheduleController {
         return new ScheduleFindAttr();
     }
 
-    @ModelAttribute("timetable")
+    @ModelAttribute(TIMETABLE_ATTR)
     public Timetable getTimetable() {
         return new Timetable();
     }
@@ -124,12 +120,12 @@ public class ScheduleController {
         return VIEW_SCHEDULE;
     }
 
-    @GetMapping(MAPPING_TEACHER)
+    @GetMapping("/teacher")
     public String getTeacherTimetableForm() {
         return VIEW_TEACHER_TIMETABLE_FORM;
     }
 
-    @PostMapping(MAPPING_TEACHER_DAY)
+    @PostMapping("/teachers_day")
     public String findTeacherDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         String firstName = scheduleFindAttr.getFirstName();
@@ -154,12 +150,12 @@ public class ScheduleController {
         return VIEW_TEACHER_SCHEDULE;
     }
 
-    @GetMapping(MAPPING_STUDENT)
+    @GetMapping("/student")
     public String getStudentTimetableForm() {
         return VIEW_STUDENT_TIMETABLE_FORM;
     }
 
-    @PostMapping(MAPPING_STUDENTS_DAY)
+    @PostMapping("/students_day")
     public String findStudentDaySchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         String firstName = scheduleFindAttr.getFirstName();
@@ -186,7 +182,7 @@ public class ScheduleController {
         return VIEW_STUDENT_SCHEDULE;
     }
 
-    @PostMapping(MAPPING_STUDENTS_MONTH)
+    @PostMapping("/students_month")
     public String findStudentsMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         String firstName = scheduleFindAttr.getFirstName();
@@ -214,7 +210,7 @@ public class ScheduleController {
 
     }
 
-    @PostMapping(MAPPING_TEACHERS_MONTH)
+    @PostMapping("/teachers_month")
     public String findTeacherMonthSchedule(@ModelAttribute(SCHEDULE_FIND_ATTR) ScheduleFindAttr scheduleFindAttr,
             Model model) {
         String firstName = scheduleFindAttr.getFirstName();
@@ -261,7 +257,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/edit")
-    public String editSchedule(@ModelAttribute("timetable") Timetable timetable, @RequestParam String dateString,
+    public String editSchedule(@ModelAttribute(TIMETABLE_ATTR) Timetable timetable, @RequestParam String dateString,
             Model model) {
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
@@ -269,8 +265,8 @@ public class ScheduleController {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachersWithoutSubjects());
         model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(timetable.getTeacherId()));
         timetable.setDate(PersonalTimetable.getLocalDate(dateString));
-        model.addAttribute("timetable", timetable);
-        return "timetable/edit_schedule";
+        model.addAttribute(TIMETABLE_ATTR, timetable);
+        return VIEW_TIMETABLE_EDIT_SCHEDULE;
     }
     
     @PostMapping("/edit")

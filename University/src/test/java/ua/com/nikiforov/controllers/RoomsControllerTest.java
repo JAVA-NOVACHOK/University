@@ -129,12 +129,12 @@ class RoomsControllerTest {
         this.mockMvc
         .perform(post("/rooms/edit/")
                 .requestAttr(ROOM_ID_ATTR, room.getId())
-                .requestAttr(ROOM_NUMBER_ATTR, room.getRoomNumber())
+                .requestAttr(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_2)
                 .requestAttr(ROOM_SEAT_ATTR, room.getSeatNumber())
                 .sessionAttr(ROOM_ATTR, new Room()))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(view().name(VIEW_ROOMS));;
+        .andExpect(view().name(VIEW_ROOMS));
     }
     
 

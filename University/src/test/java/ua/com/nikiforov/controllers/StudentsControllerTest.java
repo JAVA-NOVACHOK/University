@@ -1,6 +1,5 @@
 package ua.com.nikiforov.controllers;
 
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -49,14 +48,10 @@ class StudentsControllerTest {
     private static final String ID = "id";
     
     private static final String VIEW_STUDENTS = "students/students";
-    private static final String VIEW_TRANSFER_FORM = "students/transfer_form";
     private static final String VIEW_EDIT_FORM = "students/edit_form";
-    private static final String VIEW_ADD_FORM = "students/add_student_form";
 
-    private static final String GROUP_ATTR = "group";
     private static final String GROUP_IN_ATTR = "groupIn";
     private static final String GROUPS_ATTR = "groups";
-    private static final String STUDENTS_ATTR = "students";
     private static final String FIRST_NAME_ATTR = "firstName";
     private static final String LAST_NAME_ATTR = "lastName";
 

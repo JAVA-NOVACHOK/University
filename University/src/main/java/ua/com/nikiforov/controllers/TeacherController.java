@@ -100,7 +100,7 @@ public class TeacherController {
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacher.getId()));
+        model.addAttribute(TEACHER_ATTR, teacher);
         try {
             teacherService.updateTeacher(teacher);
             model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s changed successfully", firstName, lastName));
@@ -111,6 +111,8 @@ public class TeacherController {
             model.addAttribute(FAIL_MSG, String.format("Failed to update teacher %s %s.", firstName, lastName));
             return VIEW_TEACHER_ONE;
         }
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacher.getId()));
+
         return VIEW_TEACHER_ONE;
 
     }
@@ -192,7 +194,9 @@ public class TeacherController {
     public String findTeacher(@RequestParam String firstName, @RequestParam String lastName, Model model) {
         try {
             List<Teacher> teachers = teacherService.getTeacherByLikeName(firstName, lastName);
-            LOGGER.debug("TEACCHERS SIZE = {}",  teachers.size());
+            if(teachers.isEmpty()) {
+                model.addAttribute(FAIL_MSG, "No teacher found!");
+            }
             model.addAttribute(TEACHERS_ATTR, teachers);
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, String.format(

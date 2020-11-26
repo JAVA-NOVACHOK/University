@@ -118,9 +118,13 @@ class SubjectServiceImplTest {
         teacherService.assignSubjectToTeacher(subjectId, teacherTwo.getId());
         teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
         
-        expectedTeachers.add(teacherService.getTeacherById(teacherThree.getId()));
-        expectedTeachers.add(teacherService.getTeacherById(teacherTwo.getId()));
-        expectedTeachers.add(teacherService.getTeacherById(teacherOne.getId()));
+        teacherOne.addSubject(subject);
+        teacherTwo.addSubject(subject);
+        teacherThree.addSubject(subject);
+        
+        expectedTeachers.add(teacherOne);
+        expectedTeachers.add(teacherTwo);
+        expectedTeachers.add(teacherThree);
         
         subject = subjectService.getSubjectById(subjectId);
         List<Teacher> actualTeachers = subject.getTeachers();

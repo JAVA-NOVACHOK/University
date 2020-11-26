@@ -76,6 +76,13 @@ public class Subject implements Comparable<Subject>{
             return false;
         return true;
     }
+    
+    
+
+    @Override
+    public String toString() {
+        return "Subject [id=" + id + ", name=" + name + ", teachers=" + teachers + "]";
+    }
 
     @Override
     public int compareTo(Subject o) {

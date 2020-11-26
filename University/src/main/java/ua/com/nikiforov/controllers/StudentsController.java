@@ -37,7 +37,9 @@ public class StudentsController {
     private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_TRANSFER_FORM = "students/transfer_form";
     private static final String VIEW_EDIT_FORM = "students/edit_form";
-    private static final String VIEW_ADD_FORM = "students/add_student_form";
+    
+    private static final String REDIRECT_TRANSFER = "redirect:/students/transfer/?id=";
+    private static final String CHOOSE_GROUP_MSG = "&message=Choose group from list";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
@@ -110,7 +112,7 @@ public class StudentsController {
     public String processTransfer(@RequestParam long studentId, @RequestParam String firstName,
             @RequestParam String lastName, @RequestParam long groupToId, @RequestParam String groupName, Model model) {
         if (groupToId == 0) {
-            return "redirect:/students/transfer/?id=" + studentId + "&message=Choose group from list";
+            return REDIRECT_TRANSFER + studentId + CHOOSE_GROUP_MSG;
         }
         Group groupFrom = groupService.getGroupByName(groupName);
         Group groupTo = groupService.getGroupById(groupToId);

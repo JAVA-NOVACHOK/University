@@ -1,7 +1,5 @@
 package ua.com.nikiforov.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
@@ -53,11 +51,6 @@ public class SubjectsController {
         return VIEW_SUBJECTS;
     }
 
-    @GetMapping("/add")
-    public String addSubject() {
-        return VIEW_SUBJECTS_ADD_FORM;
-    }
-
     @PostMapping("/add")
     public String processSubject(@RequestParam String subjectName, Model model) {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
@@ -84,7 +77,7 @@ public class SubjectsController {
     }
 
     @PostMapping("/edit")
-    public String processEditing(@ModelAttribute("subject") Subject subject, Model model) {
+    public String processEditing(@ModelAttribute(SUBJECT_ATTR) Subject subject, Model model) {
         Subject oldSubject;
         String subjectName = subject.getName();
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());

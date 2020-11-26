@@ -72,6 +72,13 @@ public abstract class Person implements Comparable<Person> {
             return false;
         return true;
     }
+    
+    
+
+    @Override
+    public String toString() {
+        return " id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + "";
+    }
 
     @Override
     public int compareTo(Person person) {

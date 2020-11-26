@@ -41,4 +41,37 @@ public class DayTimetable {
         this.dateInfo = dateInfo;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dateInfo == null) ? 0 : dateInfo.hashCode());
+        result = prime * result + ((timetables == null) ? 0 : timetables.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DayTimetable other = (DayTimetable) obj;
+        if (dateInfo == null) {
+            if (other.dateInfo != null)
+                return false;
+        } else if (!dateInfo.equals(other.dateInfo))
+            return false;
+        if (timetables == null) {
+            if (other.timetables != null)
+                return false;
+        } else if (!timetables.equals(other.timetables))
+            return false;
+        return true;
+    }
+    
+    
+
 }

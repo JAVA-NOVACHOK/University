@@ -1,5 +1,6 @@
 package ua.com.nikiforov.controllers;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -7,7 +8,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -26,8 +33,10 @@ import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -35,6 +44,7 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 import ua.com.nikiforov.services.timetables.DateInfo;
+import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
@@ -91,6 +101,36 @@ class ScheduleControllerTest {
     
     private static final int MONTH_DAY_FOR_DATE_2020_10_13 = 13;
     private static final int YEAR_2020 = 2020;
+    
+    private static final String PERIOD_ATTR = "period";
+    private static final String SUBJECT_ID_ATTR = "subjectId";
+    private static final String SUBJECTS_ATTR = "subjects";
+    private static final String ROOM_ID_ATTR = "roomId";
+    private static final String ROOMS_ATTR = "rooms";
+    private static final String GROUP_ID_ATTR = "groupId";
+    private static final String GROUPS_ATTR = "groups";
+    private static final String DATE_ATTR = "date";
+    private static final String TEACHER_ID_ATTR = "teacherId";
+    private static final String TEACHERS_ATTR = "teachers";
+    private static final String TEACHER_ATTR = "teacher";
+    private static final String SCHEDULE_FIND_ATTR = "scheduleFindAttr";
+    private static final String STUDENT_ATTR = "student";
+    private static final String TIMETABLES_ATTR = "timetables";
+    
+    private static final String FIRST_NAME_PARAM = "firstName";
+    private static final String LAST_NAME_PARAM = "lastName";
+    private static final String TIME_PARAM = "time";
+    
+    private static final String ONE_TEACHER_VIEW = "teachers/one_teacher";
+    private static final String TEACHER_SCHEDULE_VIEW = "timetable/teacher_schedule";
+    private static final String STUDENT_SCHEDULE_VIEW = "timetable/student_schedule";
+    private static final String TEACHER_TIMETABLE_FORM_VIEW = "timetable/teacher_timetable_form";
+    private static final String SCHEDULE_VIEW = "timetable/schedule";
+    
+    private static final String SUCCESS_MSG = "success";
+    private static final String FAIL_MSG = "failMessage";
+    
+    private static final String STR = "";
 
     @Autowired
     private RoomService roomService;
@@ -128,25 +168,44 @@ class ScheduleControllerTest {
     
     private Student student;
     
-    private DateInfo dateInfo;
+    
+    
+    Room room_1;
+    Room room_2;
+    Room room_3;
+    
+    Group group_1;
+    Group group_2;
+    Group group_3;
+    
+    Subject subject_1;
+    Subject subject_2;
+    Subject subject_3;
+    
+    Lesson lesson_1;
+    Lesson lesson_2;
+    Lesson lesson_3;
 
     @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        
+    }
+    
+    @BeforeEach
+    public void init() {
         tableCreator.createTables();
         
-        Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
-        Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
+        room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
+        room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
 
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
+        group_1 = insertGroup(TEST_GROUP_NAME_1);
+        group_2 = insertGroup(TEST_GROUP_NAME_2);
+        group_3 = insertGroup(TEST_GROUP_NAME_3);
 
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        subject_1 = insertSubject(SUBJECT_NAME_1);
+        subject_2 = insertSubject(SUBJECT_NAME_2);
+        subject_3 = insertSubject(SUBJECT_NAME_3);
 
         teacher = insertTeacher(TEACHERS_FIRST_NAME_1, TEACHERS_LAST_NAME_1);
 
@@ -154,14 +213,12 @@ class ScheduleControllerTest {
         insertStudent(STUDENTS_FIRST_NAME_2, STUDENTS_LAST_NAME_2, group_1.getGroupId());
         insertStudent(STUDENTS_FIRST_NAME_3, STUDENTS_LAST_NAME_3, group_1.getGroupId());
         
-        dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13,
-                MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE,
+        lesson_1 = insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getGroupId(), DATE,
+        lesson_2 = insertLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_2.getGroupId(), DATE,
                 teacher.getId());
-        lessonService.addLesson(PERIOD_3, subject_1.getId(), room_3.getId(), group_2.getGroupId(), DATE,
+        lesson_3 = insertLesson(PERIOD_3, subject_1.getId(), room_3.getId(), group_2.getGroupId(), DATE,
                 teacher.getId());
         
         lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_3.getGroupId(), DATE_1,
@@ -175,70 +232,80 @@ class ScheduleControllerTest {
 
     @Test
     void givenScheduleURI_whenMockMVC_thenReturnScheduleView() throws Exception {
-        this.mockMvc.perform(get("/schedules/")).andDo(print()).andExpect(view().name("timetable/schedule"));
+        this.mockMvc.perform(get("/schedules/")).andDo(print()).andExpect(view().name(SCHEDULE_VIEW));
     }
 
     @Test
     void givenTeacherURI_whenMockMVC_thenReturnsTeacherTimetableFormView() throws Exception {
         this.mockMvc.perform(get("/schedules/teacher")).andDo(print())
-                .andExpect(view().name("timetable/teacher_timetable_form"));
+                .andExpect(view().name(TEACHER_TIMETABLE_FORM_VIEW));
     }
 
     @Test
-    void givenTeachersDayURI_ThenReturnsTeacherScheduleView_WithDateInfo_DayTimetable_Models()
+    void TeachersDayURI_ThenReturnsTeacherSchedule_WithTimetable_Models()
             throws Exception {
-       
-
+        List<DayTimetable> timetables = new ArrayList<>();
+        List<Timetable> timetablesList = new ArrayList<>();
+        
+        timetablesList.add(new Timetable(lesson_1.getId(), PERIOD_1, subject_1.getName(),
+                room_1.getRoomNumber(), group_1.getGroupName(), 
+                (teacher.getFirstName() + " " + teacher.getLastName()), teacher.getId(), getLocalDateFromString(DATE)));
+        timetablesList.add(new Timetable(lesson_2.getId(), PERIOD_2, subject_2.getName(), 
+                room_2.getRoomNumber(), group_2.getGroupName(),
+                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+        timetablesList.add(new Timetable(lesson_3.getId(), PERIOD_3, subject_1.getName(), 
+                room_3.getRoomNumber(), group_2.getGroupName(), 
+                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+        
+        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
+        timetables.add(new DayTimetable(timetablesList, dateInfo));
         this.mockMvc
                 .perform(post("/schedules/teachers_day")
-                .param("firstName", TEACHERS_FIRST_NAME_1)
-                .param("lastName", TEACHERS_LAST_NAME_1)
-                .param("time", DATE)
-                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
-                .andExpect(model().attribute("dateInfo", dateInfo))
-                .andExpect(model().attribute("teacher", teacher))
-                .andExpect(model().attributeExists("dayTimetable"))
-                .andExpect(model().size(4))
+                .param(FIRST_NAME_PARAM, TEACHERS_FIRST_NAME_1)
+                .param(LAST_NAME_PARAM, TEACHERS_LAST_NAME_1)
+                .param(TIME_PARAM, DATE)
+                .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
+                .andExpect(model().attribute(TEACHER_ATTR, teacher))
+                .andExpect(model().attribute(TIMETABLES_ATTR,timetables))
+                .andExpect(model().attributeDoesNotExist(FAIL_MSG))
+                .andExpect(model().size(5))
                 .andExpect(status().isOk())
-                .andExpect(view().name("timetable/teacher_schedule"));
+                .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
     
     @Test
-    void givenScheduleTeachersMonthPageURI_ThenReturnsTimetableTeacherScheduleViewName_WithDateInfo_DayTimetable_Models()
+    void ScheduleTeachersMonthURI_ReturnsTeacherTimetable_WithDateInfo_DayTimetable_Models()
             throws Exception {
        
         this.mockMvc
-                .perform(post("/schedules/teachers_month")
-                .param("firstName", TEACHERS_FIRST_NAME_1)
-                .param("lastName", TEACHERS_LAST_NAME_1)
-                .param("time", DATE)
-                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("monthTimetable"))
-                .andExpect(model().attribute("teacher",teacher))
-                .andExpect(model().size(3))
-                .andExpect(view().name("timetable/teacher_schedule_month"));
+        .perform(post("/schedules/teachers_month")
+        .param(FIRST_NAME_PARAM, TEACHERS_FIRST_NAME_1)
+        .param(LAST_NAME_PARAM, TEACHERS_LAST_NAME_1)
+        .param(TIME_PARAM, DATE)
+        .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
+        .andExpect(model().attribute(TEACHER_ATTR, teacher))
+        .andExpect(model().attributeExists(TIMETABLES_ATTR))
+        .andExpect(model().attributeDoesNotExist(FAIL_MSG))
+        .andExpect(model().size(5))
+        .andExpect(status().isOk())
+        .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
     
     @Test
-    void givenScheduleStudentsDayPageURI_ThenReturnsTimetableStudentScheduleViewName_WithStudent_DateInfo_DayTimetable_Models()
+    void StudentsDayURI_ReturnsStudentTimetable_WithStudent_DateInfo_DayTimetable_Models()
             throws Exception {
-       
-        DateInfo dateInfo = new DateInfo("Tuesday", 13, "OCTOBER", 2020);
-
         this.mockMvc
                 .perform(post("/schedules/students_day")
-                .param("firstName", STUDENTS_FIRST_NAME_1)
-                .param("lastName", STUDENTS_LAST_NAME_1)
-                .param("time", DATE)
-                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
+                .param(FIRST_NAME_PARAM, STUDENTS_FIRST_NAME_1)
+                .param(LAST_NAME_PARAM, STUDENTS_LAST_NAME_1)
+                .param(TIME_PARAM, DATE)
+                .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
                 .andExpect(status().isOk())
-                .andExpect(model().size(4))
-                .andExpect(model().attribute("student", student))
-                .andExpect(model().attributeExists("dayTimetable"))
-                .andExpect(model().attributeExists("scheduleFindAttr"))
-                .andExpect(model().attribute("dateInfo", dateInfo))
-                .andExpect(view().name("timetable/student_schedule"));
+                .andExpect(model().size(5))
+                .andExpect(model().attribute(STUDENT_ATTR, student))
+                .andExpect(model().attributeExists(TIMETABLES_ATTR))
+                .andExpect(model().attributeExists(SCHEDULE_FIND_ATTR))
+                .andExpect(view().name(STUDENT_SCHEDULE_VIEW));
     }
     
     @Test
@@ -247,15 +314,43 @@ class ScheduleControllerTest {
        
         this.mockMvc
                 .perform(post("/schedules/students_month")
-                .param("firstName", STUDENTS_FIRST_NAME_1)
-                .param("lastName", STUDENTS_LAST_NAME_1)
-                .param("time", DATE)
-                .sessionAttr("scheduleFindAttr", new ScheduleFindAttr()))
+                .param(FIRST_NAME_PARAM, STUDENTS_FIRST_NAME_1)
+                .param(LAST_NAME_PARAM, STUDENTS_LAST_NAME_1)
+                .param(TIME_PARAM, DATE)
+                .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("monthTimetable"))
-                .andExpect(model().attribute("student",student))
-                .andExpect(model().size(3))
-                .andExpect(view().name("timetable/student_schedule_month"));
+                .andExpect(model().attributeExists(TIMETABLES_ATTR))
+                .andExpect(model().attribute(STUDENT_ATTR,student))
+                .andExpect(model().size(5))
+                .andExpect(view().name(STUDENT_SCHEDULE_VIEW));
+    }
+    
+    @Test
+    void addTimetableSchedule() throws Exception {
+        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        
+         teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
+         teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        
+        teacher.addSubject(subject_1);
+        teacher.addSubject(subject_2);
+        this.mockMvc
+        .perform(post("/schedules/add")
+                .param(PERIOD_ATTR, PERIOD_1 + STR)
+                .param(SUBJECT_ID_ATTR, subject_1.getId() + STR)
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
+                .param(ROOM_ID_ATTR, room_1.getId() + STR)
+                .param(DATE_ATTR, DATE_1_ADD_33_DAYS)
+                .param(TEACHER_ID_ATTR, teacher.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(ROOMS_ATTR,hasItems(room_1,room_2,room_3)))
+        .andExpect(model().attribute(TEACHERS_ATTR,hasItems(teacher,teacher_2,teacher_3)))
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(model().size(9))
+        .andExpect(view().name(ONE_TEACHER_VIEW));
     }
 
     private Group insertGroup(String groupName) {
@@ -281,6 +376,16 @@ class ScheduleControllerTest {
     private Teacher insertTeacher(String firstName, String lastName) {
         teacherService.addTeacher(firstName, lastName);
         return teacherService.getTeacherByName(firstName, lastName);
+    }
+    
+    private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+        lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+        return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
+    }
+    
+    private LocalDate getLocalDateFromString(String date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, dateTimeFormatter);
     }
 
 }
