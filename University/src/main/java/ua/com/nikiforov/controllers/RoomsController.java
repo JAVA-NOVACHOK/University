@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -22,7 +23,7 @@ import ua.com.nikiforov.services.room.RoomService;
 @RequestMapping("/rooms")
 public class RoomsController {
 
-    private static final String ROOM_ATTR = "rooms";
+    private static final String ROOMS_ATTR = "rooms";
     private static final String VIEW_ROOMS = "rooms/rooms";
     private static final String VIEW_ADD_ROOM = "rooms/add_room_form";
     private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
@@ -48,7 +49,7 @@ public class RoomsController {
     @GetMapping()
     public String roomsShow(Model model) {
         List<Room> rooms = roomService.getAllRooms();
-        model.addAttribute(ROOM_ATTR, rooms);
+        model.addAttribute(ROOMS_ATTR, rooms);
         return VIEW_ROOMS;
     }
 
@@ -61,30 +62,40 @@ public class RoomsController {
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot add room. Room with number '%d' already exists", roomNumber));
-            return VIEW_ADD_ROOM;
         }
-        model.addAttribute(ROOM_ATTR, roomService.getAllRooms());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;
     }
 
     @GetMapping("/delete")
     public String deleteRoom(@RequestParam int roomId, Model model) {
-        Room room = roomService.getRoomById(roomId);
         try {
-            roomService.deleteRoomById(roomId);
-            model.addAttribute(SUCCESS_MSG, String.format("Room with '%d' deleted successfuly", room.getRoomNumber()));
-        } catch (DataOperationException e) {
-            model.addAttribute(FAIL_MSG, String.format("Failed to update room with number %d and seets number %d",
-                    room.getRoomNumber(), room.getSeatNumber()));
+            Room room = roomService.getRoomById(roomId);
+            try {
+                roomService.deleteRoomById(roomId);
+                model.addAttribute(SUCCESS_MSG,
+                        String.format("Room with '%d' deleted successfuly", room.getRoomNumber()));
+            } catch (DataOperationException e) {
+                model.addAttribute(FAIL_MSG, String.format("Failed to delete room with number %d and seets number %d",
+                        room.getRoomNumber(), room.getSeatNumber()));
+            }
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("Warning! Couln't find room with id %d ", roomId));
         }
-        model.addAttribute(ROOM_ATTR, roomService.getAllRooms());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;
     }
 
     @GetMapping("/edit")
     public String editRoom(@RequestParam int roomId, Model model) {
-        Room room = roomService.getRoomById(roomId);
-        model.addAttribute("room", room);
+        try {
+            Room room = roomService.getRoomById(roomId);
+            model.addAttribute("room", room);
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("Warning! Couln't find room with id %d ", roomId));
+            model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+            return VIEW_ROOMS;
+        }
         return VIEW_EDIT_ROOM;
     }
 
@@ -101,7 +112,7 @@ public class RoomsController {
             model.addAttribute(FAIL_MSG,
                     String.format("Error! Couldn't update room with number '%d'.", room.getRoomNumber()));
         }
-        model.addAttribute(ROOM_ATTR, roomService.getAllRooms());
+        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;
     }
 

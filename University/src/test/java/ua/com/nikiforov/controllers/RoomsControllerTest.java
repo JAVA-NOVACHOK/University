@@ -42,11 +42,14 @@ class RoomsControllerTest {
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
     
+    private static final long INVALID_ID = 100500;
+    
     private static final String ROOM_ATTR = "room";
     private static final String ROOMS_ATTR = "rooms";
     private static final String ROOM_NUMBER_ATTR = "roomNumber";
     private static final String ROOM_SEAT_ATTR = "seatNumber";
     private static final String ROOM_ID_ATTR = "roomId";
+    private static final String ID = "id";
     private static final String VIEW_ROOMS = "rooms/rooms";
     private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
     
@@ -90,7 +93,7 @@ class RoomsControllerTest {
     }
 
     @Test
-    void givenRoomAddUriWithParams_AddsRoom() throws Exception {
+    void addRoomWithParams_AddsRoom() throws Exception {
         this.mockMvc
                 .perform(post("/rooms/add/")
                         .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_1 + STR)
@@ -101,9 +104,24 @@ class RoomsControllerTest {
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(view().name(VIEW_ROOMS));
     }
+    
+    @Test
+    void addRoomWithDuplicateParams_FailAddRoom() throws Exception {
+        insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        
+        this.mockMvc
+        .perform(post("/rooms/add/")
+                .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_1 + STR)
+                .param(ROOM_SEAT_ATTR,
+                        TEST_SEAT_NUMBER_1 + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(ROOMS_ATTR))
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(view().name(VIEW_ROOMS));
+    }
 
     @Test
-    void givenRoomDeleteUriWithRoomId_DeletesRoom() throws Exception {
+    void givenRoomDeleteUriWithValidId_DeletesRoom() throws Exception {
         Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
         .perform(get("/rooms/delete/").param(ROOM_ID_ATTR, room.getId() + STR))
@@ -112,9 +130,21 @@ class RoomsControllerTest {
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(view().name(VIEW_ROOMS));
     }
+    @Test
+    void givenRoomDeleteUriWithInvalidId_DeletesRoom() throws Exception {
+        insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        
+        this.mockMvc
+        .perform(get("/rooms/delete/")
+                .param(ROOM_ID_ATTR,INVALID_ID + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(ROOMS_ATTR))
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(view().name(VIEW_ROOMS));
+    }
     
     @Test
-    void givenRoomEditUriWithRoomId_ReturnsEditForm() throws Exception {
+    void editRoomWithValidRoomId_ReturnsEditForm() throws Exception {
         Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
         .perform(get("/rooms/edit/").param(ROOM_ID_ATTR, room.getId() + STR))
@@ -124,16 +154,46 @@ class RoomsControllerTest {
     }
     
     @Test
-    void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception{
-        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+    void editRoomWithInValidRoomId_FailEdit_ReturnsRoomsView() throws Exception {
+        Room room_1 = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        Room room_2 = insertRoom(TEST_SEAT_NUMBER_2, TEST_SEAT_NUMBER_1);
+        Room room_3 = insertRoom(TEST_SEAT_NUMBER_3, TEST_SEAT_NUMBER_3);
         this.mockMvc
-        .perform(post("/rooms/edit/")
-                .requestAttr(ROOM_ID_ATTR, room.getId())
-                .requestAttr(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_2)
-                .requestAttr(ROOM_SEAT_ATTR, room.getSeatNumber())
+        .perform(get("/rooms/edit/")
+                .param(ROOM_ID_ATTR, INVALID_ID + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(ROOMS_ATTR,hasItems(room_1,room_2,room_3)))
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(view().name(VIEW_ROOMS));
+    }
+    
+    @Test
+    void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception{
+        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_1);
+        this.mockMvc
+        .perform(post("/rooms/edit")
+                .param(ID, room.getId() + STR)
+                .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_2 + STR)
+                .param(ROOM_SEAT_ATTR, room.getSeatNumber() + STR)
                 .sessionAttr(ROOM_ATTR, new Room()))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(VIEW_ROOMS));
+    }
+    
+    @Test
+    void editRoomWithDuplicateRoomAttr_FailUpdate_EditsRoom() throws Exception{
+        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
+        
+        this.mockMvc
+        .perform(post("/rooms/edit")
+                .param(ID, room.getId() + STR)
+                .param(ROOM_NUMBER_ATTR, TEST_ROOM_NUMBER_2 + STR)
+                .param(ROOM_SEAT_ATTR, TEST_SEAT_NUMBER_1 + STR)
+                .sessionAttr(ROOM_ATTR, new Room()))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(FAIL_MSG))
         .andExpect(view().name(VIEW_ROOMS));
     }
     

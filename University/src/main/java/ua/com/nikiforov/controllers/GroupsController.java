@@ -63,12 +63,13 @@ public class GroupsController {
         try {
             groupService.addGroup(groupName);
             model.addAttribute(SUCCESS_MSG, String.format("Group with name '%s' was added successfully!", groupName));
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot add group! Group with name '%s' already exists!", groupName));
-            return VIEW_ADD_GROUP;
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            return VIEW_GROUPS;
         }
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_GROUPS;
     }
 
@@ -110,7 +111,17 @@ public class GroupsController {
 
     @GetMapping("/edit")
     public String editGroup(@RequestParam long groupId, Model model) {
+        try {
         model.addAttribute(GROUP, groupService.getGroupById(groupId));
+        }catch (EntityNotFoundException e) {
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            model.addAttribute(FAIL_MSG, "Warning! Couldn't find group while editing!");
+            return VIEW_GROUPS;
+        }catch (DataOperationException e) {
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            model.addAttribute(FAIL_MSG, "ERROR! Something went wrong while editing group!");
+            return VIEW_GROUPS;
+        }
         return VIEW_EDIT_GROUP;
     }
 
