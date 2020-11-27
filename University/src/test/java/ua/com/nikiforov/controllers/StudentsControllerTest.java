@@ -56,8 +56,10 @@ class StudentsControllerTest {
     
     private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_EDIT_FORM = "students/edit_form";
+    private static final String VIEW_TRANSFER_FORM = "students/transfer_form";
 
     private static final String GROUP_IN_ATTR = "groupIn";
+    private static final String GROUP_ATTR = "group";
     private static final String GROUPS_ATTR = "groups";
     private static final String FIRST_NAME_ATTR = "firstName";
     private static final String LAST_NAME_ATTR = "lastName";
@@ -207,23 +209,41 @@ class StudentsControllerTest {
     }
     
     @Test
-    void transferStudent_SuccessStudentTransfer() throws Exception{
+    void transferStudent_ReturnTransferStudentForm() throws Exception{
         Group groupFrom = insertGroup(TEST_GROUP_NAME_1);
-        Group groupTo = insertGroup(TEST_GROUP_NAME_2);
-        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
+        Group group_1 = insertGroup(TEST_GROUP_NAME_2);
+        Group group_2 = insertGroup(TEST_GROUP_NAME_3);
         Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, groupFrom.getGroupId());
         
         this.mockMvc
-        .perform(post("/students/transfer/")
+        .perform(get("/students/transfer")
+                .param(ID, student.getId() + STR))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(STUDENT_ATTR, student))
+        .andExpect(model().attribute(GROUP_ATTR, groupFrom))
+        .andExpect(model().attribute(GROUPS_ATTR, hasItems(group_1,group_2)))
+        .andExpect(view().name(VIEW_TRANSFER_FORM));
+    }
+    
+    @Test
+    void transferStudent_SuccessStudentTransfer() throws Exception{
+        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
+        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
+        
+        this.mockMvc
+        .perform(post("/students/transfer")
                 .param(STUDENT_ID_ATTR, student.getId() + STR)
                 .param(FIRST_NAME_ATTR, student.getFirstName())
                 .param(LAST_NAME_ATTR, student.getLastName())
-                .param(GROUP_TO_ID_ATTR, groupTo.getGroupId() + STR)
-                .param(GROUP_NAME_ATTR, groupFrom.getGroupName()))
+                .param(GROUP_TO_ID_ATTR, group_2.getGroupId() + STR)
+                .param(GROUP_NAME_ATTR, group_1.getGroupName()))
         .andExpect(status().isOk())
-        .andExpect(model().attribute(GROUP_IN_ATTR,groupTo))
+        .andExpect(model().attribute(GROUP_IN_ATTR,group_2))
         .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_3)))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
         .andExpect(view().name(VIEW_STUDENTS));
     }
     
@@ -232,9 +252,9 @@ class StudentsControllerTest {
         return groupService.getGroupByName(groupName);
     }
 
-    private Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
+    private Student insertStudent(String firstName, String lastName, long groupId) {
+        studentsService.addStudent(firstName, lastName, groupId);
+        return studentsService.getStudentByNameGroupId(firstName, lastName, groupId);
     }
 
 }

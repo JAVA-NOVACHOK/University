@@ -108,18 +108,18 @@ public class StudentsController {
 
     @GetMapping("/transfer")
     public String transfer(@RequestParam long id, String message, Model model) {
-       try {
-        Student student = studentService.getStudentById(id);
-        Group group = groupService.getGroupByStudentId(id);
-        List<Group> groups = groupService.getAllGroups();
-        groups.remove(group);
-        model.addAttribute(FAIL_MSG, message);
-        model.addAttribute(STUDENT_ATTR, student);
-        model.addAttribute(GROUP_ATTR, group);
-        model.addAttribute(GROUPS_ATTR, groups);
-       }catch (DataOperationException e) {
-           model.addAttribute(FAIL_MSG, "Error! Something went wrong while transfering!");
-    }
+        try {
+            Student student = studentService.getStudentById(id);
+            Group group = groupService.getGroupByStudentId(id);
+            List<Group> groups = groupService.getAllGroups();
+            groups.remove(group);
+            model.addAttribute(STUDENT_ATTR, student);
+            model.addAttribute(GROUP_ATTR, group);
+            model.addAttribute(GROUPS_ATTR, groups);
+            model.addAttribute(FAIL_MSG, message);
+        } catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, "Error! Something went wrong while transfering!");
+        }
         return VIEW_TRANSFER_FORM;
     }
 
