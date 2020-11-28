@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.group.GroupService;
@@ -26,7 +27,7 @@ import ua.com.nikiforov.services.subject.SubjectService;
 @Controller
 @RequestMapping("/teachers")
 public class TeacherController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TeacherController.class); 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TeacherController.class);
 
     private static final String ROOMS_ATTR = "rooms";
     private static final String GROUPS_ATTR = "groups";
@@ -97,18 +98,22 @@ public class TeacherController {
     public String editTeacher(@ModelAttribute("teacher") Teacher teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
-        model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-        model.addAttribute(TEACHER_ATTR, teacher);
         try {
-            teacherService.updateTeacher(teacher);
-            model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s changed successfully", firstName, lastName));
-        } catch (DuplicateKeyException e) {
-            model.addAttribute(FAIL_MSG, String.format("Warning! Teacher %s %s already exists.", firstName, lastName));
-            return VIEW_TEACHER_ONE;
+            model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+            model.addAttribute(TEACHER_ATTR, teacher);
+            try {
+                teacherService.updateTeacher(teacher);
+                model.addAttribute(SUCCESS_MSG,
+                        String.format("Teacher %s %s changed successfully", firstName, lastName));
+            } catch (DuplicateKeyException e) {
+                model.addAttribute(FAIL_MSG,
+                        String.format("Warning! Teacher %s %s already exists.", firstName, lastName));
+                return VIEW_TEACHER_ONE;
+            }
         } catch (DataAccessException e) {
-            model.addAttribute(FAIL_MSG, String.format("Failed to update teacher %s %s.", firstName, lastName));
+            model.addAttribute(FAIL_MSG, String.format("Error! Failed to update teacher %s %s.", firstName, lastName));
             return VIEW_TEACHER_ONE;
         }
         model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacher.getId()));
@@ -119,19 +124,24 @@ public class TeacherController {
 
     @GetMapping("/delete")
     public String deleteTeacher(@RequestParam long id, Model model) {
-        Teacher teacher = teacherService.getTeacherById(id);
-        String firstName = teacher.getFirstName();
-        String lastName = teacher.getLastName();
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
-            teacherService.deleteTeacherById(id);
-        } catch (DataOperationException e) {
-            model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-            model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add Teacher %s %s ", firstName, lastName));
-            return VIEW_TEACHERS;
+            Teacher teacher = teacherService.getTeacherById(id);
+            String firstName = teacher.getFirstName();
+            String lastName = teacher.getLastName();
+            try {
+                teacherService.deleteTeacherById(id);
+                model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s deleted successfully!", firstName, lastName));
+            } catch (DataOperationException e) {
+                model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
+                model.addAttribute(FAIL_MSG,
+                        String.format("Warning! Failed to add Teacher %s %s ", firstName, lastName));
+            }
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("Error! Failed to find Teacher with id %d", id));
         }
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-        model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s deleted successfully!", firstName, lastName));
         return VIEW_TEACHERS;
     }
 
@@ -194,7 +204,7 @@ public class TeacherController {
     public String findTeacher(@RequestParam String firstName, @RequestParam String lastName, Model model) {
         try {
             List<Teacher> teachers = teacherService.getTeacherByLikeName(firstName, lastName);
-            if(teachers.isEmpty()) {
+            if (teachers.isEmpty()) {
                 model.addAttribute(FAIL_MSG, "No teacher found!");
             }
             model.addAttribute(TEACHERS_ATTR, teachers);

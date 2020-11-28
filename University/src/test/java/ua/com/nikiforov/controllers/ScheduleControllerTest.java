@@ -325,13 +325,14 @@ class ScheduleControllerTest {
                 .andExpect(view().name(STUDENT_SCHEDULE_VIEW));
     }
     
+    
     @Test
-    void addTimetableSchedule() throws Exception {
+    void addTimetableSchedule_Success() throws Exception {
         Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
-         teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-         teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
         
         teacher.addSubject(subject_1);
         teacher.addSubject(subject_2);
@@ -352,7 +353,38 @@ class ScheduleControllerTest {
         .andExpect(model().size(9))
         .andExpect(view().name(ONE_TEACHER_VIEW));
     }
-
+    
+    @Test
+    void addTimetableSchedule_WithDuplicateData_FailAdding() throws Exception {
+        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        
+        insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), 
+                DATE_1_ADD_33_DAYS, teacher.getId());
+        
+        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        
+        teacher.addSubject(subject_1);
+        teacher.addSubject(subject_2);
+        this.mockMvc
+        .perform(post("/schedules/add")
+                .param(PERIOD_ATTR, PERIOD_1 + STR)
+                .param(SUBJECT_ID_ATTR, subject_1.getId() + STR)
+                .param(ROOM_ID_ATTR, room_1.getId() + STR)
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
+                .param(DATE_ATTR, DATE_1_ADD_33_DAYS)
+                .param(TEACHER_ID_ATTR, teacher.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(ROOMS_ATTR,hasItems(room_1,room_2,room_3)))
+        .andExpect(model().attribute(TEACHERS_ATTR,hasItems(teacher,teacher_2,teacher_3)))
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(model().size(9))
+        .andExpect(view().name(ONE_TEACHER_VIEW));
+    }
+    
     private Group insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);

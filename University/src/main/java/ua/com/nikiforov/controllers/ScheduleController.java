@@ -248,10 +248,10 @@ public class ScheduleController {
             model.addAttribute(SUCCESS_MSG, "Lesson successfully added to schedule!");
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
-            return VIEW_SCHEDULE;
+            return VIEW_TEACHER_ONE;
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "ERROR! Couldn't add lesson to schedule!");
-            return VIEW_SCHEDULE;
+            return VIEW_TEACHER_ONE;
         }
         return VIEW_TEACHER_ONE;
     }

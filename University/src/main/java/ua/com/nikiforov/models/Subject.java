@@ -49,12 +49,17 @@ public class Subject implements Comparable<Subject>{
         this.teachers.addAll(teachers);
     }
 
+    
+    
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((teachers == null || teachers.isEmpty()) ? 0 : teachers.hashCode());
         return result;
     }
 
@@ -74,10 +79,12 @@ public class Subject implements Comparable<Subject>{
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (teachers == null) {
+            if (other.teachers != null)
+                return false;
+        } 
         return true;
     }
-    
-    
 
     @Override
     public String toString() {

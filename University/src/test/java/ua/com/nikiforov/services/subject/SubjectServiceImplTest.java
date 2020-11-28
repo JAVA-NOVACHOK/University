@@ -114,17 +114,13 @@ class SubjectServiceImplTest {
         Teacher teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         Teacher teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
         
-        teacherService.assignSubjectToTeacher(subjectId, teacherOne.getId());
-        teacherService.assignSubjectToTeacher(subjectId, teacherTwo.getId());
-        teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
-        
-        teacherOne.addSubject(subject);
-        teacherTwo.addSubject(subject);
-        teacherThree.addSubject(subject);
-        
         expectedTeachers.add(teacherOne);
         expectedTeachers.add(teacherTwo);
         expectedTeachers.add(teacherThree);
+
+        teacherService.assignSubjectToTeacher(subjectId, teacherOne.getId());
+        teacherService.assignSubjectToTeacher(subjectId, teacherTwo.getId());
+        teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
         
         subject = subjectService.getSubjectById(subjectId);
         List<Teacher> actualTeachers = subject.getTeachers();

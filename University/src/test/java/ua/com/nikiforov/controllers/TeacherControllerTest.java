@@ -63,6 +63,8 @@ class TeacherControllerTest {
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
     
+    private static final long INVALID_ID = 100500l;
+    
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
@@ -188,7 +190,7 @@ class TeacherControllerTest {
         }
     
     @Test
-    void deleteTeacherURI_ReturnTeachersView_DeletedTeacher() throws Exception {
+    void deleteTeacher_ifGiveValidId_ReturnTeachersView_DeleteTeacher() throws Exception {
         Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
@@ -202,6 +204,24 @@ class TeacherControllerTest {
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_2,teacher_3)))
+        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(view().name(TEACHERS_VIEW));
+    }
+    @Test
+    void deleteTeacher_ifGiveInInValidId_ReturnTeachersView_FailDelete() throws Exception {
+        Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+        
+        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
+        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
+        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        this.mockMvc
+        .perform(get("/teachers/delete")
+                .param(ID, INVALID_ID + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_1,teacher_2,teacher_3)))
         .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
         .andExpect(view().name(TEACHERS_VIEW));
     }

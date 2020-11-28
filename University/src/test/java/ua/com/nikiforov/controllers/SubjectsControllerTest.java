@@ -82,23 +82,54 @@ class SubjectsControllerTest {
     }
 
     @Test
-    void givenSubjectURI_thenReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
+    void allSubjects_ReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
-        this.mockMvc.perform(get("/subjects/")).andDo(print())
-                .andExpect(model().attribute("subjects", hasItems(subject_1, subject_2, subject_3)))
+        this.mockMvc.perform(get("/subjects/"))
+                .andDo(print())
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
                 .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
-    void givenAddSubjectURI_thenAddSubjects_WithSubjectsAttrs() throws Exception {
+    void addSubject_SuccessAddSubjects_WithSubjectsAttrs() throws Exception {
         this.mockMvc
         .perform(post("/subjects/add/")
                 .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
         .andDo(print())
-        .andExpect(model().attributeExists(SUBJECTS_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(model().attributeExists(SUBJECTS_ATTR))
+        .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    
+    @Test
+    void addSubject_IfAddExistingSubject_FailAdding() throws Exception {
+       Subject subject_1 = insertSubject(SUBJECT_NAME_1);
+       Subject subject_2 = insertSubject(SUBJECT_NAME_2);
+       Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        
+        this.mockMvc
+        .perform(post("/subjects/add/")
+                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+        .andDo(print())
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(view().name(SUBJECTS_VIEW));
+    }
+    
+    @Test
+    void addSubject_ifAddinExistingSubject_WithSubjectsAttrs() throws Exception {
+        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
+        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
+        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        this.mockMvc
+        .perform(post("/subjects/add/")
+                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+        .andDo(print())
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(model().attributeExists(FAIL_MSG))
         .andExpect(view().name(SUBJECTS_VIEW));
     }
     

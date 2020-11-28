@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,7 +25,6 @@ import ua.com.nikiforov.services.timetables.PersonalTimetable;
 public class LessonDAOImpl implements LessonDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LessonDAOImpl.class);
-//    int period, int subjectId, int roomId, long groupId, String date, long teacherId
     private static final String ADD_LESSON = "INSERT INTO lessons (period,subject_id,room_id,group_id,time,teacher_id) VALUES(?,?,?,?,?,?)";
     private static final String GET_ALL_LESSONS = "SELECT * FROM lessons ";
     private static final String FIND_LESSON_BY_ID = "SELECT * FROM lessons WHERE lessons.lesson_id = ? ";
@@ -57,7 +57,9 @@ public class LessonDAOImpl implements LessonDAO {
             } else {
                 throw new DataOperationException("Couldn't add " + lessonMessage);
             }
-        } catch (DataAccessException e) {
+        } catch (DuplicateKeyException e) {
+           throw new DuplicateKeyException(e.getMessage(),e);
+        }catch (DataAccessException e) {
             String failMessage = ("Failed to add " + lessonMessage);
             LOGGER.error(failMessage + e);
             e.printStackTrace();
