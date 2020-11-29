@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.persons.TeacherMapper;
@@ -109,7 +110,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     }
 
     @Override
-    public boolean updateTeacher(Teacher teacher) {
+    public boolean updateTeacher(TeacherDTO teacher) {
         String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", teacher.getId(),
                 teacher.getFirstName(), teacher.getLastName());
         LOGGER.debug("Updating '{}'", teacherMessage);

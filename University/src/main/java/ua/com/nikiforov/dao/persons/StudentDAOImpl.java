@@ -14,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.persons.StudentMapper;
@@ -138,7 +139,7 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public boolean updateStudent(Student student) {
+    public boolean updateStudent(StudentDTO student) {
         LOGGER.debug("Updating {}", student);
         boolean actionResult = false;
         try {

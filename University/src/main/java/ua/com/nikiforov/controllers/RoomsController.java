@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
@@ -36,8 +37,8 @@ public class RoomsController {
     private StudentsService studentService;
 
     @ModelAttribute(MODEL_ATTR_ROOM)
-    public Room getRoom() {
-        return new Room();
+    public RoomDTO getRoom() {
+        return new RoomDTO();
     }
 
     @Autowired
@@ -100,9 +101,9 @@ public class RoomsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(MODEL_ATTR_ROOM) Room room, Model model) {
+    public String processEdit(@ModelAttribute(MODEL_ATTR_ROOM) RoomDTO room, Model model) {
         try {
-            roomService.updateRoom(room.getRoomNumber(), room.getSeatNumber(), room.getId());
+            roomService.updateRoom(room);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Room number '%d' updated successfuly", room.getRoomNumber()));
         } catch (DuplicateKeyException e) {

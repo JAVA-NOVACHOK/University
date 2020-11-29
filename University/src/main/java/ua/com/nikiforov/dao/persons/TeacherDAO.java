@@ -2,6 +2,7 @@ package ua.com.nikiforov.dao.persons;
 
 import java.util.List;
 
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.models.persons.Teacher;
 
 public interface TeacherDAO {
@@ -16,7 +17,7 @@ public interface TeacherDAO {
 
     public List<Teacher> getAllTeachers();
     
-    public boolean updateTeacher(Teacher teacher);
+    public boolean updateTeacher(TeacherDTO teacher);
 
     public boolean deleteTeacherById(long teacherId);
 }

@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
@@ -79,13 +80,13 @@ class TeacherServiceImplTest {
     @Test
     void whenUpdateTeacherIfSuccessThenReturnTrue() {
         long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        assertTrue(teacherService.updateTeacher(new Teacher(teacherId, FIRST_NAME_2, LAST_NAME_2)));
+        assertTrue(teacherService.updateTeacher(new TeacherDTO(teacherId, FIRST_NAME_2, LAST_NAME_2)));
     }
 
     @Test
     void afterUpdateTeacherThenTeacherHasUpdatedTeacher() {
         long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        teacherService.updateTeacher(new Teacher(teacherId,FIRST_NAME_2, LAST_NAME_2));
+        teacherService.updateTeacher(new TeacherDTO(teacherId,FIRST_NAME_2, LAST_NAME_2));
         Teacher expectedTeacher = teacherService.getTeacherByName(FIRST_NAME_2, LAST_NAME_2);
         Teacher actualTeacher = teacherService.getTeacherById(teacherId);
         assertEquals(expectedTeacher, actualTeacher);

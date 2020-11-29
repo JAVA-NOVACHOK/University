@@ -2,6 +2,7 @@ package ua.com.nikiforov.services.group;
 
 import java.util.List;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
@@ -15,7 +16,7 @@ public interface GroupService {
     
     public List<Group> getAllGroups();
     
-    public boolean updateGroup(Group group);
+    public boolean updateGroup(GroupDTO group);
     
     public boolean deleteGroup(long id);
     

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.persons.TeacherDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
@@ -54,7 +55,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public boolean updateTeacher(Teacher teacher) {
+    public boolean updateTeacher(TeacherDTO teacher) {
         return teacherDAO.updateTeacher(teacher);
     }
 

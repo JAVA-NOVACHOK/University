@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.models.persons.Student;
 
 @Component
@@ -21,7 +22,7 @@ public interface StudentDAO {
 
     public List<Student> getAllStudents();
 
-    public boolean updateStudent(Student student);
+    public boolean updateStudent(StudentDTO student);
 
     public boolean deleteStudentById(long studentId);
     

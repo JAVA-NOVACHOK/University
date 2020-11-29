@@ -2,6 +2,7 @@ package ua.com.nikiforov.dao.group;
 
 import java.util.List;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.models.Group;
 
 public interface GroupDAO {
@@ -16,7 +17,7 @@ public interface GroupDAO {
 
     public boolean addGroup(String groupName);
 
-    public boolean updateGroup(Group group);
+    public boolean updateGroup(GroupDTO group);
     
     public Group getGroupByStudentId(long studentId);
 }

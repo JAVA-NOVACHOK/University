@@ -19,6 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -83,14 +84,14 @@ class GroupServiceImplTest {
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
-        assertTrue(groupService.updateGroup(new Group(group.getGroupId(), TEST_GROUP_NAME_2)));
+        assertTrue(groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2)));
     }
 
     @Test
     void whenUpdateGroupThenGroupHasChangedName() {
         Group group = insertGroup(TEST_GROUP_NAME_1);
         long groupId = group.getGroupId();
-        groupService.updateGroup(new Group(group.getGroupId(), TEST_GROUP_NAME_2));
+        groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2));
         Group expectedUpdatedGroup = groupService.getGroupById(groupId);
         Group actualUpdatedGroup = groupService.getGroupByName(TEST_GROUP_NAME_2);
         assertEquals(expectedUpdatedGroup, actualUpdatedGroup);

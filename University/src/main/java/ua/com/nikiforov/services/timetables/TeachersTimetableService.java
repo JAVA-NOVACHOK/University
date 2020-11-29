@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.timetables.TimetableDAO;
-import ua.com.nikiforov.models.timetable.Timetable;
 
 @Service
 public class TeachersTimetableService extends PersonalTimetable {
@@ -21,13 +21,13 @@ public class TeachersTimetableService extends PersonalTimetable {
 
     @Override
     public List<DayTimetable>  getDayTimetable(String date, long teacherId) {
-        List<Timetable> allTimetablesList = teachersTimetable.getDayTimetable(date, teacherId);
+        List<TimetableDTO> allTimetablesList = teachersTimetable.getDayTimetable(date, teacherId);
         return createMonthTimetable(allTimetablesList);
     }
 
     @Override
     public List<DayTimetable> getMonthTimetable(String date, long teacherId) {
-        List<Timetable> allTimetablesList = teachersTimetable.getMonthTimetable(date, teacherId);
+        List<TimetableDTO> allTimetablesList = teachersTimetable.getMonthTimetable(date, teacherId);
         return createMonthTimetable(allTimetablesList);
     }
 

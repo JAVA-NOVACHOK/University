@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.model_atributes.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -107,8 +107,8 @@ public class ScheduleController {
     }
 
     @ModelAttribute(TIMETABLE_ATTR)
-    public Timetable getTimetable() {
-        return new Timetable();
+    public TimetableDTO getTimetable() {
+        return new TimetableDTO();
     }
 
     @GetMapping()
@@ -257,7 +257,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/edit")
-    public String editSchedule(@ModelAttribute(TIMETABLE_ATTR) Timetable timetable, @RequestParam String dateString,
+    public String editSchedule(@ModelAttribute(TIMETABLE_ATTR) TimetableDTO timetable, @RequestParam String dateString,
             Model model) {
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());

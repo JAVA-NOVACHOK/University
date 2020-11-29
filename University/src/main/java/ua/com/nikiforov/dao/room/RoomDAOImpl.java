@@ -17,6 +17,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.RoomMapper;
@@ -113,11 +114,14 @@ public class RoomDAOImpl implements RoomDAO {
     }
 
     @Override
-    public boolean updateRoom(int number, int seatNumber, int id) {
-        LOGGER.debug("Updating room with id - '{}' to number - '{}'", id, number);
+    public boolean updateRoom(RoomDTO room) {
         boolean actionResult = false;
+        long id =  room.getId();
+        int number = room.getRoomNumber();
+        int seatNumber = room.getSeatNumber();
+        LOGGER.debug("Updating room with id - '{}' to number - '{}'", id, number);
         try {
-            actionResult = jdbcTemplate.update(UPDATE_ROOM, number, seatNumber, id) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_ROOM,number ,seatNumber , id) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated room with id = '{}', number = '{}' and {} seats", id, number,
                         seatNumber);

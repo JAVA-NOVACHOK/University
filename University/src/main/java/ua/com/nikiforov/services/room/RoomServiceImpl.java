@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.dao.room.RoomDAO;
 import ua.com.nikiforov.models.Room;
 
@@ -43,8 +44,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean updateRoom(int number, int seatNumber, int id) {
-        return roomDAO.updateRoom(number, seatNumber, id);
+    public boolean updateRoom(RoomDTO room) {
+        return roomDAO.updateRoom(room);
     }
 
     @Override

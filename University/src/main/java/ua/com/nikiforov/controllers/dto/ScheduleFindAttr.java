@@ -1,4 +1,4 @@
-package ua.com.nikiforov.controllers.model_atributes;
+package ua.com.nikiforov.controllers.dto;
 
 public class ScheduleFindAttr {
 

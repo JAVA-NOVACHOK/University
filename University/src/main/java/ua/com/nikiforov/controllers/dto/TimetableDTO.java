@@ -1,8 +1,8 @@
-package ua.com.nikiforov.models.timetable;
+package ua.com.nikiforov.controllers.dto;
 
 import java.time.LocalDate;
 
-public class Timetable implements Comparable<Timetable> {
+public class TimetableDTO implements Comparable<TimetableDTO> {
 
     private long lessonId;
     private int period;
@@ -13,10 +13,10 @@ public class Timetable implements Comparable<Timetable> {
     private long teacherId;
     private LocalDate date;
 
-    public Timetable() {
+    public TimetableDTO() {
     }
 
-    public Timetable(long lessonId, int period, String subjectName, int roomNumber, String groupName,
+    public TimetableDTO(long lessonId, int period, String subjectName, int roomNumber, String groupName,
             String teachersName, long teacherId, LocalDate date) {
         this.lessonId = lessonId;
         this.period = period;
@@ -120,7 +120,7 @@ public class Timetable implements Comparable<Timetable> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Timetable other = (Timetable) obj;
+        TimetableDTO other = (TimetableDTO) obj;
         if (date == null) {
             if (other.date != null)
                 return false;
@@ -162,7 +162,7 @@ public class Timetable implements Comparable<Timetable> {
     }
 
     @Override
-    public int compareTo(Timetable o) {
+    public int compareTo(TimetableDTO o) {
         if (period > o.getPeriod()) {
             return 1;
         } else

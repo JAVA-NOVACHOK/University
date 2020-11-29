@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -56,8 +58,13 @@ public class StudentsController {
     }
 
     @ModelAttribute("group")
-    public Group getGroup() {
-        return new Group();
+    public GroupDTO getGroup() {
+        return new GroupDTO();
+    }
+    
+    @ModelAttribute(STUDENT_ATTR)
+    public StudentDTO getStudent() {
+        return new StudentDTO();
     }
 
     @GetMapping()
@@ -81,14 +88,16 @@ public class StudentsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@RequestParam long id, @RequestParam String firstName, @RequestParam String lastName,
-            @RequestParam long groupId, Model model) {
+    public String processEdit(@ModelAttribute(STUDENT_ATTR) StudentDTO student, Model model) {
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        long groupId = student.getGroupId();
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             Group group = groupService.getGroupById(groupId);
             model.addAttribute(GROUP_IN_ATTR, group);
             try {
-                studentService.updateStudent(new Student(id, firstName, lastName, groupId));
+                studentService.updateStudent(student);
                 model.addAttribute(SUCCESS_MSG,
                         String.format("Student %s %s is successfully edited", firstName, lastName));
 
@@ -119,18 +128,24 @@ public class StudentsController {
             model.addAttribute(FAIL_MSG, message);
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error! Something went wrong while transfering!");
+            return VIEW_STUDENTS;
         }
         return VIEW_TRANSFER_FORM;
     }
 
     @PostMapping("/transfer")
-    public String processTransfer(@RequestParam long studentId, @RequestParam String firstName,
-            @RequestParam String lastName, @RequestParam long groupToId, @RequestParam String groupName, Model model) {
+    public String processTransfer(@ModelAttribute(STUDENT_ATTR) StudentDTO student,
+            @RequestParam long groupToId, Model model) {
+        long groupFromId = student.getGroupId();
+        long studentId = student.getId();
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        String groupName = student.getGroupName();
         if (groupToId == 0) {
             return REDIRECT_TRANSFER + studentId + CHOOSE_GROUP_MSG;
         }
         try {
-            Group groupFrom = groupService.getGroupByName(groupName);
+            Group groupFrom = groupService.getGroupById(groupFromId);
             Group groupTo = groupService.getGroupById(groupToId);
             List<Group> groups = groupService.getAllGroups();
             model.addAttribute(GROUP_IN_ATTR, groupTo);
@@ -141,6 +156,10 @@ public class StudentsController {
                         firstName, lastName, groupTo.getGroupName()));
                 model.addAttribute(GROUPS_ATTR, groups);
                 model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupToId));
+            }catch (DuplicateKeyException e) {
+                model.addAttribute(GROUP_IN_ATTR, groupFrom);
+                model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s. Such Student already exists.",
+                        firstName, lastName, groupName, groupTo.getGroupName()));
             } catch (DataOperationException e) {
                 model.addAttribute(GROUP_IN_ATTR, groupFrom);
                 model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s",
@@ -148,7 +167,7 @@ public class StudentsController {
                 return VIEW_STUDENTS;
             }
         } catch (Exception e) {
-            model.addAttribute(FAIL_MSG, String.format("Error! Something went wrong. Failed to edit student '%s' '%s'",
+            model.addAttribute(FAIL_MSG, String.format("Error! Something went wrong. Failed to transfer student '%s' '%s'",
                     firstName, lastName));
         }
         return VIEW_STUDENTS;

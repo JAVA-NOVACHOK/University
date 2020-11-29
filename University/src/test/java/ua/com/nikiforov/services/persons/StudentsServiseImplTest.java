@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -80,13 +81,13 @@ class StudentsServiseImplTest {
     @Test
     void whenUpdateStudentIfSuccessThenReturnTrue() {
         long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
-        assertTrue(studentsService.updateStudent(new Student(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2)));
+        assertTrue(studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2)));
     }
 
     @Test
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
         long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
-        studentsService.updateStudent(new Student( studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
+        studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
         Student expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
         Student actualStudent = studentsService.getStudentById(studentId);
         assertEquals(expectedStudent, actualStudent);

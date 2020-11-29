@@ -55,8 +55,7 @@ public class Teacher extends Person {
         if (subjects == null ) {
             if (other.subjects != null )
                 return false;
-        } else if (!subjects.equals(other.subjects))
-            return false;
+        } 
         return true;
     }
     

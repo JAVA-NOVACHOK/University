@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 
 public abstract class PersonalTimetable {
     
@@ -20,17 +20,17 @@ public abstract class PersonalTimetable {
     
     public abstract List<DayTimetable>  getMonthTimetable(String stringDate, long studentId);
     
-    public List<DayTimetable> createMonthTimetable(List<Timetable> allTimetablesList){
+    public List<DayTimetable> createMonthTimetable(List<TimetableDTO> allTimetablesList){
         List<DayTimetable> monthTimetable = new ArrayList<>();
         if (!allTimetablesList.isEmpty()) {
             for (int i = 1; i <= allTimetablesList.size(); i++) {
                 DayTimetable dayTimetable = new DayTimetable();
-                Timetable previousTimetable = allTimetablesList.get(i - 1);
+                TimetableDTO previousTimetable = allTimetablesList.get(i - 1);
                 dayTimetable.addTimetable(previousTimetable);
                 dayTimetable.setDateInfo(parseInstantToDateInfo(previousTimetable));
                 monthTimetable.add(dayTimetable);
                 while (i < allTimetablesList.size()) {
-                    Timetable currentTimetable = allTimetablesList.get(i);
+                    TimetableDTO currentTimetable = allTimetablesList.get(i);
                     if (previousTimetable.getDate().equals(currentTimetable.getDate())) {
                         dayTimetable.addTimetable(currentTimetable);
                         i++;
@@ -44,7 +44,7 @@ public abstract class PersonalTimetable {
         return monthTimetable;
     }
     
-    public static DateInfo parseInstantToDateInfo( Timetable timetable) {
+    public static DateInfo parseInstantToDateInfo( TimetableDTO timetable) {
         LocalDate date = timetable.getDate();
         ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
         String weekDay = zonedDateTime.getDayOfWeek().name();

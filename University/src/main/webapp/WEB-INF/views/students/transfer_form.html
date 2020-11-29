@@ -27,7 +27,7 @@
 		<form class="form-inline" action="/University/students/transfer"
 			method="post">
 			<input type="number" class="form-control" hidden="true"
-				th:value="${student.id}" name="studentId"> <label
+				th:value="${student.id}" name="id"> <label
 				class="mr-2" th:text="|Student |"></label> <label
 				class="font-weight-bold mr-2" for="firstName"
 				th:text="${student.firstName}"></label> <input id="firstName"
@@ -39,6 +39,7 @@
 				required="required" th:value="${student.lastName}" name="lastName">
 			<label class="label mr-2">transfers from group</label> <label
 				class="font-weight-bold label mr-2" th:text="${group.groupName}"></label>
+			<input type="number" hidden="true" name="groupId" th:value="${group.groupId}">
 			<input id="groupName" type="text" hidden="true"
 				th:value="${group.groupName}" name="groupName"> <label
 				class="label mr-2" for="groupTo">to group</label> <select

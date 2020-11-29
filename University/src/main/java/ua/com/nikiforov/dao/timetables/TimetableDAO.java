@@ -2,11 +2,11 @@ package ua.com.nikiforov.dao.timetables;
 
 import java.util.List;
 
-import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 
 public interface TimetableDAO {
     
-    public List<Timetable> getDayTimetable(String date, long id);
+    public List<TimetableDTO> getDayTimetable(String date, long id);
 
-    public List<Timetable> getMonthTimetable(String date, long id);
+    public List<TimetableDTO> getMonthTimetable(String date, long id);
 }

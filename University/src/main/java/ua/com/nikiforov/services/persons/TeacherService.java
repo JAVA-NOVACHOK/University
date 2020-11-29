@@ -2,6 +2,7 @@ package ua.com.nikiforov.services.persons;
 
 import java.util.List;
 
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.models.persons.Teacher;
 
 public interface TeacherService {
@@ -18,7 +19,7 @@ public interface TeacherService {
     
     public List<Teacher> getAllTeachersWithoutSubjects();
 
-    public boolean updateTeacher(Teacher teacher);
+    public boolean updateTeacher(TeacherDTO teacher);
 
     public boolean deleteTeacherById(long teacherId);
     

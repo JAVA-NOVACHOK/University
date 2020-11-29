@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.dao.group.GroupDAO;
 import ua.com.nikiforov.dao.persons.StudentDAO;
 import ua.com.nikiforov.models.Group;
@@ -48,7 +49,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean updateGroup(Group group) {
+    public boolean updateGroup(GroupDTO group) {
         return groupDAO.updateGroup(group);
     }
 

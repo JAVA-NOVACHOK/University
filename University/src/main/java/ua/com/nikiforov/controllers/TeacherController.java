@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
@@ -56,8 +57,8 @@ public class TeacherController {
     }
 
     @ModelAttribute("teacher")
-    public Teacher getTeacher() {
-        return new Teacher();
+    public TeacherDTO getTeacher() {
+        return new TeacherDTO();
     }
 
     @GetMapping()
@@ -95,7 +96,7 @@ public class TeacherController {
     }
 
     @PostMapping("/edit")
-    public String editTeacher(@ModelAttribute("teacher") Teacher teacher, Model model) {
+    public String editTeacher(@ModelAttribute("teacher") TeacherDTO teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
         try {

@@ -7,10 +7,10 @@ import java.sql.Timestamp;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import ua.com.nikiforov.models.timetable.Timetable;
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 
 @Component
-public class TimetableMapper implements RowMapper<Timetable> {
+public class TimetableMapper implements RowMapper<TimetableDTO> {
 
     private static final int TIMETABLE_PERIOD_INDEX = 1;
     private static final int TIMETABLE_SUBJECT_INDEX = 2;
@@ -23,8 +23,8 @@ public class TimetableMapper implements RowMapper<Timetable> {
     private static final int TIMETABLE_TEACHER_ID_INDEX = 9;
 
     @Override
-    public Timetable mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Timetable timetable = new Timetable();
+    public TimetableDTO mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+        TimetableDTO timetable = new TimetableDTO();
         timetable.setPeriod(resultSet.getInt(TIMETABLE_PERIOD_INDEX));
         timetable.setSubjectName(resultSet.getString(TIMETABLE_SUBJECT_INDEX));
         timetable.setRoomNumber(resultSet.getInt(TIMETABLE_ROOM_INDEX));

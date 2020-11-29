@@ -18,9 +18,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.mappers.timetables.TimetableMapper;
-import ua.com.nikiforov.models.timetable.Timetable;
 
 @Repository
 @Qualifier("teachersTimetable")
@@ -54,11 +54,11 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public List<Timetable> getDayTimetable(String date, long teacherId) {
+    public List<TimetableDTO> getDayTimetable(String date, long teacherId) {
         String timetableInfoMSG = String
                 .format("Teacher's timetable for day by date with such data: %s and teacherId %d", date, teacherId);
         LOGGER.debug("Getting '{}'", timetableInfoMSG);
-        List<Timetable> dayTimetable = new ArrayList<>();
+        List<TimetableDTO> dayTimetable = new ArrayList<>();
         Timestamp time = getTimestampFromString(date);
         try {
             dayTimetable.addAll(
@@ -73,7 +73,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
     }
 
     @Override
-    public List<Timetable> getMonthTimetable(String date, long teacherId) {
+    public List<TimetableDTO> getMonthTimetable(String date, long teacherId) {
         Timestamp timeFrom = getTimestampFromString(date);
         LocalDate localDate = timeFrom.toLocalDateTime().toLocalDate();
         Timestamp timeTo = Timestamp.valueOf(localDate.plusMonths(1).atTime(LocalTime.MIDNIGHT));
@@ -81,7 +81,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
                 "Teacher's timetable for month by date with  teacherId %d and date between %s and %s", teacherId,
                 timeFrom.toString(), timeTo.toString());
         LOGGER.debug("Getting '{}'", timetableInfoMSG);
-        List<Timetable> unsortedDayTimetable = new ArrayList<>();
+        List<TimetableDTO> unsortedDayTimetable = new ArrayList<>();
         try {
             unsortedDayTimetable.addAll(jdbcTemplate.query(GET_TEACHER_MONTH_TIMETABLE,
                     new Object[] { teacherId, timeFrom, timeTo }, timetableMapper));
@@ -91,7 +91,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
-        return unsortedDayTimetable.stream().sorted(Comparator.comparing(Timetable::getDate))
+        return unsortedDayTimetable.stream().sorted(Comparator.comparing(TimetableDTO::getDate))
                 .collect(Collectors.toList());
     }
 

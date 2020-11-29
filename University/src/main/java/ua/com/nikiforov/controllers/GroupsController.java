@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -48,8 +49,8 @@ public class GroupsController {
     }
 
     @ModelAttribute(GROUP)
-    public Group getGroup() {
-        return new Group();
+    public GroupDTO getGroup() {
+        return new GroupDTO();
     }
 
     @GetMapping()
@@ -126,7 +127,7 @@ public class GroupsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(GROUP) Group group, Model model) {
+    public String processEdit(@ModelAttribute(GROUP) GroupDTO group, Model model) {
         String groupName = group.getGroupName();
         try {
             groupService.updateGroup(group);

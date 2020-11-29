@@ -28,7 +28,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.controllers.model_atributes.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
@@ -36,7 +37,6 @@ import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.models.timetable.Timetable;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -103,9 +103,12 @@ class ScheduleControllerTest {
     private static final int YEAR_2020 = 2020;
     
     private static final String PERIOD_ATTR = "period";
+    private static final String LESSON_ID_ATTR = "lessonId";
     private static final String SUBJECT_ID_ATTR = "subjectId";
+    private static final String SUBJECT_NAME_ATTR = "name";
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String ROOM_ID_ATTR = "roomId";
+    private static final String ROOM_NUMBER_ATTR = "roomNumber";
     private static final String ROOMS_ATTR = "rooms";
     private static final String GROUP_ID_ATTR = "groupId";
     private static final String GROUPS_ATTR = "groups";
@@ -116,6 +119,8 @@ class ScheduleControllerTest {
     private static final String SCHEDULE_FIND_ATTR = "scheduleFindAttr";
     private static final String STUDENT_ATTR = "student";
     private static final String TIMETABLES_ATTR = "timetables";
+    private static final String TIMETABLE_ATTR = "timetable";
+    private static final String DATE_STRING_ATTR = "dateString";
     
     private static final String FIRST_NAME_PARAM = "firstName";
     private static final String LAST_NAME_PARAM = "lastName";
@@ -126,6 +131,7 @@ class ScheduleControllerTest {
     private static final String STUDENT_SCHEDULE_VIEW = "timetable/student_schedule";
     private static final String TEACHER_TIMETABLE_FORM_VIEW = "timetable/teacher_timetable_form";
     private static final String SCHEDULE_VIEW = "timetable/schedule";
+    private static final String EDIT_SCHEDULE_VIEW = "timetable/edit_schedule";
     
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
@@ -245,15 +251,15 @@ class ScheduleControllerTest {
     void TeachersDayURI_ThenReturnsTeacherSchedule_WithTimetable_Models()
             throws Exception {
         List<DayTimetable> timetables = new ArrayList<>();
-        List<Timetable> timetablesList = new ArrayList<>();
+        List<TimetableDTO> timetablesList = new ArrayList<>();
         
-        timetablesList.add(new Timetable(lesson_1.getId(), PERIOD_1, subject_1.getName(),
+        timetablesList.add(new TimetableDTO(lesson_1.getId(), PERIOD_1, subject_1.getName(),
                 room_1.getRoomNumber(), group_1.getGroupName(), 
                 (teacher.getFirstName() + " " + teacher.getLastName()), teacher.getId(), getLocalDateFromString(DATE)));
-        timetablesList.add(new Timetable(lesson_2.getId(), PERIOD_2, subject_2.getName(), 
+        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(), 
                 room_2.getRoomNumber(), group_2.getGroupName(),
                 teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
-        timetablesList.add(new Timetable(lesson_3.getId(), PERIOD_3, subject_1.getName(), 
+        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(), 
                 room_3.getRoomNumber(), group_2.getGroupName(), 
                 teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
         
@@ -383,6 +389,36 @@ class ScheduleControllerTest {
         .andExpect(model().attributeExists(FAIL_MSG))
         .andExpect(model().size(9))
         .andExpect(view().name(ONE_TEACHER_VIEW));
+    }
+    
+    @Test
+    void editTimetableSchedule_SuccessEditing() throws Exception {
+        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        
+        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        
+        teacher.addSubject(subject_1);
+        teacher.addSubject(subject_2);
+        this.mockMvc
+        .perform(get("/schedules/edit")
+                .param(LESSON_ID_ATTR,lesson_1.getId() + STR)
+                .param(PERIOD_ATTR, PERIOD_1 + STR)
+                .param(SUBJECT_ID_ATTR, subject_1.getName())
+                .param(ROOM_ID_ATTR, room_1.getRoomNumber() + STR)
+                .param(GROUP_ID_ATTR, group_1.getGroupName())
+                .requestAttr(DATE_ATTR,getLocalDateFromString(DATE))
+                .param(TEACHER_ID_ATTR, teacher.getId() + STR)
+                .sessionAttr(TIMETABLES_ATTR,  new TimetableDTO())
+                .param(DATE_STRING_ATTR, DATE))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(ROOMS_ATTR,hasItems(room_1,room_2,room_3)))
+        .andExpect(model().attribute(TEACHERS_ATTR,hasItems(teacher,teacher_2,teacher_3)))
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
+        .andExpect(model().size(8))
+        .andExpect(view().name(EDIT_SCHEDULE_VIEW));
     }
     
     private Group insertGroup(String groupName) {

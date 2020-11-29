@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
@@ -69,7 +70,7 @@ class RoomServiceImplTest {
     void whenUpdateRoomThenGroupHasUpdatedName() {
         Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
-        roomService.updateRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2, roomId);
+        roomService.updateRoom(new RoomDTO(roomId,TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2));
         Room expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_2);
         Room actualRoom = roomService.getRoomById(roomId);
         assertEquals(expectedRoom, actualRoom);

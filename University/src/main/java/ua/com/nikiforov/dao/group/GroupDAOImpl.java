@@ -14,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.GroupMapper;
@@ -131,7 +132,7 @@ public class GroupDAOImpl implements GroupDAO {
     }
 
     @Override
-    public boolean updateGroup(Group group) {
+    public boolean updateGroup(GroupDTO group) {
         String groupName = group.getGroupName();
         long groupId = group.getGroupId();
         LOGGER.debug("Updating group '{}'", groupName);
