@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
@@ -103,6 +104,7 @@ class ScheduleControllerTest {
     private static final int YEAR_2020 = 2020;
     
     private static final String PERIOD_ATTR = "period";
+    private static final String ID = "id";
     private static final String LESSON_ID_ATTR = "lessonId";
     private static final String SUBJECT_ID_ATTR = "subjectId";
     private static final String SUBJECT_NAME_ATTR = "name";
@@ -120,6 +122,7 @@ class ScheduleControllerTest {
     private static final String STUDENT_ATTR = "student";
     private static final String TIMETABLES_ATTR = "timetables";
     private static final String TIMETABLE_ATTR = "timetable";
+    private static final String LESSON_ATTR = "lesson";
     private static final String DATE_STRING_ATTR = "dateString";
     
     private static final String FIRST_NAME_PARAM = "firstName";
@@ -392,7 +395,7 @@ class ScheduleControllerTest {
     }
     
     @Test
-    void editTimetableSchedule_SuccessEditing() throws Exception {
+    void editTimetableSchedule_ReturnEditForm() throws Exception {
         Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
@@ -419,6 +422,53 @@ class ScheduleControllerTest {
         .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
         .andExpect(model().size(8))
         .andExpect(view().name(EDIT_SCHEDULE_VIEW));
+    }
+    @Test
+    void editLesson_SuccessEditing() throws Exception {
+        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        
+        teacher.addSubject(subject_1);
+        teacher.addSubject(subject_2);
+        this.mockMvc
+        .perform(post("/schedules/edit")
+                .param(ID,lesson_1.getId() + STR)
+                .param(PERIOD_ATTR, PERIOD_1 + STR)
+                .param(SUBJECT_ID_ATTR, subject_1.getId() + STR)
+                .param(ROOM_ID_ATTR, room_1.getId() + STR)
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
+                .param(DATE_ATTR,DATE)
+                .param(TEACHER_ID_ATTR, teacher.getId() + STR)
+                .sessionAttr(LESSON_ATTR,  new LessonDTO()))
+        .andExpect(status().isOk())
+        .andExpect(model().attributeExists(TIMETABLES_ATTR))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(model().size(6))
+        .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
+    }
+    
+    @Test
+    void deleteTimetable_SuccessDelete() throws Exception{
+        List<DayTimetable> timetables = new ArrayList<>();
+        List<TimetableDTO> timetablesList = new ArrayList<>();
+        
+        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(), 
+                room_2.getRoomNumber(), group_2.getGroupName(),
+                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(), 
+                room_3.getRoomNumber(), group_2.getGroupName(), 
+                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+        
+        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
+        timetables.add(new DayTimetable(timetablesList, dateInfo));
+        this.mockMvc
+        .perform(get("/schedules/delete")
+                .param(LESSON_ID_ATTR, lesson_1.getId() + STR))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute(TEACHER_ATTR, teacher))
+        .andExpect(model().attribute(TIMETABLES_ATTR, timetables))
+        .andExpect(model().attributeExists(SUCCESS_MSG))
+        .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
     
     private Group insertGroup(String groupName) {

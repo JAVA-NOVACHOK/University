@@ -294,6 +294,7 @@ public class ScheduleController {
             model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
             lessonService.deleteLessonById(lessonId);
             model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDateFromLocalDate(), lesson.getTeacherId()));
+            model.addAttribute(SUCCESS_MSG, "Successfully deleted timetable!");
         }catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Warning! Couldn't delete timetable!");
             return VIEW_TEACHER_SCHEDULE;
