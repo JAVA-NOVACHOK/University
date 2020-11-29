@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.LessonMapper;
@@ -44,22 +45,21 @@ public class LessonDAOImpl implements LessonDAO {
     @Override
     public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         String lessonMessage = String.format(
-                "Lesson with period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
-                period, subjectId, roomId, groupId, date, teacherId);
+                "Lesson with period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d", period,
+                subjectId, roomId, groupId, date, teacherId);
         LOGGER.debug("Adding {}", lessonMessage);
         boolean actionResult = false;
         Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(ADD_LESSON, period, subjectId, roomId, groupId, time,
-                    teacherId) > 0;
+            actionResult = jdbcTemplate.update(ADD_LESSON, period, subjectId, roomId, groupId, time, teacherId) > 0;
             if (actionResult) {
                 LOGGER.info("Successful adding {}", lessonMessage);
             } else {
                 throw new DataOperationException("Couldn't add " + lessonMessage);
             }
         } catch (DuplicateKeyException e) {
-           throw new DuplicateKeyException(e.getMessage(),e);
-        }catch (DataAccessException e) {
+            throw new DuplicateKeyException(e.getMessage(), e);
+        } catch (DataAccessException e) {
             String failMessage = ("Failed to add " + lessonMessage);
             LOGGER.error(failMessage + e);
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class LessonDAOImpl implements LessonDAO {
         Lesson lesson;
         try {
             lesson = jdbcTemplate.queryForObject(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS,
-                    new Object[] {period, subjectId, roomId, groupId, time, teacherId}, lessonMapper);
+                    new Object[] { period, subjectId, roomId, groupId, time, teacherId }, lessonMapper);
             LOGGER.info("Successfully retrived {}", lessonMessage);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Failed to get %s", lessonMessage);
@@ -119,8 +119,14 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public boolean updateLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId,
-            long lessonId) {
+    public boolean updateLesson(LessonDTO lesson) {
+        long lessonId = lesson.getId();
+        int period = lesson.getPeriod();
+        int subjectId = lesson.getSubjectId();
+        int roomId = lesson.getRoomId();
+        long groupId = lesson.getGroupId();
+        String date = lesson.getDate();
+        long teacherId = lesson.getTeacherId();
         String lessonMessage = String.format(
                 "Lesson with ID = %d and period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d",
                 lessonId, period, subjectId, roomId, groupId, date, teacherId);
@@ -128,8 +134,8 @@ public class LessonDAOImpl implements LessonDAO {
         boolean actionResult = false;
         Timestamp time = getTimestampFromString(date);
         try {
-            actionResult = jdbcTemplate.update(UPDATE_LESSON, period,groupId, subjectId, roomId,  time,
-                    teacherId, lessonId) > 0;
+            actionResult = jdbcTemplate.update(UPDATE_LESSON, period, groupId, subjectId, roomId, time, teacherId,
+                    lessonId) > 0;
             if (actionResult) {
                 LOGGER.info("Successfully updated {}", lessonMessage);
             } else {
@@ -165,7 +171,6 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     private Timestamp getTimestampFromString(String stringDate) {
-//        return Timestamp.valueOf(stringDate + " 12:00:00");
         return Timestamp.valueOf(stringDate + " 00:00:00");
     }
 

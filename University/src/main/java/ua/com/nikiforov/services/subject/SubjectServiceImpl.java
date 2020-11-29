@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
@@ -61,7 +62,7 @@ public class SubjectServiceImpl implements SubjectService {
 
 
     @Override
-    public boolean updateSubject(Subject subject) {
+    public boolean updateSubject(SubjectDTO subject) {
         return subjectDAO.updateSubject(subject);
     }
 

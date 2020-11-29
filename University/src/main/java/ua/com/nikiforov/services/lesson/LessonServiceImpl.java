@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.dao.lesson.LessonDAO;
 import ua.com.nikiforov.models.lesson.Lesson;
 
@@ -34,10 +35,8 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public boolean updateLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId,
-            long lessonId) {
-        return lessonDAO.updateLesson(period, subjectId, roomId, groupId, date, teacherId,
-                lessonId);
+    public boolean updateLesson(LessonDTO lesson) {
+        return lessonDAO.updateLesson(lesson);
     }
 
     @Override

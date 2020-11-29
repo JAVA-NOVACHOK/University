@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
@@ -97,8 +98,8 @@ public class ScheduleController {
     }
 
     @ModelAttribute(LESSON_ATTR)
-    public Lesson getLesson() {
-        return new Lesson();
+    public LessonDTO getLesson() {
+        return new LessonDTO();
     }
 
     @ModelAttribute(SCHEDULE_FIND_ATTR)
@@ -138,7 +139,7 @@ public class ScheduleController {
         } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot find teacher with name '%s %s! Check spelling.", firstName, lastName));
-            return VIEW_TEACHER_SCHEDULE;
+            return VIEW_TEACHER_TIMETABLE_FORM;
         }
         List<DayTimetable> timetables = teachersTimetableService.getDayTimetable(date, teacher.getId());
         if (timetables.isEmpty()) {
@@ -270,10 +271,10 @@ public class ScheduleController {
     }
     
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute("lesson") Lesson lesson,Model model){
+    public String processEdit(@ModelAttribute("lesson") LessonDTO lesson,Model model){
        try {
            model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
-           lessonService.updateLesson(lesson.getPeriod(), lesson.getSubjectId(), lesson.getRoomId(), lesson.getGroupId(), lesson.getDate(), lesson.getTeacherId(), lesson.getId());
+           lessonService.updateLesson(lesson);
            model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDate(), lesson.getTeacherId()));
            model.addAttribute(SUCCESS_MSG, "Seccess updating timetable!!!!");
        }catch (DuplicateKeyException e) {

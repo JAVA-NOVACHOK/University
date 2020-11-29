@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -164,16 +165,15 @@ class LessonServiceImplTest {
     void whenUpdateLessonIfSuccessThenReturnTrue() {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
-        assertTrue(lessonService.updateLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, TEST_GROUP_ID_2, DATE,
-                TEACHER_ID_1, lessonId));
+        assertTrue(lessonService.updateLesson(new LessonDTO(lessonId,PERIOD_2, TEST_GROUP_ID_2,TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,  DATE,
+                TEACHER_ID_1)));
     }
 
     @Test
     void whenUpdateLessonThenLessonIsChanged() {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
-        lessonService.updateLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, TEST_GROUP_ID_2, DATE, TEACHER_ID_1,
-                lessonId);
+        lessonService.updateLesson(new LessonDTO(lessonId,PERIOD_2, TEST_GROUP_ID_2,TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,  DATE, TEACHER_ID_1));
         Lesson expectedUpdatedLesson = lessonService.getLessonByAllArgs(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2, DATE, TEACHER_ID_1);
         Lesson actualUpdatedLesson = lessonService.getLessonById(lessonId);
         assertEquals(expectedUpdatedLesson, actualUpdatedLesson);

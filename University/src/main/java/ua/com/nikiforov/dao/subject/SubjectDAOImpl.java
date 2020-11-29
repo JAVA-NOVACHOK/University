@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.SubjectMapper;
@@ -117,7 +118,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     }
 
     @Override
-    public boolean updateSubject(Subject subject) {
+    public boolean updateSubject(SubjectDTO subject) {
         String updateMessage = String.format("Subject with name %s by id %d", subject.getName(), subject.getId());
         LOGGER.debug("Updating {}", updateMessage);
         boolean actionResult = false;

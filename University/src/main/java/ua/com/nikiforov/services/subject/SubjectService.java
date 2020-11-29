@@ -2,6 +2,7 @@ package ua.com.nikiforov.services.subject;
 
 import java.util.List;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.models.Subject;
 
 public interface SubjectService {
@@ -16,7 +17,7 @@ public interface SubjectService {
     
     public List<Subject> getAllSubjectsWithoutTeachers();
 
-    public boolean updateSubject(Subject subject);
+    public boolean updateSubject(SubjectDTO subject);
 
     public boolean deleteSubjectById(int subjectId);
 }

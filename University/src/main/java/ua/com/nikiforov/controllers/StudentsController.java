@@ -136,6 +136,7 @@ public class StudentsController {
     @PostMapping("/transfer")
     public String processTransfer(@ModelAttribute(STUDENT_ATTR) StudentDTO student,
             @RequestParam long groupToId, Model model) {
+        LOGGER.debug("GroupToId = {}",groupToId);
         long groupFromId = student.getGroupId();
         long studentId = student.getId();
         String firstName = student.getFirstName();

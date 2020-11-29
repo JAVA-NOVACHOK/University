@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
@@ -40,8 +41,8 @@ public class SubjectsController {
     }
 
     @ModelAttribute("subject")
-    public Subject getSubject() {
-        return new Subject();
+    public SubjectDTO getSubject() {
+        return new SubjectDTO();
     }
 
     @GetMapping()
@@ -77,7 +78,7 @@ public class SubjectsController {
     }
 
     @PostMapping("/edit")
-    public String processEditing(@ModelAttribute(SUBJECT_ATTR) Subject subject, Model model) {
+    public String processEditing(@ModelAttribute(SUBJECT_ATTR) SubjectDTO subject, Model model) {
         Subject oldSubject;
         String subjectName = subject.getName();
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());

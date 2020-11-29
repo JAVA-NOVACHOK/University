@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
@@ -77,14 +78,14 @@ class SubjectServiceImplTest {
     @Test
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
-        assertTrue(subjectService.updateSubject(new Subject(subject.getId(),SUBJECT_NAME_2)));
+        assertTrue(subjectService.updateSubject(new SubjectDTO(subject.getId(),SUBJECT_NAME_2)));
     }
 
     @Test
     void whenUpdateSubjectThenSubjectHasUpdatedName() {
         Subject subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
-        subjectService.updateSubject(new Subject(subjectId,SUBJECT_NAME_2));
+        subjectService.updateSubject(new SubjectDTO(subjectId,SUBJECT_NAME_2));
         Subject expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
         Subject actualSubject = subjectService.getSubjectById(subjectId);
         assertEquals(expectedSubject, actualSubject);

@@ -27,30 +27,20 @@
 	</div>
 
 	<div class="row justify-content-center">
-		<form action="/University/schedules/teachers_day" method="post">
+		<form class="form-inline" action="/University/schedules/teachers_day" method="post">
 			<div class="row">
-				<div class="col">
-					<input type="text" class="form-control" placeholder="First name"
-						name="firstName">
-				</div>
-				<div class="col">
-					<input type="text" class="form-control" required="required"
-						placeholder="Last name" name="lastName">
-				</div>
-				<div>
-					<input type="date" class="form-control" required="required"
-						name="time">
-				</div>
-				<div class="col">
-					<label for="day">schedule</label>
-					<button id="day" type="submit" class="btn btn-outline-success">For
-						day</button>
-				</div>
-				<div class="col">
-					<button id="month" type="submit"
-						formaction="/University/schedules/teachers_month"
-						class="btn btn-outline-warning">For month</button>
-				</div>
+				<input type="text" class="form-control mr-2"
+					placeholder="First name" name="firstName"> <input
+					type="text" class="form-control mr-2" required="required"
+					placeholder="Last name" name="lastName"> <input type="date"
+					class="form-control mr-2" required="required" name="time">
+				<label for="day">schedule</label>
+				<button id="day" type="submit" class="btn mr-2 btn-outline-success">For
+					day</button>
+
+				<button id="month" type="submit"
+					formaction="/University/schedules/teachers_month"
+					class="btn mr-2 btn-outline-warning">For month</button>
 			</div>
 		</form>
 	</div>

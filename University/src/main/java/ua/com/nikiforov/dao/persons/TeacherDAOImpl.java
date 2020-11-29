@@ -84,10 +84,14 @@ public class TeacherDAOImpl implements TeacherDAO {
         LOGGER.debug("Getting {}", teacherMessage);
         Teacher teacher = null;
         try {
+            LOGGER.debug("Getting in try block{}", teacherMessage);
             teacher = jdbcTemplate.queryForObject(GET_TEACHER_BY_NAME, new Object[] { firstName, lastName },
                     teacherMapper);
+            LOGGER.debug("After try block {}", teacherMessage);
+            LOGGER.info("Successfully retrived {}", teacherMessage);
         } catch (EmptyResultDataAccessException e) {
             String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
+            LOGGER.debug(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage, e);
         }
         return teacher;

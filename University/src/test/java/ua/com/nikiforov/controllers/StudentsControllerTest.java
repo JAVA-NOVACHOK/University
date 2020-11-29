@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
@@ -102,7 +103,7 @@ class StudentsControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("groupIn", testGroup_1))
-                .andExpect(model().size(3))
+                .andExpect(model().size(4))
                 .andExpect(view().name(VIEW_STUDENTS));
     }
     
@@ -131,7 +132,7 @@ class StudentsControllerTest {
                     .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(model().size(4))
+            .andExpect(model().size(5))
             .andExpect(model().attributeExists(GROUPS_ATTR))
             .andExpect(model().attributeExists(GROUP_IN_ATTR))
             .andExpect(model().attributeExists(FAIL_MSG))
@@ -150,7 +151,7 @@ class StudentsControllerTest {
                 .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(model().size(4))
+        .andExpect(model().size(5))
         .andExpect(model().attributeExists(GROUPS_ATTR))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -167,7 +168,7 @@ class StudentsControllerTest {
                 .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(model().size(4))
+        .andExpect(model().size(5))
         .andExpect(model().attributeExists(GROUPS_ATTR))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -185,7 +186,7 @@ class StudentsControllerTest {
                 .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(model().size(4))
+        .andExpect(model().size(5))
         .andExpect(model().attributeExists(GROUPS_ATTR))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(FAIL_MSG))
@@ -201,7 +202,7 @@ class StudentsControllerTest {
                 .param(ID, student.getId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(model().size(4))
+        .andExpect(model().size(5))
         .andExpect(model().attributeExists(GROUPS_ATTR))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -235,11 +236,13 @@ class StudentsControllerTest {
         
         this.mockMvc
         .perform(post("/students/transfer")
-                .param(STUDENT_ID_ATTR, student.getId() + STR)
+                .param(ID, student.getId() + STR)
                 .param(FIRST_NAME_ATTR, student.getFirstName())
                 .param(LAST_NAME_ATTR, student.getLastName())
-                .param(GROUP_TO_ID_ATTR, group_2.getGroupId() + STR)
-                .param(GROUP_NAME_ATTR, group_1.getGroupName()))
+                .param(GROUP_NAME_ATTR, group_1.getGroupName())
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
+                .sessionAttr(STUDENT_ATTR, new StudentDTO())
+                .param(GROUP_TO_ID_ATTR, group_2.getGroupId() + STR))
         .andExpect(status().isOk())
         .andExpect(model().attribute(GROUP_IN_ATTR,group_2))
         .andExpect(model().attributeExists(SUCCESS_MSG))
