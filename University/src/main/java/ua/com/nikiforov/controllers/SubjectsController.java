@@ -25,7 +25,6 @@ public class SubjectsController {
     private static final String SUBJECT_ATTR = "subject";
     private static final String TEACHERS_ATTR = "teachers";
     private static final String VIEW_SUBJECTS = "subjects/subjects";
-    private static final String VIEW_SUBJECTS_ADD_FORM = "subjects/add_subject_form";
     private static final String VIEW_SUBJECTS_EDIT_FORM = "subjects/edit_subject_form";
 
     private static final String SUCCESS_MSG = "success";

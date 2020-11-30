@@ -137,8 +137,8 @@ class LessonServiceImplTest {
 
     @Test
     void whenAddLessonIfSuccessThenReturnTrue() {
-        assertTrue(lessonService.addLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE,
-                TEACHER_ID_1));
+        assertTrue(lessonService.addLesson(new LessonDTO(0,PERIOD_1, TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,  DATE,
+                TEACHER_ID_1)));
     }
 
     @Test
@@ -195,7 +195,7 @@ class LessonServiceImplTest {
     }
 
     private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+        lessonService.addLesson(new LessonDTO(0,period, groupId, subjectId, roomId, date, teacherId));
         return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
     }
     

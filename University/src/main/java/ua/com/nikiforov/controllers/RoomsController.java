@@ -16,8 +16,6 @@ import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Room;
-import ua.com.nikiforov.models.persons.Student;
-import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.room.RoomService;
 
 @Controller
@@ -26,15 +24,13 @@ public class RoomsController {
 
     private static final String ROOMS_ATTR = "rooms";
     private static final String VIEW_ROOMS = "rooms/rooms";
-    private static final String VIEW_ADD_ROOM = "rooms/add_room_form";
     private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
     private static final String MODEL_ATTR_ROOM = "room";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
+    
     private RoomService roomService;
-
-    private StudentsService studentService;
 
     @ModelAttribute(MODEL_ATTR_ROOM)
     public RoomDTO getRoom() {
@@ -42,9 +38,8 @@ public class RoomsController {
     }
 
     @Autowired
-    public RoomsController(RoomService roomService, StudentsService studentService) {
+    public RoomsController(RoomService roomService) {
         this.roomService = roomService;
-        this.studentService = studentService;
     }
 
     @GetMapping()

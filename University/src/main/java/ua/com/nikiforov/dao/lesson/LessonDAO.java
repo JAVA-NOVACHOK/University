@@ -7,7 +7,7 @@ import ua.com.nikiforov.models.lesson.Lesson;
 
 public interface LessonDAO {
 
-    public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId);
+    public boolean addLesson(LessonDTO lesson);
 
     public Lesson getLessonById(long id);
 

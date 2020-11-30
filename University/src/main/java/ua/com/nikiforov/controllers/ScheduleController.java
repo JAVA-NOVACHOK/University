@@ -28,7 +28,6 @@ import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
-import ua.com.nikiforov.services.timetables.DateInfo;
 import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.PersonalTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
@@ -53,7 +52,6 @@ public class ScheduleController {
     private static final String TEACHER = "teacher";
     private static final String STUDENT = "student";
     private static final String DAY_TIMETABLE = "timetables";
-    private static final String MONTH_TIMETABLE = "timetables";
 
     private static final String VIEW_SCHEDULE = "timetable/schedule";
     private static final String VIEW_TEACHER_TIMETABLE_FORM = "timetable/teacher_timetable_form";
@@ -237,15 +235,15 @@ public class ScheduleController {
     }
 
     @PostMapping("/add")
-    public String addSchedule(@RequestParam int period, @RequestParam int subjectId, @RequestParam int roomId,
-            @RequestParam long groupId, @RequestParam String date, @RequestParam long teacherId, Model model) {
+    public String addSchedule(@ModelAttribute("lesson")LessonDTO lesson, Model model) {
+        long teacherId = lesson.getTeacherId();
+        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacherId));
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacherId));
         try {
-            lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+            lessonService.addLesson(lesson);
             model.addAttribute(SUCCESS_MSG, "Lesson successfully added to schedule!");
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");

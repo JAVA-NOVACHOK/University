@@ -16,8 +16,8 @@ public class LessonServiceImpl implements LessonService {
     private LessonDAO lessonDAO;
 
     @Override
-    public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        return lessonDAO.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+    public boolean addLesson(LessonDTO lesson) {
+        return lessonDAO.addLesson(lesson);
     }
 
     @Override

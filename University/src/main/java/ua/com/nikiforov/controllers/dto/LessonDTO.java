@@ -24,6 +24,14 @@ public class LessonDTO {
         this.date = date;
         this.period = period;
         this.teacherId = teacherId;
+    }
+
+    public LessonDTO(int period, long groupId, int subjectId, int roomId, String date, long teacherId) {
+        this.period = period;
+        this.groupId = groupId;
+        this.subjectId = subjectId;
+        this.roomId = roomId;
+        this.teacherId = teacherId;
         this.date = date;
     }
 

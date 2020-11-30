@@ -43,7 +43,13 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
-    public boolean addLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+    public boolean addLesson(LessonDTO lesson) {
+        int period = lesson.getPeriod();
+        int subjectId = lesson.getSubjectId();
+        int roomId = lesson.getRoomId();
+        long groupId = lesson.getGroupId();
+        String date = lesson.getDate();
+        long teacherId = lesson.getTeacherId();
         String lessonMessage = String.format(
                 "Lesson with period = %d, subjectId = %d, roomId = %d, groupId = %d, date = %s, teacherId = %d", period,
                 subjectId, roomId, groupId, date, teacherId);

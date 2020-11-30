@@ -2,7 +2,6 @@ package ua.com.nikiforov.dao.room;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class RoomDAOImpl implements RoomDAO {
             if (actionResult) {
                 LOGGER.info("Successfully added {}", roomMessage);
             } else {
-                String failMessage = String.format("Fail to add {}", roomMessage);
+                String failMessage = String.format("Fail to add %s", roomMessage);
                 throw new DataOperationException(failMessage);
             }
         }catch (DuplicateKeyException e) {

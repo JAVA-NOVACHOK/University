@@ -1,6 +1,5 @@
 package ua.com.nikiforov.services.group;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;

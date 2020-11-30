@@ -150,7 +150,7 @@ public class StudentDAOImpl implements StudentDAO {
                 throw new DataOperationException("Couldn't update " + student);
             }
         } catch (DuplicateKeyException e) {
-            LOGGER.error("ERROR! Cannot add {} already exists!",student.toString());
+            LOGGER.error("ERROR! Cannot add {} already exists!",student);
             throw new DuplicateKeyException(e.getMessage(),e);
         } catch (DataAccessException e) {
             String failMessage = String.format("Failed to update %s", student);

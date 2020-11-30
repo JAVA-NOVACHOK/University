@@ -230,12 +230,12 @@ class ScheduleControllerTest {
         lesson_3 = insertLesson(PERIOD_3, subject_1.getId(), room_3.getId(), group_2.getGroupId(), DATE,
                 teacher.getId());
         
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_3.getGroupId(), DATE_1,
-                teacher.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_3.getGroupId(), DATE_1_ADD_3_DAYS,
-                teacher.getId());
-        lessonService.addLesson(PERIOD_1, subject_3.getId(), room_3.getId(), group_3.getGroupId(), DATE_1_ADD_13_DAYS,
-                teacher.getId());
+        lessonService.addLesson(new LessonDTO(PERIOD_1,  group_3.getGroupId(), subject_1.getId(), room_1.getId(), DATE_1,
+                teacher.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_3.getGroupId(),subject_2.getId(), room_2.getId(),  DATE_1_ADD_3_DAYS,
+                teacher.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_3.getGroupId(), subject_3.getId(), room_3.getId(), DATE_1_ADD_13_DAYS,
+                teacher.getId()));
 
     }
 
@@ -497,7 +497,7 @@ class ScheduleControllerTest {
     }
     
     private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+        lessonService.addLesson(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
         return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
     }
     

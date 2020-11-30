@@ -29,7 +29,6 @@ public class GroupsController {
     private static final String STUDENTS_ATTR = "students";
     private static final String VIEW_GROUPS = "groups/groups";
     private static final String VIEW_STUDENTS = "students/students";
-    private static final String VIEW_ADD_GROUP = "groups/add_group_form";
     private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";
     private static final String VIEW_DELETE_GROUP = "groups/delete_group_form";
     private static final String NEW_LINE = System.lineSeparator();

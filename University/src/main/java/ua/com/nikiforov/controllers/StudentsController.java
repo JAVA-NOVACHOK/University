@@ -33,7 +33,6 @@ public class StudentsController {
     private static final String GROUP_ATTR = "group";
     private static final String GROUP_IN_ATTR = "groupIn";
     private static final String GROUPS_ATTR = "groups";
-    private static final String STUDENTS_ATTR = "students";
     private static final String FIRST_NAME_ATTR = "firstName";
     private static final String LAST_NAME_ATTR = "lastName";
 
