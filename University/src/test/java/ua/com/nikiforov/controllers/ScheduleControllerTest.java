@@ -28,8 +28,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
@@ -175,7 +177,7 @@ class ScheduleControllerTest {
     
     private Teacher teacher;
     
-    private Student student;
+    private StudentDTO student;
     
     
     
@@ -183,9 +185,9 @@ class ScheduleControllerTest {
     Room room_2;
     Room room_3;
     
-    Group group_1;
-    Group group_2;
-    Group group_3;
+    GroupDTO group_1;
+    GroupDTO group_2;
+    GroupDTO group_3;
     
     Subject subject_1;
     Subject subject_2;
@@ -471,13 +473,13 @@ class ScheduleControllerTest {
         .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
     
-    private Group insertGroup(String groupName) {
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }
 
-    public Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
+    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 

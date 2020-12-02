@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -160,7 +161,7 @@ public class ScheduleController {
         String firstName = scheduleFindAttr.getFirstName();
         String lastName = scheduleFindAttr.getLastName();
         String date = scheduleFindAttr.getTime();
-        Student student;
+        StudentDTO student;
         try {
             student = studentsService.getStudentByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(STUDENT, student);
@@ -187,7 +188,7 @@ public class ScheduleController {
         String firstName = scheduleFindAttr.getFirstName();
         String lastName = scheduleFindAttr.getLastName();
         String date = scheduleFindAttr.getTime();
-        Student student;
+        StudentDTO student;
         try {
             student = studentsService.getStudentByName(scheduleFindAttr.getFirstName(), scheduleFindAttr.getLastName());
             model.addAttribute(STUDENT, student);

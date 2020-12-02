@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
@@ -98,7 +99,7 @@ class StudentsControllerTest {
 
     @Test
     void getStudentInGroup_returnStudentView_WithGroupAttr() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         this.mockMvc.perform(get("/students").param(GROUP_ID_ATTR, testGroup_1.getGroupId() + ""))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -109,8 +110,8 @@ class StudentsControllerTest {
     
     @Test
     void editStudent_ReturnStudentEditForm() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc.perform(get("/students/edit").param(ID, student_1.getId() + ""))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -121,8 +122,8 @@ class StudentsControllerTest {
     
     @Test
     void editStudent_IfEditOnExistingStudent_FailMSGAttr() throws Exception{
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getGroupId());
         this.mockMvc
             .perform(post("/students/edit")
@@ -141,8 +142,8 @@ class StudentsControllerTest {
     
     @Test
     void editStudent_SuccessEditStudent() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        Student student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc
         .perform(post("/students/edit")
                 .param(ID, student_1.getId() + "")
@@ -160,7 +161,7 @@ class StudentsControllerTest {
     
     @Test
     void addStudent_SuccessAddStudent() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         this.mockMvc
         .perform(post("/students/add")
                 .param(FIRST_NAME_ATTR, FIRST_NAME_1)
@@ -177,7 +178,7 @@ class StudentsControllerTest {
     
     @Test
     void addStudent_IfAddExistingStudent_FailMSGAttr() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc
         .perform(post("/students/add")
@@ -195,8 +196,8 @@ class StudentsControllerTest {
     
     @Test
     void deleteStudent_SuccessDeleteStudent() throws Exception {
-        Group testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
+        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc
         .perform(get("/students/delete")
                 .param(ID, student.getId() + STR))
@@ -211,10 +212,10 @@ class StudentsControllerTest {
     
     @Test
     void transferStudent_ReturnTransferStudentForm() throws Exception{
-        Group groupFrom = insertGroup(TEST_GROUP_NAME_1);
-        Group group_1 = insertGroup(TEST_GROUP_NAME_2);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_3);
-        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, groupFrom.getGroupId());
+        GroupDTO groupFrom = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_3);
+        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, groupFrom.getGroupId());
         
         this.mockMvc
         .perform(get("/students/transfer")
@@ -229,10 +230,10 @@ class StudentsControllerTest {
     
     @Test
     void transferStudent_SuccessStudentTransfer() throws Exception{
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
-        Student student = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
+        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         
         this.mockMvc
         .perform(post("/students/transfer")
@@ -250,13 +251,13 @@ class StudentsControllerTest {
         .andExpect(view().name(VIEW_STUDENTS));
     }
     
-    private Group insertGroup(String groupName) {
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }
 
-    private Student insertStudent(String firstName, String lastName, long groupId) {
-        studentsService.addStudent(firstName, lastName, groupId);
+    private StudentDTO insertStudent(String firstName, String lastName, long groupId) {
+        studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
         return studentsService.getStudentByNameGroupId(firstName, lastName, groupId);
     }
 

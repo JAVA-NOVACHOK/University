@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -38,7 +39,6 @@ public class GroupsController {
     private static final String SUCCESS_MSG = "success";
 
     private GroupService groupService;
-
     private StudentsService studentsService;
 
     @Autowired
@@ -82,10 +82,10 @@ public class GroupsController {
     @PostMapping("/delete")
     public String processingDelete(@RequestParam long groupId, Model model) {
         try {
-            List<Student> students = studentsService.getStudentsByGroupId(groupId);
-            List<Group> groups = groupService.getAllGroups();
+            List<StudentDTO> students = studentsService.getStudentsByGroupId(groupId);
+            List<GroupDTO> groups = groupService.getAllGroups();
             model.addAttribute(GROUPS_ATTR, groups);
-            Group group = groupService.getGroupById(groupId);
+            GroupDTO group = groupService.getGroupById(groupId);
             String groupName = group.getGroupName();
             if (!students.isEmpty()) {
                 model.addAttribute(GROUP_IN_ATTR, group);

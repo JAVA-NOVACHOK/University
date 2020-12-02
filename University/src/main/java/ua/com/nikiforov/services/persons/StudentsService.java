@@ -7,21 +7,23 @@ import ua.com.nikiforov.models.persons.Student;
 
 public interface StudentsService {
 
-    public boolean addStudent(String firstName, String lastName, long groupId);
+    public boolean addStudent(StudentDTO student);
 
-    public Student getStudentById(long studentId);
+    public StudentDTO getStudentById(long studentId);
 
-    public List<Student> getStudentsByGroupId(long groupId);
+    public List<StudentDTO> getStudentsByGroupId(long groupId);
 
-    public Student getStudentByName(String firstName, String lastName);
+    public StudentDTO getStudentByName(String firstName, String lastName);
 
-    public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
+    public StudentDTO getStudentByNameGroupId(String firstName, String lastName, long groupId);
 
-    public List<Student> getAllStudents();
+    public List<StudentDTO> getAllStudents();
 
     public boolean updateStudent(StudentDTO student);
 
     public boolean deleteStudentById(long studentId);
 
     public boolean transferStudent(long studentId, long groupIdTo);
+
+    public StudentDTO getStudentDTO(Student student);
 }

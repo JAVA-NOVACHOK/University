@@ -19,6 +19,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
@@ -108,7 +111,7 @@ class StudentTimetableServiceTest {
     private Teacher teacher_2;
     private Teacher teacher_3;
 
-    private Student student;
+    private StudentDTO student;
 
     private Lesson lesson_1_date;
     private Lesson lesson_2_date;
@@ -137,8 +140,8 @@ class StudentTimetableServiceTest {
         Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
 
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
 
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
@@ -159,12 +162,12 @@ class StudentTimetableServiceTest {
         lesson_3_date = insertLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(), DATE,
                 teacher_3.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_2.getId(), group_2.getGroupId(), DATE,
-                teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_3.getId(), group_2.getGroupId(), DATE,
-                teacher_2.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_2.getId(), group_2.getGroupId(), DATE,
-                teacher_3.getId());
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(),subject_1.getId(), room_2.getId(),  DATE,
+                teacher_1.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_2.getGroupId(),subject_2.getId(), room_3.getId(),  DATE,
+                teacher_2.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_3, group_2.getGroupId(), subject_3.getId(), room_2.getId(), DATE,
+                teacher_3.getId()));
 
         lesson_1_date_day_1 = insertLesson(PERIOD_1, subject_3.getId(), room_2.getId(), group_1.getGroupId(),
                 DATE_1_ADD_1_DAY, teacher_1.getId());
@@ -187,12 +190,12 @@ class StudentTimetableServiceTest {
         lesson_3_date_day_13 = insertLesson(PERIOD_3, subject_2.getId(), room_2.getId(), group_1.getGroupId(),
                 DATE_1_ADD_13_DAYS, teacher_2.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_2.getId(), group_2.getGroupId(), DATE_1_ADD_13_DAYS,
-                teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_3.getId(), group_2.getGroupId(), DATE_1_ADD_13_DAYS,
-                teacher_2.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_1.getId(), group_2.getGroupId(), DATE_1_ADD_13_DAYS,
-                teacher_3.getId());
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(),subject_1.getId(), room_2.getId(),  DATE_1_ADD_13_DAYS,
+                teacher_1.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_2.getGroupId(), subject_2.getId(), room_3.getId(), DATE_1_ADD_13_DAYS,
+                teacher_2.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_3, group_2.getGroupId(), subject_3.getId(), room_1.getId(),  DATE_1_ADD_13_DAYS,
+                teacher_3.getId()));
 
         lesson_1_date_day_21 = insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(),
                 DATE_1_ADD_21_DAYS, teacher_1.getId());
@@ -201,12 +204,12 @@ class StudentTimetableServiceTest {
         lesson_3_date_day_21 = insertLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(),
                 DATE_1_ADD_21_DAYS, teacher_3.getId());
 
-        lessonService.addLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), DATE_1_ADD_33_DAYS,
-                teacher_1.getId());
-        lessonService.addLesson(PERIOD_2, subject_2.getId(), room_2.getId(), group_1.getGroupId(), DATE_1_ADD_33_DAYS,
-                teacher_2.getId());
-        lessonService.addLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(), DATE_1_ADD_33_DAYS,
-                teacher_3.getId());
+        lessonService.addLesson(new LessonDTO(PERIOD_1,group_1.getGroupId(), subject_1.getId(), room_1.getId(),  DATE_1_ADD_33_DAYS,
+                teacher_1.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_1.getGroupId(),subject_2.getId(), room_2.getId(),  DATE_1_ADD_33_DAYS,
+                teacher_2.getId()));
+        lessonService.addLesson(new LessonDTO(PERIOD_3, group_1.getGroupId(), subject_3.getId(), room_3.getId(), DATE_1_ADD_33_DAYS,
+                teacher_3.getId()));
     }
 
     @Test
@@ -313,17 +316,17 @@ class StudentTimetableServiceTest {
     }
 
     private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(period, subjectId, roomId, groupId, date, teacherId);
+        lessonService.addLesson(new LessonDTO(period,groupId, subjectId, roomId,  date, teacherId));
         return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
     }
 
-    private Group insertGroup(String groupName) {
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }
 
-    public Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
+    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 

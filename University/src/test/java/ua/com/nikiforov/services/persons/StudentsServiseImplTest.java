@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -59,22 +60,21 @@ class StudentsServiseImplTest {
 
     @Test
     void whenAddStudentIfSuccessReturnTrue() {
-        assertTrue(studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
+        assertTrue(studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1)));
     }
 
     @Test
     void afterAddStudentReturnCorrectStudentObject() {
-        Student expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
+        StudentDTO expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getGroupId()));
     }
 
     @Test
     void whenGetAllStudentsIfPresentReturnListOfAllStudents() {
-        List<Student> expectedStudents = new ArrayList<>();
-        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
+        List<StudentDTO> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroupName_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
         expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroupName_1));
-        Collections.sort(expectedStudents);
         assertIterableEquals(expectedStudents, studentsService.getAllStudents());
     }
 
@@ -88,34 +88,34 @@ class StudentsServiseImplTest {
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
         long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
         studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
-        Student expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
-        Student actualStudent = studentsService.getStudentById(studentId);
+        StudentDTO expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
+        StudentDTO actualStudent = studentsService.getStudentById(studentId);
         assertEquals(expectedStudent, actualStudent);
     }
 
     @Test
     void whenDeleteStudentByIdIfSuccessThenReturnTrue() {
-        studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        Student student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
+        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
+        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         assertTrue(studentsService.deleteStudentById(student.getGroupId()));
     }
 
     @Test
     void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
-        studentsService.addStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        Student student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
+        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
+        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
         long studentId = student.getGroupId();
         studentsService.deleteStudentById(studentId);
         assertThrows(EntityNotFoundException.class, () -> studentsService.getStudentById(studentId));
     }
 
-    private Group insertGroup(String groupName) {
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }
 
-    public Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
+    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 

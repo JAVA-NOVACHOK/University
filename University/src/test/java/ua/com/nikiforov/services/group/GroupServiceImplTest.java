@@ -20,6 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -67,13 +68,13 @@ class GroupServiceImplTest {
 
     @Test
     void whenGetGroupByIdReturnCorrectGroup() {
-        Group group = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
         assertEquals(group, groupService.getGroupById(group.getGroupId()));
     }
 
     @Test
     void whenGetAllGroupsIfPresentReturnListOfAllGroups() {
-        List<Group> expectedGroups = new ArrayList<>();
+        List<GroupDTO> expectedGroups = new ArrayList<>();
         expectedGroups.add(insertGroup(TEST_GROUP_NAME_1));
         expectedGroups.add(insertGroup(TEST_GROUP_NAME_2));
         expectedGroups.add(insertGroup(TEST_GROUP_NAME_3));
@@ -83,23 +84,23 @@ class GroupServiceImplTest {
 
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
-        Group group = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
         assertTrue(groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2)));
     }
 
     @Test
     void whenUpdateGroupThenGroupHasChangedName() {
-        Group group = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
         long groupId = group.getGroupId();
         groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2));
-        Group expectedUpdatedGroup = groupService.getGroupById(groupId);
-        Group actualUpdatedGroup = groupService.getGroupByName(TEST_GROUP_NAME_2);
+        GroupDTO expectedUpdatedGroup = groupService.getGroupById(groupId);
+        GroupDTO actualUpdatedGroup = groupService.getGroupByName(TEST_GROUP_NAME_2);
         assertEquals(expectedUpdatedGroup, actualUpdatedGroup);
     }
 
     @Test
     void whenDeleteGroupByIdIfSuccessThenReturnTrue() {
-        Group group = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
         assertTrue(groupService.deleteGroup(group.getGroupId()));
     }
 
@@ -112,12 +113,12 @@ class GroupServiceImplTest {
 
     @Test
      void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getGroupId();
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
         long groupId_2 = group_2.getGroupId();
 
-        List<Student> expectedStudents = new ArrayList<>();
+        List<StudentDTO> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
         expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
         expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1));
@@ -125,39 +126,38 @@ class GroupServiceImplTest {
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
-        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_1);
         assertIterableEquals(expectedStudents, actualStudents);
 
     }
 
     @Test
     void whenDeleteStudentListOfStudentsWithoutStudent() {
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getGroupId();
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
         long groupId_2 = group_2.getGroupId();
 
-        List<Student> expectedStudents = new ArrayList<>();
-        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
+        List<StudentDTO> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, groupId_1));
-        Collections.sort(expectedStudents);
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1));
         
-        Student studentToRemove = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1);
+        StudentDTO studentToRemove = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1);
 
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
         studentsService.deleteStudentById(studentToRemove.getId());
-        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_1);
         assertIterableEquals(expectedStudents, actualStudents);
 
     }
 
     @Test
     void whenTransferStudentListOfStudentsInGroupWithTransferedStudent() {
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
         long groupId_1 = group_1.getGroupId();
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
         long groupId_2 = group_2.getGroupId();
 
         insertStudent(FIRST_NAME_1, LAST_NAME_1, groupId_1);
@@ -165,29 +165,27 @@ class GroupServiceImplTest {
 
         long transferedStudentId = insertStudent(FIRST_NAME_3, LAST_NAME_3, groupId_1).getGroupId();
 
-        List<Student> expectedStudents = new ArrayList<>();
+        List<StudentDTO> expectedStudents = new ArrayList<>();
         expectedStudents.add(insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2));
         expectedStudents.add(insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2));
 
         studentsService.transferStudent(transferedStudentId, groupId_2);
         
-        Student transferedStudent = studentsService.getStudentById(transferedStudentId);
+        StudentDTO transferedStudent = studentsService.getStudentById(transferedStudentId);
         expectedStudents.add(transferedStudent);
         
-        List<Student> actualStudents = groupService.getStudentsByGroupId(groupId_2);
-        Collections.sort(actualStudents);
-        Collections.sort(expectedStudents);
+        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_2);
         assertIterableEquals(expectedStudents, actualStudents);
 
     }
 
-    public Group insertGroup(String groupName) {
+    public GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }
 
-    private Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
+    private StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 

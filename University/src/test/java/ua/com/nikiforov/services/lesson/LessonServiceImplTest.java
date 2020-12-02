@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -122,9 +123,9 @@ class LessonServiceImplTest {
         Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
 
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
 
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
@@ -205,7 +206,7 @@ class LessonServiceImplTest {
     }
 
     
-    private Group insertGroup(String groupName) {
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
     }

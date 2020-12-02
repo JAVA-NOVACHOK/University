@@ -10,7 +10,7 @@ import ua.com.nikiforov.models.persons.Student;
 @Component
 public interface StudentDAO {
 
-    public boolean addStudent(String firstName, String lastName, long groupId);
+    public boolean addStudent(StudentDTO student);
 
     public Student getStudentById(long studentId);
     

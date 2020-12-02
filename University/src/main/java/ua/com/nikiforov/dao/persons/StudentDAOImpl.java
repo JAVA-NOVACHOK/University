@@ -49,7 +49,10 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public boolean addStudent(String firstName, String lastName, long groupId) {
+    public boolean addStudent(StudentDTO student) {
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        long groupId = student.getGroupId();
         String studentMessage = String.format("Student with firstName = %s, lastname = %s, groupId = %d", firstName,
                 lastName, groupId);
         LOGGER.debug("Adding {}", studentMessage);

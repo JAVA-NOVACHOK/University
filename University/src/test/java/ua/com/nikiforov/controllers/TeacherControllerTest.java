@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
@@ -50,7 +52,7 @@ class TeacherControllerTest {
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
     private static final String JACKSON_LAST_NAME = "Jackson";
-    
+
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
@@ -62,16 +64,16 @@ class TeacherControllerTest {
     private static final int TEST_SEAT_NUMBER_1 = 20;
     private static final int TEST_SEAT_NUMBER_2 = 25;
     private static final int TEST_SEAT_NUMBER_3 = 30;
-    
+
     private static final long INVALID_ID = 100500l;
-    
+
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
-    
+
     private static final String FIRST_NAME_PARAM = "firstName";
     private static final String LAST_NAME_PARAM = "lastName";
-    
+
     private static final String TEACHER_ATTR = "teacher";
     private static final String TEACHERS_ATTR = "teachers";
     private static final String SUBJECTS_ATTR = "subjects";
@@ -86,7 +88,7 @@ class TeacherControllerTest {
 
     private static final String TEACHERS_VIEW = "teachers/teachers";
     private static final String ONE_TEACHER = "teachers/one_teacher";
-    
+
     @Autowired
     private RoomService roomService;
 
@@ -124,172 +126,138 @@ class TeacherControllerTest {
     void getTeachersURI_ReturnTeachersView() throws Exception {
         this.mockMvc.perform(get("/teachers")).andExpect(view().name(TEACHERS_VIEW));
     }
-    
+
     @Test
     void getTeacherURI_ReturnOneTeacherView_WithAttrs() throws Exception {
         Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        
+
         Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
-        
-        Group group_1 = insertGroup(TEST_GROUP_NAME_1);
-        Group group_2 = insertGroup(TEST_GROUP_NAME_2);
-        Group group_3 = insertGroup(TEST_GROUP_NAME_3);
-        
+
+        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
+        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
+        GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
+
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
-        
-        
-        this.mockMvc
-            .perform(get("/teachers/teacher")
-                    .param(ID, teacher_1.getId() + STR))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(model().attribute(TEACHER_ATTR,teacher_1))
-            .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1, room_2, room_3)))
-            .andExpect(model().attribute(GROUPS_ATTR, hasItems(group_1, group_2, group_3)))
-            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
-            .andExpect(view().name(ONE_TEACHER));
+
+        this.mockMvc.perform(get("/teachers/teacher").param(ID, teacher_1.getId() + STR)).andDo(print())
+                .andExpect(status().isOk()).andExpect(model().attribute(TEACHER_ATTR, teacher_1))
+                .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1, room_2, room_3)))
+                .andExpect(model().attribute(GROUPS_ATTR, hasItems(group_1, group_2, group_3)))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
+                .andExpect(view().name(ONE_TEACHER));
     }
-    
+
     @Test
     void addTeacherURI_ReturnTeachersView_Teachers() throws Exception {
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
-        
+
         this.mockMvc
-        .perform(post("/teachers/add")
-                .param(FIRST_NAME_PARAM, FIRST_NAME_1)
-                .param(LAST_NAME_PARAM, LAST_NAME_1))
-        .andDo(print())
-        .andExpect(status().isOk())
-        .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
-        .andExpect(model().attribute(TEACHERS_ATTR,hasItems(teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1))))
+                .perform(
+                        post("/teachers/add").param(FIRST_NAME_PARAM, FIRST_NAME_1).param(LAST_NAME_PARAM, LAST_NAME_1))
+                .andDo(print()).andExpect(status().isOk()).andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
+                .andExpect(model().attribute(TEACHERS_ATTR,
+                        hasItems(teacherService.getTeacherByName(FIRST_NAME_1, LAST_NAME_1))))
                 .andExpect(view().name(TEACHERS_VIEW));
     }
-    
-    
+
     @Test
     void editTeacherURI_ReturnTeachersView_EditedTeacher() throws Exception {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher updatedTeacher = new Teacher(teacher.getId(),FIRST_NAME_1,LAST_NAME_2);
+        Teacher updatedTeacher = new Teacher(teacher.getId(), FIRST_NAME_1, LAST_NAME_2);
         this.mockMvc
-        .perform(post("/teachers/edit")
-                .param(ID, teacher.getId() + STR)
-                .param(FIRST_NAME_PARAM, FIRST_NAME_1)
-                .param(LAST_NAME_PARAM, LAST_NAME_2)
-                .sessionAttr(TEACHER_ATTR, teacher))
-        .andExpect(status().isOk())
-        .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(TEACHER_ATTR, updatedTeacher))
-        .andExpect(view().name(ONE_TEACHER));
-        }
-    
+                .perform(post("/teachers/edit").param(ID, teacher.getId() + STR).param(FIRST_NAME_PARAM, FIRST_NAME_1)
+                        .param(LAST_NAME_PARAM, LAST_NAME_2).sessionAttr(TEACHER_ATTR, teacher))
+                .andExpect(status().isOk()).andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(model().attribute(TEACHER_ATTR, updatedTeacher)).andExpect(view().name(ONE_TEACHER));
+    }
+
     @Test
     void deleteTeacher_ifGiveValidId_ReturnTeachersView_DeleteTeacher() throws Exception {
         Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
-        
+
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
-        this.mockMvc
-        .perform(get("/teachers/delete")
-                .param(ID, teacher_1.getId() + STR))
-        .andExpect(status().isOk())
-        .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_2,teacher_3)))
-        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
-        .andExpect(view().name(TEACHERS_VIEW));
+        this.mockMvc.perform(get("/teachers/delete").param(ID, teacher_1.getId() + STR)).andExpect(status().isOk())
+                .andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_2, teacher_3)))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
+                .andExpect(view().name(TEACHERS_VIEW));
     }
+
     @Test
     void deleteTeacher_ifGiveInInValidId_ReturnTeachersView_FailDelete() throws Exception {
         Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
-        
+
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
         Subject subject_3 = insertSubject(SUBJECT_NAME_3);
-        this.mockMvc
-        .perform(get("/teachers/delete")
-                .param(ID, INVALID_ID + STR))
-        .andExpect(status().isOk())
-        .andExpect(model().attributeExists(FAIL_MSG))
-        .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_1,teacher_2,teacher_3)))
-        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
-        .andExpect(view().name(TEACHERS_VIEW));
+        this.mockMvc.perform(get("/teachers/delete").param(ID, INVALID_ID + STR)).andExpect(status().isOk())
+                .andExpect(model().attributeExists(FAIL_MSG))
+                .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_1, teacher_2, teacher_3)))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
+                .andExpect(view().name(TEACHERS_VIEW));
     }
-    
+
     @Test
     void assignSubjectToTeacher_thenReturnSuccessAsignedSubject() throws Exception {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Subject subject = insertSubject(SUBJECT_NAME_1);
-        
+
         teacher.addSubject(subject);
-        
+
         this.mockMvc
-            .perform(post("/teachers/assign/")
-                    .param(SUBJECT_ID_ATTR, subject.getId() + STR)
-                    .param(TEACHER_ID_ATTR, teacher.getId() + STR))
-            .andExpect(status().isOk())
-            .andExpect(model().attributeExists(SUCCESS_MSG))
-            .andExpect(model().attribute(TEACHER_ATTR, teacher))
-            .andExpect(view().name(ONE_TEACHER));
+                .perform(post("/teachers/assign/").param(SUBJECT_ID_ATTR, subject.getId() + STR).param(TEACHER_ID_ATTR,
+                        teacher.getId() + STR))
+                .andExpect(status().isOk()).andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(model().attribute(TEACHER_ATTR, teacher)).andExpect(view().name(ONE_TEACHER));
     }
-    
+
     @Test
     void unassignSubjectFromTeacher() throws Exception {
         Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         Subject subject_1 = insertSubject(SUBJECT_NAME_1);
         Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        
+
         teacher.addSubject(subject_1);
-        
+
         teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
         teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
-        
-            this.mockMvc
-            .perform(get("/teachers/unassign/")
-                    .param(SUBJECT_ID_ATTR, subject_2.getId() + STR)
-                    .param(TEACHER_ID_ATTR, teacher.getId() + STR))
-            .andExpect(status().isOk())
-            .andExpect(model().attributeExists(SUCCESS_MSG))
-            .andExpect(model().attribute(TEACHER_ATTR, teacher))
-            .andExpect(view().name(ONE_TEACHER));
+
+        this.mockMvc
+                .perform(get("/teachers/unassign/").param(SUBJECT_ID_ATTR, subject_2.getId() + STR)
+                        .param(TEACHER_ID_ATTR, teacher.getId() + STR))
+                .andExpect(status().isOk()).andExpect(model().attributeExists(SUCCESS_MSG))
+                .andExpect(model().attribute(TEACHER_ATTR, teacher)).andExpect(view().name(ONE_TEACHER));
     }
-    
+
     @Test
     void findTeacherByLikeNames() throws Exception {
-        Teacher searchingTeacher = insertTeacher(MICHEL_FIRST_NAME,JACKSON_LAST_NAME);
-        
+        Teacher searchingTeacher = insertTeacher(MICHEL_FIRST_NAME, JACKSON_LAST_NAME);
+
         insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         insertTeacher(FIRST_NAME_3, LAST_NAME_3);
-        
-        this.mockMvc
-        .perform(post("/teachers/find/")
-                .param(FIRST_NAME_PARAM, "Mi")
-                .param(LAST_NAME_PARAM, "ja"))
-        .andExpect(status().isOk())
-        .andExpect(model().attribute(TEACHERS_ATTR, hasItems(searchingTeacher)))
-        .andExpect(view().name(TEACHERS_VIEW));
-    }
-    
 
-    private Group insertGroup(String groupName) {
+        this.mockMvc.perform(post("/teachers/find/").param(FIRST_NAME_PARAM, "Mi").param(LAST_NAME_PARAM, "ja"))
+                .andExpect(status().isOk()).andExpect(model().attribute(TEACHERS_ATTR, hasItems(searchingTeacher)))
+                .andExpect(view().name(TEACHERS_VIEW));
+    }
+
+    private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);
-    }
-
-    public Student insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(firstName, lastaName, groupName);
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 
     private Subject insertSubject(String subjectName) {

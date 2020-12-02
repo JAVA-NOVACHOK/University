@@ -24,4 +24,6 @@ public class UniversityAppWebInitializer implements WebApplicationInitializer {
         dispatcher.addMapping("/");
     }
 
+    
+    
 }

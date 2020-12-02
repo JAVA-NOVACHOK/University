@@ -76,7 +76,7 @@ public class StudentsController {
     @GetMapping("/edit")
     public String edit(@RequestParam long id, Model model) {
         try {
-            Student student = studentService.getStudentById(id);
+            StudentDTO student = studentService.getStudentById(id);
             model.addAttribute(STUDENT_ATTR, student);
         } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, "Warning! Couldn't find student.");
@@ -93,7 +93,7 @@ public class StudentsController {
         long groupId = student.getGroupId();
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-            Group group = groupService.getGroupById(groupId);
+            GroupDTO group = groupService.getGroupById(groupId);
             model.addAttribute(GROUP_IN_ATTR, group);
             try {
                 studentService.updateStudent(student);
@@ -117,9 +117,9 @@ public class StudentsController {
     @GetMapping("/transfer")
     public String transfer(@RequestParam long id, String message, Model model) {
         try {
-            Student student = studentService.getStudentById(id);
-            Group group = groupService.getGroupByStudentId(id);
-            List<Group> groups = groupService.getAllGroups();
+            StudentDTO student = studentService.getStudentById(id);
+            GroupDTO group = groupService.getGroupByStudentId(id);
+            List<GroupDTO> groups = groupService.getAllGroups();
             groups.remove(group);
             model.addAttribute(STUDENT_ATTR, student);
             model.addAttribute(GROUP_ATTR, group);
@@ -145,9 +145,9 @@ public class StudentsController {
             return REDIRECT_TRANSFER + studentId + CHOOSE_GROUP_MSG;
         }
         try {
-            Group groupFrom = groupService.getGroupById(groupFromId);
-            Group groupTo = groupService.getGroupById(groupToId);
-            List<Group> groups = groupService.getAllGroups();
+            GroupDTO groupFrom = groupService.getGroupById(groupFromId);
+            GroupDTO groupTo = groupService.getGroupById(groupToId);
+            List<GroupDTO> groups = groupService.getAllGroups();
             model.addAttribute(GROUP_IN_ATTR, groupTo);
             model.addAttribute(GROUPS_ATTR, groups);
             try {
@@ -175,8 +175,8 @@ public class StudentsController {
 
     @GetMapping("/delete")
     public String deleteStudent(@RequestParam long id, Model model) {
-        Group group = groupService.getGroupByStudentId(id);
-        Student student = group.getStudentById(id);
+        GroupDTO group = groupService.getGroupByStudentId(id);
+        StudentDTO student = studentService.getStudentById(id);
         try {
             studentService.deleteStudentById(id);
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
@@ -193,9 +193,11 @@ public class StudentsController {
     }
 
     @PostMapping("/add")
-    public String processAdding(@RequestParam String firstName, @RequestParam String lastName,
-            @RequestParam long groupId, Model model) {
-        Group group = groupService.getGroupById(groupId);
+    public String processAdding(@ModelAttribute(STUDENT_ATTR) StudentDTO student, Model model) {
+        long groupId = student.getGroupId();
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        GroupDTO group = groupService.getGroupById(groupId);
         model.addAttribute(GROUP_IN_ATTR, group);
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
@@ -205,7 +207,7 @@ public class StudentsController {
                 model.addAttribute(FAIL_MSG, "Choose group name for student!");
                 return VIEW_STUDENTS;
             }
-            studentService.addStudent(firstName, lastName, groupId);
+            studentService.addStudent(student);
             model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupId));
             model.addAttribute(SUCCESS_MSG, String.format("Student %s %s successfully added to group %s", firstName,
                     lastName, group.getGroupName()));
