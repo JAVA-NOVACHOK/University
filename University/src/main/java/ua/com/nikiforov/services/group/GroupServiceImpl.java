@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.group.GroupDAO;
-import ua.com.nikiforov.dao.persons.StudentDAO;
-import ua.com.nikiforov.mappers.GroupMapper;
 import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.persons.StudentsService;
 
 @Service

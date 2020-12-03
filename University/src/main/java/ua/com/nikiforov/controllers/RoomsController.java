@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.services.room.RoomService;
 
 @Controller

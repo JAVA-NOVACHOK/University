@@ -4,8 +4,6 @@ import java.util.List;
 
 import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.persons.Student;
 
 public interface GroupService {
     

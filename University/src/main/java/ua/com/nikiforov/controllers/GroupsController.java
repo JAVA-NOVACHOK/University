@@ -3,7 +3,6 @@ package ua.com.nikiforov.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +16,6 @@ import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 

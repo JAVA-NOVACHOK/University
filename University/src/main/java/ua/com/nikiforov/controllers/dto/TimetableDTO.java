@@ -28,8 +28,6 @@ public class TimetableDTO implements Comparable<TimetableDTO> {
         this.date = date;
     }
 
-
-
     public LocalDate getDate() {
         return date;
     }
@@ -94,8 +92,6 @@ public class TimetableDTO implements Comparable<TimetableDTO> {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
-    
 
     @Override
     public int hashCode() {

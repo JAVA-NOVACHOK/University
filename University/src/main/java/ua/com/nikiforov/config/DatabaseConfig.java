@@ -2,8 +2,6 @@ package ua.com.nikiforov.config;
 
 import javax.sql.DataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,8 +36,6 @@ public class DatabaseConfig {
         driverManagerDataSource.setDriverClassName(environment.getProperty(driver));
         return driverManagerDataSource;
     }
-    
-    
 
 }
 

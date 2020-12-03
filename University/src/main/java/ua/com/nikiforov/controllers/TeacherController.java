@@ -19,8 +19,6 @@ import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
@@ -36,7 +34,6 @@ public class TeacherController {
     private static final String TEACHERS_ATTR = "teachers";
     private static final String TEACHER_ATTR = "teacher";
     private static final String SUBJECTS_ATTR = "subjects";
-    private static final String ACTION_ATTR = "action";
     private static final String VIEW_TEACHERS = "teachers/teachers";
     private static final String VIEW_TEACHER_ONE = "teachers/one_teacher";
 

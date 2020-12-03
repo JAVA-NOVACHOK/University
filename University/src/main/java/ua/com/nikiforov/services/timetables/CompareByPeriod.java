@@ -15,6 +15,4 @@ public class CompareByPeriod implements Comparator<TimetableDTO> {
         }
     }
 
-    
-
 }

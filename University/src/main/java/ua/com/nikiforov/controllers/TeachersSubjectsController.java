@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
 

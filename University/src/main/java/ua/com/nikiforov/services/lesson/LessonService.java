@@ -3,7 +3,6 @@ package ua.com.nikiforov.services.lesson;
 import java.util.List;
 
 import ua.com.nikiforov.controllers.dto.LessonDTO;
-import ua.com.nikiforov.models.lesson.Lesson;
 
 public interface LessonService {
     
