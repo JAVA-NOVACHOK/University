@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Room;
@@ -85,9 +86,9 @@ class RoomsControllerTest {
 
     @Test
     void givenRoomsPageURI_ReturnsRoomsViewName_WithRoomsModelAttribute() throws Exception {
-        Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
-        Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
+        RoomDTO room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
+        RoomDTO room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
         this.mockMvc.perform(get(URL_ROOMS)).andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1, room_2, room_3)))
                 .andDo(print()).andExpect(view().name(VIEW_ROOMS));
     }
@@ -122,7 +123,7 @@ class RoomsControllerTest {
 
     @Test
     void givenRoomDeleteUriWithValidId_DeletesRoom() throws Exception {
-        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        RoomDTO room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
         .perform(get("/rooms/delete/").param(ROOM_ID_ATTR, room.getId() + STR))
         .andExpect(status().isOk())
@@ -145,7 +146,7 @@ class RoomsControllerTest {
     
     @Test
     void editRoomWithValidRoomId_ReturnsEditForm() throws Exception {
-        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        RoomDTO room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
         .perform(get("/rooms/edit/").param(ROOM_ID_ATTR, room.getId() + STR))
         .andExpect(status().isOk())
@@ -155,9 +156,9 @@ class RoomsControllerTest {
     
     @Test
     void editRoomWithInValidRoomId_FailEdit_ReturnsRoomsView() throws Exception {
-        Room room_1 = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
-        Room room_2 = insertRoom(TEST_SEAT_NUMBER_2, TEST_SEAT_NUMBER_1);
-        Room room_3 = insertRoom(TEST_SEAT_NUMBER_3, TEST_SEAT_NUMBER_3);
+        RoomDTO room_1 = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
+        RoomDTO room_2 = insertRoom(TEST_SEAT_NUMBER_2, TEST_SEAT_NUMBER_1);
+        RoomDTO room_3 = insertRoom(TEST_SEAT_NUMBER_3, TEST_SEAT_NUMBER_3);
         this.mockMvc
         .perform(get("/rooms/edit/")
                 .param(ROOM_ID_ATTR, INVALID_ID + STR))
@@ -169,7 +170,7 @@ class RoomsControllerTest {
     
     @Test
     void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception{
-        Room room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_1);
         this.mockMvc
         .perform(post("/rooms/edit")
                 .param(ID, room.getId() + STR)
@@ -183,7 +184,7 @@ class RoomsControllerTest {
     
     @Test
     void editRoomWithDuplicateRoomAttr_FailUpdate_EditsRoom() throws Exception{
-        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         
         this.mockMvc
@@ -198,7 +199,7 @@ class RoomsControllerTest {
     }
     
 
-    private Room insertRoom(int roomNumber, int seatNumber) {
+    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }

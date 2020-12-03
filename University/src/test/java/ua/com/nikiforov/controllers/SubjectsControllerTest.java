@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
@@ -83,9 +85,9 @@ class SubjectsControllerTest {
 
     @Test
     void allSubjects_ReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/subjects/"))
                 .andDo(print())
                 .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
@@ -106,9 +108,9 @@ class SubjectsControllerTest {
     
     @Test
     void addSubject_IfAddExistingSubject_FailAdding() throws Exception {
-       Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-       Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-       Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+       SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+       SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+       SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         
         this.mockMvc
         .perform(post("/subjects/add/")
@@ -121,9 +123,9 @@ class SubjectsControllerTest {
     
     @Test
     void addSubject_ifAddinExistingSubject_WithSubjectsAttrs() throws Exception {
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc
         .perform(post("/subjects/add/")
                 .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
@@ -135,7 +137,7 @@ class SubjectsControllerTest {
     
     @Test
     void editSubjectURI_thenReturnViewEditForm() throws Exception {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         this.mockMvc
         .perform(get("/subjects/edit/")
                 .param(ID_ATTR,subject.getId() + STR))
@@ -146,8 +148,8 @@ class SubjectsControllerTest {
     
     @Test
     void editSubjectURIWithSubjectParam_thenReturnSuccessSubject() throws Exception {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
-        Subject updatedSubject = new Subject(subject.getId(), SUBJECT_NAME_2);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO updatedSubject = new SubjectDTO(subject.getId(), SUBJECT_NAME_2);
         this.mockMvc
         .perform(post("/subjects/edit/")
                 .param(ID_ATTR,subject.getId() + STR)
@@ -162,9 +164,9 @@ class SubjectsControllerTest {
     
     @Test
     void deleteSubjectURIWithSubjectIdParam_thenReturnSuccessDelete() throws Exception {
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc
             .perform(get("/subjects/delete")
                     .param(ID_ATTR, subject_1.getId() + STR))
@@ -175,8 +177,8 @@ class SubjectsControllerTest {
     
     @Test
     void assignSubjectToTeacher_thenReturnSuccessAsignedSubject() throws Exception {
-        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         subject.addTeacher(teacher);
         this.mockMvc
             .perform(post("/subjects/assign/")
@@ -190,8 +192,8 @@ class SubjectsControllerTest {
     
     @Test
     void unassignSubjectFromTeacher_thenReturnSuccessMSG() throws Exception {
-        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         teacherService.assignSubjectToTeacher(subject.getId(), teacher.getId());
         this.mockMvc
         .perform(get("/subjects/unassign/")
@@ -204,13 +206,13 @@ class SubjectsControllerTest {
     }
     
 
-    private Subject insertSubject(String subjectName) {
+    private SubjectDTO insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
     }
     
-    private Teacher insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(firstName, lastName);
+    private TeacherDTO insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
         return teacherService.getTeacherByName(firstName, lastName);
     }
 

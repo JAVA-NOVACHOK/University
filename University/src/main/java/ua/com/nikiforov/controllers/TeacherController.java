@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -76,10 +77,12 @@ public class TeacherController {
     }
 
     @PostMapping("/add")
-    public String processAdding(@RequestParam String firstName, @RequestParam String lastName, Model model) {
+    public String processAdding(@ModelAttribute(TEACHER_ATTR) TeacherDTO teacher, Model model) {
+        String firstName = teacher.getFirstName();
+        String lastName = teacher.getLastName();
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
-            teacherService.addTeacher(firstName, lastName);
+            teacherService.addTeacher(teacher);
             model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
             model.addAttribute(SUCCESS_MSG, String.format("Teacher %s %s added successfully!", firstName, lastName));
         } catch (DuplicateKeyException e) {
@@ -126,7 +129,7 @@ public class TeacherController {
     @GetMapping("/delete")
     public String deleteTeacher(@RequestParam long id, Model model) {
         try {
-            Teacher teacher = teacherService.getTeacherById(id);
+            TeacherDTO teacher = teacherService.getTeacherById(id);
             String firstName = teacher.getFirstName();
             String lastName = teacher.getLastName();
             try {
@@ -148,8 +151,8 @@ public class TeacherController {
 
     @PostMapping("/assign")
     public String assignSubjectToTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
@@ -179,8 +182,8 @@ public class TeacherController {
 
     @GetMapping("/unassign")
     public String unassignSubjectFromTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
@@ -204,7 +207,7 @@ public class TeacherController {
     @PostMapping("/find")
     public String findTeacher(@RequestParam String firstName, @RequestParam String lastName, Model model) {
         try {
-            List<Teacher> teachers = teacherService.getTeacherByLikeName(firstName, lastName);
+            List<TeacherDTO> teachers = teacherService.getTeacherByLikeName(firstName, lastName);
             if (teachers.isEmpty()) {
                 model.addAttribute(FAIL_MSG, "No teacher found!");
             }

@@ -49,9 +49,6 @@ public class Subject implements Comparable<Subject>{
         this.teachers.addAll(teachers);
     }
 
-    
-    
-    
 
     @Override
     public int hashCode() {

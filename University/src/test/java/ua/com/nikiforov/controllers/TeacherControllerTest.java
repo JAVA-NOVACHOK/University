@@ -24,7 +24,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
@@ -129,19 +132,19 @@ class TeacherControllerTest {
 
     @Test
     void getTeacherURI_ReturnOneTeacherView_WithAttrs() throws Exception {
-        Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        TeacherDTO teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
 
-        Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
-        Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
+        RoomDTO room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
+        RoomDTO room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
 
         GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
         GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
         GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
 
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
 
         this.mockMvc.perform(get("/teachers/teacher").param(ID, teacher_1.getId() + STR)).andDo(print())
                 .andExpect(status().isOk()).andExpect(model().attribute(TEACHER_ATTR, teacher_1))
@@ -153,9 +156,9 @@ class TeacherControllerTest {
 
     @Test
     void addTeacherURI_ReturnTeachersView_Teachers() throws Exception {
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
 
         this.mockMvc
                 .perform(
@@ -169,8 +172,8 @@ class TeacherControllerTest {
 
     @Test
     void editTeacherURI_ReturnTeachersView_EditedTeacher() throws Exception {
-        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher updatedTeacher = new Teacher(teacher.getId(), FIRST_NAME_1, LAST_NAME_2);
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        TeacherDTO updatedTeacher = new TeacherDTO(teacher.getId(), FIRST_NAME_1, LAST_NAME_2);
         this.mockMvc
                 .perform(post("/teachers/edit").param(ID, teacher.getId() + STR).param(FIRST_NAME_PARAM, FIRST_NAME_1)
                         .param(LAST_NAME_PARAM, LAST_NAME_2).sessionAttr(TEACHER_ATTR, teacher))
@@ -180,13 +183,13 @@ class TeacherControllerTest {
 
     @Test
     void deleteTeacher_ifGiveValidId_ReturnTeachersView_DeleteTeacher() throws Exception {
-        Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+        TeacherDTO teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        TeacherDTO teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        TeacherDTO teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
 
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/teachers/delete").param(ID, teacher_1.getId() + STR)).andExpect(status().isOk())
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_2, teacher_3)))
@@ -196,13 +199,13 @@ class TeacherControllerTest {
 
     @Test
     void deleteTeacher_ifGiveInInValidId_ReturnTeachersView_FailDelete() throws Exception {
-        Teacher teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+        TeacherDTO teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        TeacherDTO teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        TeacherDTO teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
 
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/teachers/delete").param(ID, INVALID_ID + STR)).andExpect(status().isOk())
                 .andExpect(model().attributeExists(FAIL_MSG))
                 .andExpect(model().attribute(TEACHERS_ATTR, hasItems(teacher_1, teacher_2, teacher_3)))
@@ -212,8 +215,8 @@ class TeacherControllerTest {
 
     @Test
     void assignSubjectToTeacher_thenReturnSuccessAsignedSubject() throws Exception {
-        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
 
         teacher.addSubject(subject);
 
@@ -226,9 +229,9 @@ class TeacherControllerTest {
 
     @Test
     void unassignSubjectFromTeacher() throws Exception {
-        Teacher teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
 
         teacher.addSubject(subject_1);
 
@@ -244,7 +247,7 @@ class TeacherControllerTest {
 
     @Test
     void findTeacherByLikeNames() throws Exception {
-        Teacher searchingTeacher = insertTeacher(MICHEL_FIRST_NAME, JACKSON_LAST_NAME);
+        TeacherDTO searchingTeacher = insertTeacher(MICHEL_FIRST_NAME, JACKSON_LAST_NAME);
 
         insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         insertTeacher(FIRST_NAME_2, LAST_NAME_2);
@@ -260,18 +263,18 @@ class TeacherControllerTest {
         return groupService.getGroupByName(groupName);
     }
 
-    private Subject insertSubject(String subjectName) {
+    private SubjectDTO insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
     }
 
-    private Room insertRoom(int roomNumber, int seatNumber) {
+    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 
-    private Teacher insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(firstName, lastName);
+    private TeacherDTO insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
         return teacherService.getTeacherByName(firstName, lastName);
     }
 

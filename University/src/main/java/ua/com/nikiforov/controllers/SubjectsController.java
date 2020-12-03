@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
@@ -78,7 +79,7 @@ public class SubjectsController {
 
     @PostMapping("/edit")
     public String processEditing(@ModelAttribute(SUBJECT_ATTR) SubjectDTO subject, Model model) {
-        Subject oldSubject;
+        SubjectDTO oldSubject;
         String subjectName = subject.getName();
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         try {
@@ -105,7 +106,7 @@ public class SubjectsController {
     @GetMapping("/delete")
     public String processDelete(@RequestParam int id, Model model) {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
-        Subject subject;
+        SubjectDTO subject;
         try {
             subject = subjectService.getSubjectById(id);
             subjectService.deleteSubjectById(id);
@@ -128,8 +129,8 @@ public class SubjectsController {
             model.addAttribute(FAIL_MSG, "Warning! To assign subject to teacher you must choose teacher!");
             return VIEW_SUBJECTS;
         }
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         try {
@@ -154,8 +155,8 @@ public class SubjectsController {
 
     @GetMapping("/unassign")
     public String unassignSubjectFromTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());

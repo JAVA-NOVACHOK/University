@@ -9,11 +9,11 @@ public interface LessonService {
     
     public boolean addLesson(LessonDTO lesson);
 
-    public Lesson getLessonById(long id);
+    public LessonDTO getLessonById(long id);
     
-    public Lesson getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId);
+    public LessonDTO getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId);
 
-    public List<Lesson> getAllLessons();
+    public List<LessonDTO> getAllLessons();
 
     public boolean updateLesson(LessonDTO lesson);
 

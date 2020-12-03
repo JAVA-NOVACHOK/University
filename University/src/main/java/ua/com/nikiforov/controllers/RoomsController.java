@@ -44,7 +44,7 @@ public class RoomsController {
 
     @GetMapping()
     public String roomsShow(Model model) {
-        List<Room> rooms = roomService.getAllRooms();
+        List<RoomDTO> rooms = roomService.getAllRooms();
         model.addAttribute(ROOMS_ATTR, rooms);
         return VIEW_ROOMS;
     }
@@ -66,7 +66,7 @@ public class RoomsController {
     @GetMapping("/delete")
     public String deleteRoom(@RequestParam int roomId, Model model) {
         try {
-            Room room = roomService.getRoomById(roomId);
+            RoomDTO room = roomService.getRoomById(roomId);
             try {
                 roomService.deleteRoomById(roomId);
                 model.addAttribute(SUCCESS_MSG,
@@ -85,7 +85,7 @@ public class RoomsController {
     @GetMapping("/edit")
     public String editRoom(@RequestParam int roomId, Model model) {
         try {
-            Room room = roomService.getRoomById(roomId);
+            RoomDTO room = roomService.getRoomById(roomId);
             model.addAttribute("room", room);
         } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, String.format("Warning! Couln't find room with id %d ", roomId));

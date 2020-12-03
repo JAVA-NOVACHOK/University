@@ -16,6 +16,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Subject;
@@ -60,46 +61,45 @@ class SubjectServiceImplTest {
 
     @Test
     void afetrAddSubjectGetSubjectByIdReturnCorrectSubject() {
-        Subject expectedSubject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO expectedSubject = insertSubject(SUBJECT_NAME_1);
         assertEquals(expectedSubject, subjectService.getSubjectById(expectedSubject.getId()));
     }
 
     @Test
     void whenGetAllSubjectsIfPresentReturnListOfAllSubjects() {
-        List<Subject> expectedSubjects = new ArrayList<>();
+        List<SubjectDTO> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(insertSubject(SUBJECT_NAME_3));
         expectedSubjects.add(insertSubject(SUBJECT_NAME_1));
         expectedSubjects.add(insertSubject(SUBJECT_NAME_2));
-        expectedSubjects.add(insertSubject(SUBJECT_NAME_3));
-        Collections.sort(expectedSubjects);
-        List<Subject> actualSubjects = subjectService.getAllSubjects();
+        List<SubjectDTO> actualSubjects = subjectService.getAllSubjects();
         assertEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         assertTrue(subjectService.updateSubject(new SubjectDTO(subject.getId(),SUBJECT_NAME_2)));
     }
 
     @Test
     void whenUpdateSubjectThenSubjectHasUpdatedName() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         subjectService.updateSubject(new SubjectDTO(subjectId,SUBJECT_NAME_2));
-        Subject expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
-        Subject actualSubject = subjectService.getSubjectById(subjectId);
+        SubjectDTO expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
+        SubjectDTO actualSubject = subjectService.getSubjectById(subjectId);
         assertEquals(expectedSubject, actualSubject);
     }
 
     @Test
     void whenDeleteSubjectByIdIfSuccessThenReturnTrue() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         assertTrue(subjectService.deleteSubjectById(subject.getId()));
     }
 
     @Test
     void afterDeleteSubjectByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         subjectService.deleteSubjectById(subjectId);
         assertThrows(EntityNotFoundException.class, () -> subjectService.getSubjectById(subjectId));
@@ -107,13 +107,13 @@ class SubjectServiceImplTest {
 
     @Test
     void afterAssignSubjectsToTeachers_SubjectHasListOfTeachers() {
-        Subject subject = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         
-        List<Teacher> expectedTeachers = new ArrayList<>();
-        Teacher teacherOne = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        Teacher teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
-        Teacher teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+        List<TeacherDTO> expectedTeachers = new ArrayList<>();
+        TeacherDTO teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        TeacherDTO teacherOne = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        TeacherDTO teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
         
         expectedTeachers.add(teacherOne);
         expectedTeachers.add(teacherTwo);
@@ -124,19 +124,17 @@ class SubjectServiceImplTest {
         teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
         
         subject = subjectService.getSubjectById(subjectId);
-        List<Teacher> actualTeachers = subject.getTeachers();
-        Collections.sort(expectedTeachers);
-        Collections.sort(actualTeachers);
+        List<TeacherDTO> actualTeachers = subject.getTeachers();
         assertIterableEquals(expectedTeachers, actualTeachers);
     }
 
-    private Subject insertSubject(String subjectName) {
+    private SubjectDTO insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
     }
 
-    private Teacher insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(firstName, lastName);
+    private TeacherDTO insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
         return teacherService.getTeacherByName(firstName, lastName);
     }
 

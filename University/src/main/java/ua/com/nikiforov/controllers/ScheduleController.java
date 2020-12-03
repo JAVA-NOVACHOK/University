@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.nikiforov.controllers.dto.LessonDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -131,7 +132,7 @@ public class ScheduleController {
         String firstName = scheduleFindAttr.getFirstName();
         String lastName = scheduleFindAttr.getLastName();
         String date = scheduleFindAttr.getTime();
-        Teacher teacher;
+        TeacherDTO teacher;
         try {
             teacher = teacherService.getTeacherByName(firstName, lastName);
             model.addAttribute(TEACHER, teacher);
@@ -216,7 +217,7 @@ public class ScheduleController {
         String firstName = scheduleFindAttr.getFirstName();
         String lastName = scheduleFindAttr.getLastName();
         String date = scheduleFindAttr.getTime();
-        Teacher teacher;
+        TeacherDTO teacher;
         try {
             teacher = teacherService.getTeacherByName(firstName, lastName);
             model.addAttribute(TEACHER, teacher);
@@ -289,7 +290,7 @@ public class ScheduleController {
     @GetMapping("/delete")
     public String deleteLesson(@RequestParam long lessonId, Model model){
         try {
-            Lesson lesson = lessonService.getLessonById(lessonId);
+            LessonDTO lesson = lessonService.getLessonById(lessonId);
             model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
             lessonService.deleteLessonById(lessonId);
             model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDateFromLocalDate(), lesson.getTeacherId()));

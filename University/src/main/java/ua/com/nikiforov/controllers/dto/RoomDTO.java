@@ -39,8 +39,33 @@ public class RoomDTO {
         this.seatNumber = seatNumber;
     }
 
-    
-    
-    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result + roomNumber;
+        result = prime * result + seatNumber;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RoomDTO other = (RoomDTO) obj;
+        if (id != other.id)
+            return false;
+        if (roomNumber != other.roomNumber)
+            return false;
+        if (seatNumber != other.seatNumber)
+            return false;
+        return true;
+    }
+
 
 }

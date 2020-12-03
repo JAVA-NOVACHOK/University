@@ -53,13 +53,13 @@ class RoomServiceImplTest {
 
     @Test
     void afterAddRoomGetRoomByIdReturnCorrectRoom() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         assertEquals(room, roomService.getRoomById(room.getId()));
     }
 
     @Test
     void whenGetAllRoomsThenReturnGroupList() {
-        List<Room> expectedRooms = new ArrayList<>();
+        List<RoomDTO> expectedRooms = new ArrayList<>();
         expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
         expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2));
         expectedRooms.add(insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3));
@@ -68,29 +68,29 @@ class RoomServiceImplTest {
 
     @Test
     void whenUpdateRoomThenGroupHasUpdatedName() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
         roomService.updateRoom(new RoomDTO(roomId,TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2));
-        Room expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_2);
-        Room actualRoom = roomService.getRoomById(roomId);
+        RoomDTO expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_2);
+        RoomDTO actualRoom = roomService.getRoomById(roomId);
         assertEquals(expectedRoom, actualRoom);
     }
 
     @Test
     void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         assertTrue(roomService.deleteRoomById(room.getId()));
     }
 
     @Test
     void afterDeleteRoomByIdIfSearchReturnEntityNotFoundException() {
-        Room room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         int roomId = room.getId();
         roomService.deleteRoomById(roomId);
         assertThrows(EntityNotFoundException.class, () -> roomService.getRoomById(roomId));
     }
 
-    private Room insertRoom(int roomNumber, int seatNumber) {
+    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }

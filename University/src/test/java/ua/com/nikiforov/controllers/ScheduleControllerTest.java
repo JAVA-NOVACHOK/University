@@ -30,8 +30,11 @@ import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.config.WebConfig;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.models.Group;
@@ -175,27 +178,27 @@ class ScheduleControllerTest {
 
     private MockMvc mockMvc;
     
-    private Teacher teacher;
+    private TeacherDTO teacher;
     
     private StudentDTO student;
     
     
     
-    Room room_1;
-    Room room_2;
-    Room room_3;
+    RoomDTO room_1;
+    RoomDTO room_2;
+    RoomDTO room_3;
     
     GroupDTO group_1;
     GroupDTO group_2;
     GroupDTO group_3;
     
-    Subject subject_1;
-    Subject subject_2;
-    Subject subject_3;
+    SubjectDTO subject_1;
+    SubjectDTO subject_2;
+    SubjectDTO subject_3;
     
-    Lesson lesson_1;
-    Lesson lesson_2;
-    Lesson lesson_3;
+    LessonDTO lesson_1;
+    LessonDTO lesson_2;
+    LessonDTO lesson_3;
 
     @BeforeAll
     public void setup() {
@@ -339,8 +342,8 @@ class ScheduleControllerTest {
     
     @Test
     void addTimetableSchedule_Success() throws Exception {
-        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
         teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
         teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
@@ -367,8 +370,8 @@ class ScheduleControllerTest {
     
     @Test
     void addTimetableSchedule_WithDuplicateData_FailAdding() throws Exception {
-        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
         insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), 
                 DATE_1_ADD_33_DAYS, teacher.getId());
@@ -398,8 +401,8 @@ class ScheduleControllerTest {
     
     @Test
     void editTimetableSchedule_ReturnEditForm() throws Exception {
-        Teacher teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-        Teacher teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
+        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
+        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
         teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
         teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
@@ -483,22 +486,22 @@ class ScheduleControllerTest {
         return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
     }
 
-    private Subject insertSubject(String subjectName) {
+    private SubjectDTO insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
     }
 
-    private Room insertRoom(int roomNumber, int seatNumber) {
+    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 
-    private Teacher insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(firstName, lastName);
+    private TeacherDTO insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
         return teacherService.getTeacherByName(firstName, lastName);
     }
     
-    private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+    private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         lessonService.addLesson(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
         return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
     }

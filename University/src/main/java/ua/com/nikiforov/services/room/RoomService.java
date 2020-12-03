@@ -9,11 +9,11 @@ public interface RoomService {
 
     public boolean addRoom(int roomNumber, int seatNumber);
 
-    public Room getRoomById(int id);
+    public RoomDTO getRoomById(int id);
     
-    public Room getRoomByRoomNumber(int roomNumber);
+    public RoomDTO getRoomByRoomNumber(int roomNumber);
 
-    public List<Room> getAllRooms();
+    public List<RoomDTO> getAllRooms();
 
     public boolean updateRoom(RoomDTO room);
 

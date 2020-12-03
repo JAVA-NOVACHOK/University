@@ -1,5 +1,7 @@
 package ua.com.nikiforov.services.lesson;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +23,23 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public Lesson getLessonById(long id) {
-        return lessonDAO.getLessonById(id);
+    public LessonDTO getLessonById(long id) {
+        return getLessonDTO(lessonDAO.getLessonById(id));
     }
 
-    public Lesson getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        return lessonDAO.getLessonByAllArgs(period,subjectId, roomId, groupId,date,teacherId);
+    public LessonDTO getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date,
+            long teacherId) {
+        return getLessonDTO(lessonDAO.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId));
     }
 
     @Override
-    public List<Lesson> getAllLessons() {
-        return lessonDAO.getAllLessons();
+    public List<LessonDTO> getAllLessons() {
+        List<Lesson> lessons = lessonDAO.getAllLessons();
+        List<LessonDTO> lessonsDTO = new ArrayList<>();
+        for (Lesson lesson : lessons) {
+            lessonsDTO.add(getLessonDTO(lesson));
+        }
+        return lessonsDTO;
     }
 
     @Override
@@ -44,5 +52,16 @@ public class LessonServiceImpl implements LessonService {
         return lessonDAO.deleteLessonById(id);
     }
 
-   
+    public LessonDTO getLessonDTO(Lesson lesson) {
+        long id = lesson.getId();
+        long groupId = lesson.getGroupId();
+        int subjectId = lesson.getSubjectId();
+        int roomId = lesson.getRoomId();
+        LocalDate time = lesson.getTime();
+        int period = lesson.getPeriod();
+        long teacherId = lesson.getTeacherId();
+        String date = lesson.getDate();
+        return new LessonDTO(id, period, groupId, subjectId, roomId, time, teacherId, date);
+    }
+
 }

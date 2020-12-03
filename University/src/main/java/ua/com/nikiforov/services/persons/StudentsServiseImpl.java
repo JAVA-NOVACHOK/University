@@ -68,7 +68,7 @@ public class StudentsServiseImpl implements StudentsService {
         return studentDAO.updateStudent(newStudent);
     }
 
-    public StudentDTO getStudentDTO(Student student) {
+    private StudentDTO getStudentDTO(Student student) {
         long id = student.getId();
         String firstName = student.getFirstName();
         String lastName = student.getLastName();

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
@@ -37,8 +39,8 @@ public class TeachersSubjectsController {
 
     @PostMapping("/assign")
     public String assignSubjectToTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
@@ -65,8 +67,8 @@ public class TeachersSubjectsController {
 
     @GetMapping("/unassign")
     public String unassignSubjectFromTeacher(@RequestParam int subjectId, @RequestParam long teacherId, Model model) {
-        Subject subject = subjectService.getSubjectById(subjectId);
-        Teacher teacher = teacherService.getTeacherById(teacherId);
+        SubjectDTO subject = subjectService.getSubjectById(subjectId);
+        TeacherDTO teacher = teacherService.getTeacherById(teacherId);
         String subjectName = subject.getName();
         String teachersName = String.format("%s %s", teacher.getFirstName(), teacher.getLastName());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());

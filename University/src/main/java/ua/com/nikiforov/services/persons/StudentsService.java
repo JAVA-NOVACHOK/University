@@ -25,5 +25,4 @@ public interface StudentsService {
 
     public boolean transferStudent(long studentId, long groupIdTo);
 
-    public StudentDTO getStudentDTO(Student student);
 }

@@ -21,6 +21,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
@@ -110,26 +113,26 @@ class LessonServiceImplTest {
     @Autowired
     private TableCreator tableCreator;
     
-    private Teacher teacher_1;
-    private Teacher teacher_2;
-    private Teacher teacher_3;
+    private TeacherDTO teacher_1;
+    private TeacherDTO teacher_2;
+    private TeacherDTO teacher_3;
 
     
 
     @BeforeEach
     void init() {
         tableCreator.createTables();
-        Room room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        Room room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
-        Room room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
+        RoomDTO room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        RoomDTO room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
+        RoomDTO room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
 
         GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
         GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
         GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
 
-        Subject subject_1 = insertSubject(SUBJECT_NAME_1);
-        Subject subject_2 = insertSubject(SUBJECT_NAME_2);
-        Subject subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
+        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
+        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
 
         teacher_1 = insertTeacher(TEACHERS_FIRST_NAME_1, TEACHERS_LAST_NAME_1);
         teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
@@ -144,21 +147,21 @@ class LessonServiceImplTest {
 
     @Test
     void whenGetLessonByIdReturnCorrectLesson() {
-        Lesson expectedlesson = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE,
+        LessonDTO expectedlesson = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE,
                 TEACHER_ID_1);
         assertEquals(expectedlesson, lessonService.getLessonById(expectedlesson.getId()));
     }
 
     @Test
     void whenGetAllLessonsIfPresentReturnListOfAllLessons() {
-        List<Lesson> expectedLessons = new ArrayList<>();
+        List<LessonDTO> expectedLessons = new ArrayList<>();
         expectedLessons
                 .add(insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1));
         expectedLessons
                 .add(insertLesson(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, TEST_GROUP_ID_2, DATE, TEACHER_ID_1));
         expectedLessons
                 .add(insertLesson(PERIOD_3, TEST_SUBJECT_ID_3, TEST_ROOM_ID_3, TEST_GROUP_ID_3, DATE, TEACHER_ID_1));
-        List<Lesson> actualLessons = lessonService.getAllLessons();
+        List<LessonDTO> actualLessons = lessonService.getAllLessons();
         assertIterableEquals(expectedLessons, actualLessons);
     }
 
@@ -175,8 +178,8 @@ class LessonServiceImplTest {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
         lessonService.updateLesson(new LessonDTO(lessonId,PERIOD_2, TEST_GROUP_ID_2,TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,  DATE, TEACHER_ID_1));
-        Lesson expectedUpdatedLesson = lessonService.getLessonByAllArgs(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2, DATE, TEACHER_ID_1);
-        Lesson actualUpdatedLesson = lessonService.getLessonById(lessonId);
+        LessonDTO expectedUpdatedLesson = lessonService.getLessonByAllArgs(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2, DATE, TEACHER_ID_1);
+        LessonDTO actualUpdatedLesson = lessonService.getLessonById(lessonId);
         assertEquals(expectedUpdatedLesson, actualUpdatedLesson);
     }
 
@@ -195,7 +198,7 @@ class LessonServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(lessonId));
     }
 
-    private Lesson insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
+    private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         lessonService.addLesson(new LessonDTO(0,period, groupId, subjectId, roomId, date, teacherId));
         return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
     }
@@ -211,18 +214,18 @@ class LessonServiceImplTest {
         return groupService.getGroupByName(groupName);
     }
 
-    private Subject insertSubject(String subjectName) {
+    private SubjectDTO insertSubject(String subjectName) {
         subjectService.addSubject(subjectName);
         return subjectService.getSubjectByName(subjectName);
     }
 
-    private Room insertRoom(int roomNumber, int seatNumber) {
+    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
         roomService.addRoom(roomNumber, seatNumber);
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 
-    private Teacher insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(firstName, lastName);
+    private TeacherDTO insertTeacher(String firstName, String lastName) {
+        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
         return teacherService.getTeacherByName(firstName, lastName);
     }
 

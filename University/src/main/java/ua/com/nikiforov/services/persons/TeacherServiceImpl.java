@@ -1,15 +1,18 @@
 package ua.com.nikiforov.services.persons;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.persons.TeacherDAO;
 import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
+import ua.com.nikiforov.services.subject.SubjectService;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -25,33 +28,31 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public boolean addTeacher(String firstName, String lastName) {
+    public boolean addTeacher(TeacherDTO teacher) {
+        String firstName = teacher.getFirstName();
+        String lastName = teacher.getLastName();
         return teacherDAO.addTeacher(firstName, lastName);
     }
 
     @Override
-    public Teacher getTeacherById(long teacherId) {
-        Teacher teacher = teacherDAO.getTeacherById(teacherId);
+    public TeacherDTO getTeacherById(long teacherId) {
+        TeacherDTO teacher = getTeacherDTO(teacherDAO.getTeacherById(teacherId));
         return addSubjectsToTeacher(teacher);
     }
 
-    public Teacher getTeacherByName(String firstName, String lastName) {
-        return teacherDAO.getTeacherByName(firstName, lastName);
+    public TeacherDTO getTeacherByName(String firstName, String lastName) {
+        return getTeacherDTO(teacherDAO.getTeacherByName(firstName, lastName));
     }
 
-    private Teacher addSubjectsToTeacher(Teacher teacher) {
-        List<Subject> subjects = techersSubjectsDAO.getSubjects(teacher.getId());
+    private TeacherDTO addSubjectsToTeacher(TeacherDTO teacher) {
+        List<SubjectDTO> subjects = getSubjectDTOList(techersSubjectsDAO.getSubjects(teacher.getId()));
         teacher.setSubjects(subjects);
         return teacher;
     }
 
     @Override
-    public List<Teacher> getAllTeachers() {
-        List<Teacher> teachers = teacherDAO.getAllTeachers();
-        for (Teacher teacher : teachers) {
-            addSubjectsToTeacher(teacher);
-        }
-        return teachers;
+    public List<TeacherDTO> getAllTeachers() {
+       return getTeachersDTOList(teacherDAO.getAllTeachers());
     }
 
     @Override
@@ -75,13 +76,39 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<Teacher> getTeacherByLikeName(String firstName, String lastName) {
-        return teacherDAO.getTeacherByLikeName(firstName, lastName);
+    public List<TeacherDTO> getTeacherByLikeName(String firstName, String lastName) {
+        return getTeachersDTOList(teacherDAO.getTeacherByLikeName(firstName, lastName));
     }
 
     @Override
-    public List<Teacher> getAllTeachersWithoutSubjects() {
-        return teacherDAO.getAllTeachers();
+    public List<TeacherDTO> getAllTeachersWithoutSubjects() {
+        return getTeachersDTOList(teacherDAO.getAllTeachers());
     }
+    
+    public List<TeacherDTO> getTeachersDTOList(List<Teacher> teachers) {
+        List<TeacherDTO> teachersDTO = new ArrayList<>();
+        for (Teacher teacher : teachers) {
+            teachersDTO.add(getTeacherDTO(teacher));
+        }
+        return teachersDTO;
+    }
+
+    private TeacherDTO getTeacherDTO(Teacher teacher) {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setId(teacher.getId());
+        teacherDTO.setFirstName(teacher.getFirstName());
+        teacherDTO.setLastName(teacher.getLastName());
+        teacherDTO.setSubjects(getSubjectDTOList(teacher.getSubjects()));
+        return teacherDTO;
+    }
+    
+    private  List<SubjectDTO> getSubjectDTOList(List<Subject> subjects) {
+        List<SubjectDTO> subjectsDTO = new ArrayList<>();
+        for (Subject subject : subjects) {
+            subjectsDTO.add(new SubjectDTO(subject.getId(), subject.getName()));
+        }
+        return subjectsDTO;
+    }
+    
 
 }

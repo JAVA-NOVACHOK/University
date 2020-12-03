@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.subject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.nikiforov.controllers.dto.SubjectDTO;
@@ -9,15 +10,17 @@ public interface SubjectService {
 
     public boolean addSubject(String subjectName);
 
-    public Subject getSubjectById(int subjectId);
+    public SubjectDTO getSubjectById(int subjectId);
 
-    public Subject getSubjectByName(String subjectName);
+    public SubjectDTO getSubjectByName(String subjectName);
 
-    public List<Subject> getAllSubjects();
-    
-    public List<Subject> getAllSubjectsWithoutTeachers();
+    public List<SubjectDTO> getAllSubjects();
+
+    public List<SubjectDTO> getAllSubjectsWithoutTeachers();
 
     public boolean updateSubject(SubjectDTO subject);
 
     public boolean deleteSubjectById(int subjectId);
+
+   
 }

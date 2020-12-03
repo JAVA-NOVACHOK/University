@@ -1,5 +1,6 @@
 package ua.com.nikiforov.services.room;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,20 +27,24 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room getRoomById(int id) {
-        return roomDAO.getRoomById(id);
+    public RoomDTO getRoomById(int id) {
+        return getRoomDTO(roomDAO.getRoomById(id));
     }
 
     @Override
-    public Room getRoomByRoomNumber(int roomNumber) {
-        return roomDAO.getRoomByRoomNumber(roomNumber);
+    public RoomDTO getRoomByRoomNumber(int roomNumber) {
+        return getRoomDTO(roomDAO.getRoomByRoomNumber(roomNumber));
     }
 
     @Override
-    public List<Room> getAllRooms() {
+    public List<RoomDTO> getAllRooms() {
         List<Room> rooms = roomDAO.getAllRooms();
         Collections.sort(rooms,(r1,r2) -> r1.compareTo(r2));
-        return rooms;
+        List<RoomDTO> roomsDTO = new ArrayList<>();
+        for(Room room : rooms) {
+            roomsDTO.add(getRoomDTO(room));
+        }
+        return roomsDTO;
 
     }
 
@@ -51,6 +56,13 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public boolean deleteRoomById(int id) {
         return roomDAO.deleteRoomById(id);
+    }
+    
+    private RoomDTO getRoomDTO(Room room) {
+        int id = room.getId();
+        int number = room.getRoomNumber();
+        int seats = room.getSeatNumber();
+        return new RoomDTO(id, number, seats);
     }
 
 }
