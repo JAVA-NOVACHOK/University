@@ -26,12 +26,13 @@ import ua.com.nikiforov.config.WebConfig;
 import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.services.room.RoomServiceImpl;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { WebConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestDataSource.class })
 @WebAppConfiguration
 class RoomsControllerTest {
 

@@ -18,10 +18,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
+import ua.com.nikiforov.datasource.TestDataSource;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { WebConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestDataSource.class })
 @WebAppConfiguration
 class UniversityControllerTest {
 

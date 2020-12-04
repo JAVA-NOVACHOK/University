@@ -7,18 +7,23 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.config.DatabaseConfig;
+
 @Repository
 public class TableCreator {
-
-    private static final String PATH = "src/main/resources/script_create_tables.sql";
+    
+    private static final String PATH = "src/test/resources/script_create_tables.sql";
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TableCreator(DataSource dataSource) {
+    public TableCreator(@Qualifier("test") DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -38,6 +43,7 @@ public class TableCreator {
     }
 
     private void executeScript(String script) {
+        
         jdbcTemplate.execute(script);
     }
 }

@@ -37,6 +37,7 @@ import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.Subject;
@@ -56,7 +57,7 @@ import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { WebConfig.class })
+@ContextConfiguration(classes = { WebConfig.class, TestDataSource.class })
 @WebAppConfiguration
 class ScheduleControllerTest {
 

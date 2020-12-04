@@ -27,6 +27,7 @@ import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.controllers.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.models.Subject;
@@ -41,7 +42,7 @@ import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 @TestInstance(Lifecycle.PER_CLASS)
-@SpringJUnitConfig(DatabaseConfig.class)
+@SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class StudentTimetableServiceTest {

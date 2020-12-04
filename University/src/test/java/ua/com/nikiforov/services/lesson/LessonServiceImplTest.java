@@ -25,6 +25,7 @@ import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.controllers.dto.SubjectDTO;
 import ua.com.nikiforov.controllers.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.Room;
@@ -36,7 +37,7 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
-@SpringJUnitConfig(DatabaseConfig.class)
+@SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class LessonServiceImplTest {

@@ -13,10 +13,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.University;
 
-@SpringJUnitConfig(DatabaseConfig.class)
+@SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class UniversityServiceImplTest {

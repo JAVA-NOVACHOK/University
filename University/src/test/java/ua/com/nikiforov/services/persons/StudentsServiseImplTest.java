@@ -18,12 +18,13 @@ import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.controllers.dto.GroupDTO;
 import ua.com.nikiforov.controllers.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
+import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 import ua.com.nikiforov.services.group.GroupService;
 
-@SpringJUnitConfig(DatabaseConfig.class)
+@SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class StudentsServiseImplTest {
