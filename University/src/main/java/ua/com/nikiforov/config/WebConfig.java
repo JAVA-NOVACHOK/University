@@ -30,6 +30,7 @@ public class WebConfig implements WebMvcConfigurer{
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML");
         return templateResolver;
     }
 

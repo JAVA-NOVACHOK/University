@@ -23,7 +23,7 @@ public class TableCreator {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public TableCreator(@Qualifier("test") DataSource dataSource) {
+    public TableCreator(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
