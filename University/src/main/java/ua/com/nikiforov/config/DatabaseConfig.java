@@ -15,7 +15,6 @@ import ua.com.nikiforov.exceptions.DataSourceNotInitializeException;
 
 @Configuration
 @ComponentScan("ua.com.nikiforov")
-//@PropertySource("classpath:university.properties")
 public class DatabaseConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
@@ -25,7 +24,6 @@ public class DatabaseConfig {
     DataSource dataSource() {
         DataSource dataSource = null;
         JndiTemplate jndi = new JndiTemplate();
-        LOGGER.debug("+++++++++++++++++{}", jndi.getEnvironment());
         try {
             dataSource = jndi.lookup(JNDI_PATH, DataSource.class);
             if (dataSource == null) {
