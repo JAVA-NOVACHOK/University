@@ -26,6 +26,7 @@ public class DatabaseConfig {
         JndiTemplate jndi = new JndiTemplate();
         try {
             dataSource = jndi.lookup(JNDI_PATH, DataSource.class);
+            LOGGER.debug("DataSourse = {}",dataSource);
             if (dataSource == null) {
                 String errorMessage = "DataSourse is not initialized. It is null!";
                 LOGGER.error(errorMessage);

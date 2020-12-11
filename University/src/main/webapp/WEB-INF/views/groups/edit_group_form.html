@@ -26,7 +26,7 @@
 			th:text="${success == 0}?'':${success}"></h6>
 	</div>
 	<div class="form-row mt-3 justify-content-center">
-		<form class="form-inline" action="/University/groups/edit"
+		<form class="form-inline" action="/groups/edit"
 			method="post">
 			<input type="text" class="form-control" hidden="true" th:value="${group.groupId}" name="groupId">
 			<input type="text" class="form-control mr-2" th:value="${group.groupName}" name="groupName">

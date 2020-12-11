@@ -1,5 +1,8 @@
 package ua.com.nikiforov.config;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -12,25 +15,22 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+@EnableWebMvc
 @Configuration
 @ComponentScan("ua.com.nikiforov")
-@EnableWebMvc
-public class WebConfig implements WebMvcConfigurer{
+public class WebConfig  implements WebMvcConfigurer{
 
-    private final ApplicationContext applicationContext;
+    public static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
 
     @Autowired
-    public WebConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-    
+    private ApplicationContext applicationContext;
+
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
         templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML");
         return templateResolver;
     }
 
@@ -48,5 +48,4 @@ public class WebConfig implements WebMvcConfigurer{
         resolver.setTemplateEngine(templateEngine());
         registry.viewResolver(resolver);
     }
-    
 }
