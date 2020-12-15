@@ -2,13 +2,22 @@ package ua.com.nikiforov.models;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import ua.com.nikiforov.models.persons.Teacher;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name="subjects")
 public class Subject implements Comparable<Subject>{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "subject_id")
     private int id;
+    @Column(name = "subject_name")
     private String name;
+
+    @ManyToMany(mappedBy = "subjects")
     private List<Teacher> teachers;
 
     public Subject() {

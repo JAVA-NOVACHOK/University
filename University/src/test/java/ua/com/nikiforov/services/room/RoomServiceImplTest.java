@@ -16,12 +16,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.config.DatabaseConfig;
 import ua.com.nikiforov.controllers.dto.RoomDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Room;
 
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)

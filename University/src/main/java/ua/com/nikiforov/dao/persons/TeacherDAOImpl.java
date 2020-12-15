@@ -109,7 +109,7 @@ public class TeacherDAOImpl implements TeacherDAO {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
-        Collections.sort(allTeachers);
+        Collections.sort(allTeachers,(t1,t2) -> t1.getLastName().compareTo(t1.getLastName()));
         return allTeachers;
     }
 

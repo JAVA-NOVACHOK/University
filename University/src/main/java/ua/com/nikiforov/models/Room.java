@@ -1,10 +1,18 @@
 package ua.com.nikiforov.models;
 
+import javax.persistence.*;
 
+@Entity
+@Table(name = "rooms",uniqueConstraints = @UniqueConstraint(columnNames = {"room_number"}))
 public class Room implements Comparable<Room> {
 
+    @Id
+    @Column(name = "room_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(name="room_number")
     private int roomNumber;
+    @Column(name="seat_number")
     private int seatNumber;
 
     public Room() {

@@ -5,10 +5,22 @@ import java.util.List;
 
 import ua.com.nikiforov.models.persons.Student;
 
+import javax.persistence.*;
+
+
+@Entity
+@Table(name = "groups")
 public class Group implements Comparable<Group> {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="group_id")
     private long groupId;
+    @Column(name="group_name")
     private String groupName;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="group_id")
     private List<Student> groupStudents;
 
     public Group() {
@@ -21,6 +33,7 @@ public class Group implements Comparable<Group> {
         groupStudents = new ArrayList<>();
     }
 
+
     public long getGroupId() {
         return groupId;
     }
@@ -28,6 +41,7 @@ public class Group implements Comparable<Group> {
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
+
 
     public String getGroupName() {
         return groupName;
@@ -40,7 +54,7 @@ public class Group implements Comparable<Group> {
     public List<Student> getGroupStudents() {
         return groupStudents;
     }
-    
+
     public void addStudent(Student student) {
         groupStudents.add(student);
     }
@@ -99,3 +113,4 @@ public class Group implements Comparable<Group> {
     }
 
 }
+

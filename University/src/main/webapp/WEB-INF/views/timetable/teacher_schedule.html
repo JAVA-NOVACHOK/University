@@ -51,7 +51,7 @@
 							<td th:text="${timetable.roomNumber}"></td>
 							<td th:text="${timetable.groupName}"></td>
 							<td>
-								<form action="/University/schedules/edit" method="get">
+								<form action="/schedules/edit" method="get">
 									<input type="number" hidden="true"
 										th:value="${timetable.lessonId}" name="lessonId"> <input
 										type="number" hidden="true" th:value="${timetable.period}"
@@ -72,7 +72,7 @@
 							</td>
 							<td><a class="btn btn btn-outline-danger btn-sm"
 								type="button"
-								th:attr="data-url=|/University/schedules/delete/?lessonId=__${timetable.lessonId}__|"
+								th:attr="data-url=|/schedules/delete/?lessonId=__${timetable.lessonId}__|"
 								th:onclick="deleteLesson(this.getAttribute('data-url'));"
 								data-toggle="modal" data-target="#deleteModal">Delete</a></td>
 						</tr>

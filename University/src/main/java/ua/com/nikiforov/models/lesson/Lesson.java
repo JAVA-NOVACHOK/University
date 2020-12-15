@@ -1,15 +1,25 @@
 package ua.com.nikiforov.models.lesson;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "lessons")
 public class Lesson {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "lesson_id")
     private long id;
+    @Column(name = "group_id")
     private long groupId;
+    @Column(name = "subject_id")
     protected int subjectId;
+    @Column(name = "room_id")
     private int roomId;
     private LocalDate time;
     private int period;
+    @Column(name = "teacher_id")
     private long teacherId;
     private String date;
 

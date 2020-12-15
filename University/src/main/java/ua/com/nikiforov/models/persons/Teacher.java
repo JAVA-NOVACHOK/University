@@ -5,8 +5,25 @@ import java.util.List;
 
 import ua.com.nikiforov.models.Subject;
 
-public class Teacher extends Person {
+import javax.persistence.*;
 
+@Entity
+
+public class Teacher implements Comparable{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "teacher_id")
+    private long id;
+    @Column(name="first_name")
+    private String firstName;
+    @Column(name="last_name")
+    private String lastName;
+
+    @ManyToMany
+    @JoinTable(name="teachers_subjects",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private List<Subject> subjects;
 
     public Teacher() {
@@ -14,8 +31,34 @@ public class Teacher extends Person {
     }
 
     public Teacher(long id, String firstName, String lastName) {
-        super(id, firstName, lastName);
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         subjects = new ArrayList<>();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public List<Subject> getSubjects() {
@@ -58,9 +101,11 @@ public class Teacher extends Person {
         } 
         return true;
     }
-    
-    
-    
 
-    
+
+    @Override
+    public int compareTo(Object o) {
+        Teacher teacher = (Teacher)o;
+        return this.lastName.compareTo(teacher.getLastName());
+    }
 }

@@ -37,7 +37,7 @@
 	<div class="collapse" id="collapseAdd">
 		<div class="card mt-3 card-body">
 			<div class="row justify-content-center">
-				<form class="form-inline" action="/University/teachers/add"
+				<form class="form-inline" action="/teachers/add"
 					method="post">
 					<div class="row">
 						<input type="text" class="form-control mr-2" autofocus="autofocus"
@@ -60,7 +60,7 @@
 	</div>
 
 	<div class="row justify-content-center">
-		<form class="form-inline" action="/University/schedules/teachers_day"
+		<form class="form-inline" action="/schedules/teachers_day"
 			method="post">
 			<input type="text" hidden="true" placeholder="First name"
 				name="firstName" th:value="${teacher.firstName}"> <input
@@ -71,7 +71,7 @@
 			<button id="day" type="submit" class="btn mr-2 btn-outline-success">For
 				day</button>
 			<button id="month" type="submit"
-				formaction="/University/schedules/teachers_month"
+				formaction="/schedules/teachers_month"
 				class="btn mr-2 btn-outline-warning">For month</button>
 		</form>
 	</div>
@@ -87,7 +87,7 @@
 			th:attr="aria-controls='collapseEditTeacher' + ${teacher.id}">Edit
 		</a>
 		<button type="button" class="btn mr-2 btn-secondary position-relative"
-			th:attr="data-url=|/University/teachers/delete/?id=__${teacher.id}__|"
+			th:attr="data-url=|/teachers/delete/?id=__${teacher.id}__|"
 			th:onclick="deleteTeacher(this.getAttribute('data-url'));"
 			data-toggle="modal" data-target="#deleteTeacher">Delete
 			teacher</button>
@@ -96,7 +96,7 @@
 	<div class="collapse" th:id="|collapseEditTeacher${teacher.id}|">
 		<div class="card mt-3 card-body">
 			<div class="row justify-content-center">
-				<form class="form-inline" action="/University/teachers/edit"
+				<form class="form-inline" action="/teachers/edit"
 					method="post">
 					<div class="row">
 						<input type="number" class="form-control" hidden="true"
@@ -132,7 +132,7 @@
 						<td class="text-center">
 							<button type="button"
 								class="btn btn-warning mb-1 position-relative btn-sm"
-								th:attr="data-url=|/University/teachers/unassign/?subjectId=__${subject.id}__&teacherId=__${teacher.id}__|"
+								th:attr="data-url=|/teachers/unassign/?subjectId=__${subject.id}__&teacherId=__${teacher.id}__|"
 								th:onclick="unassign(this.getAttribute('data-url'));"
 								data-toggle="modal" data-target="#unassign">
 								<i class="fa fa-trash"></i>
@@ -164,7 +164,7 @@
 	<div class="collapse" th:id="|collapseAssignTeacher${teacher.id}|">
 		<div class="card mt-3 card-body">
 			<div class="row justify-content-center">
-				<form class="form-inline " action="/University/teachers/assign"
+				<form class="form-inline " action="/teachers/assign"
 					method="post">
 					<input type="number" class="form-control" hidden="true"
 						th:value="${teacher.id}" name="teacherId"> <select
@@ -182,7 +182,7 @@
 	<div class="collapse" th:id="|collapseTimetable${teacher.id}|">
 		<div class="card mt-3 card-body">
 			<div class="row justify-content-center">
-				<form class="form-inline" action="/University/schedules/add"
+				<form class="form-inline" action="/schedules/add"
 					method="post">
 					<div class="row">
 						<input type="number" hidden="true" name="id" value=1> <label
