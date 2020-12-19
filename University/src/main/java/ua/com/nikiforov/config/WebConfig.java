@@ -22,8 +22,12 @@ public class WebConfig  implements WebMvcConfigurer{
 
     public static final Logger LOGGER = LoggerFactory.getLogger(WebConfig.class);
 
-    @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    public WebConfig(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

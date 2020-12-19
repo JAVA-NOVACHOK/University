@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.dao.timetables.TimetableDAO;
 
 @Service

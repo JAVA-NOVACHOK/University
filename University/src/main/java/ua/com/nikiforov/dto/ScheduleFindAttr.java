@@ -1,4 +1,4 @@
-package ua.com.nikiforov.controllers.dto;
+package ua.com.nikiforov.dto;
 
 public class ScheduleFindAttr {
 

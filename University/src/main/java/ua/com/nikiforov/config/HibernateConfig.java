@@ -47,7 +47,7 @@ public class HibernateConfig {
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(new String[]{"ua.com.nikiforov"});
+        sessionFactory.setPackagesToScan("ua.com.nikiforov");
         return sessionFactory;
     }
 
@@ -84,21 +84,5 @@ public class HibernateConfig {
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
         return  new PersistenceExceptionTranslationPostProcessor();
     }
-
-
-    Properties hibernateProperties(){
-        return  new Properties(){
-            {
-                setProperty("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
-                setProperty("hibernate.dialect", environment.getProperty("hibernate.dialect"));
-                setProperty("hibernate.globally_quoted_identifiers", "true");
-            }
-        };
-
-
-    }
-
-
-
 
 }

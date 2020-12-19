@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
@@ -116,7 +116,7 @@ public class StudentsController {
     public String transfer(@RequestParam long id, String message, Model model) {
         try {
             StudentDTO student = studentService.getStudentById(id);
-            GroupDTO group = groupService.getGroupByStudentId(id);
+            GroupDTO group = groupService.getGroupById(student.getGroupId());
             List<GroupDTO> groups = groupService.getAllGroups();
             groups.remove(group);
             model.addAttribute(STUDENT_ATTR, student);
@@ -173,8 +173,8 @@ public class StudentsController {
 
     @GetMapping("/delete")
     public String deleteStudent(@RequestParam long id, Model model) {
-        GroupDTO group = groupService.getGroupByStudentId(id);
         StudentDTO student = studentService.getStudentById(id);
+        GroupDTO group = groupService.getGroupById(student.getGroupId());
         try {
             studentService.deleteStudentById(id);
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());

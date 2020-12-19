@@ -24,7 +24,7 @@
 			th:text="${failMessage == 0}?'':${failMessage}"></h6>
 	</div>
 	<div class="row justify-content-center">
-		<form class="form-inline" action="/University/students/edit"
+		<form class="form-inline" action="/students/edit"
 			method="post">
 			<input type="number" class="form-control" hidden="true"
 				th:value="${student.id}" name="id"> <input type="number"

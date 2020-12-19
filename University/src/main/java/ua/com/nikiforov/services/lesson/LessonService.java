@@ -2,7 +2,7 @@ package ua.com.nikiforov.services.lesson;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.dto.LessonDTO;
 
 public interface LessonService {
     

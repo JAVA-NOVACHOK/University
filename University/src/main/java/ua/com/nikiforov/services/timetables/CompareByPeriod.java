@@ -2,7 +2,7 @@ package ua.com.nikiforov.services.timetables;
 
 import java.util.Comparator;
 
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 
 public class CompareByPeriod implements Comparator<TimetableDTO> {
 

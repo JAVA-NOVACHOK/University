@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.room.RoomService;
@@ -103,9 +103,6 @@ public class RoomsController {
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, String.format(
                     "Warning! Failed to update room with number '%d'. It already exists!", room.getRoomNumber()));
-        } catch (DataOperationException e) {
-            model.addAttribute(FAIL_MSG,
-                    String.format("Error! Couldn't update room with number '%d'.", room.getRoomNumber()));
         }
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;

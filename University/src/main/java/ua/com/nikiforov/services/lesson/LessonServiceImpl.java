@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.dto.LessonDTO;
 import ua.com.nikiforov.dao.lesson.LessonDAO;
 import ua.com.nikiforov.models.lesson.Lesson;
 

@@ -2,12 +2,12 @@ package ua.com.nikiforov.dao.subject;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.models.Subject;
 
 public interface SubjectDAO {
 
-    public boolean addSubject(String subjectName);
+    public void addSubject(String subjectName);
 
     public Subject getSubjectById(int subjectId);
     
@@ -15,7 +15,7 @@ public interface SubjectDAO {
 
     public List<Subject> getAllSubjects();
 
-    public boolean updateSubject(SubjectDTO subject);
+    public void updateSubject(SubjectDTO subject);
 
-    public boolean deleteSubjectById(int subjectId);
+    public void deleteSubjectById(int subjectId);
 }

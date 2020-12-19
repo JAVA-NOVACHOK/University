@@ -7,7 +7,7 @@ import ua.com.nikiforov.models.persons.Teacher;
 import javax.persistence.*;
 
 @Entity
-@Table(name="subjects")
+@Table(name="subjects",uniqueConstraints = @UniqueConstraint(columnNames = {"subject_name"}))
 public class Subject implements Comparable<Subject>{
 
     @Id
@@ -17,17 +17,23 @@ public class Subject implements Comparable<Subject>{
     @Column(name = "subject_name")
     private String name;
 
-    @ManyToMany(mappedBy = "subjects")
+    @ManyToMany(mappedBy = "subjects",fetch = FetchType.EAGER)
     private List<Teacher> teachers;
 
     public Subject() {
-        teachers = new ArrayList<>();
+
     }
 
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;
-        teachers = new ArrayList<>();
+
+    }
+
+    public Subject(int id, String name, List<Teacher> teachers) {
+        this.id = id;
+        this.name = name;
+        this.teachers = new ArrayList<>(teachers);
     }
 
     public int getId() {

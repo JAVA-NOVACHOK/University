@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
@@ -79,14 +79,13 @@ public class GroupsController {
     @PostMapping("/delete")
     public String processingDelete(@RequestParam long groupId, Model model) {
         try {
-            List<StudentDTO> students = studentsService.getStudentsByGroupId(groupId);
             List<GroupDTO> groups = groupService.getAllGroups();
             model.addAttribute(GROUPS_ATTR, groups);
             GroupDTO group = groupService.getGroupById(groupId);
+            List<StudentDTO> students = group.getStudents();
             String groupName = group.getGroupName();
             if (!students.isEmpty()) {
                 model.addAttribute(GROUP_IN_ATTR, group);
-                model.addAttribute(STUDENTS_ATTR, students);
                 model.addAttribute(FAIL_MSG, String.format(
                         "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
                         groupName, NEW_LINE, NEW_LINE));
@@ -97,7 +96,7 @@ public class GroupsController {
             groups.remove(group);
             model.addAttribute(GROUPS_ATTR, groups);
         } catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, "Error!Couldn't finde group with id " + groupId);
+            model.addAttribute(FAIL_MSG, "Error!Couldn't find group with id " + groupId);
             return VIEW_GROUPS;
         }catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't delete group. Try later.");

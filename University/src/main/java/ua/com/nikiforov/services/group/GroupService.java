@@ -2,12 +2,12 @@ package ua.com.nikiforov.services.group;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 
 public interface GroupService {
     
-    public boolean addGroup(String groupName);
+    public void addGroup(String groupName);
     
     public GroupDTO getGroupById(long id);
     
@@ -15,12 +15,12 @@ public interface GroupService {
     
     public List<GroupDTO> getAllGroups();
     
-    public boolean updateGroup(GroupDTO group);
+    public void updateGroup(GroupDTO group);
     
-    public boolean deleteGroup(long id);
+    public void deleteGroup(long id);
     
-    public List<StudentDTO> getStudentsByGroupId(long groupId);
+//    public List<StudentDTO> getStudentsByGroupId(long groupId);
     
-    public GroupDTO getGroupByStudentId(long studentId);
+//    public GroupDTO getGroupByStudentId(long studentId);
 }
 

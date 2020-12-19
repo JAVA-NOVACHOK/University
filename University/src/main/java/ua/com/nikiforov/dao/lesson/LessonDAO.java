@@ -2,7 +2,7 @@ package ua.com.nikiforov.dao.lesson;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.LessonDTO;
+import ua.com.nikiforov.dto.LessonDTO;
 import ua.com.nikiforov.models.lesson.Lesson;
 
 public interface LessonDAO {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 
 public abstract class PersonalTimetable {
     

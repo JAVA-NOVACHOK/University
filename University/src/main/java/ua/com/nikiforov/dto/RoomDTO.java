@@ -1,24 +1,15 @@
-package ua.com.nikiforov.models;
+package ua.com.nikiforov.dto;
 
-import javax.persistence.*;
+public class RoomDTO {
 
-@Entity
-@Table(name = "rooms", uniqueConstraints = @UniqueConstraint(columnNames = {"room_number"}))
-public class Room implements Comparable<Room> {
-
-    @Id
-    @Column(name = "room_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(name="room_number")
     private int roomNumber;
-    @Column(name="seat_number")
     private int seatNumber;
 
-    public Room() {
+    public RoomDTO() {
     }
 
-    public Room(int id, int roomNumber, int seatNumber) {
+    public RoomDTO(int id, int roomNumber, int seatNumber) {
         this.id = id;
         this.roomNumber = roomNumber;
         this.seatNumber = seatNumber;
@@ -48,13 +39,13 @@ public class Room implements Comparable<Room> {
         this.seatNumber = seatNumber;
     }
 
-    
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + id;
         result = prime * result + roomNumber;
+        result = prime * result + seatNumber;
         return result;
     }
 
@@ -66,24 +57,15 @@ public class Room implements Comparable<Room> {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Room other = (Room) obj;
+        RoomDTO other = (RoomDTO) obj;
+        if (id != other.id)
+            return false;
         if (roomNumber != other.roomNumber)
+            return false;
+        if (seatNumber != other.seatNumber)
             return false;
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "id=" + id + ", roomNumber=" + roomNumber + ", seatNumber=" + seatNumber;
-    }
-
-    @Override
-    public int compareTo(Room r) {
-        if (this.getRoomNumber() > r.getRoomNumber()) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
 
 }

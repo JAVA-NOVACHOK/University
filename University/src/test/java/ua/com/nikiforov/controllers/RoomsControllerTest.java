@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.controllers.dto.RoomDTO;
-import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
+import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.models.Room;

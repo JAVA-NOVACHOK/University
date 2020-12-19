@@ -1,10 +1,5 @@
 package ua.com.nikiforov.services.room;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+
+import javax.persistence.PersistenceException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
@@ -47,7 +46,7 @@ class RoomServiceImplTest {
 
     @Test
     void whenAddRoomIfSuccessReturnTrue() {
-        assertTrue(roomService.addRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
+        assertDoesNotThrow(() -> roomService.addRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
     }
 
     @Test
@@ -78,7 +77,7 @@ class RoomServiceImplTest {
     @Test
     void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
         RoomDTO room = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        assertTrue(roomService.deleteRoomById(room.getId()));
+        assertDoesNotThrow(() -> roomService.deleteRoomById(room.getId()));
     }
 
     @Test

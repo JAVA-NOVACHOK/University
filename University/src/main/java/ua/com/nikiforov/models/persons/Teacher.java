@@ -8,7 +8,7 @@ import ua.com.nikiforov.models.Subject;
 import javax.persistence.*;
 
 @Entity
-
+@Table(name = "teachers",uniqueConstraints = @UniqueConstraint(columnNames = {"first_name","last_name"}))
 public class Teacher implements Comparable{
 
     @Id
@@ -20,14 +20,18 @@ public class Teacher implements Comparable{
     @Column(name="last_name")
     private String lastName;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
     @JoinTable(name="teachers_subjects",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private List<Subject> subjects;
 
     public Teacher() {
-        subjects = new ArrayList<>();
+    }
+
+    public Teacher(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public Teacher(long id, String firstName, String lastName) {
@@ -35,6 +39,13 @@ public class Teacher implements Comparable{
         this.firstName = firstName;
         this.lastName = lastName;
         subjects = new ArrayList<>();
+    }
+
+    public Teacher(long id, String firstName, String lastName, List<Subject> subjects) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.subjects = new ArrayList<>(subjects);
     }
 
     public long getId() {
@@ -74,11 +85,6 @@ public class Teacher implements Comparable{
     }
 
     @Override
-    public String toString() {
-        return "[Teacher " + super.toString() + "subjects = " + subjects + "]";
-    }
-
-    @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
@@ -102,6 +108,15 @@ public class Teacher implements Comparable{
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", subjects=" + subjects +
+                '}';
+    }
 
     @Override
     public int compareTo(Object o) {

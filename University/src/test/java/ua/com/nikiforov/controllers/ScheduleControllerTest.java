@@ -28,22 +28,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.LessonDTO;
-import ua.com.nikiforov.controllers.dto.RoomDTO;
-import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.LessonDTO;
+import ua.com.nikiforov.dto.RoomDTO;
+import ua.com.nikiforov.dto.ScheduleFindAttr;
+import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.Room;
-import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.models.persons.Student;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -346,8 +340,8 @@ class ScheduleControllerTest {
         TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
-        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher( teacher.getId(),subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_2.getId());
         
         teacher.addSubject(subject_1);
         teacher.addSubject(subject_2);
@@ -377,8 +371,8 @@ class ScheduleControllerTest {
         insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(), 
                 DATE_1_ADD_33_DAYS, teacher.getId());
         
-        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_2.getId());
         
         teacher.addSubject(subject_1);
         teacher.addSubject(subject_2);
@@ -405,8 +399,8 @@ class ScheduleControllerTest {
         TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
         TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
         
-        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_2.getId());
         
         teacher.addSubject(subject_1);
         teacher.addSubject(subject_2);
@@ -431,8 +425,8 @@ class ScheduleControllerTest {
     }
     @Test
     void editLesson_SuccessEditing() throws Exception {
-        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_2.getId());
         
         teacher.addSubject(subject_1);
         teacher.addSubject(subject_2);

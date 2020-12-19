@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dao.persons.TeacherDAO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
-import ua.com.nikiforov.dao.teachers_subjects.TeachersSubjectsDAO;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
@@ -17,75 +19,80 @@ import ua.com.nikiforov.models.persons.Teacher;
 public class SubjectServiceImpl implements SubjectService {
 
     private SubjectDAO subjectDAO;
-    private TeachersSubjectsDAO techersSubjectsDAO;
 
     @Autowired
-    public SubjectServiceImpl(SubjectDAO subjectDAO, TeachersSubjectsDAO techersSubjectsDAO) {
+    public SubjectServiceImpl(SubjectDAO subjectDAO) {
         this.subjectDAO = subjectDAO;
-        this.techersSubjectsDAO = techersSubjectsDAO;
     }
 
     @Override
-    public boolean addSubject(String subjectName) {
-        return subjectDAO.addSubject(subjectName);
+    public void addSubject(String subjectName) {
+        try {
+            subjectDAO.addSubject(subjectName);
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateKeyException("Error! Duplicate Subject while adding",e);
+        }
     }
 
     @Override
     public SubjectDTO getSubjectById(int subjectId) {
-       return getSubjectDTO(subjectDAO.getSubjectById(subjectId));
-         
+        return getSubjectDTO(subjectDAO.getSubjectById(subjectId));
+
     }
 
     @Override
     public SubjectDTO getSubjectByName(String subjectName) {
-       return getSubjectDTO(subjectDAO.getSubjectByName(subjectName));
-         
+        return getSubjectDTO(subjectDAO.getSubjectByName(subjectName));
+
     }
 
     @Override
     public List<SubjectDTO> getAllSubjects() {
         return getSubjectDTOList(subjectDAO.getAllSubjects());
     }
-    
+
     @Override
-    public List<SubjectDTO> getAllSubjectsWithoutTeachers(){
+    public List<SubjectDTO> getAllSubjectsWithoutTeachers() {
         return getSubjectDTOList(subjectDAO.getAllSubjects());
     }
 
-
     @Override
-    public boolean updateSubject(SubjectDTO subject) {
-        return subjectDAO.updateSubject(subject);
+    public void updateSubject(SubjectDTO subject) {
+        try {
+            subjectDAO.updateSubject(subject);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateKeyException("Error! Duplicate group while editing!", e);
+        }
     }
 
     @Override
-    public boolean deleteSubjectById(int subjectId) {
-        return subjectDAO.deleteSubjectById(subjectId);
+    public void deleteSubjectById(int subjectId) {
+        subjectDAO.deleteSubjectById(subjectId);
     }
-    
-    private List<SubjectDTO> getSubjectDTOList(List<Subject> subjects){
+
+    private List<SubjectDTO> getSubjectDTOList(List<Subject> subjects) {
         List<SubjectDTO> subjectsDTO = new ArrayList<>();
-        for(Subject subject : subjects) {
+        for (Subject subject : subjects) {
             subjectsDTO.add(getSubjectDTO(subject));
         }
         return subjectsDTO;
     }
-    
+
     private SubjectDTO getSubjectDTO(Subject subject) {
         int subjectId = subject.getId();
         String name = subject.getName();
-        List<Teacher> teachers = techersSubjectsDAO.getTeachers(subject.getId());
+        List<Teacher> teachers = subject.getTeachers();
         List<TeacherDTO> teachersDTO = getTeachersDTOList(teachers);
-        return new SubjectDTO(subjectId,name,teachersDTO);
+        return new SubjectDTO(subjectId, name, teachersDTO);
     }
-    
-    private List<TeacherDTO> getTeachersDTOList(List<Teacher> teachers){
+
+    private List<TeacherDTO> getTeachersDTOList(List<Teacher> teachers) {
         List<TeacherDTO> teachersDTO = new ArrayList<>();
-        for(Teacher teacher : teachers) {
-            teachersDTO.add(new TeacherDTO(teacher.getId(),teacher.getFirstName(),teacher.getLastName()));
+        for (Teacher teacher : teachers) {
+            teachersDTO.add(new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getLastName()));
         }
         return teachersDTO;
     }
-   
+
 
 }

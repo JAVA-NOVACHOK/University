@@ -6,32 +6,43 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="students")
-public class Student implements Comparable{
+@Table(name = "students", uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "group_id"}))
+public class Student implements Comparable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "student_id")
     private long id;
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
     private Group group;
-
-
 
     public Student() {
     }
 
-    public Student(long id, String firstName, String lastName, long groupId) {
+    public Student(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
 
+    public Student(String firstName, String lastName, Group group) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.group = group;
+    }
+
+    public Student(long id, String firstName, String lastName, Group group) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.group = group;
     }
 
     public long getId() {
@@ -42,7 +53,6 @@ public class Student implements Comparable{
         this.id = id;
     }
 
-//    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -51,7 +61,6 @@ public class Student implements Comparable{
         this.firstName = firstName;
     }
 
-//    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -60,7 +69,6 @@ public class Student implements Comparable{
         this.lastName = lastName;
     }
 
-//    @Column(name = "group_id")
     public long getGroupId() {
         return group.getGroupId();
     }
@@ -98,7 +106,7 @@ public class Student implements Comparable{
 
     @Override
     public int compareTo(Object o) {
-        Student student = (Student)o;
+        Student student = (Student) o;
         return this.lastName.compareTo(student.getLastName());
     }
 }

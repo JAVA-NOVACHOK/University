@@ -2,12 +2,12 @@ package ua.com.nikiforov.dao.room;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.models.Room;
 
 public interface RoomDAO {
     
-    public boolean addRoom(int roomNumber, int seatNumber);
+    public void addRoom(int roomNumber, int seatNumber);
 
     public Room getRoomById(int id);
     
@@ -15,8 +15,8 @@ public interface RoomDAO {
 
     public List<Room> getAllRooms();
 
-    public boolean updateRoom(RoomDTO room);
+    public void updateRoom(RoomDTO room);
 
-    public boolean deleteRoomById(int id);
+    public void deleteRoomById(int id);
 
 }

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
@@ -161,7 +161,7 @@ public class TeacherController {
             return VIEW_TEACHER_ONE;
         }
         try {
-            teacherService.assignSubjectToTeacher(subjectId, teacherId);
+            teacherService.assignSubjectToTeacher(teacherId,subjectId);
             teacher.getSubjects().add(subject);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
@@ -189,7 +189,7 @@ public class TeacherController {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
-            teacherService.unassignSubjectFromTeacher(subjectId, teacherId);
+            teacherService.unassignSubjectFromTeacher(teacherId,subjectId);
             teacher.getSubjects().remove(subject);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully unassigned from %s!", subjectName, teachersName));

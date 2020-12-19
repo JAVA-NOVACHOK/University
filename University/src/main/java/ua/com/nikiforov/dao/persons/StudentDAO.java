@@ -4,26 +4,24 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.models.persons.Student;
 
 @Component
 public interface StudentDAO {
 
-    public boolean addStudent(StudentDTO student);
+    public void addStudent(StudentDTO student);
 
     public Student getStudentById(long studentId);
     
-    public List<Student> getStudentsByGroupId(long groupId);
-
     public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
     
     public Student getStudentByName(String firstName, String lastName);
 
     public List<Student> getAllStudents();
 
-    public boolean updateStudent(StudentDTO student);
+    public void updateStudent(StudentDTO student);
 
-    public boolean deleteStudentById(long studentId);
+    public void deleteStudentById(long studentId);
     
 }

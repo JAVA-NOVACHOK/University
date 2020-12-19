@@ -3,21 +3,24 @@ package ua.com.nikiforov.dao.persons;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers.persons.StudentMapper;
+import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
 @Repository
@@ -25,68 +28,48 @@ public class StudentDAOImpl implements StudentDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAOImpl.class);
 
-    private static final String ADD_STUDENT = "INSERT INTO students (first_name,last_name,group_id) VALUES(?,?,?)";
-    private static final String FIND_STUDENT_BY_ID = "SELECT * FROM students WHERE student_id = ? ";
     private static final String FIND_STUDENTS_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ? ";
-    private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND group_id = ? ";
-    private static final String FIND_STUDENT_BY_NAME = "SELECT * FROM students WHERE first_name = ? AND last_name = ?";
-    private static final String GET_ALL_STUDENTS = "SELECT * FROM students";
-    private static final String UPDATE_STUDENT = "UPDATE students SET first_name = ? ,last_name = ? ,group_id = ? WHERE student_id = ? ";
-    private static final String DELETE_STUDENT_BY_ID = "DELETE FROM students WHERE student_id = ? ";
-    
-    private static final String SUCCESSFULLY_RETRIVED_STUDENT = "Successfully retrived Student {}";
+    private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT s FROM Student s JOIN s.group g WHERE g.groupId = ?1 AND s.firstName = ?2 AND s.lastName = ?3";
+    private static final String FIND_STUDENT_BY_NAME = "SELECT s FROM Student s WHERE s.firstName LIKE '%?1' AND s.lastName LIKE '%?2'";
+    private static final String GET_ALL_STUDENTS = "SELECT s FROM Student s ORDER BY s.lastName";
+    private static final String DELETE_STUDENT_BY_ID = "DELETE FROM Student s WHERE s.id = ?1";
+
     private static final String GETTING = "Getting {}";
-    
-    
+    private static final String SUCCESSFULLY_RETRIEVED_STUDENT = "Successfully retrieved student '{}'";
 
-    private StudentMapper studentMapper;
-    private JdbcTemplate jdbcTemplate;
+    private static final int FIRST_PARAMETER_INDEX = 1;
+    private static final int SECOND_PARAMETER_INDEX = 2;
+    private static final int THIRED_PARAMETER_INDEX = 3;
 
-    @Autowired
-    public StudentDAOImpl(DataSource dataSource, StudentMapper studentMapper) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        this.studentMapper = studentMapper;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
     @Override
-    public boolean addStudent(StudentDTO student) {
-        String firstName = student.getFirstName();
-        String lastName = student.getLastName();
-        long groupId = student.getGroupId();
+    @Transactional
+    public void addStudent(StudentDTO studentDTO) {
+        String firstName = studentDTO.getFirstName();
+        String lastName = studentDTO.getLastName();
+        long groupId = studentDTO.getGroupId();
+        Group group = entityManager.getReference(Group.class, groupId);
         String studentMessage = String.format("Student with firstName = %s, lastname = %s, groupId = %d", firstName,
                 lastName, groupId);
         LOGGER.debug("Adding {}", studentMessage);
-        boolean actionResult = false;
-        try {
-            actionResult = jdbcTemplate.update(ADD_STUDENT, firstName, lastName, groupId) > 0;
-            if (actionResult) {
-                LOGGER.info("Successful adding {}", studentMessage);
-            } else {
-                throw new DataOperationException("Couldn't add " + studentMessage);
-            }
-        } catch (DuplicateKeyException e) {
-            LOGGER.error("ERROR! Cannot add {} already exists!",studentMessage);
-            throw new DuplicateKeyException(e.getMessage(),e);
-        }catch (DataAccessException e) {
-            String failMessage = String.format("Failed to add %s", studentMessage);
-            LOGGER.error(failMessage, e);
-            throw new DataOperationException(failMessage, e);
-        }
-        return actionResult;
+        entityManager.persist(new Student(firstName, lastName, group));
+        LOGGER.debug("{} added successfully", studentMessage);
     }
 
     @Override
     public Student getStudentById(long studentId) {
         LOGGER.debug("Getting Student by id '{}'", studentId);
         Student student;
-        try {
-            student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_ID, new Object[] { studentId }, studentMapper);
-            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
-        } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get Student by Id %d", studentId);
-            LOGGER.error(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage, e);
+        student = entityManager.find(Student.class, studentId);
+        if (student == null) {
+            String failMessage = String.format("Fail to get student by Id %d from DB", studentId);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
         }
+        LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
         return student;
     }
 
@@ -96,15 +79,17 @@ public class StudentDAOImpl implements StudentDAO {
                 lastName, groupId);
         LOGGER.debug(GETTING, studentMessage);
         Student student;
-        try {
-            student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME_GROUP_ID,
-                    new Object[] { firstName, lastName, groupId }, studentMapper);
-            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
-        } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get %s", studentMessage);
-            LOGGER.error(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage, e);
+        student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME_GROUP_ID)
+                .setParameter(FIRST_PARAMETER_INDEX, groupId)
+                .setParameter(SECOND_PARAMETER_INDEX, firstName)
+                .setParameter(THIRED_PARAMETER_INDEX, lastName)
+                .getSingleResult();
+        if (student == null) {
+            String failMessage = String.format("Fail to get student by groupId %d, firstName = %s and lastName = %s from DB", groupId, firstName, lastName);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
         }
+        LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
         return student;
     }
 
@@ -113,15 +98,16 @@ public class StudentDAOImpl implements StudentDAO {
         String studentMessage = String.format("Student with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug(GETTING, studentMessage);
         Student student;
-        try {
-            student = jdbcTemplate.queryForObject(FIND_STUDENT_BY_NAME,
-                    new Object[] { firstName, lastName }, studentMapper);
-            LOGGER.info(SUCCESSFULLY_RETRIVED_STUDENT, student);
-        } catch (EmptyResultDataAccessException e) {
-            String failGetByIdMessage = String.format("Couldn't get %s", studentMessage);
-            LOGGER.error(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage, e);
+        student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME)
+                .setParameter(FIRST_PARAMETER_INDEX, firstName)
+                .setParameter(SECOND_PARAMETER_INDEX, lastName)
+                .getSingleResult();
+        if (student == null) {
+            String failMessage = String.format("Fail to get student by firstName = %s and lastName = %s from DB", firstName, lastName);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
         }
+        LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
         return student;
     }
 
@@ -130,9 +116,9 @@ public class StudentDAOImpl implements StudentDAO {
         LOGGER.debug("Getting all students");
         List<Student> allStudents = new ArrayList<>();
         try {
-            allStudents.addAll(jdbcTemplate.query(GET_ALL_STUDENTS, studentMapper));
+            allStudents.addAll(entityManager.createQuery(GET_ALL_STUDENTS, Student.class).getResultList());
             LOGGER.info("Successfully query for all students");
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = "Fail to get all students from DB.";
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
@@ -142,62 +128,36 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     @Override
-    public boolean updateStudent(StudentDTO student) {
+    @Transactional
+    public void updateStudent(StudentDTO student) {
+        long studentId = student.getId();
+        String firstName = student.getFirstName();
+        String lastName = student.getLastName();
+        Group group = entityManager.getReference(Group.class, student.getGroupId());
         LOGGER.debug("Updating {}", student);
-        boolean actionResult = false;
         try {
-            actionResult = jdbcTemplate.update(UPDATE_STUDENT, student.getFirstName(), student.getLastName(), student.getGroupId(), student.getId()) > 0;
-            if (actionResult) {
-                LOGGER.info("Successfully updated {}", student);
-            } else {
-                throw new DataOperationException("Couldn't update " + student);
-            }
-        } catch (DuplicateKeyException e) {
-            LOGGER.error("ERROR! Cannot add {} already exists!",student);
-            throw new DuplicateKeyException(e.getMessage(),e);
-        } catch (DataAccessException e) {
+            entityManager.merge(new Student(studentId, firstName, lastName, group));
+        } catch (PersistenceException e) {
             String failMessage = String.format("Failed to update %s", student);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
-        return actionResult;
     }
 
     @Override
-    public boolean deleteStudentById(long studentId) {
+    @Transactional
+    public void deleteStudentById(long studentId) {
         String studentMessage = String.format("Student by id %d", studentId);
         LOGGER.debug("Deleting {}", studentMessage);
-        boolean actionResult = false;
         try {
-            actionResult = jdbcTemplate.update(DELETE_STUDENT_BY_ID, studentId) > 0;
-            if (actionResult) {
-                LOGGER.info("Successful deleting {}", studentMessage);
-            } else {
-                throw new DataOperationException("Couldn't delete " + studentMessage);
-            }
-        } catch (DataAccessException e) {
+            entityManager.createQuery(DELETE_STUDENT_BY_ID)
+                    .setParameter(1, studentId)
+                    .executeUpdate();
+            LOGGER.info("Successful deleting {}", studentMessage);
+        } catch (PersistenceException e) {
             String failDeleteMessage = "Failed to delete " + studentMessage;
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }
-        return actionResult;
-    }
-
-    @Override
-    public List<Student> getStudentsByGroupId(long groupId) {
-        String studentsInGroupMSG = String.format("students from group with ID = %d", groupId);
-        LOGGER.debug(GETTING, studentsInGroupMSG);
-        List<Student> studentsInGroup = new ArrayList<>();
-        try {
-            studentsInGroup
-                    .addAll(jdbcTemplate.query(FIND_STUDENTS_BY_GROUP_ID, new Object[] { groupId }, studentMapper));
-            LOGGER.info("Successfully query {} with size of list '{}'", studentsInGroupMSG,studentsInGroup.size());
-        } catch (DataAccessException e) {
-            String failMessage = String.format("Fail to get %s", studentsInGroupMSG);
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
-        }
-        Collections.sort(studentsInGroup);
-        return studentsInGroup;
     }
 }

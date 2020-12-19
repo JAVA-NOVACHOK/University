@@ -13,8 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -45,62 +45,62 @@ class StudentsServiseImplTest {
     @Autowired
     private GroupService groupService;
 
-    private long testGroupName_1;
-    private long testGroupName_2;
+    private long testGroupId_1;
+    private long testGroupId_2;
 
     @BeforeEach
     void init() {
         tableCreator.createTables();
-        testGroupName_1 = insertGroup(TEST_GROUP_NAME_1).getGroupId();
-        testGroupName_2 = insertGroup(TEST_GROUP_NAME_2).getGroupId();
+        testGroupId_1 = insertGroup(TEST_GROUP_NAME_1).getGroupId();
+        testGroupId_2 = insertGroup(TEST_GROUP_NAME_2).getGroupId();
     }
 
     @Test
     void whenAddStudentIfSuccessReturnTrue() {
-        assertTrue(studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1)));
+        assertDoesNotThrow(() -> studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupId_1)));
     }
 
     @Test
     void afterAddStudentReturnCorrectStudentObject() {
-        StudentDTO expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getGroupId()));
+        StudentDTO expectedStudent = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupId_1);
+        assertEquals(expectedStudent, studentsService.getStudentById(expectedStudent.getId()));
     }
 
     @Test
     void whenGetAllStudentsIfPresentReturnListOfAllStudents() {
         List<StudentDTO> expectedStudents = new ArrayList<>();
-        expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroupName_1));
-        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
-        expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroupName_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupId_1));
+        expectedStudents.add(insertStudent(FIRST_NAME_3, LAST_NAME_3, testGroupId_1));
         assertIterableEquals(expectedStudents, studentsService.getAllStudents());
     }
 
     @Test
-    void whenUpdateStudentIfSuccessThenReturnTrue() {
-        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
-        assertTrue(studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2)));
+    void whenUpdateStudentIfSuccessThenDontThrowAnything() {
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupId_1).getGroupId();
+        assertDoesNotThrow(() -> studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupId_2)));
     }
 
     @Test
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
-        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupName_1).getGroupId();
-        studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupName_2));
-        StudentDTO expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupName_2);
+        long studentId = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroupId_1).getId();
+        studentsService.updateStudent(new StudentDTO(studentId,FIRST_NAME_2, LAST_NAME_2, testGroupId_2));
+        StudentDTO expectedStudent = studentsService.getStudentByNameGroupId(FIRST_NAME_2, LAST_NAME_2, testGroupId_2);
         StudentDTO actualStudent = studentsService.getStudentById(studentId);
         assertEquals(expectedStudent, actualStudent);
     }
 
     @Test
     void whenDeleteStudentByIdIfSuccessThenReturnTrue() {
-        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
-        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
-        assertTrue(studentsService.deleteStudentById(student.getGroupId()));
+        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupId_1));
+        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupId_1);
+        assertDoesNotThrow(() -> studentsService.deleteStudentById(student.getGroupId()));
     }
 
     @Test
     void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
-        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupName_1));
-        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupName_1);
+        studentsService.addStudent(new StudentDTO(FIRST_NAME_1, LAST_NAME_1, testGroupId_1));
+        StudentDTO student = studentsService.getStudentByNameGroupId(FIRST_NAME_1, LAST_NAME_1, testGroupId_1);
         long studentId = student.getGroupId();
         studentsService.deleteStudentById(studentId);
         assertThrows(EntityNotFoundException.class, () -> studentsService.getStudentById(studentId));

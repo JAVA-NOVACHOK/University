@@ -18,12 +18,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.LessonDTO;
-import ua.com.nikiforov.controllers.dto.RoomDTO;
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.LessonDTO;
+import ua.com.nikiforov.dto.RoomDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.services.group.GroupService;

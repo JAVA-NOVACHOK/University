@@ -23,18 +23,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.RoomDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.RoomDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.Room;
-import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.persons.Student;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
@@ -236,8 +230,8 @@ class TeacherControllerTest {
 
         teacher.addSubject(subject_1);
 
-        teacherService.assignSubjectToTeacher(subject_1.getId(), teacher.getId());
-        teacherService.assignSubjectToTeacher(subject_2.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject_2.getId());
 
         this.mockMvc
                 .perform(get("/teachers/unassign/").param(SUBJECT_ID_ATTR, subject_2.getId() + STR)

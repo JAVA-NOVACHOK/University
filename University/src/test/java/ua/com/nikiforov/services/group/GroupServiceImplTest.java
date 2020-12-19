@@ -1,10 +1,5 @@
 package ua.com.nikiforov.services.group;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.persons.StudentsService;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
@@ -60,7 +57,7 @@ class GroupServiceImplTest {
 
     @Test
     void whenAddGroupIfSuccessThenReturnTrue() {
-        assertTrue(groupService.addGroup(TEST_GROUP_NAME_1));
+        assertDoesNotThrow(() -> groupService.addGroup(TEST_GROUP_NAME_1));
     }
 
     @Test
@@ -82,7 +79,7 @@ class GroupServiceImplTest {
     @Test
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
         GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
-        assertTrue(groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2)));
+        assertDoesNotThrow(() -> groupService.updateGroup(new GroupDTO(group.getGroupId(), TEST_GROUP_NAME_2)));
     }
 
     @Test
@@ -98,7 +95,7 @@ class GroupServiceImplTest {
     @Test
     void whenDeleteGroupByIdIfSuccessThenReturnTrue() {
         GroupDTO group = insertGroup(TEST_GROUP_NAME_1);
-        assertTrue(groupService.deleteGroup(group.getGroupId()));
+        assertDoesNotThrow(() -> groupService.deleteGroup(group.getGroupId()));
     }
 
     @Test
@@ -123,7 +120,7 @@ class GroupServiceImplTest {
         insertStudent(FIRST_NAME_4, LAST_NAME_4, groupId_2);
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
-        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        List<StudentDTO> actualStudents = group_1.getStudents();
         assertIterableEquals(expectedStudents, actualStudents);
 
     }
@@ -145,7 +142,7 @@ class GroupServiceImplTest {
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
         studentsService.deleteStudentById(studentToRemove.getId());
-        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_1);
+        List<StudentDTO> actualStudents = group_1.getStudents();
         assertIterableEquals(expectedStudents, actualStudents);
 
     }
@@ -171,7 +168,7 @@ class GroupServiceImplTest {
         StudentDTO transferedStudent = studentsService.getStudentById(transferedStudentId);
         expectedStudents.add(transferedStudent);
         
-        List<StudentDTO> actualStudents = groupService.getStudentsByGroupId(groupId_2);
+        List<StudentDTO> actualStudents = group_2.getStudents();
         assertIterableEquals(expectedStudents, actualStudents);
 
     }

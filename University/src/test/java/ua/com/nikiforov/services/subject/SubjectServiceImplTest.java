@@ -13,8 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
@@ -53,7 +53,7 @@ class SubjectServiceImplTest {
 
     @Test
     void whenAddSubjectIfSuccessReturnTrue() {
-        assertTrue(subjectService.addSubject(SUBJECT_NAME_1));
+        assertDoesNotThrow(() -> subjectService.addSubject(SUBJECT_NAME_1));
     }
 
     @Test
@@ -75,7 +75,7 @@ class SubjectServiceImplTest {
     @Test
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
         SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        assertTrue(subjectService.updateSubject(new SubjectDTO(subject.getId(),SUBJECT_NAME_2)));
+        assertDoesNotThrow(() -> subjectService.updateSubject(new SubjectDTO(subject.getId(),SUBJECT_NAME_2)));
     }
 
     @Test
@@ -91,7 +91,7 @@ class SubjectServiceImplTest {
     @Test
     void whenDeleteSubjectByIdIfSuccessThenReturnTrue() {
         SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        assertTrue(subjectService.deleteSubjectById(subject.getId()));
+        assertDoesNotThrow(() -> subjectService.deleteSubjectById(subject.getId()));
     }
 
     @Test
@@ -116,9 +116,9 @@ class SubjectServiceImplTest {
         expectedTeachers.add(teacherTwo);
         expectedTeachers.add(teacherThree);
 
-        teacherService.assignSubjectToTeacher(subjectId, teacherOne.getId());
-        teacherService.assignSubjectToTeacher(subjectId, teacherTwo.getId());
-        teacherService.assignSubjectToTeacher(subjectId, teacherThree.getId());
+        teacherService.assignSubjectToTeacher(teacherOne.getId(),subjectId);
+        teacherService.assignSubjectToTeacher(teacherTwo.getId(),subjectId);
+        teacherService.assignSubjectToTeacher(teacherThree.getId(),subjectId);
         
         subject = subjectService.getSubjectById(subjectId);
         List<TeacherDTO> actualTeachers = subject.getTeachers();

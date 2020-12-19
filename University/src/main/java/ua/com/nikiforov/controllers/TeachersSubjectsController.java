@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
@@ -48,7 +48,7 @@ public class TeachersSubjectsController {
             return VIEW_SUBJECTS;
         }
         try {
-            teacherService.assignSubjectToTeacher(subjectId, teacherId);
+            teacherService.assignSubjectToTeacher(teacherId,subjectId);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
         } catch (DuplicateKeyException e) {
@@ -72,7 +72,7 @@ public class TeachersSubjectsController {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
-            teacherService.unassignSubjectFromTeacher(subjectId, teacherId);
+            teacherService.unassignSubjectFromTeacher(teacherId,subjectId);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully unassigned from %s!", subjectName, teachersName));
         } catch (DataOperationException e) {

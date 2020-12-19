@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 
 @Component
 public class TimetableMapper implements RowMapper<TimetableDTO> {

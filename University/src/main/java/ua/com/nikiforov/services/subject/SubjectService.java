@@ -2,11 +2,11 @@ package ua.com.nikiforov.services.subject;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
 
 public interface SubjectService {
 
-    public boolean addSubject(String subjectName);
+    public void addSubject(String subjectName);
 
     public SubjectDTO getSubjectById(int subjectId);
 
@@ -16,8 +16,8 @@ public interface SubjectService {
 
     public List<SubjectDTO> getAllSubjectsWithoutTeachers();
 
-    public boolean updateSubject(SubjectDTO subject);
+    public void updateSubject(SubjectDTO subject);
 
-    public boolean deleteSubjectById(int subjectId);
+    public void deleteSubjectById(int subjectId);
 
 }

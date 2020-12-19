@@ -2,11 +2,11 @@ package ua.com.nikiforov.services.room;
 
 import java.util.List;
 
-import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.dto.RoomDTO;
 
 public interface RoomService {
 
-    public boolean addRoom(int roomNumber, int seatNumber);
+    public void addRoom(int roomNumber, int seatNumber);
 
     public RoomDTO getRoomById(int id);
     
@@ -14,7 +14,7 @@ public interface RoomService {
 
     public List<RoomDTO> getAllRooms();
 
-    public boolean updateRoom(RoomDTO room);
+    public void updateRoom(RoomDTO room);
 
-    public boolean deleteRoomById(int id);
+    public void deleteRoomById(int id);
 }

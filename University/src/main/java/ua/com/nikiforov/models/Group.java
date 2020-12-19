@@ -9,22 +9,21 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "groups")
+@Table(name = "groups", uniqueConstraints = @UniqueConstraint(columnNames = {"group_name"}))
 public class Group implements Comparable<Group> {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name="group_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "group_id")
     private long groupId;
-    @Column(name="group_name")
+    @Column(name = "group_name")
     private String groupName;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="group_id")
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
     private List<Student> groupStudents;
 
     public Group() {
-        groupStudents = new ArrayList<>();
     }
 
     public Group(long id, String groupName) {
@@ -33,6 +32,12 @@ public class Group implements Comparable<Group> {
         groupStudents = new ArrayList<>();
     }
 
+    public Group(long groupId, String groupName, List<Student> groupStudents) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.groupStudents = new ArrayList<>(groupStudents);
+
+    }
 
     public long getGroupId() {
         return groupId;
@@ -41,7 +46,6 @@ public class Group implements Comparable<Group> {
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
-
 
     public String getGroupName() {
         return groupName;
@@ -59,20 +63,6 @@ public class Group implements Comparable<Group> {
         groupStudents.add(student);
     }
 
-    public void setGroupStudents(List<Student> groupStudents) {
-        this.groupStudents.clear();
-        this.groupStudents.addAll(groupStudents);
-    }
-
-    public Student getStudentById(long studentId) {
-        Student student = new Student();
-        for (Student s : groupStudents) {
-            if (s.getId() == studentId) {
-                student = s;
-            }
-        }
-        return student;
-    }
 
     @Override
     public int hashCode() {

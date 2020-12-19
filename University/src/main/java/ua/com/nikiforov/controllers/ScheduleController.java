@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.controllers.dto.LessonDTO;
-import ua.com.nikiforov.controllers.dto.ScheduleFindAttr;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
-import ua.com.nikiforov.controllers.dto.TimetableDTO;
+import ua.com.nikiforov.dto.LessonDTO;
+import ua.com.nikiforov.dto.ScheduleFindAttr;
+import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;

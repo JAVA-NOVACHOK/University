@@ -15,7 +15,7 @@ public class WebAppInitializer implements WebApplicationInitializer {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebAppInitializer.class);
 
     @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
+    public void onStartup(ServletContext servletContext) {
         LOGGER.debug("On startup");
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         LOGGER.debug("After context startup {}",context);

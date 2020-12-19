@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.controllers.dto.GroupDTO;
-import ua.com.nikiforov.controllers.dto.StudentDTO;
+import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dao.group.GroupDAO;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.services.persons.StudentsService;
+import ua.com.nikiforov.services.persons.StudentsServiceImpl;
 
 @Service
 public class GroupServiceImpl implements GroupService {
@@ -25,16 +27,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean addGroup(String groupName) {
-        return groupDAO.addGroup(groupName);
-
+    public void addGroup(String groupName) {
+        try {
+            groupDAO.addGroup(groupName);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateKeyException("Error! Duplicate group while adding", e);
+        }
     }
 
     @Override
     public GroupDTO getGroupById(long groupId) {
-        GroupDTO groupDTO = getGroupDTO(groupDAO.getGroupById(groupId));
-        groupDTO.setStudents(getStudentsByGroupId(groupId));
-        return groupDTO;
+        return getGroupDTO(groupDAO.getGroupById(groupId));
     }
 
     @Override
@@ -45,36 +48,28 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<GroupDTO> getAllGroups() {
         List<GroupDTO> groupsDTO = new ArrayList<>();
-        for(Group group : groupDAO.getAllGroups()){
+        for (Group group : groupDAO.getAllGroups()) {
             groupsDTO.add(getGroupDTO(group));
         }
         return groupsDTO;
     }
 
     @Override
-    public boolean updateGroup(GroupDTO group) {
-        return groupDAO.updateGroup(group);
+    public void updateGroup(GroupDTO group) {
+        try {
+            groupDAO.updateGroup(group);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateKeyException("Error! Duplicate group while editing!", e);
+        }
     }
 
     @Override
-    public boolean deleteGroup(long id) {
-        return groupDAO.deleteGroupById(id);
+    public void deleteGroup(long id) {
+        groupDAO.deleteGroupById(id);
     }
 
-    @Override
-    public List<StudentDTO> getStudentsByGroupId(long groupId) {
-        return studentsService.getStudentsByGroupId(groupId);
-    }
-
-    @Override
-    public GroupDTO getGroupByStudentId(long studentId) {
-        GroupDTO groupDTO = getGroupDTO(groupDAO.getGroupByStudentId(studentId));
-        groupDTO.setStudents(getStudentsByGroupId(groupDTO.getGroupId()));
-        return groupDTO;
-    }
-    
     private GroupDTO getGroupDTO(Group group) {
-        return new GroupDTO(group.getGroupId(),group.getGroupName());
+        return new GroupDTO(group.getGroupId(), group.getGroupName(), StudentsServiceImpl.getListStudentDTO(group.getGroupStudents()));
     }
 
 }

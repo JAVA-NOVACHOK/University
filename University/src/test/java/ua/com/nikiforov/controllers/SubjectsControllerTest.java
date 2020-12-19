@@ -23,12 +23,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.models.Subject;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
@@ -150,7 +149,7 @@ class SubjectsControllerTest {
     @Test
     void editSubjectURIWithSubjectParam_thenReturnSuccessSubject() throws Exception {
         SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        SubjectDTO updatedSubject = new SubjectDTO(subject.getId(), SUBJECT_NAME_2);
+        SubjectDTO updatedSubject = new SubjectDTO(subject.getId(), SUBJECT_NAME_2,subject.getTeachers());
         this.mockMvc
         .perform(post("/subjects/edit/")
                 .param(ID_ATTR,subject.getId() + STR)
@@ -195,7 +194,7 @@ class SubjectsControllerTest {
     void unassignSubjectFromTeacher_thenReturnSuccessMSG() throws Exception {
         TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        teacherService.assignSubjectToTeacher(subject.getId(), teacher.getId());
+        teacherService.assignSubjectToTeacher(teacher.getId(),subject.getId());
         this.mockMvc
         .perform(get("/subjects/unassign/")
                 .param(SUBJECT_ID_ATTR, subject.getId() + STR)

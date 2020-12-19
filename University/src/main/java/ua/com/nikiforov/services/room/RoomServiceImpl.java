@@ -5,9 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.controllers.dto.RoomDTO;
+import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.dao.room.RoomDAO;
 import ua.com.nikiforov.models.Room;
 
@@ -22,8 +24,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean addRoom(int roomNumber, int seatNumber) {
-        return roomDAO.addRoom(roomNumber, seatNumber);
+    public void addRoom(int roomNumber, int seatNumber) {
+        try {
+            roomDAO.addRoom(roomNumber, seatNumber);
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateKeyException("Error! Duplicate room while adding",e);
+        }
     }
 
     @Override
@@ -39,7 +45,6 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<RoomDTO> getAllRooms() {
         List<Room> rooms = roomDAO.getAllRooms();
-        Collections.sort(rooms,(r1,r2) -> r1.compareTo(r2));
         List<RoomDTO> roomsDTO = new ArrayList<>();
         for(Room room : rooms) {
             roomsDTO.add(getRoomDTO(room));
@@ -49,13 +54,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean updateRoom(RoomDTO room) {
-        return roomDAO.updateRoom(room);
+    public void updateRoom(RoomDTO room) {
+        try {
+            roomDAO.updateRoom(room);
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateKeyException("Error! Duplicate room while editing!",e);
+        }
     }
 
     @Override
-    public boolean deleteRoomById(int id) {
-        return roomDAO.deleteRoomById(id);
+    public void deleteRoomById(int id) {
+         roomDAO.deleteRoomById(id);
     }
     
     private RoomDTO getRoomDTO(Room room) {

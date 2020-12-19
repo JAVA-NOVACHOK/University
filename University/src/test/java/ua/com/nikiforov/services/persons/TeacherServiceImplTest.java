@@ -1,10 +1,5 @@
 package ua.com.nikiforov.services.persons;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +11,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.controllers.dto.SubjectDTO;
-import ua.com.nikiforov.controllers.dto.TeacherDTO;
+import ua.com.nikiforov.dto.SubjectDTO;
+import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.subject.SubjectService;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
@@ -56,7 +54,7 @@ class TeacherServiceImplTest {
 
     @Test
     void whenAddTEacherIfSuccessReturnTrue() {
-        assertTrue(teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_1)));
+        assertDoesNotThrow(() -> teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_1)));
     }
 
     @Test
@@ -77,7 +75,7 @@ class TeacherServiceImplTest {
     @Test
     void whenUpdateTeacherIfSuccessThenReturnTrue() {
         long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        assertTrue(teacherService.updateTeacher(new TeacherDTO(teacherId, FIRST_NAME_2, LAST_NAME_2)));
+        assertDoesNotThrow(() -> teacherService.updateTeacher(new TeacherDTO(teacherId, FIRST_NAME_2, LAST_NAME_2)));
     }
 
     @Test
@@ -90,9 +88,9 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void whenDeleteTeacherByIdIfSuccessThenReturnTrue() {
+    void whenDeleteTeacherByIdIfSuccessNoException() {
         TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        assertTrue(teacherService.deleteTeacherById(teacher.getId()));
+        assertDoesNotThrow(() -> teacherService.deleteTeacherById(teacher.getId()));
     }
 
     @Test
@@ -104,10 +102,10 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void whenAssignSubjectToTeacherIfSuccessReturnTrue() {
-        teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_1));
-        subjectService.addSubject(SUBJECT_NAME_1);
-        assertTrue(teacherService.assignSubjectToTeacher(1, 1));
+    void whenAssignSubjectToTeacherIfSuccessNoException() {
+        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
+        assertDoesNotThrow(() -> teacherService.assignSubjectToTeacher(teacher.getId(), subject.getId()));
     }
 
     @Test
@@ -127,9 +125,9 @@ class TeacherServiceImplTest {
         expectedSubjects.add(subjectTwo);
         expectedSubjects.add(subjectThree);
 
-        teacherService.assignSubjectToTeacher(subjectOneId, teacherId);
-        teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
-        teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectOneId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectTwoId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectThreeId);
 
         TeacherDTO teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
         List<SubjectDTO> actualSubjects = teacherAfterAssignSubjects.getSubjects();
@@ -152,11 +150,11 @@ class TeacherServiceImplTest {
         expectedSubjects.add(subjectOne);
         expectedSubjects.add(subjectTwo);
        
-        teacherService.assignSubjectToTeacher(subjectOneId, teacherId);
-        teacherService.assignSubjectToTeacher(subjectTwoId, teacherId);
-        teacherService.assignSubjectToTeacher(subjectThreeId, teacherId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectOneId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectTwoId);
+        teacherService.assignSubjectToTeacher(teacherId,subjectThreeId);
 
-        teacherService.unassignSubjectFromTeacher(subjectThreeId, teacherId);
+        teacherService.unassignSubjectFromTeacher(teacherId,subjectThreeId);
 
         TeacherDTO teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
         List<SubjectDTO> actualSubjects = teacherAfterAssignSubjects.getSubjects();
