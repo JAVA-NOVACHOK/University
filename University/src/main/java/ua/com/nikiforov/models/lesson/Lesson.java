@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "lessons",)
+@Table(name = "lessons",uniqueConstraints = @UniqueConstraint(columnNames = {"group_id","subject_id","room_id","time","period","teacher_id"}))
 public class Lesson {
 
     @Id
@@ -21,12 +21,20 @@ public class Lesson {
     private int period;
     @Column(name = "teacher_id")
     private long teacherId;
-    private String date;
 
     public Lesson() {
     }
 
-    public Lesson(long id,int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
+    public Lesson(int period,long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
+        this.groupId = groupId;
+        this.subjectId = subjectId;
+        this.roomId = roomId;
+        this.time = time;
+        this.period = period;
+        this.teacherId = teacherId;
+    }
+
+    public Lesson(long id, int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
@@ -34,22 +42,7 @@ public class Lesson {
         this.time = time;
         this.period = period;
         this.teacherId = teacherId;
-        date = "";
-    }
-    
-    
-    public String getDateFromLocalDate() {
-        String[] dateArr = time.toString().split("T"); 
-        return dateArr[0];
-    }
-    
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public long getId() {
@@ -152,4 +145,16 @@ public class Lesson {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Lesson{" +
+                "id=" + id +
+                ", groupId=" + groupId +
+                ", subjectId=" + subjectId +
+                ", roomId=" + roomId +
+                ", time=" + time +
+                ", period=" + period +
+                ", teacherId=" + teacherId +
+                '}';
+    }
 }

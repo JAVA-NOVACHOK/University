@@ -100,7 +100,7 @@ public class Subject implements Comparable<Subject>{
 
     @Override
     public String toString() {
-        return "Subject [id=" + id + ", name=" + name + ", teachers=" + teachers + "]";
+        return "Subject [id=" + id + ", name=" + name + "]";
     }
 
     @Override

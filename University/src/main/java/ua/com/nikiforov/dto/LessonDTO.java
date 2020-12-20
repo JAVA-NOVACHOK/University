@@ -16,7 +16,7 @@ public class LessonDTO {
     public LessonDTO() {
     }
 
-    public LessonDTO(long id, int period,long groupId, int subjectId, int roomId,String date,  long teacherId) {
+    public LessonDTO(long id, int period, long groupId, int subjectId, int roomId, String date, long teacherId) {
         this.id = id;
         this.groupId = groupId;
         this.subjectId = subjectId;
@@ -27,16 +27,25 @@ public class LessonDTO {
     }
 
     public LessonDTO(int period, long groupId, int subjectId, int roomId, String date, long teacherId) {
+        this.groupId = groupId;
+        this.subjectId = subjectId;
+        this.roomId = roomId;
+        this.date = date;
+        this.period = period;
+        this.teacherId = teacherId;
+    }
+
+    public LessonDTO(int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId, String date) {
         this.period = period;
         this.groupId = groupId;
         this.subjectId = subjectId;
         this.roomId = roomId;
         this.teacherId = teacherId;
+        this.time = time;
         this.date = date;
     }
 
-    public LessonDTO(long id, int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId,
-            String date) {
+    public LessonDTO(long id, int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
         this.id = id;
         this.period = period;
         this.groupId = groupId;
@@ -44,7 +53,7 @@ public class LessonDTO {
         this.roomId = roomId;
         this.time = time;
         this.teacherId = teacherId;
-        this.date = date;
+
     }
 
     public long getId() {
@@ -110,9 +119,9 @@ public class LessonDTO {
     public void setDate(String date) {
         this.date = date;
     }
-    
+
     public String getDateFromLocalDate() {
-        String[] dateArr = time.toString().split("T"); 
+        String[] dateArr = time.toString().split("T");
         return dateArr[0];
     }
 

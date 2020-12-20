@@ -114,7 +114,6 @@ public class Teacher implements Comparable{
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", subjects=" + subjects +
                 '}';
     }
 

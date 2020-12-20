@@ -279,7 +279,7 @@ class TeachersTimetableServiceTest {
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
         lessonService.addLesson(new LessonDTO(period, groupId,subjectId, roomId,  date, teacherId));
-        return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
+        return lessonService.getLessonByAllArgs(new LessonDTO(period, groupId,subjectId, roomId,  date, teacherId));
     }
 
     private GroupDTO insertGroup(String groupName) {

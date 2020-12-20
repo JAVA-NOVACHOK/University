@@ -1,10 +1,5 @@
 package ua.com.nikiforov.services.lesson;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -31,6 +26,8 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -47,7 +44,7 @@ class LessonServiceImplTest {
     private static final int TEST_ROOM_ID_1 = 1;
     private static final int TEST_ROOM_ID_2 = 2;
     private static final int TEST_ROOM_ID_3 = 3;
-    
+
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
@@ -101,18 +98,17 @@ class LessonServiceImplTest {
 
     @Autowired
     private TeacherService teacherService;
-    
+
     @Autowired
     private LessonService lessonService;
 
     @Autowired
     private TableCreator tableCreator;
-    
+
     private TeacherDTO teacher_1;
     private TeacherDTO teacher_2;
     private TeacherDTO teacher_3;
 
-    
 
     @BeforeEach
     void init() {
@@ -136,7 +132,7 @@ class LessonServiceImplTest {
 
     @Test
     void whenAddLessonIfSuccessThenReturnTrue() {
-        assertTrue(lessonService.addLesson(new LessonDTO(0,PERIOD_1, TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1,  DATE,
+        assertDoesNotThrow(() -> lessonService.addLesson(new LessonDTO(PERIOD_3, TEST_GROUP_ID_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, DATE,
                 TEACHER_ID_1)));
     }
 
@@ -164,7 +160,7 @@ class LessonServiceImplTest {
     void whenUpdateLessonIfSuccessThenReturnTrue() {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
-        assertTrue(lessonService.updateLesson(new LessonDTO(lessonId,PERIOD_2, TEST_GROUP_ID_2,TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,  DATE,
+        assertDoesNotThrow(() -> lessonService.updateLesson(new LessonDTO(lessonId, PERIOD_2, TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, DATE,
                 TEACHER_ID_1)));
     }
 
@@ -172,8 +168,8 @@ class LessonServiceImplTest {
     void whenUpdateLessonThenLessonIsChanged() {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
-        lessonService.updateLesson(new LessonDTO(lessonId,PERIOD_2, TEST_GROUP_ID_2,TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,  DATE, TEACHER_ID_1));
-        LessonDTO expectedUpdatedLesson = lessonService.getLessonByAllArgs(PERIOD_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2,TEST_GROUP_ID_2, DATE, TEACHER_ID_1);
+        lessonService.updateLesson(new LessonDTO(lessonId, PERIOD_2, TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, DATE, TEACHER_ID_1));
+        LessonDTO expectedUpdatedLesson = lessonService.getLessonByAllArgs(new LessonDTO(PERIOD_2, TEST_GROUP_ID_2, TEST_SUBJECT_ID_2, TEST_ROOM_ID_2, DATE, TEACHER_ID_1));
         LessonDTO actualUpdatedLesson = lessonService.getLessonById(lessonId);
         assertEquals(expectedUpdatedLesson, actualUpdatedLesson);
     }
@@ -182,7 +178,7 @@ class LessonServiceImplTest {
     void whenDeleteLessonByIdIfSuccessThenReturnTrue() {
         long lessonId = insertLesson(PERIOD_1, TEST_SUBJECT_ID_1, TEST_ROOM_ID_1, TEST_GROUP_ID_1, DATE, TEACHER_ID_1)
                 .getId();
-        assertTrue(lessonService.deleteLessonById(lessonId));
+        assertDoesNotThrow(() -> lessonService.deleteLessonById(lessonId));
     }
 
     @Test
@@ -194,16 +190,16 @@ class LessonServiceImplTest {
     }
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(new LessonDTO(0,period, groupId, subjectId, roomId, date, teacherId));
-        return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
+        lessonService.addLesson(new LessonDTO(0, period, groupId, subjectId, roomId, date, teacherId));
+        return lessonService.getLessonByAllArgs(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
     }
-    
+
     private LocalDate getLocalDateFromString(String date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, dateTimeFormatter);
     }
 
-    
+
     private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);
         return groupService.getGroupByName(groupName);

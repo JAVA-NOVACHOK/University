@@ -28,7 +28,6 @@ public class StudentDAOImpl implements StudentDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAOImpl.class);
 
-    private static final String FIND_STUDENTS_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ? ";
     private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT s FROM Student s JOIN s.group g WHERE g.groupId = ?1 AND s.firstName = ?2 AND s.lastName = ?3";
     private static final String FIND_STUDENT_BY_NAME = "SELECT s FROM Student s WHERE s.firstName LIKE '%?1' AND s.lastName LIKE '%?2'";
     private static final String GET_ALL_STUDENTS = "SELECT s FROM Student s ORDER BY s.lastName";

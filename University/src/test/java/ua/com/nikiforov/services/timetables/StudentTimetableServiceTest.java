@@ -159,9 +159,9 @@ class StudentTimetableServiceTest {
         lesson_3_date = insertLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(), DATE,
                 teacher_3.getId());
 
-        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(),subject_1.getId(), room_2.getId(),  DATE,
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(), subject_1.getId(), room_2.getId(), DATE,
                 teacher_1.getId()));
-        lessonService.addLesson(new LessonDTO(PERIOD_2, group_2.getGroupId(),subject_2.getId(), room_3.getId(),  DATE,
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_2.getGroupId(), subject_2.getId(), room_3.getId(), DATE,
                 teacher_2.getId()));
         lessonService.addLesson(new LessonDTO(PERIOD_3, group_2.getGroupId(), subject_3.getId(), room_2.getId(), DATE,
                 teacher_3.getId()));
@@ -187,11 +187,11 @@ class StudentTimetableServiceTest {
         lesson_3_date_day_13 = insertLesson(PERIOD_3, subject_2.getId(), room_2.getId(), group_1.getGroupId(),
                 DATE_1_ADD_13_DAYS, teacher_2.getId());
 
-        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(),subject_1.getId(), room_2.getId(),  DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_2.getGroupId(), subject_1.getId(), room_2.getId(), DATE_1_ADD_13_DAYS,
                 teacher_1.getId()));
         lessonService.addLesson(new LessonDTO(PERIOD_2, group_2.getGroupId(), subject_2.getId(), room_3.getId(), DATE_1_ADD_13_DAYS,
                 teacher_2.getId()));
-        lessonService.addLesson(new LessonDTO(PERIOD_3, group_2.getGroupId(), subject_3.getId(), room_1.getId(),  DATE_1_ADD_13_DAYS,
+        lessonService.addLesson(new LessonDTO(PERIOD_3, group_2.getGroupId(), subject_3.getId(), room_1.getId(), DATE_1_ADD_13_DAYS,
                 teacher_3.getId()));
 
         lesson_1_date_day_21 = insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(),
@@ -201,9 +201,9 @@ class StudentTimetableServiceTest {
         lesson_3_date_day_21 = insertLesson(PERIOD_3, subject_3.getId(), room_3.getId(), group_1.getGroupId(),
                 DATE_1_ADD_21_DAYS, teacher_3.getId());
 
-        lessonService.addLesson(new LessonDTO(PERIOD_1,group_1.getGroupId(), subject_1.getId(), room_1.getId(),  DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(new LessonDTO(PERIOD_1, group_1.getGroupId(), subject_1.getId(), room_1.getId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId()));
-        lessonService.addLesson(new LessonDTO(PERIOD_2, group_1.getGroupId(),subject_2.getId(), room_2.getId(),  DATE_1_ADD_33_DAYS,
+        lessonService.addLesson(new LessonDTO(PERIOD_2, group_1.getGroupId(), subject_2.getId(), room_2.getId(), DATE_1_ADD_33_DAYS,
                 teacher_2.getId()));
         lessonService.addLesson(new LessonDTO(PERIOD_3, group_1.getGroupId(), subject_3.getId(), room_3.getId(), DATE_1_ADD_33_DAYS,
                 teacher_3.getId()));
@@ -313,8 +313,8 @@ class StudentTimetableServiceTest {
     }
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(new LessonDTO(period,groupId, subjectId, roomId,  date, teacherId));
-        return lessonService.getLessonByAllArgs(period, subjectId, roomId, groupId, date, teacherId);
+        lessonService.addLesson(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
+        return lessonService.getLessonByAllArgs(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
     }
 
     private GroupDTO insertGroup(String groupName) {
