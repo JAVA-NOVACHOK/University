@@ -11,19 +11,17 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dao.group.GroupDAO;
 import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.StudentsServiceImpl;
 
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private GroupDAO groupDAO;
-    private StudentsService studentsService;
+
 
     @Autowired
-    public GroupServiceImpl(GroupDAO groupDAO, StudentsService studentsService) {
+    public GroupServiceImpl(GroupDAO groupDAO) {
         this.groupDAO = groupDAO;
-        this.studentsService = studentsService;
     }
 
     @Override
@@ -47,11 +45,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupDTO> getAllGroups() {
-        List<GroupDTO> groupsDTO = new ArrayList<>();
-        for (Group group : groupDAO.getAllGroups()) {
-            groupsDTO.add(getGroupDTO(group));
-        }
-        return groupsDTO;
+        return getGroupDTOs(groupDAO.getAllGroups());
     }
 
     @Override
@@ -68,8 +62,17 @@ public class GroupServiceImpl implements GroupService {
         groupDAO.deleteGroupById(id);
     }
 
-    private GroupDTO getGroupDTO(Group group) {
-        return new GroupDTO(group.getGroupId(), group.getGroupName(), StudentsServiceImpl.getListStudentDTO(group.getGroupStudents()));
+    private static List<GroupDTO> getGroupDTOs(List<Group> groups) {
+        List<GroupDTO> groupsDTO = new ArrayList<>();
+        for (Group group : groups) {
+            groupsDTO.add(getGroupDTO(group));
+        }
+        return groupsDTO;
+    }
+
+    public static GroupDTO getGroupDTO(Group group) {
+        return new GroupDTO(group.getGroupId(), group.getGroupName(),
+                StudentsServiceImpl.getListStudentDTO(group.getGroupStudents()));
     }
 
 }

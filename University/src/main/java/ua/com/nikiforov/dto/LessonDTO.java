@@ -174,4 +174,17 @@ public class LessonDTO {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "LessonDTO{" +
+                "id=" + id +
+                ", period=" + period +
+                ", groupId=" + groupId +
+                ", subjectId=" + subjectId +
+                ", roomId=" + roomId +
+                ", time=" + time +
+                ", teacherId=" + teacherId +
+                ", date='" + date + '\'' +
+                '}';
+    }
 }

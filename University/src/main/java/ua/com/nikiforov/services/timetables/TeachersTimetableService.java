@@ -21,14 +21,16 @@ public class TeachersTimetableService extends PersonalTimetable {
 
     @Override
     public List<DayTimetable>  getDayTimetable(String date, long teacherId) {
-        List<TimetableDTO> allTimetablesList = teachersTimetable.getDayTimetable(date, teacherId);
+        List<TimetableDTO> allTimetablesList = getTimetableDTOs(teachersTimetable.getDayTimetable(date, teacherId));
         return createMonthTimetable(allTimetablesList);
     }
 
     @Override
     public List<DayTimetable> getMonthTimetable(String date, long teacherId) {
-        List<TimetableDTO> allTimetablesList = teachersTimetable.getMonthTimetable(date, teacherId);
+        List<TimetableDTO> allTimetablesList = getTimetableDTOs(teachersTimetable.getMonthTimetable(date, teacherId));
         return createMonthTimetable(allTimetablesList);
     }
+
+
 
 }

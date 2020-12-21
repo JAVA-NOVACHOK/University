@@ -1,7 +1,6 @@
 package ua.com.nikiforov.services.room;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +43,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomDTO> getAllRooms() {
-        List<Room> rooms = roomDAO.getAllRooms();
-        List<RoomDTO> roomsDTO = new ArrayList<>();
-        for(Room room : rooms) {
-            roomsDTO.add(getRoomDTO(room));
-        }
-        return roomsDTO;
-
+        return getRoomDTOs(roomDAO.getAllRooms());
     }
 
     @Override
@@ -66,8 +59,16 @@ public class RoomServiceImpl implements RoomService {
     public void deleteRoomById(int id) {
          roomDAO.deleteRoomById(id);
     }
-    
-    private RoomDTO getRoomDTO(Room room) {
+
+    private static List<RoomDTO> getRoomDTOs(List<Room> rooms){
+        List<RoomDTO> roomsDTO = new ArrayList<>();
+        for(Room room : rooms) {
+            roomsDTO.add(getRoomDTO(room));
+        }
+        return roomsDTO;
+    }
+
+    public static RoomDTO getRoomDTO(Room room) {
         int id = room.getId();
         int number = room.getRoomNumber();
         int seats = room.getSeatNumber();

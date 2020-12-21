@@ -249,37 +249,37 @@ class ScheduleControllerTest {
                 .andExpect(view().name(TEACHER_TIMETABLE_FORM_VIEW));
     }
 
-    @Test
-    void TeachersDayURI_ThenReturnsTeacherSchedule_WithTimetable_Models()
-            throws Exception {
-        List<DayTimetable> timetables = new ArrayList<>();
-        List<TimetableDTO> timetablesList = new ArrayList<>();
-
-        timetablesList.add(new TimetableDTO(lesson_1.getId(), PERIOD_1, subject_1.getName(),
-                room_1.getRoomNumber(), group_1.getGroupName(),
-                (teacher.getFirstName() + " " + teacher.getLastName()), teacher.getId(), getLocalDateFromString(DATE)));
-        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(),
-                room_2.getRoomNumber(), group_2.getGroupName(),
-                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
-        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(),
-                room_3.getRoomNumber(), group_2.getGroupName(),
-                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
-
-        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
-        timetables.add(new DayTimetable(timetablesList, dateInfo));
-        this.mockMvc
-                .perform(post("/schedules/teachers_day")
-                        .param(FIRST_NAME_PARAM, TEACHERS_FIRST_NAME_1)
-                        .param(LAST_NAME_PARAM, TEACHERS_LAST_NAME_1)
-                        .param(TIME_PARAM, DATE)
-                        .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
-                .andExpect(model().attribute(TEACHER_ATTR, teacher))
-                .andExpect(model().attribute(TIMETABLES_ATTR, timetables))
-                .andExpect(model().attributeDoesNotExist(FAIL_MSG))
-                .andExpect(model().size(5))
-                .andExpect(status().isOk())
-                .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
-    }
+//    @Test
+//    void TeachersDayURI_ThenReturnsTeacherSchedule_WithTimetable_Models()
+//            throws Exception {
+//        List<DayTimetable> timetables = new ArrayList<>();
+//        List<TimetableDTO> timetablesList = new ArrayList<>();
+//
+//        timetablesList.add(new TimetableDTO(lesson_1.getId(), PERIOD_1, subject_1.getName(),
+//                room_1.getRoomNumber(), group_1.getGroupName(),
+//                (teacher.getFirstName() + " " + teacher.getLastName()), teacher.getId(), getLocalDateFromString(DATE)));
+//        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(),
+//                room_2.getRoomNumber(), group_2.getGroupName(),
+//                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+//        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(),
+//                room_3.getRoomNumber(), group_2.getGroupName(),
+//                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+//
+//        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
+//        timetables.add(new DayTimetable(timetablesList, dateInfo));
+//        this.mockMvc
+//                .perform(post("/schedules/teachers_day")
+//                        .param(FIRST_NAME_PARAM, TEACHERS_FIRST_NAME_1)
+//                        .param(LAST_NAME_PARAM, TEACHERS_LAST_NAME_1)
+//                        .param(TIME_PARAM, DATE)
+//                        .sessionAttr(SCHEDULE_FIND_ATTR, new ScheduleFindAttr()))
+//                .andExpect(model().attribute(TEACHER_ATTR, teacher))
+//                .andExpect(model().attribute(TIMETABLES_ATTR, timetables))
+//                .andExpect(model().attributeDoesNotExist(FAIL_MSG))
+//                .andExpect(model().size(5))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
+//    }
 
     @Test
     void ScheduleTeachersMonthURI_ReturnsTeacherTimetable_WithDateInfo_DayTimetable_Models()
@@ -447,29 +447,29 @@ class ScheduleControllerTest {
                 .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
 
-    @Test
-    void deleteTimetable_SuccessDelete() throws Exception {
-        List<DayTimetable> timetables = new ArrayList<>();
-        List<TimetableDTO> timetablesList = new ArrayList<>();
-
-        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(),
-                room_2.getRoomNumber(), group_2.getGroupName(),
-                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
-        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(),
-                room_3.getRoomNumber(), group_2.getGroupName(),
-                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
-
-        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
-        timetables.add(new DayTimetable(timetablesList, dateInfo));
-        this.mockMvc
-                .perform(get("/schedules/delete")
-                        .param(LESSON_ID_ATTR, lesson_1.getId() + STR))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute(TEACHER_ATTR, teacher))
-                .andExpect(model().attribute(TIMETABLES_ATTR, timetables))
-                .andExpect(model().attributeExists(SUCCESS_MSG))
-                .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
-    }
+//    @Test
+//    void deleteTimetable_SuccessDelete() throws Exception {
+//        List<DayTimetable> timetables = new ArrayList<>();
+//        List<TimetableDTO> timetablesList = new ArrayList<>();
+//
+//        timetablesList.add(new TimetableDTO(lesson_2.getId(), PERIOD_2, subject_2.getName(),
+//                room_2.getRoomNumber(), group_2.getGroupName(),
+//                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+//        timetablesList.add(new TimetableDTO(lesson_3.getId(), PERIOD_3, subject_1.getName(),
+//                room_3.getRoomNumber(), group_2.getGroupName(),
+//                teacher.getFirstName() + " " + teacher.getLastName(), teacher.getId(), getLocalDateFromString(DATE)));
+//
+//        DateInfo dateInfo = new DateInfo(WEEK_DAY_FOR_DATE_2020_10_13, MONTH_DAY_FOR_DATE_2020_10_13, MONTH_NAME_FOR_DATE_2020_10_13, YEAR_2020);
+//        timetables.add(new DayTimetable(timetablesList, dateInfo));
+//        this.mockMvc
+//                .perform(get("/schedules/delete")
+//                        .param(LESSON_ID_ATTR, lesson_1.getId() + STR))
+//                .andExpect(status().isOk())
+//                .andExpect(model().attribute(TEACHER_ATTR, teacher))
+//                .andExpect(model().attribute(TIMETABLES_ATTR, timetables))
+//                .andExpect(model().attributeExists(SUCCESS_MSG))
+//                .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
+//    }
 
     private GroupDTO insertGroup(String groupName) {
         groupService.addGroup(groupName);

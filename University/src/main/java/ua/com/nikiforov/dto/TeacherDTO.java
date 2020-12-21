@@ -3,7 +3,7 @@ package ua.com.nikiforov.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeacherDTO {
+public class TeacherDTO implements  Comparable<TeacherDTO>{
 
     private long id;
     private String firstName;
@@ -109,5 +109,10 @@ public class TeacherDTO {
                 ", lastName='" + lastName + '\'' +
                 ", subjects=" + subjects +
                 '}';
+    }
+
+    @Override
+    public int compareTo(TeacherDTO teacherDTO) {
+        return this.lastName.compareTo(teacherDTO.getLastName());
     }
 }

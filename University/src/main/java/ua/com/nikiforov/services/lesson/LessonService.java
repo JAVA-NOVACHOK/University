@@ -11,7 +11,6 @@ public interface LessonService {
     public LessonDTO getLessonById(long id);
     
     public LessonDTO getLessonByAllArgs(LessonDTO lessonDTO);
-//    public LessonDTO getLessonByAllArgs(int period, int subjectId, int roomId, long groupId, String date, long teacherId);
 
     public List<LessonDTO> getAllLessons();
 

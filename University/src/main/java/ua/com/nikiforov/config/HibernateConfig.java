@@ -2,10 +2,6 @@ package ua.com.nikiforov.config;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.model.naming.ImplicitNamingStrategy;
-import org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
-import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +19,6 @@ import ua.com.nikiforov.exceptions.DataSourceNotInitializeException;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
@@ -32,7 +27,6 @@ import java.util.Properties;
 public class HibernateConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateConfig.class);
-    private static final String JNDI_PATH = "java:comp/env/jdbc/university";
     private static final String JNDI_PATH2 = "java:comp/env/jdbc/University2";
 
 

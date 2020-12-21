@@ -19,5 +19,4 @@ public interface GroupDAO {
 
     public void updateGroup(GroupDTO group);
     
-//    public Group getGroupByStudentId(long studentId);
 }

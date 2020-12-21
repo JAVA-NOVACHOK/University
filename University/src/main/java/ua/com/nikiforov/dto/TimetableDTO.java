@@ -1,43 +1,31 @@
 package ua.com.nikiforov.dto;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class TimetableDTO implements Comparable<TimetableDTO> {
 
+
     private long lessonId;
     private int period;
-    private String subjectName;
-    private int roomNumber;
-    private String groupName;
-    private String teachersName;
-    private long teacherId;
-    private LocalDate date;
+    private SubjectDTO subject;
+    private GroupDTO group;
+    private RoomDTO room;
+    private TeacherDTO teacher;
+    private LocalDate lessonDate;
 
     public TimetableDTO() {
     }
 
-    public TimetableDTO(long lessonId, int period, String subjectName, int roomNumber, String groupName,
-            String teachersName, long teacherId, LocalDate date) {
+    public TimetableDTO(long lessonId, int period, SubjectDTO subject,
+                        GroupDTO group, RoomDTO room, TeacherDTO teacher, LocalDate lessonDate) {
         this.lessonId = lessonId;
         this.period = period;
-        this.subjectName = subjectName;
-        this.roomNumber = roomNumber;
-        this.groupName = groupName;
-        this.teachersName = teachersName;
-        this.teacherId = teacherId;
-        this.date = date;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public long getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(long teacherId) {
-        this.teacherId = teacherId;
+        this.subject = subject;
+        this.group = group;
+        this.room = room;
+        this.teacher = teacher;
+        this.lessonDate = lessonDate;
     }
 
     public long getLessonId() {
@@ -56,105 +44,81 @@ public class TimetableDTO implements Comparable<TimetableDTO> {
         this.period = period;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public SubjectDTO getSubject() {
+        return subject;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public String getDate(){
+        String[] dateArr = lessonDate.toString().split("T");
+        return dateArr[0];
     }
 
-    public int getRoomNumber() {
-        return roomNumber;
+    public void setSubject(SubjectDTO subject) {
+        this.subject = subject;
     }
 
-    public void setRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
+    public GroupDTO getGroup() {
+        return group;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public void setGroup(GroupDTO group) {
+        this.group = group;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public RoomDTO getRoom() {
+        return room;
     }
 
-    public String getTeachersName() {
-        return teachersName;
+    public void setRoom(RoomDTO room) {
+        this.room = room;
     }
 
-    public void setTeachersName(String teachersName) {
-        this.teachersName = teachersName;
+    public TeacherDTO getTeacher() {
+        return teacher;
     }
-    
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setTeacher(TeacherDTO teacher) {
+        this.teacher = teacher;
+    }
+
+    public LocalDate getLessonDate() {
+        return lessonDate;
+    }
+
+    public void setLessonDate(LocalDate lessonDate) {
+        this.lessonDate = lessonDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimetableDTO that = (TimetableDTO) o;
+        return lessonId == that.lessonId &&
+                period == that.period &&
+                subject.equals(that.subject) &&
+                group.equals(that.group) &&
+                room.equals(that.room) &&
+                teacher.equals(that.teacher) &&
+                lessonDate.equals(that.lessonDate);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
-        result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
-        result = prime * result + (int) (lessonId ^ (lessonId >>> 32));
-        result = prime * result + period;
-        result = prime * result + roomNumber;
-        result = prime * result + ((subjectName == null) ? 0 : subjectName.hashCode());
-        result = prime * result + (int) (teacherId ^ (teacherId >>> 32));
-        result = prime * result + ((teachersName == null) ? 0 : teachersName.hashCode());
-        return result;
+        return Objects.hash(lessonId, period, subject, group, room, teacher, lessonDate);
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        TimetableDTO other = (TimetableDTO) obj;
-        if (date == null) {
-            if (other.date != null)
-                return false;
-        } else if (!date.equals(other.date))
-            return false;
-        if (groupName == null) {
-            if (other.groupName != null)
-                return false;
-        } else if (!groupName.equals(other.groupName))
-            return false;
-        if (lessonId != other.lessonId)
-            return false;
-        if (period != other.period)
-            return false;
-        if (roomNumber != other.roomNumber)
-            return false;
-        if (subjectName == null) {
-            if (other.subjectName != null)
-                return false;
-        } else if (!subjectName.equals(other.subjectName))
-            return false;
-        if (teacherId != other.teacherId)
-            return false;
-        if (teachersName == null) {
-            if (other.teachersName != null)
-                return false;
-        } else if (!teachersName.equals(other.teachersName))
-            return false;
-        return true;
-    }
-
-    
 
     @Override
     public String toString() {
-        return "Timetable [lessonId=" + lessonId + ", period=" + period + ", subjectName=" + subjectName
-                + ", roomNumber=" + roomNumber + ", groupName=" + groupName + ", teachersName=" + teachersName
-                + ", teacherId=" + teacherId + ", date=" + date + "]";
+        return "TimetableDTO{" +
+                "lessonId=" + lessonId +
+                ", period=" + period +
+                ", subject=" + subject +
+                ", group=" + group +
+                ", room=" + room +
+                ", teacher=" + teacher +
+                ", time_=" + lessonDate +
+                '}';
     }
 
     @Override

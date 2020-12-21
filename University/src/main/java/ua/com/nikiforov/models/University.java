@@ -1,11 +1,22 @@
 package ua.com.nikiforov.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "universities", uniqueConstraints = @UniqueConstraint(columnNames ={"university_name"}))
 public class University {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(name = "university_name")
     private String universityName;
 
     public University() {
+    }
+
+    public University(String universityName) {
+        this.universityName = universityName;
     }
 
     public University(int id, String universityName) {

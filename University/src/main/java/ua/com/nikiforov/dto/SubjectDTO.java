@@ -1,12 +1,13 @@
 package ua.com.nikiforov.dto;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class SubjectDTO {
     
     private int id;
     private String name;
-    private List<TeacherDTO> teachers;
+    private Set<TeacherDTO> teachers;
     
     public SubjectDTO() {
     }
@@ -16,10 +17,10 @@ public class SubjectDTO {
         this.name = name;
     }
 
-    public SubjectDTO(int id, String name, List<TeacherDTO> teachers) {
+    public SubjectDTO(int id, String name, Set<TeacherDTO> teachers) {
         this.id = id;
         this.name = name;
-        this.teachers = teachers;
+        this.teachers = new TreeSet<>(teachers);
     }
 
     public int getId() {
@@ -42,11 +43,11 @@ public class SubjectDTO {
         teachers.add(teacher);
     }
 
-    public List<TeacherDTO> getTeachers() {
+    public Set<TeacherDTO> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(List<TeacherDTO> teachers) {
+    public void setTeachers(Set<TeacherDTO> teachers) {
         this.teachers = teachers;
     }
 

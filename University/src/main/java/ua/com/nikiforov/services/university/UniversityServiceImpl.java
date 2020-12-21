@@ -1,11 +1,13 @@
 package ua.com.nikiforov.services.university;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.university.UniversityDAO;
+import ua.com.nikiforov.dto.UniversityDTO;
 import ua.com.nikiforov.models.University;
 
 @Service
@@ -15,8 +17,12 @@ public class UniversityServiceImpl implements UniversityService {
     private UniversityDAO universityDAO;
 
     @Override
-    public boolean addUniversity(String name) {
-        return universityDAO.addUniversity(name);
+    public void addUniversity(String name) {
+        try {
+            universityDAO.addUniversity(name);
+        }catch (DataIntegrityViolationException e){
+            throw new DuplicateKeyException("University is already exists",e);
+        }
     }
 
     @Override
@@ -28,19 +34,16 @@ public class UniversityServiceImpl implements UniversityService {
         return universityDAO.getUniversityByName(universityName);
     }
 
+
+
     @Override
-    public List<University> getAllUniversities() {
-        return universityDAO.getAllUniversities();
+    public void updateUniversity(UniversityDTO universityDTO) {
+        universityDAO.updateUniversity(universityDTO);
     }
 
     @Override
-    public boolean updateUniversity(String name, int id) {
-        return universityDAO.updateUniversity(name, id);
-    }
-
-    @Override
-    public boolean deleteUniversityById(int id) {
-        return universityDAO.deleteUniversityById(id);
+    public void deleteUniversityById(int id) {
+        universityDAO.deleteUniversityById(id);
     }
 
 }

@@ -2,13 +2,14 @@ package ua.com.nikiforov.services.subject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.dao.persons.TeacherDAO;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
@@ -78,16 +79,16 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectsDTO;
     }
 
-    private SubjectDTO getSubjectDTO(Subject subject) {
+    public static SubjectDTO getSubjectDTO(Subject subject) {
         int subjectId = subject.getId();
         String name = subject.getName();
-        List<Teacher> teachers = subject.getTeachers();
-        List<TeacherDTO> teachersDTO = getTeachersDTOList(teachers);
+        Set<Teacher> teachers = subject.getTeachers();
+        Set<TeacherDTO> teachersDTO = getTeachersDTOList(teachers);
         return new SubjectDTO(subjectId, name, teachersDTO);
     }
 
-    private List<TeacherDTO> getTeachersDTOList(List<Teacher> teachers) {
-        List<TeacherDTO> teachersDTO = new ArrayList<>();
+    private static Set<TeacherDTO> getTeachersDTOList(Set<Teacher> teachers) {
+        Set<TeacherDTO> teachersDTO = new TreeSet<>();
         for (Teacher teacher : teachers) {
             teachersDTO.add(new TeacherDTO(teacher.getId(), teacher.getFirstName(), teacher.getLastName()));
         }

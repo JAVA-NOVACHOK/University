@@ -12,6 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.dao.table_creator.TableCreator;
 import ua.com.nikiforov.datasource.TestDataSource;
+import ua.com.nikiforov.dto.UniversityDTO;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.University;
 
@@ -39,7 +40,7 @@ class UniversityServiceImplTest {
 
     @Test
     void whenAddUniversityIfSuccessShouldReturnTrue() {
-        assertTrue(universityService.addUniversity(UNIVERSITY_NAME_1));
+        assertDoesNotThrow(() -> universityService.addUniversity(UNIVERSITY_NAME_1));
     }
 
     @Test
@@ -54,23 +55,17 @@ class UniversityServiceImplTest {
         assertEquals(UNIVERSITY_NAME_1, universityService.getUniversityById(universityId).getName());
     }
 
-    @Test
-    void whenGetAllUniversitiesIfPresentReturnListOfAllUniversities() {
-        universityService.addUniversity(UNIVERSITY_NAME_1);
-        universityService.addUniversity(UNIVERSITY_NAME_2);
-        assertEquals(UNIVERSITIES_COUNT, universityService.getAllUniversities().size());
-    }
 
     @Test
     void whenUpdateUniversityByIdIfSuccessThenReturnTrue() {
         int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        assertTrue(universityService.updateUniversity(UNIVERSITY_NAME_1_UPDATED, universityId));
+        assertDoesNotThrow(() -> universityService.updateUniversity(new UniversityDTO(universityId,UNIVERSITY_NAME_1_UPDATED)));
     }
 
     @Test
     void whenUpdateUniversityByIdThenGetUniversityByIdAfterUpdateReturnChangedName() {
         int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        universityService.updateUniversity(UNIVERSITY_NAME_1_UPDATED, universityId);
+        universityService.updateUniversity(new UniversityDTO(universityId,UNIVERSITY_NAME_1_UPDATED));
         University universityUpdated = universityService.getUniversityById(universityId);
         assertEquals(UNIVERSITY_NAME_1_UPDATED, universityUpdated.getName());
     }
@@ -78,7 +73,7 @@ class UniversityServiceImplTest {
     @Test
     void whenDeleteUniversityByIdIfSuccessThenReturnTrue() {
         int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        assertTrue(universityService.deleteUniversityById(universityId));
+        assertDoesNotThrow(() -> universityService.deleteUniversityById(universityId));
     }
 
     @Test

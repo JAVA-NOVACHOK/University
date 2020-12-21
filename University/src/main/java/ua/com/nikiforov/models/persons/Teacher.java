@@ -9,7 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "teachers",uniqueConstraints = @UniqueConstraint(columnNames = {"first_name","last_name"}))
-public class Teacher implements Comparable{
+public class Teacher implements Comparable<Teacher>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -118,8 +118,7 @@ public class Teacher implements Comparable{
     }
 
     @Override
-    public int compareTo(Object o) {
-        Teacher teacher = (Teacher)o;
+    public int compareTo(Teacher teacher) {
         return this.lastName.compareTo(teacher.getLastName());
     }
 }

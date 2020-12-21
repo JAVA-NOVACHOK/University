@@ -9,7 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ua.com.nikiforov.dto.TimetableDTO;
+import ua.com.nikiforov.dto.*;
+import ua.com.nikiforov.models.lesson.Lesson;
+import ua.com.nikiforov.services.group.GroupServiceImpl;
+import ua.com.nikiforov.services.persons.TeacherServiceImpl;
+import ua.com.nikiforov.services.room.RoomServiceImpl;
+import ua.com.nikiforov.services.subject.SubjectServiceImpl;
 
 public abstract class PersonalTimetable {
     
@@ -30,7 +35,7 @@ public abstract class PersonalTimetable {
                 monthTimetable.add(dayTimetable);
                 while (i < allTimetablesList.size()) {
                     TimetableDTO currentTimetable = allTimetablesList.get(i);
-                    if (previousTimetable.getDate().equals(currentTimetable.getDate())) {
+                    if (previousTimetable.getLessonDate().equals(currentTimetable.getLessonDate())) {
                         dayTimetable.addTimetable(currentTimetable);
                         i++;
                     } else {
@@ -44,7 +49,7 @@ public abstract class PersonalTimetable {
     }
     
     public static DateInfo parseInstantToDateInfo( TimetableDTO timetable) {
-        LocalDate date = timetable.getDate();
+        LocalDate date = timetable.getLessonDate();
         ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
         String weekDay = zonedDateTime.getDayOfWeek().name();
         int monthDay = zonedDateTime.getDayOfMonth();
@@ -60,6 +65,25 @@ public abstract class PersonalTimetable {
     
     public static Timestamp getTimestampFromString(String stringDate) {
         return Timestamp.valueOf(stringDate + " 00:00:00");
+    }
+
+    public static List<TimetableDTO> getTimetableDTOs(List<Lesson> lessons){
+        List<TimetableDTO> timetableDTO = new ArrayList<>();
+        for(Lesson lesson : lessons){
+            timetableDTO.add(getTimetableDTO(lesson));
+        }
+        return timetableDTO;
+    }
+
+    public static TimetableDTO getTimetableDTO(Lesson lesson){
+        long lessonId = lesson.getId();
+        SubjectDTO subject = SubjectServiceImpl.getSubjectDTO(lesson.getSubject());
+        GroupDTO group = GroupServiceImpl.getGroupDTO(lesson.getGroup());
+        RoomDTO room = RoomServiceImpl.getRoomDTO(lesson.getRoom());
+        LocalDate time = lesson.getLessonDate();
+        TeacherDTO teacher = TeacherServiceImpl.getTeacherDTO(lesson.getTeacher());
+        int period = lesson.getPeriod();
+        return new TimetableDTO(lessonId,period,subject,group,room,teacher,time);
     }
 
 

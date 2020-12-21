@@ -8,24 +8,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.web.util.NestedServletException;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.RoomMapper;
 import ua.com.nikiforov.models.Room;
 
 @Repository
@@ -129,7 +120,6 @@ public class RoomDAOImpl implements RoomDAO {
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }
-
     }
 }
 

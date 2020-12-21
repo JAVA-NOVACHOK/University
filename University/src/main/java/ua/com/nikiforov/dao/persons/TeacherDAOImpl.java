@@ -7,22 +7,17 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.persons.TeacherMapper;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
@@ -35,7 +30,6 @@ public class TeacherDAOImpl implements TeacherDAO {
     private static final String GET_TEACHER_BY_LIKE_NAME = "SELECT t FROM Teacher t WHERE UPPER(t.firstName) LIKE UPPER( CONCAT(?1,'%')) " +
             "OR UPPER(t.lastName) LIKE UPPER( CONCAT(?2,'%')) ORDER BY t.lastName";
     private static final String GET_ALL_TEACHERS = "SELECT t FROM Teacher t ORDER BY t.firstName";
-    private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name = ?,last_name = ? WHERE teacher_id = ? ";
     private static final String DELETE_TEACHER_BY_ID = "DELETE FROM Teacher t WHERE t.id = ?1";
 
     private static final int FIRST_PARAMETER_INDEX = 1;
@@ -43,7 +37,6 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
-
 
     @Override
     @Transactional

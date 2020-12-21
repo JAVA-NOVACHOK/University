@@ -6,28 +6,17 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.GroupDTO;
-import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.GroupMapper;
 import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.Room;
-import ua.com.nikiforov.models.persons.Student;
-import ua.com.nikiforov.services.persons.StudentsService;
-import ua.com.nikiforov.services.persons.StudentsServiceImpl;
 
 @Repository
 public class GroupDAOImpl implements GroupDAO {
@@ -39,7 +28,6 @@ public class GroupDAOImpl implements GroupDAO {
     private static final String DELETE_GROUP_BY_ID = "DELETE  FROM Group  WHERE groupId =  ?1 ";
 
     private static final int FIRST_PARAMETER_INDEX = 1;
-
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -66,7 +54,7 @@ public class GroupDAOImpl implements GroupDAO {
                 .setParameter(FIRST_PARAMETER_INDEX, groupName)
                 .getSingleResult();
         if (group == null) {
-            String failMessage = String.format("Fail to get group by Id %d from DB", groupName);
+            String failMessage = String.format("Fail to get group by Id %s from DB", groupName);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }

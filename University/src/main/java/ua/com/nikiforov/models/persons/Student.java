@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "students", uniqueConstraints = @UniqueConstraint(columnNames = {"first_name", "last_name", "group_id"}))
-public class Student implements Comparable {
+public class Student implements Comparable<Student> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -105,8 +105,7 @@ public class Student implements Comparable {
 
 
     @Override
-    public int compareTo(Object o) {
-        Student student = (Student) o;
+    public int compareTo(Student student) {
         return this.lastName.compareTo(student.getLastName());
     }
 }

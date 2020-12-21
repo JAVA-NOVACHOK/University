@@ -1,7 +1,7 @@
 package ua.com.nikiforov.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
@@ -18,7 +18,7 @@ public class Subject implements Comparable<Subject>{
     private String name;
 
     @ManyToMany(mappedBy = "subjects",fetch = FetchType.EAGER)
-    private List<Teacher> teachers;
+    private Set<Teacher> teachers = new TreeSet<>();
 
     public Subject() {
 
@@ -30,10 +30,10 @@ public class Subject implements Comparable<Subject>{
 
     }
 
-    public Subject(int id, String name, List<Teacher> teachers) {
+    public Subject(int id, String name, Set<Teacher> teachers) {
         this.id = id;
         this.name = name;
-        this.teachers = new ArrayList<>(teachers);
+        this.teachers = new TreeSet<>(teachers);
     }
 
     public int getId() {
@@ -56,11 +56,11 @@ public class Subject implements Comparable<Subject>{
         teachers.add(teacher);
     }
 
-    public List<Teacher> getTeachers() {
+    public Set<Teacher> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(List<Teacher> teachers) {
+    public void setTeachers(Set<Teacher> teachers) {
         this.teachers.addAll(teachers);
     }
 

@@ -2,8 +2,7 @@ package ua.com.nikiforov.services.subject;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,7 +106,7 @@ class SubjectServiceImplTest {
         SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         int subjectId = subject.getId();
         
-        List<TeacherDTO> expectedTeachers = new ArrayList<>();
+        Set<TeacherDTO> expectedTeachers = new TreeSet<>();
         TeacherDTO teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
         TeacherDTO teacherOne = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
         TeacherDTO teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
@@ -121,7 +120,7 @@ class SubjectServiceImplTest {
         teacherService.assignSubjectToTeacher(teacherThree.getId(),subjectId);
         
         subject = subjectService.getSubjectById(subjectId);
-        List<TeacherDTO> actualTeachers = subject.getTeachers();
+        Set<TeacherDTO> actualTeachers = subject.getTeachers();
         assertIterableEquals(expectedTeachers, actualTeachers);
     }
 

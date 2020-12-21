@@ -7,15 +7,15 @@ import ua.com.nikiforov.models.lesson.Lesson;
 
 public interface LessonDAO {
 
-    public void addLesson(Lesson lesson);
+    public void addLesson(LessonDTO lesson);
 
     public Lesson getLessonById(long id);
 
-    public Lesson getLessonByAllArgs(Lesson lesson);
+    public Lesson getLessonByAllArgs(LessonDTO lesson);
 
     public List<Lesson> getAllLessons();
 
-    public void updateLesson(Lesson lesson);
+    public void updateLesson(LessonDTO lesson);
 
     public void deleteLessonById(long id);
 

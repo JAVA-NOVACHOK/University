@@ -6,20 +6,15 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.persons.StudentMapper;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
@@ -29,7 +24,7 @@ public class StudentDAOImpl implements StudentDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(StudentDAOImpl.class);
 
     private static final String FIND_STUDENT_BY_NAME_GROUP_ID = "SELECT s FROM Student s JOIN s.group g WHERE g.groupId = ?1 AND s.firstName = ?2 AND s.lastName = ?3";
-    private static final String FIND_STUDENT_BY_NAME = "SELECT s FROM Student s WHERE s.firstName LIKE '%?1' AND s.lastName LIKE '%?2'";
+    private static final String FIND_STUDENT_BY_NAME = "SELECT s FROM Student s WHERE s.firstName = ?1 AND s.lastName = ?2";
     private static final String GET_ALL_STUDENTS = "SELECT s FROM Student s ORDER BY s.lastName";
     private static final String DELETE_STUDENT_BY_ID = "DELETE FROM Student s WHERE s.id = ?1";
 
@@ -42,7 +37,6 @@ public class StudentDAOImpl implements StudentDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
-
 
     @Override
     @Transactional

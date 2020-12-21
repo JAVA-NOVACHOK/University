@@ -17,7 +17,6 @@ import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
-import ua.com.nikiforov.services.persons.StudentsService;
 
 @Controller
 @RequestMapping("/groups")
@@ -36,12 +35,10 @@ public class GroupsController {
     private static final String SUCCESS_MSG = "success";
 
     private GroupService groupService;
-    private StudentsService studentsService;
 
     @Autowired
-    public GroupsController(GroupService groupService, StudentsService studentsService) {
+    public GroupsController(GroupService groupService) {
         this.groupService = groupService;
-        this.studentsService = studentsService;
     }
 
     @ModelAttribute(GROUP)

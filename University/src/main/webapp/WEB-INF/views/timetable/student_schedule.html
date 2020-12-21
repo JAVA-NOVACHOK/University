@@ -46,10 +46,10 @@
 					<tbody>
 						<tr th:each="timetable : ${dayTimetable.timetables}">
 							<td th:text="${timetable.period}"></td>
-							<td th:text="${timetable.subjectName}"></td>
-							<td th:text="${timetable.roomNumber}"></td>
-							<td th:text="${timetable.groupName}"></td>
-							<td th:text="${timetable.teachersName}"></td>
+							<td th:text="${timetable.subject.name}"></td>
+							<td th:text="${timetable.room.roomNumber}"></td>
+							<td th:text="${timetable.group.groupName}"></td>
+							<td th:text="|${timetable.teacher.firstName} ${timetable.teacher.lastName}|"></td>
 						</tr>
 					</tbody>
 				</table>

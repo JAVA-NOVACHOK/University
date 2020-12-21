@@ -27,7 +27,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void addLesson(LessonDTO lesson) {
         try {
-            lessonDAO.addLesson(getLesson(lesson));
+            lessonDAO.addLesson(lesson);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Duplicate lesson while adding!", e);
         }
@@ -39,7 +39,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     public LessonDTO getLessonByAllArgs(LessonDTO lesson) {
-        return getLessonDTO(lessonDAO.getLessonByAllArgs(getLesson(lesson)));
+        return getLessonDTO(lessonDAO.getLessonByAllArgs(lesson));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void updateLesson(LessonDTO lesson) {
         try {
-            lessonDAO.updateLesson(getLesson(lesson));
+            lessonDAO.updateLesson(lesson);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Duplicate lesson while editing!", e);
         }
@@ -68,30 +68,13 @@ public class LessonServiceImpl implements LessonService {
 
     public LessonDTO getLessonDTO(Lesson lesson) {
         long id = lesson.getId();
-        long groupId = lesson.getGroupId();
-        int subjectId = lesson.getSubjectId();
-        int roomId = lesson.getRoomId();
-        LocalDate time = lesson.getTime();
+        long groupId = lesson.getGroup().getGroupId();
+        int subjectId = lesson.getSubject().getId();
+        int roomId = lesson.getRoom().getId();
+        LocalDate time = lesson.getLessonDate();
         int period = lesson.getPeriod();
-        long teacherId = lesson.getTeacherId();
+        long teacherId = lesson.getTeacher().getId();
         return new LessonDTO(id, period, groupId, subjectId, roomId, time, teacherId);
-    }
-
-    private Lesson getLesson(LessonDTO lesson) {
-        long lessonId = lesson.getId();
-        int period = lesson.getPeriod();
-        int subjectId = lesson.getSubjectId();
-        int roomId = lesson.getRoomId();
-        long groupId = lesson.getGroupId();
-        String date = lesson.getDate();
-        long teacherId = lesson.getTeacherId();
-        LocalDate time = getLocalDate(date);
-        return new Lesson(lessonId, period, groupId, subjectId, roomId, time, teacherId);
-    }
-
-    private LocalDate getLocalDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, formatter);
     }
 
 }

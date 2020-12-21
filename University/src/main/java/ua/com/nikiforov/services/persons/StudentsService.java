@@ -10,8 +10,6 @@ public interface StudentsService {
 
     public StudentDTO getStudentById(long studentId);
 
-//    public List<StudentDTO> getStudentsByGroupId(long groupId);
-
     public StudentDTO getStudentByName(String firstName, String lastName);
 
     public StudentDTO getStudentByNameGroupId(String firstName, String lastName, long groupId);

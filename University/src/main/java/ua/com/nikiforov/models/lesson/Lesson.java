@@ -1,48 +1,58 @@
 package ua.com.nikiforov.models.lesson;
 
+import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.models.Room;
+import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
-@Table(name = "lessons",uniqueConstraints = @UniqueConstraint(columnNames = {"group_id","subject_id","room_id","time","period","teacher_id"}))
+@Table(name = "lessons",uniqueConstraints = @UniqueConstraint(columnNames = {"group_id","subject_id","room_id","lesson_date","period","teacher_id"}))
 public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "lesson_id")
     private long id;
-    @Column(name = "group_id")
-    private long groupId;
-    @Column(name = "subject_id")
-    protected int subjectId;
-    @Column(name = "room_id")
-    private int roomId;
-    private LocalDate time;
+    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    private Group group;
+    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @JoinColumn(name = "room_id")
+    private Room room;
+    @Column(name = "lesson_date")
+    private LocalDate lessonDate;
     private int period;
-    @Column(name = "teacher_id")
-    private long teacherId;
+    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
 
     public Lesson() {
     }
 
-    public Lesson(int period,long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
-        this.groupId = groupId;
-        this.subjectId = subjectId;
-        this.roomId = roomId;
-        this.time = time;
+    public Lesson(Group group, Subject subject, Room room, LocalDate time, int period, Teacher teacher) {
+        this.group = group;
+        this.subject = subject;
+        this.room = room;
+        this.lessonDate = time;
         this.period = period;
-        this.teacherId = teacherId;
+        this.teacher = teacher;
     }
 
-    public Lesson(long id, int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
+    public Lesson(long id, Group group, Subject subject, Room room, LocalDate time, int period, Teacher teacher) {
         this.id = id;
-        this.groupId = groupId;
-        this.subjectId = subjectId;
-        this.roomId = roomId;
-        this.time = time;
+        this.group = group;
+        this.subject = subject;
+        this.room = room;
+        this.lessonDate = time;
         this.period = period;
-        this.teacherId = teacherId;
-
+        this.teacher = teacher;
     }
 
     public long getId() {
@@ -53,37 +63,36 @@ public class Lesson {
         this.id = id;
     }
 
-    public long getGroupId() {
-        return groupId;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setGroupId(long groupId) {
-        this.groupId = groupId;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
-    public int getSubjectId() {
-        return subjectId;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setSubjectId(int subjectId) {
-        this.subjectId = subjectId;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
-    public int getRoomId() {
-        return roomId;
+    public Room getRoom() {
+        return room;
     }
 
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-
-    public LocalDate getTime() {
-        return time;
+    public LocalDate getLessonDate() {
+        return lessonDate;
     }
 
-    public void setTime(LocalDate time) {
-        this.time = time;
+    public void setLessonDate(LocalDate time) {
+        this.lessonDate = time;
     }
 
     public int getPeriod() {
@@ -94,67 +103,30 @@ public class Lesson {
         this.period = period;
     }
 
-    public long getTeacherId() {
-        return teacherId;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setTeacherId(long teacherId) {
-        this.teacherId = teacherId;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lesson lesson = (Lesson) o;
+        return id == lesson.id &&
+                period == lesson.period &&
+                group.equals(lesson.group) &&
+                subject.equals(lesson.subject) &&
+                room.equals(lesson.room) &&
+                lessonDate.equals(lesson.lessonDate) &&
+                teacher.equals(lesson.teacher);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (groupId ^ (groupId >>> 32));
-        result = prime * result + (int) (teacherId ^ (teacherId >>> 32));
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + period;
-        result = prime * result + roomId;
-        result = prime * result + subjectId;
-        result = prime * result + ((time == null) ? 0 : time.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Lesson other = (Lesson) obj;
-        if (groupId != other.groupId)
-            return false;
-        if (teacherId != other.teacherId)
-            return false;
-        if (id != other.id)
-            return false;
-        if (period != other.period)
-            return false;
-        if (roomId != other.roomId)
-            return false;
-        if (subjectId != other.subjectId)
-            return false;
-        if (time == null) {
-            if (other.time != null)
-                return false;
-        } else if (!time.equals(other.time))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Lesson{" +
-                "id=" + id +
-                ", groupId=" + groupId +
-                ", subjectId=" + subjectId +
-                ", roomId=" + roomId +
-                ", time=" + time +
-                ", period=" + period +
-                ", teacherId=" + teacherId +
-                '}';
+        return Objects.hash(id, group, subject, room, lessonDate, period, teacher);
     }
 }

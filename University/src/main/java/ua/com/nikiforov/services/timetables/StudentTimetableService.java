@@ -22,15 +22,18 @@ public class StudentTimetableService extends PersonalTimetable {
     
     @Override
     public List<DayTimetable>  getDayTimetable(String date, long groupId) {
-        List<TimetableDTO> allTimetablesList = studentsTimetable.getDayTimetable(date, groupId);
+        List<TimetableDTO> allTimetablesList = getTimetableDTOs(studentsTimetable.getDayTimetable(date, groupId));
         return createMonthTimetable(allTimetablesList);
     }
 
     @Override
     public List<DayTimetable> getMonthTimetable(String date, long groupId) {
-        List<TimetableDTO> allTimetablesList = studentsTimetable.getMonthTimetable(date, groupId);
+        List<TimetableDTO> allTimetablesList = getTimetableDTOs(studentsTimetable.getMonthTimetable(date, groupId));
         return createMonthTimetable(allTimetablesList);
     }
 
-   
+
+
+
+
 }

@@ -89,7 +89,7 @@ public class TeacherServiceImpl implements TeacherService {
         return teachersDTO;
     }
 
-    private TeacherDTO getTeacherDTO(Teacher teacher) {
+    public static TeacherDTO getTeacherDTO(Teacher teacher) {
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setId(teacher.getId());
         teacherDTO.setFirstName(teacher.getFirstName());
@@ -98,7 +98,7 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherDTO;
     }
 
-    private List<SubjectDTO> getSubjectDTOList(List<Subject> subjects) {
+    private static List<SubjectDTO> getSubjectDTOList(List<Subject> subjects) {
         List<SubjectDTO> subjectsDTO = new ArrayList<>();
         for (Subject subject : subjects) {
             subjectsDTO.add(new SubjectDTO(subject.getId(), subject.getName()));

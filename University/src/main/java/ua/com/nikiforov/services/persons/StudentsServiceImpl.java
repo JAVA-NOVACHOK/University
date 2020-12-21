@@ -4,28 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.dao.group.GroupDAO;
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.dao.persons.StudentDAO;
-import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
 @Service
 public class StudentsServiceImpl implements StudentsService {
 
     private StudentDAO studentDAO;
-    private GroupDAO groupDAO;
 
     @Autowired
-    public StudentsServiceImpl(StudentDAO studentDAO, GroupDAO groupDAO) {
+    public StudentsServiceImpl(StudentDAO studentDAO) {
         this.studentDAO = studentDAO;
-        this.groupDAO = groupDAO;
     }
 
     @Override
@@ -89,13 +83,6 @@ public class StudentsServiceImpl implements StudentsService {
         long groupId = student.getGroupId();
         return new StudentDTO(id, firstName, lastName, groupId);
     }
-//    private static Student getStudent(StudentDTO studentDTO) {
-//        long id = studentDTO.getId();
-//        String firstName = studentDTO.getFirstName();
-//        String lastName = studentDTO.getLastName();
-//        Group group = groupDAO.getGroupId();
-//        return new Student(id, firstName, lastName, groupId);
-//    }
 
     public static List<StudentDTO> getListStudentDTO(List<Student> students) {
         List<StudentDTO> studensDTO = new ArrayList<>();
@@ -104,13 +91,5 @@ public class StudentsServiceImpl implements StudentsService {
         }
         return studensDTO;
     }
-
-//    public static List<Student> getListStudent(List<StudentDTO> studentsDTO) {
-//        List<Student> studens = new ArrayList<>();
-//        for (StudentDTO studentDTO : studentsDTO) {
-//            studens.add(getStudent(studentDTO));
-//        }
-//        return studens;
-//    }
 
 }

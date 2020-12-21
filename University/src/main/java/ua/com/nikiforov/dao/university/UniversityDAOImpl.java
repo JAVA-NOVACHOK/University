@@ -1,19 +1,16 @@
 package ua.com.nikiforov.dao.university;
 
-import java.util.List;
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import ua.com.nikiforov.dto.UniversityDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.mappers.UniversityMapper;
 import ua.com.nikiforov.models.University;
 
 @Repository
@@ -21,75 +18,85 @@ public class UniversityDAOImpl implements UniversityDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UniversityDAOImpl.class);
 
-    private static final String ADD_UNIVERSITY = "INSERT INTO universities  (university_name) VALUES(?)";
-    private static final String FIND_UNIVERSITY_BY_ID = "SELECT  *  FROM universities  WHERE id =  ? ";
-    private static final String FIND_UNIVERSITY_BY_NAME = "SELECT  *  FROM universities  WHERE university_name =  ? ";
-    private static final String GET_ALL_UNIVERSITIES = "SELECT  *  FROM universities ";
-    private static final String UPDATE_UNIVERSITY = "UPDATE universities  SET university_name =  ?  WHERE id =  ? ";
-    private static final String DELETE_UNIVERSITY_BY_ID = "DELETE  FROM universities  WHERE id =  ? ";
-    private static final String GETTING = "Getting {}";
+    private static final String FIND_UNIVERSITY_BY_NAME = "SELECT  u  FROM University u WHERE u.universityName =  ?1";
+    private static final String DELETE_UNIVERSITY_BY_ID = "DELETE  FROM University u WHERE u.id =  ?1";
 
-    private UniversityMapper universityMapper;
-    private JdbcTemplate jdbcTemplate;
+    private static final String GETTING_MSG = "Getting '{}'";
+    private static final String SUCCESSFULLY_RETRIVED_MSG = "Successfully retrived {}";
 
-    @Autowired
-    public UniversityDAOImpl(DataSource dataSource, UniversityMapper universityMapper) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        this.universityMapper = universityMapper;
-    }
+    private static final int FIRST_PARAMETER_INDEX = 1;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public boolean addUniversity(String name) {
+    public void addUniversity(String name) {
         String universityMessage = String.format("University with name %s", name);
         LOGGER.debug("Adding {}", universityMessage);
-        boolean actionResult = false;
-        try {
-            actionResult = jdbcTemplate.update(ADD_UNIVERSITY, name) > 0;
-            if (actionResult) {
+            entityManager.persist(new University(name));
                 LOGGER.info("Successfully added {}", universityMessage);
-            } else {
-                throw new DataOperationException("Couldn't add " + universityMessage);
-            }
-        } catch (DataAccessException e) {
-            String failMessage = String.format("Failed to add %s", universityMessage);
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
-        }
-        return actionResult;
     }
 
     @Override
     public University findUniversityById(int id) {
         String universityMessage = String.format("University with ID %d", id);
-        LOGGER.debug(GETTING, universityMessage);
-        University university;
-        try {
-            university = jdbcTemplate.queryForObject(FIND_UNIVERSITY_BY_ID, new Object[] { id }, universityMapper);
+        LOGGER.debug(GETTING_MSG, universityMessage);
+        University university = entityManager.find(University.class,id);
             LOGGER.info("Successfully retrieved University '{}'", universityMessage);
-        } catch (EmptyResultDataAccessException e) {
+       if(university == null){
             String failMessage = String.format("Fail to get room by Id %d from DB", id);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage, e);
+            throw new EntityNotFoundException(failMessage);
         }
         return university;
     }
 
     @Override
     public University getUniversityByName(String universityName) {
-        return jdbcTemplate.queryForObject(FIND_UNIVERSITY_BY_NAME, new Object[] { universityName }, universityMapper);
+        String subjectMessage = String.format("University by name %s", universityName);
+        LOGGER.debug(GETTING_MSG, subjectMessage);
+        University university = (University) entityManager.createQuery(FIND_UNIVERSITY_BY_NAME)
+                .setParameter(FIRST_PARAMETER_INDEX, universityName)
+                .getSingleResult();
+        if (university == null) {
+            String failMessage = String.format("Fail to get university by name %s from DB", university);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
+        }
+        LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, university);
+        return university;
     }
 
-    public List<University> getAllUniversities() {
-        return jdbcTemplate.query(GET_ALL_UNIVERSITIES, universityMapper);
+
+    @Override
+    public void updateUniversity(UniversityDTO universityDTO) {
+        int id = universityDTO.getId();
+        String universityName = universityDTO.getUniversityName();
+        String updateMessage = String.format("University with name %s by id %d", universityName, id);
+        LOGGER.debug("Updating {}", updateMessage);
+        try {
+            entityManager.merge(new University(id, universityName));
+            LOGGER.info("Successfully updated '{}'", updateMessage);
+        } catch (PersistenceException e) {
+            String failMessage = String.format("Couldn't update University with id %d name %s from DAO %s", id, universityName,e);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
+        }
     }
 
     @Override
-    public boolean updateUniversity(String name, int id) {
-        return jdbcTemplate.update(UPDATE_UNIVERSITY, name, id) > 0;
-    }
-
-    @Override
-    public boolean deleteUniversityById(int id) {
-        return jdbcTemplate.update(DELETE_UNIVERSITY_BY_ID, id) > 0;
+    public void deleteUniversityById(int id) {
+        String deleteMessage = String.format("University by id %d", id);
+        LOGGER.debug("Deleting {}", deleteMessage);
+        try {
+            entityManager.createQuery(DELETE_UNIVERSITY_BY_ID)
+                    .setParameter(FIRST_PARAMETER_INDEX, id)
+                    .executeUpdate();
+            LOGGER.info("Successfully deleted '{}'", deleteMessage);
+        } catch (PersistenceException e) {
+            String failMessage = String.format("Couldn't delete %s", deleteMessage);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
+        }
     }
 }

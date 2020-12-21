@@ -14,11 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import ua.com.nikiforov.dto.LessonDTO;
-import ua.com.nikiforov.dto.ScheduleFindAttr;
-import ua.com.nikiforov.dto.StudentDTO;
-import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dto.TimetableDTO;
+import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
@@ -28,7 +24,6 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 import ua.com.nikiforov.services.timetables.DayTimetable;
-import ua.com.nikiforov.services.timetables.PersonalTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
@@ -44,7 +39,7 @@ public class ScheduleController {
     private static final String GROUPS_ATTR = "groups";
     private static final String TEACHERS_ATTR = "teachers";
     private static final String TEACHER_ATTR = "teacher";
-    private static final String TIMETABLE_ATTR = "timetable";
+    private static final String TIMETABLE_MODEL_ATTR = "timetable";
     private static final String LESSON_ATTR = "lesson";
 
     private static final String NOT_CLASSES_MSG = "There are no classes for %s %s on date %s.";
@@ -104,10 +99,8 @@ public class ScheduleController {
         return new ScheduleFindAttr();
     }
 
-    @ModelAttribute(TIMETABLE_ATTR)
-    public TimetableDTO getTimetable() {
-        return new TimetableDTO();
-    }
+    @ModelAttribute(TIMETABLE_MODEL_ATTR)
+    public TimetableModelAttr getTimetableModelAttr(){return new TimetableModelAttr();}
 
     @GetMapping()
     public String show(Model model) {
@@ -255,15 +248,15 @@ public class ScheduleController {
     }
 
     @GetMapping("/edit")
-    public String editSchedule(@ModelAttribute(TIMETABLE_ATTR) TimetableDTO timetable, @RequestParam String dateString,
+    public String editSchedule(@ModelAttribute(TIMETABLE_MODEL_ATTR) TimetableModelAttr timetable, @RequestParam String dateString,
             Model model) {
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachersWithoutSubjects());
         model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(timetable.getTeacherId()));
-        timetable.setDate(PersonalTimetable.getLocalDate(dateString));
-        model.addAttribute(TIMETABLE_ATTR, timetable);
+        timetable.setDate(dateString);
+        model.addAttribute(TIMETABLE_MODEL_ATTR, timetable);
         return VIEW_TIMETABLE_EDIT_SCHEDULE;
     }
     
