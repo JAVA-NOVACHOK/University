@@ -230,7 +230,7 @@ public class ScheduleController {
     public String addSchedule(@ModelAttribute("lesson")LessonDTO lesson, Model model) {
         long teacherId = lesson.getTeacherId();
         model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(teacherId));
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
@@ -250,10 +250,10 @@ public class ScheduleController {
     @GetMapping("/edit")
     public String editSchedule(@ModelAttribute(TIMETABLE_MODEL_ATTR) TimetableModelAttr timetable, @RequestParam String dateString,
             Model model) {
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjectsWithoutTeachers());
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachersWithoutSubjects());
+        model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(timetable.getTeacherId()));
         timetable.setDate(dateString);
         model.addAttribute(TIMETABLE_MODEL_ATTR, timetable);

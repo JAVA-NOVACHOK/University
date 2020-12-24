@@ -12,11 +12,13 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.RoomMapperDTO;
 import ua.com.nikiforov.models.Room;
 
 @Repository
@@ -30,16 +32,20 @@ public class RoomDAOImpl implements RoomDAO {
 
     private static final int FIRST_PARAMETER_INDEX = 1;
 
+    private RoomMapperDTO roomMapper;
+
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    public RoomDAOImpl(RoomMapperDTO roomMapper) {
+        this.roomMapper = roomMapper;
+    }
+
     @Override
     @Transactional()
-    public void addRoom(int roomNumber, int seatNumber) {
-        Room room = new Room();
-        room.setRoomNumber(roomNumber);
-        room.setSeatNumber(seatNumber);
-        entityManager.persist(room);
+    public void addRoom(RoomDTO roomDTO) {
+        entityManager.persist(roomMapper.roomDTOToRoom(roomDTO));
     }
 
     @Override
@@ -88,37 +94,34 @@ public class RoomDAOImpl implements RoomDAO {
 
     @Override
     @Transactional
-    public void updateRoom(RoomDTO room) {
-        int id = room.getId();
-        int number = room.getRoomNumber();
-        int seatNumber = room.getSeatNumber();
-        LOGGER.debug("Updating room {}", room);
+    public void updateRoom(RoomDTO roomDTO) {
+        String updateMessage = String.format("Room with id = '%d', number = '%d' and '%d' seats", roomDTO.getId(),
+                roomDTO.getRoomNumber(), roomDTO.getSeatNumber());
+        LOGGER.debug("Updating {}", updateMessage);
         try {
-            entityManager.merge(new Room(id, number, seatNumber));
-            LOGGER.info("Successfully updated room with id = '{}', number = '{}' and {} seats", id, number,
-                    seatNumber);
+            entityManager.merge(roomMapper.roomDTOToRoom(roomDTO));
+            LOGGER.info("Successfully updated  {} ", updateMessage);
         } catch (PersistenceException e) {
-            String failMessage = String.format("Couldn't update Room with id - %d number - %d, %d seats", id, number,
-                    seatNumber);
+            String failMessage = String.format("Couldn't update %s", updateMessage);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
     }
 
-
     @Override
     @Transactional
     public void deleteRoomById(int id) {
-        LOGGER.debug("Deleting room by id '{}' ", id);
-        String failDeleteMessage = String.format("Couldn't delete Room by ID %d", id);
+        String deleteMessage = String.format("Room by ID %d", id);
+        LOGGER.debug("Deleting {}", deleteMessage);
         try {
-             entityManager.createQuery(DELETE_ROOM_BY_ID)
+            entityManager.createQuery(DELETE_ROOM_BY_ID)
                     .setParameter(FIRST_PARAMETER_INDEX, id)
-                    .executeUpdate() ;
-                LOGGER.info("Successful deleting Room with id '{}'.", id);
+                    .executeUpdate();
+            LOGGER.info("Successful deleting '{}'.", deleteMessage);
         } catch (PersistenceException e) {
-            LOGGER.error(failDeleteMessage);
-            throw new DataOperationException(failDeleteMessage, e);
+            String failMessage = String.format("Couldn't delete %s", deleteMessage);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
         }
     }
 }

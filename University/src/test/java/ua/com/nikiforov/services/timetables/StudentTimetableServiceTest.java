@@ -34,10 +34,10 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
-@TestInstance(Lifecycle.PER_CLASS)
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
+@TestInstance(Lifecycle.PER_CLASS)
 class StudentTimetableServiceTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -328,7 +328,7 @@ class StudentTimetableServiceTest {
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(roomNumber, seatNumber);
+        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 

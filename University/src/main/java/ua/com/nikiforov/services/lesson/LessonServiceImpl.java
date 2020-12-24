@@ -1,8 +1,5 @@
 package ua.com.nikiforov.services.lesson;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +9,18 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.LessonDTO;
 import ua.com.nikiforov.dao.lesson.LessonDAO;
-import ua.com.nikiforov.models.lesson.Lesson;
+import ua.com.nikiforov.mappers_dto.LessonMapperDTO;
 
 @Service
 public class LessonServiceImpl implements LessonService {
 
     private LessonDAO lessonDAO;
+    private LessonMapperDTO lessonMapper;
 
     @Autowired
-    public LessonServiceImpl(LessonDAO lessonDAO) {
+    public LessonServiceImpl(LessonDAO lessonDAO,LessonMapperDTO lessonMapper) {
         this.lessonDAO = lessonDAO;
+        this.lessonMapper = lessonMapper;
     }
 
     @Override
@@ -35,21 +34,16 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public LessonDTO getLessonById(long id) {
-        return getLessonDTO(lessonDAO.getLessonById(id));
+        return lessonMapper.lessonToLessonDTO(lessonDAO.getLessonById(id));
     }
 
     public LessonDTO getLessonByAllArgs(LessonDTO lesson) {
-        return getLessonDTO(lessonDAO.getLessonByAllArgs(lesson));
+        return lessonMapper.lessonToLessonDTO(lessonDAO.getLessonByAllArgs(lesson));
     }
 
     @Override
     public List<LessonDTO> getAllLessons() {
-        List<Lesson> lessons = lessonDAO.getAllLessons();
-        List<LessonDTO> lessonsDTO = new ArrayList<>();
-        for (Lesson lesson : lessons) {
-            lessonsDTO.add(getLessonDTO(lesson));
-        }
-        return lessonsDTO;
+        return lessonMapper.getLessonDTOList(lessonDAO.getAllLessons());
     }
 
     @Override
@@ -64,17 +58,6 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void deleteLessonById(long id) {
         lessonDAO.deleteLessonById(id);
-    }
-
-    public LessonDTO getLessonDTO(Lesson lesson) {
-        long id = lesson.getId();
-        long groupId = lesson.getGroup().getGroupId();
-        int subjectId = lesson.getSubject().getId();
-        int roomId = lesson.getRoom().getId();
-        LocalDate time = lesson.getLessonDate();
-        int period = lesson.getPeriod();
-        long teacherId = lesson.getTeacher().getId();
-        return new LessonDTO(id, period, groupId, subjectId, roomId, time, teacherId);
     }
 
 }

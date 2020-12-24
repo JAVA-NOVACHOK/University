@@ -10,12 +10,14 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.SubjectMapperDTO;
 import ua.com.nikiforov.models.Subject;
 
 @Repository
@@ -32,15 +34,20 @@ public class SubjectDAOImpl implements SubjectDAO {
 
     private static final int FIRST_PARAMETER_INDEX = 1;
 
+    private SubjectMapperDTO subjectMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public SubjectDAOImpl(SubjectMapperDTO subjectMapper) {
+        this.subjectMapper = subjectMapper;
+    }
 
     @Override
     @Transactional
     public void addSubject(String subjectName) {
-        Subject subject = new Subject();
-        subject.setName(subjectName);
-        entityManager.persist(subject);
+        entityManager.persist(new Subject(subjectName));
     }
 
     @Override
@@ -92,16 +99,16 @@ public class SubjectDAOImpl implements SubjectDAO {
     @Override
     @Transactional
     public void updateSubject(SubjectDTO subjectDTO) {
-        int subjectId = subjectDTO.getId();
-        String subjectName = subjectDTO.getName();
-        Subject subject = entityManager.find(Subject.class, subjectId);
-        String updateMessage = String.format("Subject with name %s by id %d", subject.getName(), subject.getId());
+        Subject newSubject = subjectMapper.subjectDTOToSubject(subjectDTO);
+        Subject subjectWithTeachers = entityManager.find(Subject.class, subjectDTO.getId());
+        newSubject.setTeachers(subjectWithTeachers.getTeachers());
+        String updateMessage = String.format("Subject with name %s by id %d", newSubject.getName(), newSubject.getId());
         LOGGER.debug("Updating {}", updateMessage);
         try {
-            entityManager.merge(new Subject(subjectId, subjectName, subject.getTeachers()));
+            entityManager.merge(newSubject);
             LOGGER.info("Successfully updated '{}'", updateMessage);
         } catch (PersistenceException e) {
-            String failMessage = String.format("Couldn't update Subject with id %d name %s from DAO %s", subjectId, subjectName,e);
+            String failMessage = String.format("Couldn't update Subject with id %d name %s from DAO %s", subjectDTO.getId(), subjectDTO.getName(), e);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }

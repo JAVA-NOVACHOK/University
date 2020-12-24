@@ -10,22 +10,25 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.dao.room.RoomDAO;
+import ua.com.nikiforov.mappers_dto.RoomMapperDTO;
 import ua.com.nikiforov.models.Room;
 
 @Service
 public class RoomServiceImpl implements RoomService {
 
     private RoomDAO roomDAO;
+    private RoomMapperDTO roomMapper;
 
     @Autowired
-    public RoomServiceImpl(RoomDAO roomDAO) {
+    public RoomServiceImpl(RoomDAO roomDAO,RoomMapperDTO roomMapper) {
         this.roomDAO = roomDAO;
+        this.roomMapper = roomMapper;
     }
 
     @Override
-    public void addRoom(int roomNumber, int seatNumber) {
+    public void addRoom(RoomDTO roomDTO) {
         try {
-            roomDAO.addRoom(roomNumber, seatNumber);
+            roomDAO.addRoom(roomDTO);
         }catch (DataIntegrityViolationException e){
             throw new DuplicateKeyException("Error! Duplicate room while adding",e);
         }
@@ -33,12 +36,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO getRoomById(int id) {
-        return getRoomDTO(roomDAO.getRoomById(id));
+        return roomMapper.roomToRoomDTO(roomDAO.getRoomById(id));
     }
 
     @Override
     public RoomDTO getRoomByRoomNumber(int roomNumber) {
-        return getRoomDTO(roomDAO.getRoomByRoomNumber(roomNumber));
+        return roomMapper.roomToRoomDTO(roomDAO.getRoomByRoomNumber(roomNumber));
     }
 
     @Override
@@ -60,19 +63,13 @@ public class RoomServiceImpl implements RoomService {
          roomDAO.deleteRoomById(id);
     }
 
-    private static List<RoomDTO> getRoomDTOs(List<Room> rooms){
+    private List<RoomDTO> getRoomDTOs(List<Room> rooms){
         List<RoomDTO> roomsDTO = new ArrayList<>();
         for(Room room : rooms) {
-            roomsDTO.add(getRoomDTO(room));
+            roomsDTO.add(roomMapper.roomToRoomDTO(room));
         }
         return roomsDTO;
     }
 
-    public static RoomDTO getRoomDTO(Room room) {
-        int id = room.getId();
-        int number = room.getRoomNumber();
-        int seats = room.getSeatNumber();
-        return new RoomDTO(id, number, seats);
-    }
 
 }

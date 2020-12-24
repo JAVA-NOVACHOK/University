@@ -11,6 +11,7 @@ public class GroupDTO {
     private List<StudentDTO> students;
 
     public GroupDTO() {
+        students = new ArrayList<>();
     }
 
     public GroupDTO(long groupId, String groupName) {

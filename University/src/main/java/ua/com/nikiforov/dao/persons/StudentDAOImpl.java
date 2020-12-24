@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.StudentMapperDTO;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
 
@@ -35,20 +38,24 @@ public class StudentDAOImpl implements StudentDAO {
     private static final int SECOND_PARAMETER_INDEX = 2;
     private static final int THIRED_PARAMETER_INDEX = 3;
 
+    private StudentMapperDTO studentMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public StudentDAOImpl(StudentMapperDTO studentMapper) {
+        this.studentMapper = studentMapper;
+    }
 
     @Override
     @Transactional
     public void addStudent(StudentDTO studentDTO) {
-        String firstName = studentDTO.getFirstName();
-        String lastName = studentDTO.getLastName();
-        long groupId = studentDTO.getGroupId();
-        Group group = entityManager.getReference(Group.class, groupId);
-        String studentMessage = String.format("Student with firstName = %s, lastname = %s, groupId = %d", firstName,
-                lastName, groupId);
+        Student student = getStudentFromDTO(studentDTO);
+        String studentMessage = String.format("Student with firstName = %s, lastname = %s, groupId = %d", student.getFirstName(),
+                student.getLastName(), student.getGroupId());
         LOGGER.debug("Adding {}", studentMessage);
-        entityManager.persist(new Student(firstName, lastName, group));
+        entityManager.persist(student);
         LOGGER.debug("{} added successfully", studentMessage);
     }
 
@@ -91,14 +98,15 @@ public class StudentDAOImpl implements StudentDAO {
         String studentMessage = String.format("Student with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug(GETTING, studentMessage);
         Student student;
-        student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME)
-                .setParameter(FIRST_PARAMETER_INDEX, firstName)
-                .setParameter(SECOND_PARAMETER_INDEX, lastName)
-                .getSingleResult();
-        if (student == null) {
+        try {
+            student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME)
+                    .setParameter(FIRST_PARAMETER_INDEX, firstName)
+                    .setParameter(SECOND_PARAMETER_INDEX, lastName)
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get student by firstName = %s and lastName = %s from DB", firstName, lastName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
         return student;
@@ -122,16 +130,13 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     @Transactional
-    public void updateStudent(StudentDTO student) {
-        long studentId = student.getId();
-        String firstName = student.getFirstName();
-        String lastName = student.getLastName();
-        Group group = entityManager.getReference(Group.class, student.getGroupId());
-        LOGGER.debug("Updating {}", student);
+    public void updateStudent(StudentDTO studentDTO) {
+        Student student = getStudentFromDTO(studentDTO);
+        LOGGER.debug("Updating {}", studentDTO);
         try {
-            entityManager.merge(new Student(studentId, firstName, lastName, group));
+            entityManager.merge(student);
         } catch (PersistenceException e) {
-            String failMessage = String.format("Failed to update %s", student);
+            String failMessage = String.format("Failed to update %s", studentDTO);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
@@ -152,5 +157,12 @@ public class StudentDAOImpl implements StudentDAO {
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }
+    }
+
+    private Student getStudentFromDTO(StudentDTO studentDTO){
+        Student student = studentMapper.stodentDTOToStudent(studentDTO);
+        Group group = entityManager.getReference(Group.class, studentDTO.getGroupId());
+        student.setGroup(group);
+        return student;
     }
 }

@@ -1,6 +1,5 @@
 package ua.com.nikiforov.services.timetables;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -9,21 +8,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ua.com.nikiforov.dto.*;
-import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.services.group.GroupServiceImpl;
-import ua.com.nikiforov.services.persons.TeacherServiceImpl;
-import ua.com.nikiforov.services.room.RoomServiceImpl;
-import ua.com.nikiforov.services.subject.SubjectServiceImpl;
+import ua.com.nikiforov.mappers_dto.TimetableMapperDTO;
 
 public abstract class PersonalTimetable {
-    
-    public static final String ZONE = "UTC";
-        
+
+    @Autowired
+    private TimetableMapperDTO timetableMapper;
+
     public abstract List<DayTimetable>  getDayTimetable(String date, long personId);
     
     public abstract List<DayTimetable>  getMonthTimetable(String stringDate, long studentId);
-    
+
+    public TimetableMapperDTO getTimetableMapper() {
+        return timetableMapper;
+    }
+
     public List<DayTimetable> createMonthTimetable(List<TimetableDTO> allTimetablesList){
         List<DayTimetable> monthTimetable = new ArrayList<>();
         if (!allTimetablesList.isEmpty()) {
@@ -62,30 +63,5 @@ public abstract class PersonalTimetable {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, dateTimeFormatter);
     }
-    
-    public static Timestamp getTimestampFromString(String stringDate) {
-        return Timestamp.valueOf(stringDate + " 00:00:00");
-    }
 
-    public static List<TimetableDTO> getTimetableDTOs(List<Lesson> lessons){
-        List<TimetableDTO> timetableDTO = new ArrayList<>();
-        for(Lesson lesson : lessons){
-            timetableDTO.add(getTimetableDTO(lesson));
-        }
-        return timetableDTO;
-    }
-
-    public static TimetableDTO getTimetableDTO(Lesson lesson){
-        long lessonId = lesson.getId();
-        SubjectDTO subject = SubjectServiceImpl.getSubjectDTO(lesson.getSubject());
-        GroupDTO group = GroupServiceImpl.getGroupDTO(lesson.getGroup());
-        RoomDTO room = RoomServiceImpl.getRoomDTO(lesson.getRoom());
-        LocalDate time = lesson.getLessonDate();
-        TeacherDTO teacher = TeacherServiceImpl.getTeacherDTO(lesson.getTeacher());
-        int period = lesson.getPeriod();
-        return new TimetableDTO(lessonId,period,subject,group,room,teacher,time);
-    }
-
-
-        
 }

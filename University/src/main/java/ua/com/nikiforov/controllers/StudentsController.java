@@ -85,30 +85,27 @@ public class StudentsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(STUDENT_ATTR) StudentDTO student, Model model) {
-        String firstName = student.getFirstName();
-        String lastName = student.getLastName();
-        long groupId = student.getGroupId();
+    public String processEdit(@ModelAttribute(STUDENT_ATTR) StudentDTO studentDTO, Model model) {
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-            GroupDTO group = groupService.getGroupById(groupId);
+            GroupDTO group = groupService.getGroupById(studentDTO.getGroupId());
             model.addAttribute(GROUP_IN_ATTR, group);
             try {
-                studentService.updateStudent(student);
+                studentService.updateStudent(studentDTO);
                 model.addAttribute(SUCCESS_MSG,
-                        String.format("Student %s %s is successfully edited", firstName, lastName));
+                        String.format("Student %s %s is successfully edited", studentDTO.getFirstName(), studentDTO.getLastName()));
 
             } catch (DuplicateKeyException e) {
                 model.addAttribute(FAIL_MSG,
-                        String.format("Warning! Cannot add Student %s %s in group %s! Alraedy exists!", firstName,
-                                lastName, group.getGroupName()));
+                        String.format("Warning! Cannot add Student %s %s in group %s! Alraedy exists!", studentDTO.getFirstName(),
+                                studentDTO.getLastName(), group.getGroupName()));
             }
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, String.format("Error! Something went wrong. Failed to edit student '%s' '%s'",
-                    firstName, lastName));
+                    studentDTO.getFirstName(), studentDTO.getLastName()));
             return VIEW_STUDENTS;
         }
-        model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupId));
+        model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(studentDTO.getGroupId()));
         return VIEW_STUDENTS;
     }
 

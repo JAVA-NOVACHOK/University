@@ -18,16 +18,26 @@ public class Subject implements Comparable<Subject>{
     private String name;
 
     @ManyToMany(mappedBy = "subjects",fetch = FetchType.EAGER)
-    private Set<Teacher> teachers = new TreeSet<>();
+    private Set<Teacher> teachers;
 
     public Subject() {
-
+        teachers = new TreeSet<>();
     }
 
     public Subject(int id, String name) {
         this.id = id;
         this.name = name;
+        teachers = new TreeSet<>();
+    }
 
+    public Subject(int id) {
+        this.id = id;
+        teachers = new TreeSet<>();
+    }
+
+    public Subject(String name) {
+        this.name = name;
+        teachers = new TreeSet<>();
     }
 
     public Subject(int id, String name, Set<Teacher> teachers) {
@@ -61,7 +71,7 @@ public class Subject implements Comparable<Subject>{
     }
 
     public void setTeachers(Set<Teacher> teachers) {
-        this.teachers.addAll(teachers);
+        this.teachers = teachers;
     }
 
 

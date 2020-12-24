@@ -27,7 +27,7 @@ public class StudentTimetableDAO implements TimetableDAO {
     private static final String GET_STUDENT_DAY_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.lessonDate = ?2 ORDER BY l.period";
 
 
-    private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.time_BETWEEN ?2 AND ?3";
+    private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.lessonDate BETWEEN ?2 AND ?3";
 
     private static final String FAILED_MSG = "Failed to get ";
     private static final String GETTING_MSG = "Getting '{}'";

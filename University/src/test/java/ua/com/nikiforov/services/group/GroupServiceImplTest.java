@@ -18,11 +18,14 @@ import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.persons.StudentsService;
 
+import javax.transaction.Transactional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(TestDataSource.class)
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
+@Transactional
 class GroupServiceImplTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -142,6 +145,7 @@ class GroupServiceImplTest {
         insertStudent(FIRST_NAME_5, LAST_NAME_5, groupId_2);
 
         studentsService.deleteStudentById(studentToRemove.getId());
+        group_1 = groupService.getGroupById(groupId_1);
         List<StudentDTO> actualStudents = group_1.getStudents();
         assertIterableEquals(expectedStudents, actualStudents);
 
@@ -178,9 +182,9 @@ class GroupServiceImplTest {
         return groupService.getGroupByName(groupName);
     }
 
-    private StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
+    private StudentDTO insertStudent(String firstName, String lastaName, long groupId) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupId));
+        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupId);
     }
 
 }

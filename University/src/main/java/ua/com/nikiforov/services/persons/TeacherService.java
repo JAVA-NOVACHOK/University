@@ -16,8 +16,6 @@ public interface TeacherService {
     
     public List<TeacherDTO> getAllTeachers();
     
-    public List<TeacherDTO> getAllTeachersWithoutSubjects();
-
     public void updateTeacher(TeacherDTO teacher);
 
     public void deleteTeacherById(long teacherId);

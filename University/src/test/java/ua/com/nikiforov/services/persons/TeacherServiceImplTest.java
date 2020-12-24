@@ -47,10 +47,10 @@ class TeacherServiceImplTest {
     @Autowired
     private TableCreator tableCreator;
 
-    @BeforeEach
-    void init() {
-        tableCreator.createTables();
-    }
+//    @BeforeEach
+//    void init() {
+//        tableCreator.createTables();
+//    }
 
     @Test
     void whenAddTEacherIfSuccessReturnTrue() {

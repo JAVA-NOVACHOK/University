@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.TeacherMapperDTO;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
@@ -35,25 +37,30 @@ public class TeacherDAOImpl implements TeacherDAO {
     private static final int FIRST_PARAMETER_INDEX = 1;
     private static final int SECOND_PARAMETER_INDEX = 2;
 
+    private TeacherMapperDTO teacherMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public TeacherDAOImpl(TeacherMapperDTO teacherMapper) {
+        this.teacherMapper = teacherMapper;
+    }
 
     @Override
     @Transactional
     public void addTeacher(TeacherDTO teacherDTO) {
-        String firstName = teacherDTO.getFirstName();
-        String lastName = teacherDTO.getLastName();
-        String teacherMessage = String.format("Teacher with firstName = %s, lastName = %s", firstName, lastName);
+        Teacher teacher = teacherMapper.teacherDTOToTeacher(teacherDTO);
+        String teacherMessage = String.format("Teacher with firstName = %s, lastName = %s", teacher.getFirstName(), teacher.getLastName());
         LOGGER.debug("Adding {}", teacherMessage);
-        entityManager.persist(new Teacher(firstName, lastName));
+        entityManager.persist(teacher);
         LOGGER.info("Successful adding {}", teacherMessage);
     }
 
     @Override
     public Teacher getTeacherById(long teacherId) {
         LOGGER.debug("Getting Teacher by id '{}'", teacherId);
-        Teacher teacher = null;
-        teacher = entityManager.find(Teacher.class, teacherId);
+        Teacher teacher = entityManager.find(Teacher.class, teacherId);
         if (teacher == null) {
             String failMessage = String.format("Failed to get Teacher by id %d", teacherId);
             LOGGER.error(failMessage);
@@ -99,15 +106,14 @@ public class TeacherDAOImpl implements TeacherDAO {
     @Override
     @Transactional
     public void updateTeacher(TeacherDTO teacherDTO) {
-        long teacherId = teacherDTO.getId();
-        String firstName = teacherDTO.getFirstName();
-        String lastName = teacherDTO.getLastName();
-        String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", teacherId,
-                firstName, lastName);
-        Teacher teacher = entityManager.find(Teacher.class, teacherId);
+        Teacher newTeacher = teacherMapper.teacherDTOToTeacher(teacherDTO);
+        Teacher teacherWithSubjects = entityManager.find(Teacher.class, newTeacher.getId());
+        newTeacher.setSubjects(teacherWithSubjects.getSubjects());
+        String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", newTeacher.getId(),
+                newTeacher.getFirstName(), newTeacher.getLastName());
         LOGGER.debug("Updating '{}'", teacherMessage);
         try {
-            entityManager.merge(new Teacher(teacherId, firstName, lastName, teacher.getSubjects()));
+            entityManager.merge(newTeacher);
             LOGGER.info("Successfully updated '{}'", teacherMessage);
         } catch (DuplicateKeyException e) {
             throw new DuplicateKeyException("%s already exists", e);

@@ -14,8 +14,6 @@ public interface SubjectService {
 
     public List<SubjectDTO> getAllSubjects();
 
-    public List<SubjectDTO> getAllSubjectsWithoutTeachers();
-
     public void updateSubject(SubjectDTO subject);
 
     public void deleteSubjectById(int subjectId);

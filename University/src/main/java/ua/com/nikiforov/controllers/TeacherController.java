@@ -66,8 +66,11 @@ public class TeacherController {
 
     @GetMapping("/teacher")
     public String showTeacher(@RequestParam long id, Model model) {
-        model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(id));
-        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
+        TeacherDTO teacher = teacherService.getTeacherById(id);
+        List<SubjectDTO> subjects = subjectService.getAllSubjects();
+        subjects.removeAll(teacher.getSubjects());
+        model.addAttribute(TEACHER_ATTR, teacher);
+        model.addAttribute(SUBJECTS_ATTR, subjects);
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         return VIEW_TEACHER_ONE;

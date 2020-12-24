@@ -116,4 +116,14 @@ public class StudentDTO {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "StudentDTO{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", groupId=" + groupId +
+                '}';
+    }
 }

@@ -2,22 +2,18 @@ package ua.com.nikiforov.dao.lesson;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ua.com.nikiforov.dto.LessonDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.models.Room;
-import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.mappers_dto.LessonMapperDTO;
 import ua.com.nikiforov.models.lesson.Lesson;
-import ua.com.nikiforov.models.persons.Teacher;
-import ua.com.nikiforov.services.timetables.PersonalTimetable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +34,22 @@ public class LessonDAOImpl implements LessonDAO {
     private static final int FIFTH_PARAMETER_INDEX = 5;
     private static final int SIXTH_PARAMETER_INDEX = 6;
 
+    private LessonMapperDTO lessonMapper;
+
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    public LessonDAOImpl(LessonMapperDTO lessonMapper) {
+        this.lessonMapper = lessonMapper;
+    }
 
     @Override
     @Transactional
     public void addLesson(LessonDTO lesson) {
         LOGGER.debug("Adding {}", lesson);
 
-        entityManager.merge(getLesson(lesson));
+        entityManager.merge(lessonMapper.lessonDTOToLesson(lesson));
         LOGGER.info("Successful adding {}", lesson);
     }
 
@@ -66,7 +69,7 @@ public class LessonDAOImpl implements LessonDAO {
 
     @Override
     public Lesson getLessonByAllArgs(LessonDTO lessonDTO) {
-        Lesson lesson = getLesson(lessonDTO);
+        Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
         LOGGER.debug("Getting {}", lesson);
         Lesson lessonNew = (Lesson) entityManager.createQuery(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS)
                 .setParameter(FIRST_PARAMETER_INDEX, lesson.getPeriod())
@@ -103,7 +106,7 @@ public class LessonDAOImpl implements LessonDAO {
     @Override
     @Transactional
     public void updateLesson(LessonDTO lessonDTO) {
-        Lesson lesson = getLesson(lessonDTO);
+        Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
         LOGGER.debug("Updating {}", lesson);
         entityManager.merge(lesson);
         LOGGER.info("Successful updated {}", lesson);
@@ -124,16 +127,4 @@ public class LessonDAOImpl implements LessonDAO {
             throw new DataOperationException(failDeleteMessage, e);
         }
     }
-
-    private Lesson getLesson(LessonDTO lessonDTO){
-        long lessonId = lessonDTO.getId();
-        Subject subject = entityManager.getReference(Subject.class,lessonDTO.getSubjectId());
-        Group group = entityManager.getReference(Group.class, lessonDTO.getGroupId());
-        Room room = entityManager.getReference(Room.class, lessonDTO.getRoomId());
-        Teacher teacher = entityManager.getReference(Teacher.class, lessonDTO.getTeacherId());
-        LocalDate time = PersonalTimetable.getLocalDate(lessonDTO.getDate());
-        int period = lessonDTO.getPeriod();
-        return new Lesson(lessonId,group,subject,room,time,period,teacher);
-    }
-
 }

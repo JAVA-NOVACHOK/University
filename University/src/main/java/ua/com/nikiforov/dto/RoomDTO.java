@@ -9,6 +9,11 @@ public class RoomDTO {
     public RoomDTO() {
     }
 
+    public RoomDTO(int roomNumber, int seatNumber) {
+        this.roomNumber = roomNumber;
+        this.seatNumber = seatNumber;
+    }
+
     public RoomDTO(int id, int roomNumber, int seatNumber) {
         this.id = id;
         this.roomNumber = roomNumber;

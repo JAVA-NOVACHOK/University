@@ -18,6 +18,10 @@ public class Room implements Comparable<Room> {
     public Room() {
     }
 
+    public Room(int id) {
+        this.id = id;
+    }
+
     public Room(int id, int roomNumber, int seatNumber) {
         this.id = id;
         this.roomNumber = roomNumber;

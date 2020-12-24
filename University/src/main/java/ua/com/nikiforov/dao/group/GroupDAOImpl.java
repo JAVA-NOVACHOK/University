@@ -11,11 +11,13 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
 import ua.com.nikiforov.models.Group;
 
 @Repository
@@ -31,6 +33,13 @@ public class GroupDAOImpl implements GroupDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    private GroupMapperDTO groupMapper;
+
+    @Autowired
+    public GroupDAOImpl(GroupMapperDTO groupMapper) {
+        this.groupMapper = groupMapper;
+    }
 
     @Override
     public Group getGroupById(Long id) {
@@ -49,8 +58,7 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public Group getGroupByName(String groupName) {
         LOGGER.debug("Getting group by name '{}'", groupName);
-        Group group;
-        group = (Group) entityManager.createQuery(FIND_GROUP_BY_NAME)
+        Group group = (Group) entityManager.createQuery(FIND_GROUP_BY_NAME)
                 .setParameter(FIRST_PARAMETER_INDEX, groupName)
                 .getSingleResult();
         if (group == null) {
@@ -65,9 +73,7 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     @Transactional
     public void addGroup(String groupName) {
-        Group group = new Group();
-        group.setGroupName(groupName);
-        entityManager.persist(group);
+        entityManager.persist(new Group(groupName));
     }
 
     @Override
@@ -104,15 +110,15 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     @Transactional
     public void updateGroup(GroupDTO groupDTO) {
-        String groupName = groupDTO.getGroupName();
-        long groupId = groupDTO.getGroupId();
-        LOGGER.debug("Updating group '{}'", groupName);
+        Group newGroup = groupMapper.groupDTOToGroup(groupDTO);
+        LOGGER.debug("Updating group '{}'", newGroup.getGroupName());
         try {
-            Group group = getGroupById(groupId);
-            entityManager.merge(new Group(groupId, groupName, group.getGroupStudents()));
-            LOGGER.info("Successful adding group with id '{}' name '{}'", groupId, groupName);
+            Group group = getGroupById(newGroup.getGroupId());
+            newGroup.setGroupStudents(group.getGroupStudents());
+            entityManager.merge(newGroup);
+            LOGGER.info("Successful adding group with id '{}' name '{}'", newGroup.getGroupId(), newGroup.getGroupName());
         } catch (PersistenceException e) {
-            String failMessage = String.format("Couldn't update Group with id %d name %s", groupId, groupName);
+            String failMessage = String.format("Couldn't update Group with id %d name %s", newGroup.getGroupId(), newGroup.getGroupName());
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }

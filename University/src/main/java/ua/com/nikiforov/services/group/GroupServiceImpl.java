@@ -1,27 +1,25 @@
 package ua.com.nikiforov.services.group;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
-import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dao.group.GroupDAO;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.services.persons.StudentsServiceImpl;
+import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
+
+import java.util.List;
 
 @Service
 public class GroupServiceImpl implements GroupService {
 
     private GroupDAO groupDAO;
-
+    private GroupMapperDTO groupMapper;
 
     @Autowired
-    public GroupServiceImpl(GroupDAO groupDAO) {
+    public GroupServiceImpl(GroupDAO groupDAO, GroupMapperDTO groupMapper) {
         this.groupDAO = groupDAO;
+        this.groupMapper = groupMapper;
     }
 
     @Override
@@ -35,17 +33,17 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public GroupDTO getGroupById(long groupId) {
-        return getGroupDTO(groupDAO.getGroupById(groupId));
+        return groupMapper.groupToGroupDTO(groupDAO.getGroupById(groupId));
     }
 
     @Override
     public GroupDTO getGroupByName(String groupName) {
-        return getGroupDTO(groupDAO.getGroupByName(groupName));
+        return groupMapper.groupToGroupDTO(groupDAO.getGroupByName(groupName));
     }
 
     @Override
     public List<GroupDTO> getAllGroups() {
-        return getGroupDTOs(groupDAO.getAllGroups());
+        return groupMapper.getGroupDTOList(groupDAO.getAllGroups());
     }
 
     @Override
@@ -60,19 +58,6 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void deleteGroup(long id) {
         groupDAO.deleteGroupById(id);
-    }
-
-    private static List<GroupDTO> getGroupDTOs(List<Group> groups) {
-        List<GroupDTO> groupsDTO = new ArrayList<>();
-        for (Group group : groups) {
-            groupsDTO.add(getGroupDTO(group));
-        }
-        return groupsDTO;
-    }
-
-    public static GroupDTO getGroupDTO(Group group) {
-        return new GroupDTO(group.getGroupId(), group.getGroupName(),
-                StudentsServiceImpl.getListStudentDTO(group.getGroupStudents()));
     }
 
 }

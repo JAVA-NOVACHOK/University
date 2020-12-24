@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.RoomDTO;
 
 public interface RoomService {
 
-    public void addRoom(int roomNumber, int seatNumber);
+    public void addRoom(RoomDTO roomDTO);
 
     public RoomDTO getRoomById(int id);
     

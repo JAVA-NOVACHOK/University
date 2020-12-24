@@ -15,25 +15,22 @@ public class StudentTimetableService extends PersonalTimetable {
     private TimetableDAO studentsTimetable;
 
     @Autowired
-   public StudentTimetableService(@Qualifier("studentTimetable") TimetableDAO studentsTimetable) {
+    public StudentTimetableService(@Qualifier("studentTimetable") TimetableDAO studentsTimetable) {
         this.studentsTimetable = studentsTimetable;
     }
 
-    
+
     @Override
-    public List<DayTimetable>  getDayTimetable(String date, long groupId) {
-        List<TimetableDTO> allTimetablesList = getTimetableDTOs(studentsTimetable.getDayTimetable(date, groupId));
+    public List<DayTimetable> getDayTimetable(String date, long groupId) {
+        List<TimetableDTO> allTimetablesList = getTimetableMapper().getTimetableDTOs(studentsTimetable.getDayTimetable(date, groupId));
         return createMonthTimetable(allTimetablesList);
     }
 
     @Override
     public List<DayTimetable> getMonthTimetable(String date, long groupId) {
-        List<TimetableDTO> allTimetablesList = getTimetableDTOs(studentsTimetable.getMonthTimetable(date, groupId));
+        List<TimetableDTO> allTimetablesList = getTimetableMapper().getTimetableDTOs(studentsTimetable.getMonthTimetable(date, groupId));
         return createMonthTimetable(allTimetablesList);
     }
-
-
-
 
 
 }

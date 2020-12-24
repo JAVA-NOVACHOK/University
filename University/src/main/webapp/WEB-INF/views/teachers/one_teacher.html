@@ -169,7 +169,7 @@
 					<input type="number" class="form-control" hidden="true"
 						th:value="${teacher.id}" name="teacherId"> <select
 						class="form-control mr-2" required="required" name="subjectId">
-						<option th:selected="true" th:value=0>Choose teacher</option>
+						<option th:selected="true" th:value=0>Choose subject</option>
 						<option th:each="subject : ${subjects}" th:value="${subject.id}"
 							th:text="|${subject.name}|"></option>
 					</select>

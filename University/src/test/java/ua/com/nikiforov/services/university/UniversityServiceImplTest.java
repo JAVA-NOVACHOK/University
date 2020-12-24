@@ -30,13 +30,13 @@ class UniversityServiceImplTest {
     @Autowired
     private UniversityService universityService;
 
-    @Autowired
-    private TableCreator tableCreator;
+//    @Autowired
+//    private TableCreator tableCreator;
 
-    @BeforeEach
-    void init() {
-        tableCreator.createTables();
-    }
+//    @BeforeEach
+//    void init() {
+//        tableCreator.createTables();
+//    }
 
     @Test
     void whenAddUniversityIfSuccessShouldReturnTrue() {

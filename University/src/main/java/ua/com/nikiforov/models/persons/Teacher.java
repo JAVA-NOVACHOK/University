@@ -29,6 +29,10 @@ public class Teacher implements Comparable<Teacher>{
     public Teacher() {
     }
 
+    public Teacher(long id) {
+        this.id = id;
+    }
+
     public Teacher(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,7 +42,6 @@ public class Teacher implements Comparable<Teacher>{
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        subjects = new ArrayList<>();
     }
 
     public Teacher(long id, String firstName, String lastName, List<Subject> subjects) {
@@ -77,7 +80,7 @@ public class Teacher implements Comparable<Teacher>{
     }
 
     public void setSubjects(List<Subject> subjects) {
-        this.subjects.addAll(subjects);
+        this.subjects = subjects;
     }
     
     public boolean addSubject(Subject subject) {

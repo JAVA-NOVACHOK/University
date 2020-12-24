@@ -10,16 +10,19 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.dao.persons.StudentDAO;
+import ua.com.nikiforov.mappers_dto.StudentMapperDTO;
 import ua.com.nikiforov.models.persons.Student;
 
 @Service
 public class StudentsServiceImpl implements StudentsService {
 
     private StudentDAO studentDAO;
+    private StudentMapperDTO studentMapper;
 
     @Autowired
-    public StudentsServiceImpl(StudentDAO studentDAO) {
+    public StudentsServiceImpl(StudentDAO studentDAO, StudentMapperDTO studentMapper) {
         this.studentDAO = studentDAO;
+        this.studentMapper = studentMapper;
     }
 
     @Override
@@ -33,16 +36,16 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     public StudentDTO getStudentById(long studentId) {
-        return getStudentDTO(studentDAO.getStudentById(studentId));
+        return studentMapper.studentToStudentDTO(studentDAO.getStudentById(studentId));
     }
 
     public StudentDTO getStudentByName(String firstName, String lastName) {
 
-        return getStudentDTO(studentDAO.getStudentByName(firstName, lastName));
+        return studentMapper.studentToStudentDTO(studentDAO.getStudentByName(firstName, lastName));
     }
 
     public StudentDTO getStudentByNameGroupId(String firstName, String lastName, long groupId) {
-        return getStudentDTO(studentDAO.getStudentByNameGroupId(firstName, lastName, groupId));
+        return studentMapper.studentToStudentDTO(studentDAO.getStudentByNameGroupId(firstName, lastName, groupId));
     }
 
     @Override
@@ -76,18 +79,10 @@ public class StudentsServiceImpl implements StudentsService {
         }
     }
 
-    private static StudentDTO getStudentDTO(Student student) {
-        long id = student.getId();
-        String firstName = student.getFirstName();
-        String lastName = student.getLastName();
-        long groupId = student.getGroupId();
-        return new StudentDTO(id, firstName, lastName, groupId);
-    }
-
-    public static List<StudentDTO> getListStudentDTO(List<Student> students) {
+    public List<StudentDTO> getListStudentDTO(List<Student> students) {
         List<StudentDTO> studensDTO = new ArrayList<>();
         for (Student student : students) {
-            studensDTO.add(getStudentDTO(student));
+            studensDTO.add(studentMapper.studentToStudentDTO(student));
         }
         return studensDTO;
     }

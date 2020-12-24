@@ -71,7 +71,12 @@ public class DayTimetable {
             return false;
         return true;
     }
-    
-    
 
+    @Override
+    public String toString() {
+        return "DayTimetable{" +
+                "timetables=" + timetables +
+                ", dateInfo=" + dateInfo +
+                '}';
+    }
 }

@@ -46,7 +46,7 @@ class RoomServiceImplTest {
 
     @Test
     void whenAddRoomIfSuccessReturnTrue() {
-        assertDoesNotThrow(() -> roomService.addRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1));
+        assertDoesNotThrow(() -> roomService.addRoom(new RoomDTO(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1)));
     }
 
     @Test
@@ -89,7 +89,7 @@ class RoomServiceImplTest {
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(roomNumber, seatNumber);
+        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 }

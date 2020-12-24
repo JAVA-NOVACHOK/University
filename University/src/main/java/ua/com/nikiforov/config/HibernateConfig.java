@@ -30,13 +30,6 @@ public class HibernateConfig {
     private static final String JNDI_PATH2 = "java:comp/env/jdbc/University2";
 
 
-    private Environment environment;
-
-    @Autowired
-    public HibernateConfig(Environment environment) {
-        this.environment = environment;
-    }
-
     @Bean
     public LocalSessionFactoryBean getSessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();

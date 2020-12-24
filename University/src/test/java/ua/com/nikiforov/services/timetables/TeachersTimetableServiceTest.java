@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -37,6 +39,8 @@ import ua.com.nikiforov.services.subject.SubjectService;
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 class TeachersTimetableServiceTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableServiceTest.class);
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
@@ -208,8 +212,8 @@ class TeachersTimetableServiceTest {
         expectedTimetables.add(new TimetableDTO(lesson_1_date.getId(), PERIOD_1, subject_1, group_1, room_1, teacher_1,
                 getLocalDateFromString(DATE)));
         expectedTimetables.add(new TimetableDTO(lesson_2_date.getId(), PERIOD_2, subject_2, group_2, room_2,
-                teacher_2, getLocalDateFromString(DATE)));
-        expectedTimetables.add(new TimetableDTO(lesson_3_date.getId(), PERIOD_3, subject_3, group_3, room_2, teacher_1,
+                teacher_1, getLocalDateFromString(DATE)));
+        expectedTimetables.add(new TimetableDTO(lesson_3_date.getId(), PERIOD_3, subject_1, group_3, room_2, teacher_1,
                 getLocalDateFromString(DATE)));
 
         List<DayTimetable> dayTimetables = teacherTimetableService.getDayTimetable(DATE, teacher_1.getId());
@@ -264,6 +268,8 @@ class TeachersTimetableServiceTest {
 
         List<DayTimetable> actualMonthTimetables = teacherTimetableService.getMonthTimetable(DATE, teacher_1.getId());
         assertEquals(expectedMonthTimetable.size(), actualMonthTimetables.size());
+        LOGGER.debug("actualMonthTimetables===================================={}",actualMonthTimetables);
+        LOGGER.debug("expectedMonthTimetable===================================={}",expectedMonthTimetable);
 
         for (int i = 0; i < expectedMonthTimetable.size(); i++) {
             assertIterableEquals(expectedMonthTimetable.get(i).getTimetables(),
@@ -292,7 +298,7 @@ class TeachersTimetableServiceTest {
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(roomNumber, seatNumber);
+        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 

@@ -200,7 +200,7 @@ class RoomsControllerTest {
     
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(roomNumber, seatNumber);
+        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
         return roomService.getRoomByRoomNumber(roomNumber);
     }
 

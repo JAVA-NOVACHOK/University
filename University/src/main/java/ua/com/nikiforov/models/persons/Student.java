@@ -73,8 +73,12 @@ public class Student implements Comparable<Student> {
         return group.getGroupId();
     }
 
-    public void setGroup(long groupId) {
-        group.setGroupId(groupId);
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     @Override

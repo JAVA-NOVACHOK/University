@@ -1,15 +1,15 @@
 package ua.com.nikiforov.dto;
 
 import java.util.Set;
-import java.util.TreeSet;
 
 public class SubjectDTO {
-    
+
     private int id;
     private String name;
     private Set<TeacherDTO> teachers;
-    
+
     public SubjectDTO() {
+
     }
 
     public SubjectDTO(int id, String name) {
@@ -20,7 +20,7 @@ public class SubjectDTO {
     public SubjectDTO(int id, String name, Set<TeacherDTO> teachers) {
         this.id = id;
         this.name = name;
-        this.teachers = new TreeSet<>(teachers);
+        this.teachers = teachers;
     }
 
     public int getId() {
@@ -38,7 +38,7 @@ public class SubjectDTO {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void addTeacher(TeacherDTO teacher) {
         teachers.add(teacher);
     }
@@ -80,8 +80,16 @@ public class SubjectDTO {
         if (teachers == null) {
             if (other.teachers != null)
                 return false;
-        } 
+        }
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "SubjectDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", teachers=" + teachers +
+                '}';
+    }
 }

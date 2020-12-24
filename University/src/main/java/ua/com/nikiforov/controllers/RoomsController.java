@@ -49,14 +49,14 @@ public class RoomsController {
     }
 
     @PostMapping("/add")
-    public String addRoom(@RequestParam int roomNumber, @RequestParam int seatNumber, Model model) {
+    public String addRoom(@ModelAttribute(MODEL_ATTR_ROOM) RoomDTO roomDTO, Model model) {
         try {
-            roomService.addRoom(roomNumber, seatNumber);
+            roomService.addRoom(roomDTO);
             model.addAttribute(SUCCESS_MSG,
-                    String.format("Room number '%d' with seats number '%d' added successfuly", roomNumber, seatNumber));
+                    String.format("Room number '%d' with seats number '%d' added successfuly", roomDTO.getRoomNumber(), roomDTO.getSeatNumber()));
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
-                    String.format("Cannot add room. Room with number '%d' already exists", roomNumber));
+                    String.format("Cannot add room. Room with number '%d' already exists", roomDTO.getRoomNumber()));
         }
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;

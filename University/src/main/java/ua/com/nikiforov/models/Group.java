@@ -24,6 +24,16 @@ public class Group implements Comparable<Group> {
     private List<Student> groupStudents;
 
     public Group() {
+        groupStudents = new ArrayList<>();
+    }
+
+    public Group(long groupId) {
+        this.groupId = groupId;
+    }
+
+    public Group(String groupName) {
+        this.groupName = groupName;
+        groupStudents = new ArrayList<>();
     }
 
     public Group(long id, String groupName) {
@@ -63,6 +73,9 @@ public class Group implements Comparable<Group> {
         groupStudents.add(student);
     }
 
+    public void setGroupStudents(List<Student> groupStudents) {
+        this.groupStudents = groupStudents;
+    }
 
     @Override
     public int hashCode() {
