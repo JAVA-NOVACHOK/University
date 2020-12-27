@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
@@ -61,7 +63,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     public Teacher getTeacherById(long teacherId) {
         LOGGER.debug("Getting Teacher by id '{}'", teacherId);
         Teacher teacher = entityManager.find(Teacher.class, teacherId);
-        if (teacher == null) {
+        if(teacher == null){
             String failMessage = String.format("Failed to get Teacher by id %d", teacherId);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
@@ -74,14 +76,16 @@ public class TeacherDAOImpl implements TeacherDAO {
     public Teacher getTeacherByName(String firstName, String lastName) {
         String teacherMessage = String.format("Teacher with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug("Getting {}", teacherMessage);
-        Teacher teacher = (Teacher) entityManager.createQuery(GET_TEACHER_BY_NAME)
-                .setParameter(FIRST_PARAMETER_INDEX, firstName)
-                .setParameter(SECOND_PARAMETER_INDEX, lastName)
-                .getSingleResult();
-        if (teacher == null) {
+        Teacher teacher;
+        try {
+            teacher = (Teacher) entityManager.createQuery(GET_TEACHER_BY_NAME)
+                    .setParameter(FIRST_PARAMETER_INDEX, firstName)
+                    .setParameter(SECOND_PARAMETER_INDEX, lastName)
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
             LOGGER.debug(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage);
+            throw new EntityNotFoundException(failGetByIdMessage,e);
         }
         LOGGER.info("Successfully retrived {}", teacherMessage);
         return teacher;
@@ -115,9 +119,9 @@ public class TeacherDAOImpl implements TeacherDAO {
         try {
             entityManager.merge(newTeacher);
             LOGGER.info("Successfully updated '{}'", teacherMessage);
-        } catch (DuplicateKeyException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("%s already exists", e);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = String.format("Failed to update %s", teacherMessage);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
@@ -169,7 +173,7 @@ public class TeacherDAOImpl implements TeacherDAO {
                     .setParameter(FIRST_PARAMETER_INDEX, firstName)
                     .setParameter(SECOND_PARAMETER_INDEX, lastName)
                     .getResultList();
-        } catch (DataOperationException e) {
+        } catch (PersistenceException e) {
             String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
             throw new DataOperationException(failGetByIdMessage, e);
         }

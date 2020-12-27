@@ -86,9 +86,7 @@ public class DateInfo {
                 return false;
         } else if (!weekDay.equals(other.weekDay))
             return false;
-        if (year != other.year)
-            return false;
-        return true;
+        return year == other.year;
     }
     
 

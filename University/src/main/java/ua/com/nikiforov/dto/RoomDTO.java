@@ -67,10 +67,15 @@ public class RoomDTO {
             return false;
         if (roomNumber != other.roomNumber)
             return false;
-        if (seatNumber != other.seatNumber)
-            return false;
-        return true;
+        return seatNumber == other.seatNumber;
     }
 
-
+    @Override
+    public String toString() {
+        return "RoomDTO{" +
+                "id=" + id +
+                ", roomNumber=" + roomNumber +
+                ", seatNumber=" + seatNumber +
+                '}';
+    }
 }

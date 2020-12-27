@@ -11,6 +11,7 @@ import ua.com.nikiforov.mappers_dto.LessonMapperDTO;
 import ua.com.nikiforov.models.lesson.Lesson;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -48,7 +49,6 @@ public class LessonDAOImpl implements LessonDAO {
     @Transactional
     public void addLesson(LessonDTO lesson) {
         LOGGER.debug("Adding {}", lesson);
-
         entityManager.merge(lessonMapper.lessonDTOToLesson(lesson));
         LOGGER.info("Successful adding {}", lesson);
     }
@@ -71,15 +71,17 @@ public class LessonDAOImpl implements LessonDAO {
     public Lesson getLessonByAllArgs(LessonDTO lessonDTO) {
         Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
         LOGGER.debug("Getting {}", lesson);
-        Lesson lessonNew = (Lesson) entityManager.createQuery(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS)
-                .setParameter(FIRST_PARAMETER_INDEX, lesson.getPeriod())
-                .setParameter(SECOND_PARAMETER_INDEX, lesson.getSubject())
-                .setParameter(THIRD_PARAMETER_INDEX, lesson.getRoom())
-                .setParameter(FOURTH_PARAMETER_INDEX, lesson.getGroup())
-                .setParameter(FIFTH_PARAMETER_INDEX, lesson.getLessonDate())
-                .setParameter(SIXTH_PARAMETER_INDEX, lesson.getTeacher())
-                .getSingleResult();
-        if (lesson == null) {
+        Lesson lessonNew;
+        try {
+            lessonNew = (Lesson) entityManager.createQuery(FIND_LESSON_BY_GROUP_ROOM_SUBJECT_IDS)
+                    .setParameter(FIRST_PARAMETER_INDEX, lesson.getPeriod())
+                    .setParameter(SECOND_PARAMETER_INDEX, lesson.getSubject())
+                    .setParameter(THIRD_PARAMETER_INDEX, lesson.getRoom())
+                    .setParameter(FOURTH_PARAMETER_INDEX, lesson.getGroup())
+                    .setParameter(FIFTH_PARAMETER_INDEX, lesson.getLessonDate())
+                    .setParameter(SIXTH_PARAMETER_INDEX, lesson.getTeacher())
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failGetByIdMessage = String.format("Couldn't get %s", lesson);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage);

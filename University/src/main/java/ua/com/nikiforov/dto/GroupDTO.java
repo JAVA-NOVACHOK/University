@@ -81,8 +81,7 @@ public class GroupDTO {
         } else if (!groupName.equals(other.groupName))
             return false;
         if (students == null) {
-            if (other.students != null)
-                return false;
+            return other.students == null;
         } 
         return true;
     }

@@ -76,7 +76,6 @@ class GroupServiceImplTest {
         expectedGroups.add(insertGroup(TEST_GROUP_NAME_2));
         expectedGroups.add(insertGroup(TEST_GROUP_NAME_3));
         assertIterableEquals(expectedGroups, groupService.getAllGroups());
-
     }
 
     @Test

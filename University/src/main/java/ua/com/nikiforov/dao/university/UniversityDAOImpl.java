@@ -1,6 +1,7 @@
 package ua.com.nikiforov.dao.university;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 
@@ -41,12 +42,14 @@ public class UniversityDAOImpl implements UniversityDAO {
     public University findUniversityById(int id) {
         String universityMessage = String.format("University with ID %d", id);
         LOGGER.debug(GETTING_MSG, universityMessage);
-        University university = entityManager.find(University.class,id);
+        University university;
+        try {
+            university = entityManager.find(University.class, id);
             LOGGER.info("Successfully retrieved University '{}'", universityMessage);
-       if(university == null){
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get room by Id %d from DB", id);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         return university;
     }
@@ -55,13 +58,15 @@ public class UniversityDAOImpl implements UniversityDAO {
     public University getUniversityByName(String universityName) {
         String subjectMessage = String.format("University by name %s", universityName);
         LOGGER.debug(GETTING_MSG, subjectMessage);
-        University university = (University) entityManager.createQuery(FIND_UNIVERSITY_BY_NAME)
-                .setParameter(FIRST_PARAMETER_INDEX, universityName)
-                .getSingleResult();
-        if (university == null) {
-            String failMessage = String.format("Fail to get university by name %s from DB", university);
+        University university;
+        try {
+            university = (University) entityManager.createQuery(FIND_UNIVERSITY_BY_NAME)
+                    .setParameter(FIRST_PARAMETER_INDEX, universityName)
+                    .getSingleResult();
+        }catch (NoResultException e){
+            String failMessage = String.format("Fail to get university by name %s from DB", universityName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, university);
         return university;

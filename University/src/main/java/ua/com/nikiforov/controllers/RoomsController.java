@@ -28,7 +28,7 @@ public class RoomsController {
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
-    
+
     private RoomService roomService;
 
     @ModelAttribute(MODEL_ATTR_ROOM)
@@ -63,19 +63,14 @@ public class RoomsController {
     }
 
     @GetMapping("/delete")
-    public String deleteRoom(@RequestParam int roomId, Model model) {
+    public String deleteRoom(@RequestParam int id, Model model) {
         try {
-            RoomDTO room = roomService.getRoomById(roomId);
-            try {
-                roomService.deleteRoomById(roomId);
-                model.addAttribute(SUCCESS_MSG,
-                        String.format("Room with '%d' deleted successfuly", room.getRoomNumber()));
-            } catch (DataOperationException e) {
-                model.addAttribute(FAIL_MSG, String.format("Failed to delete room with number %d and seets number %d",
-                        room.getRoomNumber(), room.getSeatNumber()));
-            }
-        } catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, String.format("Warning! Couln't find room with id %d ", roomId));
+            roomService.deleteRoomById(id);
+            model.addAttribute(SUCCESS_MSG,
+                    String.format("Room with '%d' deleted successfuly", id));
+        } catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete room with number and seets number %d",
+                   id));
         }
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;

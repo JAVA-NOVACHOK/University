@@ -1,25 +1,27 @@
 package ua.com.nikiforov.mappers_dto;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.models.Group;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
-public abstract class GroupMapperDTO {
+@Mapper(componentModel = "spring", uses = {StudentMapperDTO.class})
+public interface GroupMapperDTO {
 
-    @Autowired
-    private StudentMapperDTO studentMapperDTO;
 
-    public abstract Group groupDTOToGroup(GroupDTO groupDTO);
+    @Mappings({
+            @Mapping(target = "groupStudents", source = "students")
+    })
+    public Group groupDTOToGroup(GroupDTO groupDTO);
 
-    public abstract List<GroupDTO> getGroupDTOList(List<Group> groups);
+    public List<GroupDTO> getGroupDTOList(List<Group> groups);
 
-    public GroupDTO groupToGroupDTO(Group group) {
-        GroupDTO groupDTO = new GroupDTO(group.getGroupId(),group.getGroupName());
-        groupDTO.setStudents(studentMapperDTO.getStudentDTOList(group.getGroupStudents()));
-        return groupDTO;
-    }
+    @Mappings({
+            @Mapping(target = "students", source = "groupStudents")
+    })
+    public GroupDTO groupToGroupDTO(Group group);
 }

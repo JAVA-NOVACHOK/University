@@ -17,7 +17,7 @@ public abstract class SubjectMapperDTO {
 
     public abstract List<SubjectDTO> getSubjectDTOList(List<Subject> subjects);
 
-    public  SubjectDTO subjectToSubjectDTO(Subject subject) {
+    public SubjectDTO subjectToSubjectDTO(Subject subject) {
         Set<TeacherDTO> teachersDTO = getTeachersDTOList(subject.getTeachers());
         return new SubjectDTO(subject.getId(), subject.getName(), teachersDTO);
     }
@@ -29,5 +29,6 @@ public abstract class SubjectMapperDTO {
         }
         return teachersDTO;
     }
+
 
 }

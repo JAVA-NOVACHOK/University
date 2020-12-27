@@ -105,8 +105,7 @@ public class Teacher implements Comparable<Teacher>{
             return false;
         Teacher other = (Teacher) obj;
         if (subjects == null ) {
-            if (other.subjects != null )
-                return false;
+            return other.subjects == null;
         } 
         return true;
     }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class StudentTimetableDAO implements TimetableDAO {
     private static final String GET_STUDENT_DAY_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.lessonDate = ?2 ORDER BY l.period";
 
 
-    private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.lessonDate BETWEEN ?2 AND ?3";
+    private static final String GET_STUDENT_MONTH_TIMETABLE = "SELECT l FROM Lesson l WHERE l.group = ?1 AND l.lessonDate BETWEEN ?2 AND ?3 ORDER BY l.lessonDate, l.period";
 
     private static final String FAILED_MSG = "Failed to get ";
     private static final String GETTING_MSG = "Getting '{}'";
@@ -55,7 +56,7 @@ public class StudentTimetableDAO implements TimetableDAO {
                             .setParameter(SECOND_PARAMETER_INDEX,time)
                             .getResultList());
             LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, timetableInfoMSG);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = FAILED_MSG + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
@@ -81,7 +82,7 @@ public class StudentTimetableDAO implements TimetableDAO {
                             .setParameter(THIRD_PARAMETER_INDEX,timeTo)
                             .getResultList());
             LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, timetableInfoMSG);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = FAILED_MSG + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);

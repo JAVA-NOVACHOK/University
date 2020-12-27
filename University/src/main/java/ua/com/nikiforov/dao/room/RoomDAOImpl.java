@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -64,13 +65,15 @@ public class RoomDAOImpl implements RoomDAO {
     @Override
     public Room getRoomByRoomNumber(int roomNumber) {
         LOGGER.debug("Getting room by room number '{}'", roomNumber);
-        Room room = (Room) entityManager.createQuery(FIND_ROOM_BY_ROOM_NUMBER)
+        Room room;
+        try{
+        room = (Room) entityManager.createQuery(FIND_ROOM_BY_ROOM_NUMBER)
                 .setParameter(FIRST_PARAMETER_INDEX, roomNumber)
                 .getSingleResult();
-        if (room == null) {
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get roomNumber by roomNumber %d from DB", roomNumber);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info("Successfully retrieved room '{}'", room);
         return room;

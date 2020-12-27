@@ -71,9 +71,7 @@ public class Room implements Comparable<Room> {
         if (getClass() != obj.getClass())
             return false;
         Room other = (Room) obj;
-        if (roomNumber != other.roomNumber)
-            return false;
-        return true;
+        return roomNumber == other.roomNumber;
     }
 
     @Override

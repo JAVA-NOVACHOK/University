@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,8 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableDAOImpl.class);
 
-    private static final String GET_TEACHER_DAY_TIMETABLE = "SELECT l from Lesson l WHERE l.teacher = ?1 AND l.lessonDate = ?2 ORDER BY l.period";
-    private static final String GET_TEACHER_MONTH_TIMETABLE = "SELECT l from Lesson l WHERE l.teacher = ?1 AND l.lessonDate BETWEEN ?2 AND ?3 ORDER BY l.period";
+    private static final String GET_TEACHER_DAY_TIMETABLE = "SELECT l from Lesson l WHERE l.teacher = ?1 AND l.lessonDate = ?2 ORDER BY  l.period";
+    private static final String GET_TEACHER_MONTH_TIMETABLE = "SELECT l from Lesson l WHERE l.teacher = ?1 AND l.lessonDate BETWEEN ?2 AND ?3 ORDER BY l.lessonDate, l.period";
 
     private static final int FIRST_PARAMETER_INDEX = 1;
     private static final int SECOND_PARAMETER_INDEX = 2;
@@ -49,7 +50,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
                     .setParameter(SECOND_PARAMETER_INDEX,time)
                     .getResultList());
             LOGGER.info("Successfully retrieved {}", timetableInfoMSG);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = "Failed to get " + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
@@ -74,7 +75,7 @@ public class TeachersTimetableDAOImpl implements TimetableDAO {
                     .setParameter(THIRD_PARAMETER_INDEX,timeTo)
                     .getResultList());
             LOGGER.info("Successfully retrieved {}", timetableInfoMSG);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = "Failed to get " + timetableInfoMSG;
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);

@@ -267,9 +267,9 @@ class TeachersTimetableServiceTest {
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_21_DAYS, dateInfo_DATE_ADD_21_DAY));
 
         List<DayTimetable> actualMonthTimetables = teacherTimetableService.getMonthTimetable(DATE, teacher_1.getId());
-        assertEquals(expectedMonthTimetable.size(), actualMonthTimetables.size());
         LOGGER.debug("actualMonthTimetables===================================={}",actualMonthTimetables);
         LOGGER.debug("expectedMonthTimetable===================================={}",expectedMonthTimetable);
+        assertEquals(expectedMonthTimetable.size(), actualMonthTimetables.size());
 
         for (int i = 0; i < expectedMonthTimetable.size(); i++) {
             assertIterableEquals(expectedMonthTimetable.get(i).getTimetables(),

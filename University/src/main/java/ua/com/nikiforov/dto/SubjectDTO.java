@@ -2,7 +2,7 @@ package ua.com.nikiforov.dto;
 
 import java.util.Set;
 
-public class SubjectDTO {
+public class SubjectDTO implements Comparable<SubjectDTO>{
 
     private int id;
     private String name;
@@ -78,8 +78,7 @@ public class SubjectDTO {
         } else if (!name.equals(other.name))
             return false;
         if (teachers == null) {
-            if (other.teachers != null)
-                return false;
+            return other.teachers == null;
         }
         return true;
     }
@@ -91,5 +90,10 @@ public class SubjectDTO {
                 ", name='" + name + '\'' +
                 ", teachers=" + teachers +
                 '}';
+    }
+
+    @Override
+    public int compareTo(SubjectDTO subjectDTO) {
+        return this.name.compareTo(subjectDTO.getName());
     }
 }

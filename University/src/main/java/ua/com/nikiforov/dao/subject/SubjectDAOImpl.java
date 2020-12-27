@@ -2,8 +2,10 @@ package ua.com.nikiforov.dao.subject;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -55,11 +57,12 @@ public class SubjectDAOImpl implements SubjectDAO {
         String subjectMessage = String.format("Subject by id %d", subjectId);
         LOGGER.debug(GETTING_MSG, subjectMessage);
         Subject subject;
-        subject = entityManager.find(Subject.class, subjectId);
-        if (subject == null) {
+        try {
+            subject = entityManager.find(Subject.class, subjectId);
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get subject by Id %d from DB", subjectId);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, subject);
         return subject;
@@ -69,13 +72,15 @@ public class SubjectDAOImpl implements SubjectDAO {
     public Subject getSubjectByName(String subjectName) {
         String subjectMessage = String.format("Subject by name %s", subjectName);
         LOGGER.debug(GETTING_MSG, subjectMessage);
-        Subject subject = (Subject) entityManager.createQuery(GET_SUBJECT_BY_NAME)
-                .setParameter(FIRST_PARAMETER_INDEX, subjectName)
-                .getSingleResult();
-        if (subject == null) {
+        Subject subject;
+        try {
+            subject = (Subject) entityManager.createQuery(GET_SUBJECT_BY_NAME)
+                    .setParameter(FIRST_PARAMETER_INDEX, subjectName)
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get subject by name %s from DB", subjectName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, subject);
         return subject;
@@ -124,7 +129,7 @@ public class SubjectDAOImpl implements SubjectDAO {
                     .setParameter(FIRST_PARAMETER_INDEX, subjectId)
                     .executeUpdate();
             LOGGER.info("Successfully deleted '{}'", deleteMessage);
-        } catch (DataAccessException e) {
+        } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);

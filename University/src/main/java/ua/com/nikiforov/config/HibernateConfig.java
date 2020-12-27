@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -23,11 +21,11 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan("ua.com.nikiforov")
-@PropertySource("classpath:hibernate.properties")
+//@PropertySource("classpath:hibernate.properties")
 public class HibernateConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateConfig.class);
-    private static final String JNDI_PATH2 = "java:comp/env/jdbc/University2";
+    private static final String JNDI_PATH = "java:comp/env/jdbc/university";
 
 
     @Bean
@@ -43,33 +41,27 @@ public class HibernateConfig {
         BasicDataSource dataSource = null;
         JndiTemplate jndi = new JndiTemplate();
         try {
-            dataSource = jndi.lookup(JNDI_PATH2, BasicDataSource.class);
-            LOGGER.debug("DataSourse = {}",dataSource);
-            if (dataSource == null) {
-                String errorMessage = "DataSourse is not initialized. It is null!";
-                LOGGER.error(errorMessage);
-                throw new DataSourceNotInitializeException(errorMessage);
-            }
+            dataSource = jndi.lookup(JNDI_PATH, BasicDataSource.class);
+            LOGGER.debug("DataSourse = {}", dataSource);
         } catch (NamingException e) {
-            LOGGER.error("NamingException for {}",JNDI_PATH2, e);
-        }catch (Exception e) {
-            LOGGER.error("Something went wrong while initializing DataSource!",e);
-            throw e;
+            String errorMessage = String.format("DataSourse is not initialized. JNDI Path is = %s",JNDI_PATH);
+            LOGGER.error(errorMessage);
+            throw new DataSourceNotInitializeException(errorMessage,e);
         }
         return dataSource;
     }
 
     @Bean
     @Autowired
-    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory){
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
         HibernateTransactionManager txManager = new HibernateTransactionManager();
         txManager.setSessionFactory(sessionFactory);
-        return  txManager;
+        return txManager;
     }
 
     @Bean
-    public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
-        return  new PersistenceExceptionTranslationPostProcessor();
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
 }

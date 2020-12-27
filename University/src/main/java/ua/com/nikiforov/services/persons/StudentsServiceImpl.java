@@ -50,8 +50,8 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     public List<StudentDTO> getAllStudents() {
-        List<Student> students = studentDAO.getAllStudents();
-        return getListStudentDTO(students);
+        return studentMapper.getStudentDTOList(studentDAO.getAllStudents());
+
     }
 
     @Override
@@ -79,12 +79,5 @@ public class StudentsServiceImpl implements StudentsService {
         }
     }
 
-    public List<StudentDTO> getListStudentDTO(List<Student> students) {
-        List<StudentDTO> studensDTO = new ArrayList<>();
-        for (Student student : students) {
-            studensDTO.add(studentMapper.studentToStudentDTO(student));
-        }
-        return studensDTO;
-    }
 
 }

@@ -50,6 +50,7 @@ class RoomsControllerTest {
     private static final String ROOM_NUMBER_ATTR = "roomNumber";
     private static final String ROOM_SEAT_ATTR = "seatNumber";
     private static final String ROOM_ID_ATTR = "roomId";
+    private static final String ROOM_ID = "id";
     private static final String ID = "id";
     private static final String VIEW_ROOMS = "rooms/rooms";
     private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
@@ -125,7 +126,7 @@ class RoomsControllerTest {
     void givenRoomDeleteUriWithValidId_DeletesRoom() throws Exception {
         RoomDTO room = insertRoom(TEST_SEAT_NUMBER_1, TEST_SEAT_NUMBER_2);
         this.mockMvc
-        .perform(get("/rooms/delete/").param(ROOM_ID_ATTR, room.getId() + STR))
+        .perform(get("/rooms/delete/").param(ROOM_ID, room.getId() + STR))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(ROOMS_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -137,7 +138,7 @@ class RoomsControllerTest {
         
         this.mockMvc
         .perform(get("/rooms/delete/")
-                .param(ROOM_ID_ATTR,INVALID_ID + STR))
+                .param(ROOM_ID,INVALID_ID + STR))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(ROOMS_ATTR))
         .andExpect(model().attributeExists(FAIL_MSG))

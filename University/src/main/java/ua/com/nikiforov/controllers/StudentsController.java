@@ -58,7 +58,7 @@ public class StudentsController {
     public GroupDTO getGroup() {
         return new GroupDTO();
     }
-    
+
     @ModelAttribute(STUDENT_ATTR)
     public StudentDTO getStudent() {
         return new StudentDTO();
@@ -88,18 +88,9 @@ public class StudentsController {
     public String processEdit(@ModelAttribute(STUDENT_ATTR) StudentDTO studentDTO, Model model) {
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
-            GroupDTO group = groupService.getGroupById(studentDTO.getGroupId());
-            model.addAttribute(GROUP_IN_ATTR, group);
-            try {
-                studentService.updateStudent(studentDTO);
-                model.addAttribute(SUCCESS_MSG,
-                        String.format("Student %s %s is successfully edited", studentDTO.getFirstName(), studentDTO.getLastName()));
-
-            } catch (DuplicateKeyException e) {
-                model.addAttribute(FAIL_MSG,
-                        String.format("Warning! Cannot add Student %s %s in group %s! Alraedy exists!", studentDTO.getFirstName(),
-                                studentDTO.getLastName(), group.getGroupName()));
-            }
+            GroupDTO groupDTO = groupService.getGroupById(studentDTO.getGroupId());
+            model.addAttribute(GROUP_IN_ATTR, groupDTO);
+            updateStudent(groupDTO, studentDTO, model);
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, String.format("Error! Something went wrong. Failed to edit student '%s' '%s'",
                     studentDTO.getFirstName(), studentDTO.getLastName()));
@@ -107,6 +98,18 @@ public class StudentsController {
         }
         model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(studentDTO.getGroupId()));
         return VIEW_STUDENTS;
+    }
+
+    private void updateStudent(GroupDTO groupDTO, StudentDTO studentDTO, Model model) {
+        try {
+            studentService.updateStudent(studentDTO);
+            model.addAttribute(SUCCESS_MSG,
+                    String.format("Student %s %s is successfully edited", studentDTO.getFirstName(), studentDTO.getLastName()));
+        } catch (DuplicateKeyException e) {
+            model.addAttribute(FAIL_MSG,
+                    String.format("Warning! Cannot add Student %s %s in group %s! Alraedy exists!", studentDTO.getFirstName(),
+                            studentDTO.getLastName(), groupDTO.getGroupName()));
+        }
     }
 
     @GetMapping("/transfer")
@@ -129,8 +132,8 @@ public class StudentsController {
 
     @PostMapping("/transfer")
     public String processTransfer(@ModelAttribute(STUDENT_ATTR) StudentDTO student,
-            @RequestParam long groupToId, Model model) {
-        LOGGER.debug("GroupToId = {}",groupToId);
+                                  @RequestParam long groupToId, Model model) {
+        LOGGER.debug("GroupToId = {}", groupToId);
         long groupFromId = student.getGroupId();
         long studentId = student.getId();
         String firstName = student.getFirstName();
@@ -139,34 +142,30 @@ public class StudentsController {
         if (groupToId == 0) {
             return REDIRECT_TRANSFER + studentId + CHOOSE_GROUP_MSG;
         }
+        GroupDTO groupFrom = groupService.getGroupById(groupFromId);
+        GroupDTO groupTo = groupService.getGroupById(groupToId);
+        List<GroupDTO> groups = groupService.getAllGroups();
+        model.addAttribute(GROUP_IN_ATTR, groupTo);
+//        model.addAttribute(GROUPS_ATTR, groups);
         try {
-            GroupDTO groupFrom = groupService.getGroupById(groupFromId);
-            GroupDTO groupTo = groupService.getGroupById(groupToId);
-            List<GroupDTO> groups = groupService.getAllGroups();
-            model.addAttribute(GROUP_IN_ATTR, groupTo);
-            model.addAttribute(GROUPS_ATTR, groups);
-            try {
-                studentService.transferStudent(studentId, groupToId);
-                model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s",
-                        firstName, lastName, groupTo.getGroupName()));
-                model.addAttribute(GROUPS_ATTR, groups);
-                model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupToId));
-            }catch (DuplicateKeyException e) {
-                model.addAttribute(GROUP_IN_ATTR, groupFrom);
-                model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s. Such Student already exists.",
-                        firstName, lastName, groupName, groupTo.getGroupName()));
-            } catch (DataOperationException e) {
-                model.addAttribute(GROUP_IN_ATTR, groupFrom);
-                model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s",
-                        firstName, lastName, groupName, groupTo.getGroupName()));
-                return VIEW_STUDENTS;
-            }
-        } catch (Exception e) {
-            model.addAttribute(FAIL_MSG, String.format("Error! Something went wrong. Failed to transfer student '%s' '%s'",
-                    firstName, lastName));
+            studentService.transferStudent(studentId, groupToId);
+            model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s",
+                    firstName, lastName, groupTo.getGroupName()));
+
+            model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupToId));
+        } catch (DuplicateKeyException e) {
+            model.addAttribute(GROUP_IN_ATTR, groupFrom);
+            model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s. Such Student already exists.",
+                    firstName, lastName, groupName, groupTo.getGroupName()));
+        } catch (DataOperationException e) {
+            model.addAttribute(GROUP_IN_ATTR, groupFrom);
+            model.addAttribute(FAIL_MSG, String.format("Failed to transfer Student %s %s from group %s to group %s",
+                    firstName, lastName, groupName, groupTo.getGroupName()));
         }
+        model.addAttribute(GROUPS_ATTR, groups);
         return VIEW_STUDENTS;
     }
+
 
     @GetMapping("/delete")
     public String deleteStudent(@RequestParam long id, Model model) {

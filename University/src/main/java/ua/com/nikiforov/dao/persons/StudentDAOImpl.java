@@ -79,15 +79,16 @@ public class StudentDAOImpl implements StudentDAO {
                 lastName, groupId);
         LOGGER.debug(GETTING, studentMessage);
         Student student;
-        student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME_GROUP_ID)
-                .setParameter(FIRST_PARAMETER_INDEX, groupId)
-                .setParameter(SECOND_PARAMETER_INDEX, firstName)
-                .setParameter(THIRED_PARAMETER_INDEX, lastName)
-                .getSingleResult();
-        if (student == null) {
+        try {
+            student = (Student) entityManager.createQuery(FIND_STUDENT_BY_NAME_GROUP_ID)
+                    .setParameter(FIRST_PARAMETER_INDEX, groupId)
+                    .setParameter(SECOND_PARAMETER_INDEX, firstName)
+                    .setParameter(THIRED_PARAMETER_INDEX, lastName)
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get student by groupId %d, firstName = %s and lastName = %s from DB", groupId, firstName, lastName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
         return student;
@@ -160,7 +161,7 @@ public class StudentDAOImpl implements StudentDAO {
     }
 
     private Student getStudentFromDTO(StudentDTO studentDTO){
-        Student student = studentMapper.stodentDTOToStudent(studentDTO);
+        Student student = studentMapper.studentDTOToStudent(studentDTO);
         Group group = entityManager.getReference(Group.class, studentDTO.getGroupId());
         student.setGroup(group);
         return student;

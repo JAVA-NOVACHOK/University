@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -44,9 +45,8 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public Group getGroupById(Long id) {
         LOGGER.debug("Getting group by id '{}'", id);
-        Group group;
-        group = entityManager.find(Group.class, id);
-        if (group == null) {
+        Group group = entityManager.find(Group.class, id);
+        if(group == null ){
             String failMessage = String.format("Fail to get group by Id %d from DB", id);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
@@ -58,13 +58,15 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     public Group getGroupByName(String groupName) {
         LOGGER.debug("Getting group by name '{}'", groupName);
-        Group group = (Group) entityManager.createQuery(FIND_GROUP_BY_NAME)
-                .setParameter(FIRST_PARAMETER_INDEX, groupName)
-                .getSingleResult();
-        if (group == null) {
+        Group group;
+        try {
+            group = (Group) entityManager.createQuery(FIND_GROUP_BY_NAME)
+                    .setParameter(FIRST_PARAMETER_INDEX, groupName)
+                    .getSingleResult();
+        }catch (NoResultException e){
             String failMessage = String.format("Fail to get group by Id %s from DB", groupName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage);
+            throw new EntityNotFoundException(failMessage,e);
         }
         LOGGER.info("Successfully retrieved group '{}'", group);
         return group;
@@ -73,7 +75,10 @@ public class GroupDAOImpl implements GroupDAO {
     @Override
     @Transactional
     public void addGroup(String groupName) {
+        String message = String.format("Group with name %s",groupName);
+        LOGGER.debug("Adding {}", message);
         entityManager.persist(new Group(groupName));
+        LOGGER.info("Successful adding {}", message);
     }
 
     @Override

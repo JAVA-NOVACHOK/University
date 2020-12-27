@@ -40,7 +40,9 @@ class SubjectsControllerTest {
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
-    
+    private static final String SUBJECT_NAME_4 = "Java";
+    private static final String SUBJECT_NAME_5 = "WordPress";
+
     private static final String SUBJECT_NAME_ATTR = "subjectName";
     private static final String NAME_ATTR = "name";
     private static final String SUBJECTS_ATTR = "subjects";
@@ -66,31 +68,32 @@ class SubjectsControllerTest {
     private TeacherService teacherService;
 
     @Autowired
-    private TableCreator tableCreator;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
 
+    private SubjectDTO subject_1;
+    private SubjectDTO subject_2;
+    private SubjectDTO subject_3;
+    private SubjectDTO subject_4;
+    private SubjectDTO subject_5;
+
+    private TeacherDTO teacher;
+
     @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
-
-    @BeforeEach
-    void init() {
-        tableCreator.createTables();
+        subject_1 = insertSubject(SUBJECT_NAME_1);
+        subject_2 = insertSubject(SUBJECT_NAME_2);
+        subject_3 = insertSubject(SUBJECT_NAME_3);
+        teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
     }
 
     @Test
     void allSubjects_ReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
-        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
-        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
-        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc.perform(get("/subjects/"))
                 .andDo(print())
-                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_5, subject_3)))
                 .andExpect(view().name(SUBJECTS_VIEW));
     }
     
@@ -98,7 +101,7 @@ class SubjectsControllerTest {
     void addSubject_SuccessAddSubjects_WithSubjectsAttrs() throws Exception {
         this.mockMvc
         .perform(post("/subjects/add/")
-                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_4))
         .andDo(print())
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(model().attributeExists(SUBJECTS_ATTR))
@@ -108,24 +111,18 @@ class SubjectsControllerTest {
     
     @Test
     void addSubject_IfAddExistingSubject_FailAdding() throws Exception {
-       SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
-       SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
-       SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
-        
+        subject_5 = subjectService.getSubjectByName(SUBJECT_NAME_5);
         this.mockMvc
         .perform(post("/subjects/add/")
                 .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
         .andDo(print())
-        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
         .andExpect(model().attributeExists(FAIL_MSG))
+        .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_5,subject_3)))
         .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
     void addSubject_ifAddinExistingSubject_WithSubjectsAttrs() throws Exception {
-        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
-        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
-        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
         this.mockMvc
         .perform(post("/subjects/add/")
                 .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
@@ -137,10 +134,9 @@ class SubjectsControllerTest {
     
     @Test
     void editSubjectURI_thenReturnViewEditForm() throws Exception {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
         this.mockMvc
         .perform(get("/subjects/edit/")
-                .param(ID_ATTR,subject.getId() + STR))
+                .param(ID_ATTR,subject_1.getId() + STR))
         .andDo(print())
         .andExpect(model().attributeExists(SUBJECT_ATTR))
         .andExpect(view().name(VIEW_SUBJECTS_EDIT_FORM));
@@ -148,60 +144,52 @@ class SubjectsControllerTest {
     
     @Test
     void editSubjectURIWithSubjectParam_thenReturnSuccessSubject() throws Exception {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        SubjectDTO updatedSubject = new SubjectDTO(subject.getId(), SUBJECT_NAME_2,subject.getTeachers());
+        SubjectDTO updatedSubject = new SubjectDTO(subject_2.getId(), SUBJECT_NAME_5,subject_2.getTeachers());
         this.mockMvc
         .perform(post("/subjects/edit/")
-                .param(ID_ATTR,subject.getId() + STR)
-                .param(NAME_ATTR, SUBJECT_NAME_2)
-                .sessionAttr(SUBJECT_ATTR, new Subject()))
+                .param(ID_ATTR,subject_2.getId() + STR)
+                .param(NAME_ATTR, SUBJECT_NAME_5)
+                .sessionAttr(SUBJECT_ATTR, new SubjectDTO()))
         .andExpect(status().isOk())
         .andDo(print())
         .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(updatedSubject)))
+        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,updatedSubject,subject_3)))
         .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
     void deleteSubjectURIWithSubjectIdParam_thenReturnSuccessDelete() throws Exception {
-        SubjectDTO subject_1 = insertSubject(SUBJECT_NAME_1);
-        SubjectDTO subject_2 = insertSubject(SUBJECT_NAME_2);
-        SubjectDTO subject_3 = insertSubject(SUBJECT_NAME_3);
+        SubjectDTO subject_4 = subjectService.getSubjectByName(SUBJECT_NAME_4);
         this.mockMvc
             .perform(get("/subjects/delete")
-                    .param(ID_ATTR, subject_1.getId() + STR))
+                    .param(ID_ATTR, subject_4.getId() + STR))
             .andExpect(status().isOk())
-            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_2,subject_3)))
+            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
             .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
     void assignSubjectToTeacher_thenReturnSuccessAsignedSubject() throws Exception {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        subject.addTeacher(teacher);
+        subject_1.addTeacher(teacher);
         this.mockMvc
             .perform(post("/subjects/assign/")
-                    .param(SUBJECT_ID_ATTR, subject.getId() + STR)
+                    .param(SUBJECT_ID_ATTR, subject_1.getId() + STR)
                     .param(TEACHER_ID_ATTR, teacher.getId() + STR))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists(SUCCESS_MSG))
-            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject)))
+            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_5,subject_3)))
             .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
     void unassignSubjectFromTeacher_thenReturnSuccessMSG() throws Exception {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        teacherService.assignSubjectToTeacher(teacher.getId(),subject.getId());
         this.mockMvc
         .perform(get("/subjects/unassign/")
-                .param(SUBJECT_ID_ATTR, subject.getId() + STR)
+                .param(SUBJECT_ID_ATTR, subject_1.getId() + STR)
                 .param(TEACHER_ID_ATTR, teacher.getId() + STR))
         .andExpect(status().isOk())
         .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject)))
+        .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
         .andExpect(view().name(SUBJECTS_VIEW));
     }
     

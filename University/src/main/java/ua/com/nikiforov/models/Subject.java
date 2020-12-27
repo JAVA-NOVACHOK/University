@@ -102,8 +102,7 @@ public class Subject implements Comparable<Subject>{
         } else if (!name.equals(other.name))
             return false;
         if (teachers == null) {
-            if (other.teachers != null)
-                return false;
+            return other.teachers == null;
         } 
         return true;
     }

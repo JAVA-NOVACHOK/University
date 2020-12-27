@@ -74,7 +74,7 @@
 						<td class="text-center" th:text="${room.seatNumber}">Seats</td>
 						<td class="text-center"><a
 							class="btn btn btn-outline-danger btn-sm" type="button"
-							th:attr="data-url=|delete/?roomId=__${room.id}__|"
+							th:attr="data-url=|/rooms/delete/?id=${room.id}|"
 							th:onclick="deleteRoom(this.getAttribute('data-url'));"
 							data-toggle="modal" data-target="#deleteModal"><i
 								class="fa fa-trash"></i></a></td>

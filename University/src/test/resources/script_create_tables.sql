@@ -10,21 +10,17 @@ CREATE TABLE rooms
 DROP TABLE IF EXISTS groups CASCADE;
 CREATE TABLE groups
 (
-    group_id   bigint NOT NULL,
+    group_id bigint PRIMARY KEY,
     group_name varchar(255),
-    PRIMARY KEY (group_id),
     UNIQUE (group_name)
 );
 DROP TABLE IF EXISTS students CASCADE;
 CREATE TABLE students
 (
-    student_id bigint NOT NULL,
+    student_id bigint PRIMARY KEY NOT NULL,
     first_name varchar(255),
-    last_name  varchar(255),
-    group_id   bigint,
-    PRIMARY KEY (student_id),
-    FOREIGN KEY (group_id)
-        REFERENCES groups (group_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
+    last_name varchar(255),
+    group_id  bigint REFERENCES groups (group_id) ON DELETE CASCADE,
     UNIQUE (first_name, last_name, group_id)
 );
 

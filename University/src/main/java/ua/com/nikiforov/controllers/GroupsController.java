@@ -23,7 +23,6 @@ import ua.com.nikiforov.services.group.GroupService;
 public class GroupsController {
 
     private static final String GROUPS_ATTR = "groups";
-    private static final String STUDENTS_ATTR = "students";
     private static final String VIEW_GROUPS = "groups/groups";
     private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";

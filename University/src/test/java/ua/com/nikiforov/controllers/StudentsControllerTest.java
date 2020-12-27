@@ -70,7 +70,10 @@ class StudentsControllerTest {
     private static final String FAIL_MSG = "failMessage";
     private static final String STR = "";
 
-
+    private GroupDTO groupFrom;
+    private GroupDTO group_1;
+    private GroupDTO group_2;
+    private StudentDTO student_1;
 
     @Autowired
     private TableCreator tableCreator;
@@ -86,54 +89,42 @@ class StudentsControllerTest {
 
     private MockMvc mockMvc;
 
-    @BeforeAll
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
 
-    @BeforeEach
+    @BeforeAll
     void init() {
-        tableCreator.createTables();
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        group_1 = insertGroup(TEST_GROUP_NAME_2);
+        group_2 = insertGroup(TEST_GROUP_NAME_3);
+        groupFrom = insertGroup(TEST_GROUP_NAME_1);
+        student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
+
     }
 
     @Test
     void getStudentInGroup_returnStudentView_WithGroupAttr() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        this.mockMvc.perform(get("/students").param(GROUP_ID_ATTR, testGroup_1.getGroupId() + ""))
+        this.mockMvc.perform(get("/students").param(GROUP_ID_ATTR, group_1.getGroupId() + ""))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("groupIn", testGroup_1))
+                .andExpect(model().attribute("groupIn", group_1))
                 .andExpect(model().size(4))
                 .andExpect(view().name(VIEW_STUDENTS));
     }
     
-    @Test
-    void editStudent_ReturnStudentEditForm() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
-        this.mockMvc.perform(get("/students/edit").param(ID, student_1.getId() + ""))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(model().attribute(STUDENT_ATTR, student_1))
-                .andExpect(model().size(2))
-                .andExpect(view().name(VIEW_EDIT_FORM));
-    }
+
     
     @Test
     void editStudent_IfEditOnExistingStudent_FailMSGAttr() throws Exception{
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
-        insertStudent(FIRST_NAME_2, LAST_NAME_2, testGroup_1.getGroupId());
+        insertStudent(FIRST_NAME_2, LAST_NAME_2, group_1.getGroupId());
         this.mockMvc
             .perform(post("/students/edit")
                     .param(ID, student_1.getId() + "")
                     .param(FIRST_NAME_ATTR, FIRST_NAME_2)
                     .param(LAST_NAME_ATTR, LAST_NAME_2)
-                    .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
+                    .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(model().size(5))
-            .andExpect(model().attributeExists(GROUPS_ATTR))
+            .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
             .andExpect(model().attributeExists(GROUP_IN_ATTR))
             .andExpect(model().attributeExists(FAIL_MSG))
             .andExpect(view().name(VIEW_STUDENTS));
@@ -141,18 +132,16 @@ class StudentsControllerTest {
     
     @Test
     void editStudent_SuccessEditStudent() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        StudentDTO student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc
         .perform(post("/students/edit")
                 .param(ID, student_1.getId() + "")
                 .param(FIRST_NAME_ATTR, FIRST_NAME_1)
-                .param(LAST_NAME_ATTR, LAST_NAME_2)
-                .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
+                .param(LAST_NAME_ATTR, LAST_NAME_3)
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(model().size(5))
-        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(view().name(VIEW_STUDENTS));
@@ -160,16 +149,15 @@ class StudentsControllerTest {
     
     @Test
     void addStudent_SuccessAddStudent() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
         this.mockMvc
         .perform(post("/students/add")
                 .param(FIRST_NAME_ATTR, FIRST_NAME_1)
                 .param(LAST_NAME_ATTR, LAST_NAME_2)
-                .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(model().size(5))
-        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(view().name(VIEW_STUDENTS));
@@ -177,17 +165,16 @@ class StudentsControllerTest {
     
     @Test
     void addStudent_IfAddExistingStudent_FailMSGAttr() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
+        insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         this.mockMvc
         .perform(post("/students/add")
                 .param(FIRST_NAME_ATTR, FIRST_NAME_1)
                 .param(LAST_NAME_ATTR, LAST_NAME_1)
-                .param(GROUP_ID_ATTR, testGroup_1.getGroupId() + STR))
+                .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(model().size(5))
-        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(FAIL_MSG))
         .andExpect(view().name(VIEW_STUDENTS));
@@ -195,15 +182,13 @@ class StudentsControllerTest {
     
     @Test
     void deleteStudent_SuccessDeleteStudent() throws Exception {
-        GroupDTO testGroup_1 = insertGroup(TEST_GROUP_NAME_1);
-        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, testGroup_1.getGroupId());
         this.mockMvc
         .perform(get("/students/delete")
-                .param(ID, student.getId() + STR))
+                .param(ID, student_1.getId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(model().size(5))
-        .andExpect(model().attributeExists(GROUPS_ATTR))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(model().attributeExists(GROUP_IN_ATTR))
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(view().name(VIEW_STUDENTS));
@@ -211,34 +196,24 @@ class StudentsControllerTest {
     
     @Test
     void transferStudent_ReturnTransferStudentForm() throws Exception{
-        GroupDTO groupFrom = insertGroup(TEST_GROUP_NAME_1);
-        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_2);
-        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_3);
-        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, groupFrom.getGroupId());
-        
         this.mockMvc
         .perform(get("/students/transfer")
-                .param(ID, student.getId() + STR))
+                .param(ID, student_1.getId() + STR))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(model().attribute(STUDENT_ATTR, student))
-        .andExpect(model().attribute(GROUP_ATTR, groupFrom))
-        .andExpect(model().attribute(GROUPS_ATTR, hasItems(group_1,group_2)))
+        .andExpect(model().attribute(STUDENT_ATTR, student_1))
+        .andExpect(model().attribute(GROUP_ATTR, group_1))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_2)))
         .andExpect(view().name(VIEW_TRANSFER_FORM));
     }
     
     @Test
     void transferStudent_SuccessStudentTransfer() throws Exception{
-        GroupDTO group_1 = insertGroup(TEST_GROUP_NAME_1);
-        GroupDTO group_2 = insertGroup(TEST_GROUP_NAME_2);
-        GroupDTO group_3 = insertGroup(TEST_GROUP_NAME_3);
-        StudentDTO student = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
-        
         this.mockMvc
         .perform(post("/students/transfer")
-                .param(ID, student.getId() + STR)
-                .param(FIRST_NAME_ATTR, student.getFirstName())
-                .param(LAST_NAME_ATTR, student.getLastName())
+                .param(ID, student_1.getId() + STR)
+                .param(FIRST_NAME_ATTR, student_1.getFirstName())
+                .param(LAST_NAME_ATTR, student_1.getLastName())
                 .param(GROUP_NAME_ATTR, group_1.getGroupName())
                 .param(GROUP_ID_ATTR, group_1.getGroupId() + STR)
                 .sessionAttr(STUDENT_ATTR, new StudentDTO())
@@ -246,7 +221,7 @@ class StudentsControllerTest {
         .andExpect(status().isOk())
         .andExpect(model().attribute(GROUP_IN_ATTR,group_2))
         .andExpect(model().attributeExists(SUCCESS_MSG))
-        .andExpect(model().attribute(GROUPS_ATTR,hasItems(group_1,group_2,group_3)))
+        .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(view().name(VIEW_STUDENTS));
     }
     
