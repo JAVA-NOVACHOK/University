@@ -2,7 +2,10 @@ package ua.com.nikiforov.models.persons;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.springframework.context.annotation.Lazy;
 import ua.com.nikiforov.models.Subject;
 
 import javax.persistence.*;
@@ -20,11 +23,11 @@ public class Teacher implements Comparable<Teacher>{
     @Column(name="last_name")
     private String lastName;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = { CascadeType.ALL })
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name="teachers_subjects",
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    private List<Subject> subjects;
+    private Set<Subject> subjects = new TreeSet<>();
 
     public Teacher() {
     }
@@ -44,11 +47,10 @@ public class Teacher implements Comparable<Teacher>{
         this.lastName = lastName;
     }
 
-    public Teacher(long id, String firstName, String lastName, List<Subject> subjects) {
+    public Teacher(long id, String firstName, String lastName, Set<Subject> subjects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.subjects = new ArrayList<>(subjects);
     }
 
     public long getId() {
@@ -75,14 +77,14 @@ public class Teacher implements Comparable<Teacher>{
         this.lastName = lastName;
     }
 
-    public List<Subject> getSubjects() {
+    public Set<Subject> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<Subject> subjects) {
+    public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
     }
-    
+
     public boolean addSubject(Subject subject) {
         return subjects.add(subject);
     }
@@ -106,7 +108,7 @@ public class Teacher implements Comparable<Teacher>{
         Teacher other = (Teacher) obj;
         if (subjects == null ) {
             return other.subjects == null;
-        } 
+        }
         return true;
     }
 

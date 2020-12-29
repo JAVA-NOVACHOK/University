@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.dao.timetables.TimetableDAO;
 
+import javax.transaction.Transactional;
+
 @Service
 public class TeachersTimetableService extends PersonalTimetable {
 
@@ -24,6 +26,7 @@ public class TeachersTimetableService extends PersonalTimetable {
     }
 
     @Override
+    @Transactional
     public List<DayTimetable>  getDayTimetable(String date, long teacherId) {
         List<TimetableDTO> allTimetablesList =
                 getTimetableMapper()
@@ -33,6 +36,7 @@ public class TeachersTimetableService extends PersonalTimetable {
     }
 
     @Override
+    @Transactional
     public List<DayTimetable> getMonthTimetable(String date, long teacherId) {
         List<TimetableDTO> allTimetablesList = getTimetableMapper().getTimetableDTOs(teachersTimetable.getMonthTimetable(date, teacherId));
         return createMonthTimetable(allTimetablesList);

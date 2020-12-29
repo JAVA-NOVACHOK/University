@@ -60,6 +60,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     }
 
     @Override
+    @Transactional
     public Teacher getTeacherById(long teacherId) {
         LOGGER.debug("Getting Teacher by id '{}'", teacherId);
         Teacher teacher = entityManager.find(Teacher.class, teacherId);
@@ -73,6 +74,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     }
 
     @Override
+    @Transactional
     public Teacher getTeacherByName(String firstName, String lastName) {
         String teacherMessage = String.format("Teacher with firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug("Getting {}", teacherMessage);
@@ -92,6 +94,7 @@ public class TeacherDAOImpl implements TeacherDAO {
     }
 
     @Override
+    @Transactional
     public List<Teacher> getAllTeachers() {
         LOGGER.debug("Getting all teachers");
         List<Teacher> allTeachers = new ArrayList<>();
@@ -147,23 +150,24 @@ public class TeacherDAOImpl implements TeacherDAO {
 
     @Override
     @Transactional
-    public void assignSubjectToTeacher(long teacherId, int subjectId) {
+    public Teacher assignSubjectToTeacher(long teacherId, int subjectId) {
         Teacher teacher = entityManager.find(Teacher.class, teacherId);
         Subject subject = entityManager.find(Subject.class, subjectId);
         teacher.getSubjects().add(subject);
-        entityManager.merge(teacher);
+        return entityManager.merge(teacher);
     }
 
     @Override
     @Transactional
-    public void unassignSubjectFromTeacher(long teacherId, int subjectId) {
+    public Teacher unassignSubjectFromTeacher(long teacherId, int subjectId) {
         Teacher teacher = entityManager.find(Teacher.class, teacherId);
         Subject subject = entityManager.find(Subject.class, subjectId);
         teacher.getSubjects().remove(subject);
-        entityManager.merge(teacher);
+        return entityManager.merge(teacher);
     }
 
     @Override
+    @Transactional
     public List<Teacher> getTeacherByLikeName(String firstName, String lastName) {
         String teacherMessage = String.format("Teacher with searching parameters firstName = %s, lastname = %s", firstName, lastName);
         LOGGER.debug("Getting {}", teacherMessage);

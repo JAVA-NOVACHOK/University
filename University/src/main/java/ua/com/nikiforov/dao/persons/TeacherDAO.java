@@ -21,7 +21,7 @@ public interface TeacherDAO {
 
     public void deleteTeacherById(long teacherId);
 
-    public void assignSubjectToTeacher(long teacherId, int subjectId);
+    public Teacher assignSubjectToTeacher(long teacherId, int subjectId);
 
-    public void unassignSubjectFromTeacher(long teacherId, int subjectId);
+    public Teacher unassignSubjectFromTeacher(long teacherId, int subjectId);
 }

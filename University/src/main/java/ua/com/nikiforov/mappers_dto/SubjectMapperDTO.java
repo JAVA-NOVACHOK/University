@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {TeacherMapperDTO.class})
 public abstract class SubjectMapperDTO {
 
     public abstract Subject subjectDTOToSubject(SubjectDTO subjectDTO);

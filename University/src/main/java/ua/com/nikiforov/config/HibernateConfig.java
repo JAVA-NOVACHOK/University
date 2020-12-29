@@ -8,20 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import ua.com.nikiforov.exceptions.DataSourceNotInitializeException;
+import ua.com.nikiforov.models.Subject;
+import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+
 @Configuration
 @EnableTransactionManagement
 @ComponentScan("ua.com.nikiforov")
-//@PropertySource("classpath:hibernate.properties")
 public class HibernateConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HibernateConfig.class);
@@ -63,5 +66,7 @@ public class HibernateConfig {
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
+
+
 
 }

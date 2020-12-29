@@ -55,11 +55,11 @@ public class LessonDAOImpl implements LessonDAO {
 
     @Override
     public Lesson getLessonById(long id) {
-        String getlessonMessage = String.format("Lesson by id %d", id);
-        LOGGER.debug("Getting '{}'", getlessonMessage);
+        String getLessonMessage = String.format("Lesson by id %d", id);
+        LOGGER.debug("Getting '{}'", getLessonMessage);
         Lesson lesson = entityManager.find(Lesson.class, id);
         if (lesson == null) {
-            String failGetByIdMessage = String.format("Couldn't get %s", getlessonMessage);
+            String failGetByIdMessage = String.format("Couldn't get %s", getLessonMessage);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage);
         }

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.dao.persons.TeacherDAO;
 import ua.com.nikiforov.mappers_dto.TeacherMapperDTO;
+import ua.com.nikiforov.models.persons.Teacher;
+
+import javax.transaction.Transactional;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -33,20 +36,25 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public TeacherDTO getTeacherById(long teacherId) {
         return teacherMapper.getTeacherDTO(teacherDAO.getTeacherById(teacherId));
     }
 
+    @Override
+    @Transactional
     public TeacherDTO getTeacherByName(String firstName, String lastName) {
         return teacherMapper.getTeacherDTO(teacherDAO.getTeacherByName(firstName, lastName));
     }
 
     @Override
+    @Transactional
     public List<TeacherDTO> getAllTeachers() {
         return teacherMapper.getTeacherDTOList(teacherDAO.getAllTeachers());
     }
 
     @Override
+    @Transactional
     public void updateTeacher(TeacherDTO teacher) {
         try {
             teacherDAO.updateTeacher(teacher);
@@ -56,21 +64,23 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public void deleteTeacherById(long teacherId) {
         teacherDAO.deleteTeacherById(teacherId);
     }
 
     @Override
-    public void assignSubjectToTeacher(long teacherId, int subjectId) {
-        teacherDAO.assignSubjectToTeacher(teacherId, subjectId);
+    public Teacher assignSubjectToTeacher(long teacherId, int subjectId) {
+        return teacherDAO.assignSubjectToTeacher(teacherId, subjectId);
     }
 
     @Override
-    public void unassignSubjectFromTeacher(long teacherId, int subjectId) {
-        teacherDAO.unassignSubjectFromTeacher(teacherId, subjectId);
+    public Teacher unassignSubjectFromTeacher(long teacherId, int subjectId) {
+        return teacherDAO.unassignSubjectFromTeacher(teacherId, subjectId);
     }
 
     @Override
+    @Transactional
     public List<TeacherDTO> getTeacherByLikeName(String firstName, String lastName) {
         return teacherMapper.getTeacherDTOList(teacherDAO.getTeacherByLikeName(firstName, lastName));
     }

@@ -146,7 +146,6 @@ public class StudentsController {
         GroupDTO groupTo = groupService.getGroupById(groupToId);
         List<GroupDTO> groups = groupService.getAllGroups();
         model.addAttribute(GROUP_IN_ATTR, groupTo);
-//        model.addAttribute(GROUPS_ATTR, groups);
         try {
             studentService.transferStudent(studentId, groupToId);
             model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s",
@@ -206,7 +205,7 @@ public class StudentsController {
             model.addAttribute(SUCCESS_MSG, String.format("Student %s %s successfully added to group %s", firstName,
                     lastName, group.getGroupName()));
         } catch (DuplicateKeyException e) {
-            model.addAttribute(FAIL_MSG, String.format("Warning! Cannot add Student %s %s in group %s! Alraedy exists!",
+            model.addAttribute(FAIL_MSG, String.format("Warning! Cannot add Student %s %s in group %s! Already exists!",
                     firstName, lastName, group.getGroupName()));
             return VIEW_STUDENTS;
         }

@@ -53,6 +53,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     }
 
     @Override
+    @Transactional
     public Subject getSubjectById(int subjectId) {
         String subjectMessage = String.format("Subject by id %d", subjectId);
         LOGGER.debug(GETTING_MSG, subjectMessage);
@@ -69,6 +70,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     }
 
     @Override
+    @Transactional
     public Subject getSubjectByName(String subjectName) {
         String subjectMessage = String.format("Subject by name %s", subjectName);
         LOGGER.debug(GETTING_MSG, subjectMessage);
@@ -87,6 +89,7 @@ public class SubjectDAOImpl implements SubjectDAO {
     }
 
     @Override
+    @Transactional
     public List<Subject> getAllSubjects() {
         LOGGER.debug("Getting all Subjects.");
         List<Subject> allSubjects = new ArrayList<>();

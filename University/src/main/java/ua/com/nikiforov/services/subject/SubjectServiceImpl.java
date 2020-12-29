@@ -11,6 +11,8 @@ import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dao.subject.SubjectDAO;
 import ua.com.nikiforov.mappers_dto.SubjectMapperDTO;
 
+import javax.transaction.Transactional;
+
 @Service
 public class SubjectServiceImpl implements SubjectService {
 
@@ -24,6 +26,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    @Transactional
     public void addSubject(String subjectName) {
         try {
             subjectDAO.addSubject(subjectName);
@@ -33,24 +36,28 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+    @Transactional
     public SubjectDTO getSubjectById(int subjectId) {
         return subjectMapper.subjectToSubjectDTO(subjectDAO.getSubjectById(subjectId));
 
     }
 
     @Override
+    @Transactional
     public SubjectDTO getSubjectByName(String subjectName) {
         return subjectMapper.subjectToSubjectDTO(subjectDAO.getSubjectByName(subjectName));
 
     }
 
     @Override
+    @Transactional
     public List<SubjectDTO> getAllSubjects() {
         return subjectMapper.getSubjectDTOList(subjectDAO.getAllSubjects());
     }
 
 
     @Override
+    @Transactional
     public void updateSubject(SubjectDTO subject) {
         try {
             subjectDAO.updateSubject(subject);
