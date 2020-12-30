@@ -85,13 +85,13 @@ public class GroupDAOImpl implements GroupDAO {
     @Transactional
     public void deleteGroupById(Long id) {
         LOGGER.debug("Deleting group by id '{}'", id);
-        String failDeleteMessage = String.format("Couldn't delete group by ID %d", id);
         try {
             entityManager.createQuery(DELETE_GROUP_BY_ID)
                     .setParameter(FIRST_PARAMETER_INDEX, id)
                     .executeUpdate();
             LOGGER.info("Successful deleting group with id '{}'.", id);
         } catch (PersistenceException e) {
+            String failDeleteMessage = String.format("Couldn't delete group by ID %d", id);
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }

@@ -1,43 +1,32 @@
 package ua.com.nikiforov.services.timetables;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import ua.com.nikiforov.dto.GroupDTO;
-import ua.com.nikiforov.dto.LessonDTO;
-import ua.com.nikiforov.dto.RoomDTO;
-import ua.com.nikiforov.dto.SubjectDTO;
-import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dto.TimetableDTO;
-import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.datasource.TestDataSource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
-@TestInstance(Lifecycle.PER_CLASS)
-@SpringJUnitConfig(TestDataSource.class)
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestPropertySource(
+        locations = "classpath:application-test.properties")
 class TeachersTimetableServiceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableServiceTest.class);
@@ -88,8 +77,6 @@ class TeachersTimetableServiceTest {
     @Autowired
     private TeacherService teacherService;
 
-    @Autowired
-    private TableCreator tableCreator;
 
     @Autowired
     private TeachersTimetableService teacherTimetableService;
@@ -116,21 +103,20 @@ class TeachersTimetableServiceTest {
 
     private LessonDTO lesson_1_date_day_21;
 
-    RoomDTO room_1;
-    RoomDTO room_2;
-    RoomDTO room_3;
+    private RoomDTO room_1;
+    private RoomDTO room_2;
+    private RoomDTO room_3;
 
-    GroupDTO group_1;
-    GroupDTO group_2;
-    GroupDTO group_3;
+    private GroupDTO group_1;
+    private GroupDTO group_2;
+    private GroupDTO group_3;
 
-    SubjectDTO subject_1;
-    SubjectDTO subject_2;
-    SubjectDTO subject_3;
+    private SubjectDTO subject_1;
+    private SubjectDTO subject_2;
+    private SubjectDTO subject_3;
 
     @BeforeAll
     void setup() {
-        tableCreator.createTables();
         room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);

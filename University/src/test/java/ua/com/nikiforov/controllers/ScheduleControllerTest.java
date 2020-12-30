@@ -1,43 +1,14 @@
 package ua.com.nikiforov.controllers;
 
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import ua.com.nikiforov.config.WebConfig;
-import ua.com.nikiforov.dto.GroupDTO;
-import ua.com.nikiforov.dto.LessonDTO;
-import ua.com.nikiforov.dto.RoomDTO;
-import ua.com.nikiforov.dto.ScheduleFindAttr;
-import ua.com.nikiforov.dto.StudentDTO;
-import ua.com.nikiforov.dto.SubjectDTO;
-import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dto.TimetableDTO;
-import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.datasource.TestDataSource;
+import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -49,10 +20,22 @@ import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
-@TestInstance(Lifecycle.PER_CLASS)
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {WebConfig.class, TestDataSource.class})
-@WebAppConfiguration
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(
+        locations = "classpath:application-test.properties")
 class ScheduleControllerTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -157,9 +140,6 @@ class ScheduleControllerTest {
     private StudentsService studentsService;
 
     @Autowired
-    private TableCreator tableCreator;
-
-    @Autowired
     private StudentTimetableService studentTimetableService;
 
     @Autowired
@@ -204,7 +184,6 @@ class ScheduleControllerTest {
 
     @BeforeAll
     public void init() {
-//        tableCreator.createTables();
 
         room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);

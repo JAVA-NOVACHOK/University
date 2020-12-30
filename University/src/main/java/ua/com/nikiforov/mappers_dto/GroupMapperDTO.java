@@ -3,7 +3,6 @@ package ua.com.nikiforov.mappers_dto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.springframework.beans.factory.annotation.Autowired;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.models.Group;
 

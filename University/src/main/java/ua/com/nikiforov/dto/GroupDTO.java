@@ -1,6 +1,7 @@
 package ua.com.nikiforov.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -24,6 +25,7 @@ public class GroupDTO {
         this.groupId = groupId;
         this.groupName = groupName;
         this.students = students;
+
     }
 
     public long getGroupId() {
@@ -43,6 +45,7 @@ public class GroupDTO {
     }
 
     public List<StudentDTO> getStudents() {
+        Collections.sort(students);
         return students;
     }
     
@@ -51,7 +54,7 @@ public class GroupDTO {
     }
 
     public void setStudents(List<StudentDTO> students) {
-        this.students.addAll(students);
+        this.students = students;
     }
 
     @Override

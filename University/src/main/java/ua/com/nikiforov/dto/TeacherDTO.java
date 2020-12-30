@@ -95,8 +95,7 @@ public class TeacherDTO implements  Comparable<TeacherDTO>{
         } else if (!lastName.equals(other.lastName))
             return false;
         if (subjects == null) {
-            if (other.subjects != null)
-                return false;
+            return other.subjects == null;
         } 
         return true;
     }

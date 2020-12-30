@@ -1,32 +1,32 @@
 package ua.com.nikiforov.services.subject;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.datasource.TestDataSource;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.persons.TeacherService;
 
-@SpringJUnitConfig(TestDataSource.class)
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(
+        locations = "classpath:application-test.properties")
 class SubjectServiceImplTest {
 
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
     private static final String SUBJECT_NAME_3 = "Cybersecurity";
+    private static final String SUBJECT_NAME_4 = "Java";
+    private static final String SUBJECT_NAME_5 = "WordPress";
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -42,85 +42,101 @@ class SubjectServiceImplTest {
     @Autowired
     private SubjectService subjectService;
 
-    @Autowired
-    private TableCreator tableCreator;
+    private TeacherDTO teacher_1;
+    private TeacherDTO teacher_2;
+    private TeacherDTO teacher_3;
 
-    @BeforeEach
-    void init() {
-        tableCreator.createTables();
+    private SubjectDTO subject_1;
+    private SubjectDTO subject_2;
+    private SubjectDTO subject_3;
+
+    @BeforeAll
+    void startup() {
+
+        teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+
+        subject_1 = insertSubject(SUBJECT_NAME_1);
+        subject_2 = insertSubject(SUBJECT_NAME_2);
+        subject_3 = insertSubject(SUBJECT_NAME_3);
+
     }
 
     @Test
-    void whenAddSubjectIfSuccessReturnTrue() {
-        assertDoesNotThrow(() -> subjectService.addSubject(SUBJECT_NAME_1));
-    }
-
-    @Test
-    void afetrAddSubjectGetSubjectByIdReturnCorrectSubject() {
-        SubjectDTO expectedSubject = insertSubject(SUBJECT_NAME_1);
-        assertEquals(expectedSubject, subjectService.getSubjectById(expectedSubject.getId()));
-    }
-
-    @Test
+    @Order(1)
     void whenGetAllSubjectsIfPresentReturnListOfAllSubjects() {
+
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
-        expectedSubjects.add(insertSubject(SUBJECT_NAME_3));
-        expectedSubjects.add(insertSubject(SUBJECT_NAME_1));
-        expectedSubjects.add(insertSubject(SUBJECT_NAME_2));
+        expectedSubjects.add(subject_3);
+        expectedSubjects.add(subject_1);
+        expectedSubjects.add(subject_2);
+
         List<SubjectDTO> actualSubjects = subjectService.getAllSubjects();
-        assertEquals(expectedSubjects, actualSubjects);
+        assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
+    @Order(2)
+    void whenAddSubjectIfSuccessReturnTrue() {
+        assertDoesNotThrow(() -> subjectService.addSubject(SUBJECT_NAME_4));
+    }
+
+    @Test
+    @Order(3)
+    void afetrAddSubjectGetSubjectByIdReturnCorrectSubject() {
+        assertEquals(subject_1, subjectService.getSubjectById(subject_1.getId()));
+    }
+
+    @Test
+    @Order(4)
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        assertDoesNotThrow(() -> subjectService.updateSubject(new SubjectDTO(subject.getId(),SUBJECT_NAME_2)));
+        assertDoesNotThrow(() -> subjectService.updateSubject(new SubjectDTO(subject_2.getId(), SUBJECT_NAME_5)));
     }
 
     @Test
+    @Order(5)
     void whenUpdateSubjectThenSubjectHasUpdatedName() {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        int subjectId = subject.getId();
-        subjectService.updateSubject(new SubjectDTO(subjectId,SUBJECT_NAME_2));
-        SubjectDTO expectedSubject = subjectService.getSubjectByName(SUBJECT_NAME_2);
-        SubjectDTO actualSubject = subjectService.getSubjectById(subjectId);
-        assertEquals(expectedSubject, actualSubject);
+        SubjectDTO updatedSubject = new SubjectDTO(subject_2.getId(), SUBJECT_NAME_2);
+        subjectService.updateSubject(updatedSubject);
+        SubjectDTO actualSubject = subjectService.getSubjectById(subject_2.getId());
+        assertEquals(updatedSubject, actualSubject);
     }
 
     @Test
+    @Order(6)
     void whenDeleteSubjectByIdIfSuccessThenReturnTrue() {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        assertDoesNotThrow(() -> subjectService.deleteSubjectById(subject.getId()));
+        assertDoesNotThrow(() -> subjectService.deleteSubjectById(subject_2.getId()));
     }
 
     @Test
-    void afterDeleteSubjectByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        int subjectId = subject.getId();
-        subjectService.deleteSubjectById(subjectId);
-        assertThrows(EntityNotFoundException.class, () -> subjectService.getSubjectById(subjectId));
+    @Order(7)
+    void afterDeleteSubjectByIdNoSubjectInAllSubjects() {
+        List<SubjectDTO> expectedSubjects = new ArrayList<>();
+        expectedSubjects.add(subjectService.getSubjectByName(SUBJECT_NAME_4));
+        expectedSubjects.add(subject_1);
+
+        subjectService.deleteSubjectById(subject_3.getId());
+        List<SubjectDTO> actualSubjects = subjectService.getAllSubjects();
+        assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
+
     @Test
+    @Order(8)
     void afterAssignSubjectsToTeachers_SubjectHasListOfTeachers() {
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        int subjectId = subject.getId();
-        
-        Set<TeacherDTO> expectedTeachers = new TreeSet<>();
-        TeacherDTO teacherTwo = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
-        TeacherDTO teacherOne = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        TeacherDTO teacherThree = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
-        
-        expectedTeachers.add(teacherOne);
-        expectedTeachers.add(teacherTwo);
-        expectedTeachers.add(teacherThree);
 
-        teacherService.assignSubjectToTeacher(teacherOne.getId(),subjectId);
-        teacherService.assignSubjectToTeacher(teacherTwo.getId(),subjectId);
-        teacherService.assignSubjectToTeacher(teacherThree.getId(),subjectId);
-        
-        subject = subjectService.getSubjectById(subjectId);
-        Set<TeacherDTO> actualTeachers = subject.getTeachers();
+        Set<TeacherDTO> expectedTeachers = new TreeSet<>();
+        expectedTeachers.add(teacher_2);
+        expectedTeachers.add(teacher_1);
+        expectedTeachers.add(teacher_3);
+
+        teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher_2.getId(), subject_1.getId());
+        teacherService.assignSubjectToTeacher(teacher_3.getId(), subject_1.getId());
+
+        subject_1 = subjectService.getSubjectById(subject_1.getId());
+        Set<TeacherDTO> actualTeachers = subject_1.getTeachers();
         assertIterableEquals(expectedTeachers, actualTeachers);
     }
 

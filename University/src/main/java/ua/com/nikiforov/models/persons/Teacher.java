@@ -1,11 +1,8 @@
 package ua.com.nikiforov.models.persons;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.springframework.context.annotation.Lazy;
 import ua.com.nikiforov.models.Subject;
 
 import javax.persistence.*;
@@ -51,6 +48,7 @@ public class Teacher implements Comparable<Teacher>{
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.subjects = subjects;
     }
 
     public long getId() {

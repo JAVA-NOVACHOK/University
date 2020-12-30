@@ -1,12 +1,13 @@
 package ua.com.nikiforov.dto;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 public class SubjectDTO implements Comparable<SubjectDTO>{
 
     private int id;
     private String name;
-    private Set<TeacherDTO> teachers;
+    private Set<TeacherDTO> teachers = new TreeSet<>();
 
     public SubjectDTO() {
 

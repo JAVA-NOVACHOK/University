@@ -1,6 +1,6 @@
 package ua.com.nikiforov.dto;
 
-public class StudentDTO {
+public class StudentDTO implements Comparable<StudentDTO>{
 
     private long id;
     private String firstName;
@@ -125,5 +125,10 @@ public class StudentDTO {
                 ", groupName='" + groupName + '\'' +
                 ", groupId=" + groupId +
                 '}';
+    }
+
+    @Override
+    public int compareTo(StudentDTO studentDTO) {
+        return this.lastName.compareTo(studentDTO.getLastName());
     }
 }

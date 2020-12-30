@@ -3,27 +3,23 @@ package ua.com.nikiforov.services.persons;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.persons.Teacher;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(TestDataSource.class)
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(
+        locations = "classpath:application-test.properties")
 class TeacherServiceImplTest {
 
     private static final String FIRST_NAME_1 = "Tom";
@@ -44,120 +40,112 @@ class TeacherServiceImplTest {
     @Autowired
     private SubjectService subjectService;
 
-    @Autowired
-    private TableCreator tableCreator;
+    private TeacherDTO teacher_1;
+    private TeacherDTO teacher_2;
+    private TeacherDTO teacher_3;
 
-//    @BeforeEach
-//    void init() {
-//        tableCreator.createTables();
-//    }
+    private SubjectDTO subject_1;
+    private SubjectDTO subject_2;
+    private SubjectDTO subject_3;
 
-    @Test
-    void whenAddTEacherIfSuccessReturnTrue() {
-        assertDoesNotThrow(() -> teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_1)));
+    @BeforeAll
+    void startup() {
+
+        teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
+        teacher_2 = insertTeacher(FIRST_NAME_2, LAST_NAME_2);
+        teacher_3 = insertTeacher(FIRST_NAME_3, LAST_NAME_3);
+
+        subject_1 = insertSubject(SUBJECT_NAME_1);
+        subject_2 = insertSubject(SUBJECT_NAME_2);
+        subject_3 = insertSubject(SUBJECT_NAME_3);
+
     }
 
     @Test
-    void afterAddTeacherReturnCorrectTeacherObject() {
-        TeacherDTO expectedTeacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        assertEquals(expectedTeacher, teacherService.getTeacherById(expectedTeacher.getId()));
-    }
-
-    @Test
+    @Order(1)
     void whenGetAllTeachersReturnListOfAllTeachers() {
         List<TeacherDTO> expectedTeachers = new ArrayList<>();
-        expectedTeachers.add(insertTeacher(FIRST_NAME_2, LAST_NAME_2));
-        expectedTeachers.add(insertTeacher(FIRST_NAME_1, LAST_NAME_1));
-        expectedTeachers.add(insertTeacher(FIRST_NAME_3, LAST_NAME_3));
+        expectedTeachers.add(teacher_2);
+        expectedTeachers.add(teacher_1);
+        expectedTeachers.add(teacher_3);
         assertIterableEquals(expectedTeachers, teacherService.getAllTeachers());
     }
 
     @Test
+    @Order(2)
+    void whenAddTEacherIfSuccessReturnTrue() {
+        assertDoesNotThrow(() -> teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_2)));
+    }
+
+    @Test
+    @Order(3)
+    void afterAddTeacherReturnCorrectTeacherObject() {
+        assertEquals(teacher_1, teacherService.getTeacherById(teacher_1.getId()));
+    }
+
+
+    @Test
+    @Order(4)
     void whenUpdateTeacherIfSuccessThenReturnTrue() {
-        long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        assertDoesNotThrow(() -> teacherService.updateTeacher(new TeacherDTO(teacherId, FIRST_NAME_2, LAST_NAME_2)));
+        assertDoesNotThrow(() -> teacherService.updateTeacher(new TeacherDTO(teacher_2.getId(), FIRST_NAME_2, LAST_NAME_1)));
     }
 
     @Test
+    @Order(5)
     void afterUpdateTeacherThenTeacherHasUpdatedTeacher() {
-        long teacherId = insertTeacher(FIRST_NAME_1, LAST_NAME_1).getId();
-        teacherService.updateTeacher(new TeacherDTO(teacherId,FIRST_NAME_2, LAST_NAME_2));
-        TeacherDTO expectedTeacher = teacherService.getTeacherByName(FIRST_NAME_2, LAST_NAME_2);
-        TeacherDTO actualTeacher = teacherService.getTeacherById(teacherId);
-        assertEquals(expectedTeacher, actualTeacher);
+        TeacherDTO updatedTeacher = new TeacherDTO(teacher_2.getId(), FIRST_NAME_2, LAST_NAME_2);
+        teacherService.updateTeacher(updatedTeacher);
+        TeacherDTO actualTeacher = teacherService.getTeacherById(teacher_2.getId());
+        assertEquals(updatedTeacher, actualTeacher);
     }
 
     @Test
+    @Order(6)
     void whenDeleteTeacherByIdIfSuccessNoException() {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        assertDoesNotThrow(() -> teacherService.deleteTeacherById(teacher.getId()));
+        assertDoesNotThrow(() -> teacherService.deleteTeacherById(teacher_2.getId()));
     }
 
     @Test
+    @Order(7)
     void afterDeleteTeacherByIdIfSearchReturnEntityNotFoundException() {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        long teacherId = teacher.getId();
-        teacherService.deleteTeacherById(teacherId);
-        assertThrows(EntityNotFoundException.class, () -> teacherService.getTeacherById(teacherId));
+        teacherService.deleteTeacherById(teacher_3.getId());
+        assertThrows(EntityNotFoundException.class, () -> teacherService.getTeacherById(teacher_3.getId()));
     }
 
     @Test
+    @Order(8)
     void whenAssignSubjectToTeacherIfSuccessNoException() {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        SubjectDTO subject = insertSubject(SUBJECT_NAME_1);
-        assertDoesNotThrow(() -> teacherService.assignSubjectToTeacher(teacher.getId(), subject.getId()));
+        assertDoesNotThrow(() -> teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_1.getId()));
     }
 
     @Test
-    void afterAssignSubjectsToTeacher_ItHasListOfSubjectIds() {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        long teacherId = teacher.getId();
-
-        SubjectDTO subjectOne = insertSubject(SUBJECT_NAME_1);
-        int subjectOneId = subjectOne.getId();
-        SubjectDTO subjectTwo = insertSubject(SUBJECT_NAME_2);
-        int subjectTwoId = subjectTwo.getId();
-        SubjectDTO subjectThree = insertSubject(SUBJECT_NAME_3);
-        int subjectThreeId = subjectThree.getId();
+    @Order(9)
+    void afterAssignSubjectsToTeacher_ItHasListOfSubjects() {
 
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
-        expectedSubjects.add(subjectOne);
-        expectedSubjects.add(subjectTwo);
-        expectedSubjects.add(subjectThree);
+        expectedSubjects.add(subject_1);
+        expectedSubjects.add(subject_2);
+        expectedSubjects.add(subject_3);
 
-        teacherService.assignSubjectToTeacher(teacherId,subjectOneId);
-        teacherService.assignSubjectToTeacher(teacherId,subjectTwoId);
-        teacherService.assignSubjectToTeacher(teacherId,subjectThreeId);
+        teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_2.getId());
+        teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_3.getId());
 
-        TeacherDTO teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
+        TeacherDTO teacherAfterAssignSubjects = teacherService.getTeacherById(teacher_1.getId());
+
         List<SubjectDTO> actualSubjects = teacherAfterAssignSubjects.getSubjects();
         assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
     @Test
+    @Order(10)
     void afterUnAssignSubjectsFromTeacher_HeHasNoSubjectInListOfSubjects() {
-        TeacherDTO teacher = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
-        long teacherId = teacher.getId();
-
-        SubjectDTO subjectOne = insertSubject(SUBJECT_NAME_1);
-        int subjectOneId = subjectOne.getId();
-        SubjectDTO subjectTwo = insertSubject(SUBJECT_NAME_2);
-        int subjectTwoId = subjectTwo.getId();
-        SubjectDTO subjectThree = insertSubject(SUBJECT_NAME_3);
-        int subjectThreeId = subjectThree.getId();
-
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
-        expectedSubjects.add(subjectOne);
-        expectedSubjects.add(subjectTwo);
-       
-        teacherService.assignSubjectToTeacher(teacherId,subjectOneId);
-        teacherService.assignSubjectToTeacher(teacherId,subjectTwoId);
-        teacherService.assignSubjectToTeacher(teacherId,subjectThreeId);
+        expectedSubjects.add(subject_2);
+        expectedSubjects.add(subject_3);
+        teacherService.unassignSubjectFromTeacher(teacher_1.getId(), subject_1.getId());
 
-        teacherService.unassignSubjectFromTeacher(teacherId,subjectThreeId);
-
-        TeacherDTO teacherAfterAssignSubjects = teacherService.getTeacherById(teacherId);
-        List<SubjectDTO> actualSubjects = teacherAfterAssignSubjects.getSubjects();
+        TeacherDTO teacherAfterUnassignSubjects = teacherService.getTeacherById(teacher_1.getId());
+        List<SubjectDTO> actualSubjects = teacherAfterUnassignSubjects.getSubjects();
         assertIterableEquals(expectedSubjects, actualSubjects);
     }
 

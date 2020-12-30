@@ -2,23 +2,24 @@ package ua.com.nikiforov.services.university;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import ua.com.nikiforov.dao.table_creator.TableCreator;
-import ua.com.nikiforov.datasource.TestDataSource;
 import ua.com.nikiforov.dto.UniversityDTO;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.models.University;
 
-@SpringJUnitConfig(TestDataSource.class)
-@ExtendWith(SpringExtension.class)
-@WebAppConfiguration
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(
+        locations = "classpath:application-test.properties")
 class UniversityServiceImplTest {
 
     private static final String UNIVERSITY_NAME_1 = "Foxminded";
@@ -27,16 +28,9 @@ class UniversityServiceImplTest {
 
     private static final int UNIVERSITIES_COUNT = 2;
 
+
     @Autowired
     private UniversityService universityService;
-
-//    @Autowired
-//    private TableCreator tableCreator;
-
-//    @BeforeEach
-//    void init() {
-//        tableCreator.createTables();
-//    }
 
     @Test
     void whenAddUniversityIfSuccessShouldReturnTrue() {

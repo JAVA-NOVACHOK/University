@@ -49,9 +49,7 @@ public class TeachersSubjects {
         TeachersSubjects other = (TeachersSubjects) obj;
         if (subjectId != other.subjectId)
             return false;
-        if (teachersId != other.teachersId)
-            return false;
-        return true;
+        return teachersId == other.teachersId;
     }
 
     @Override

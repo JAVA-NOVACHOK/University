@@ -54,6 +54,7 @@ public class LessonDAOImpl implements LessonDAO {
     }
 
     @Override
+    @Transactional
     public Lesson getLessonById(long id) {
         String getLessonMessage = String.format("Lesson by id %d", id);
         LOGGER.debug("Getting '{}'", getLessonMessage);

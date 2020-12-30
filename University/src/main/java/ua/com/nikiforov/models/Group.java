@@ -1,6 +1,5 @@
 package ua.com.nikiforov.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.com.nikiforov.models.persons.Student;

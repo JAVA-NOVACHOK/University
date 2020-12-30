@@ -2,8 +2,6 @@ package ua.com.nikiforov.models;
 
 import java.util.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.context.annotation.Lazy;
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
@@ -83,7 +81,6 @@ public class Subject implements Comparable<Subject>{
         int result = 1;
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-//        result = prime * result + ((teachers == null || teachers.isEmpty()) ? 0 : teachers.hashCode());
         return result;
     }
 

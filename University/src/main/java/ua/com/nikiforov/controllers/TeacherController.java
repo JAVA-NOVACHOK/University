@@ -165,7 +165,6 @@ public class TeacherController {
         }
         try {
             model.addAttribute(TEACHER_ATTR,teacherService.assignSubjectToTeacher(teacherId,subjectId));
-//            teacher.getSubjects().add(subject);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
         } catch (DuplicateKeyException e) {

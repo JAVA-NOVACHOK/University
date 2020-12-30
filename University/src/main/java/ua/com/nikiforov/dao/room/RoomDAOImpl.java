@@ -116,10 +116,14 @@ public class RoomDAOImpl implements RoomDAO {
     public void deleteRoomById(int id) {
         String deleteMessage = String.format("Room by ID %d", id);
         LOGGER.debug("Deleting {}", deleteMessage);
+        boolean actionResult = false;
         try {
-            entityManager.createQuery(DELETE_ROOM_BY_ID)
+            actionResult = entityManager.createQuery(DELETE_ROOM_BY_ID)
                     .setParameter(FIRST_PARAMETER_INDEX, id)
-                    .executeUpdate();
+                    .executeUpdate() > 0;
+            if(!actionResult){
+                throw new PersistenceException("Didn't delete room!");
+            }
             LOGGER.info("Successful deleting '{}'.", deleteMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
