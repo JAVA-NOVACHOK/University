@@ -1,21 +1,24 @@
 package ua.com.nikiforov.dao.subject;
 
-import java.util.List;
-
-import ua.com.nikiforov.dto.SubjectDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ua.com.nikiforov.models.Subject;
 
-public interface SubjectDAO {
+import javax.transaction.Transactional;
+import java.util.List;
 
-    public void addSubject(String subjectName);
+public interface SubjectDAO extends JpaRepository<Subject, Integer> {
 
-    public Subject getSubjectById(int subjectId);
+    @Transactional
+    public Subject save(Subject subject);
+
+    public Subject getSubjectById(int id);
     
-    public Subject getSubjectByName(String subjectName);
+    public Subject getSubjectByName(String name);
 
+    @Query("SELECT s FROM Subject s ORDER BY s.name")
     public List<Subject> getAllSubjects();
 
-    public void updateSubject(SubjectDTO subject);
-
-    public void deleteSubjectById(int subjectId);
+    @Transactional
+    public void deleteSubjectById(int id);
 }

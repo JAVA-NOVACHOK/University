@@ -1,17 +1,19 @@
 package ua.com.nikiforov.dao.university;
 
-import ua.com.nikiforov.dto.UniversityDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ua.com.nikiforov.models.University;
 
-public interface UniversityDAO {
-    
-    public void addUniversity(String name);
+import javax.transaction.Transactional;
+
+public interface UniversityDAO extends JpaRepository<University,Integer> {
+
+    @Transactional
+    public University save(University university);
 
     public University findUniversityById(int id);
     
-    public University getUniversityByName(String universityName);
+    public University getUniversityByUniversityName(String universityName);
 
-    public void updateUniversity(UniversityDTO universityDTO);
-
+    @Transactional
     public void deleteUniversityById(int id);
 }

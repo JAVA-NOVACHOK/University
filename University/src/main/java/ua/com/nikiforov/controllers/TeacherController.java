@@ -164,7 +164,8 @@ public class TeacherController {
             return VIEW_TEACHER_ONE;
         }
         try {
-            model.addAttribute(TEACHER_ATTR,teacherService.assignSubjectToTeacher(teacherId,subjectId));
+            teacher = teacherService.assignSubjectToTeacher(teacherId,subjectId);
+            model.addAttribute(TEACHER_ATTR,teacher);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
         } catch (DuplicateKeyException e) {
@@ -191,8 +192,8 @@ public class TeacherController {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         try {
-            teacherService.unassignSubjectFromTeacher(teacherId,subjectId);
-            teacher.getSubjects().remove(subject);
+            teacher = teacherService.unassignSubjectFromTeacher(teacherId,subjectId);
+            model.addAttribute(TEACHER_ATTR, teacher);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully unassigned from %s!", subjectName, teachersName));
         } catch (DataOperationException e) {

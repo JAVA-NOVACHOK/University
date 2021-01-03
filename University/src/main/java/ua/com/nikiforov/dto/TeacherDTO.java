@@ -8,7 +8,7 @@ public class TeacherDTO implements  Comparable<TeacherDTO>{
     private long id;
     private String firstName;
     private String lastName;
-    private List<SubjectDTO> subjects;
+    private List<SubjectDTO> subjects = new ArrayList<>();
 
     public TeacherDTO(String firstName, String lastName) {
         this.firstName = firstName;

@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.dto.RoomDTO;
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
 
 
@@ -82,25 +83,26 @@ class RoomServiceImplTest {
     }
 
     @Test
+    @Order(2)
     void afterAddRoomGetRoomByIdReturnCorrectRoom() {
         assertEquals(room_2, roomService.getRoomById(room_2.getId()));
     }
 
 
     @Test
+    @Order(3)
     void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
-        int room_2Id = room_2.getId();
-        assertDoesNotThrow(() -> roomService.deleteRoomById(room_2Id));
+        assertDoesNotThrow(() -> roomService.deleteRoomById(room_2.getId()));
     }
 
     @Test
+    @Order(4)
     void afterDeleteRoomByIdIfSearchReturnEntityNotFoundException() {
-        int room_1Id = room_1.getId();
-        roomService.deleteRoomById(room_1Id);
-        assertThrows(EntityNotFoundException.class, () -> roomService.getRoomById(room_1Id));
+        assertThrows(DataOperationException.class, () -> roomService.deleteRoomById(room_2.getId()));
     }
 
     @Test
+    @Order(5)
     void whenUpdateRoomThenGroupHasUpdatedName() {
         int roomId = room_7.getId();
         roomService.updateRoom(new RoomDTO(roomId, TEST_ROOM_NUMBER_8, TEST_SEAT_NUMBER_2));

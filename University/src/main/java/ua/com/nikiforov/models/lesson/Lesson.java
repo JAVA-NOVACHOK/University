@@ -17,19 +17,19 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "lesson_id")
     private long id;
-    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
-    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
     @Column(name = "lesson_date")
     private LocalDate lessonDate;
     private int period;
-    @OneToOne(cascade={CascadeType.PERSIST},fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 

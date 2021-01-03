@@ -1,5 +1,6 @@
 package ua.com.nikiforov.dto;
 
+
 import java.util.Objects;
 
 public class UniversityDTO {
@@ -35,13 +36,24 @@ public class UniversityDTO {
         this.universityName = universityName;
     }
 
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UniversityDTO that = (UniversityDTO) o;
-        return id == that.id &&
-                universityName.equals(that.universityName);
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        UniversityDTO other = (UniversityDTO) obj;
+        if (id != other.getId())
+            return false;
+        if (universityName == null) {
+            if (other.universityName != null)
+                return false;
+        } else if (!universityName.equals(other.universityName))
+            return false;
+        return true;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package ua.com.nikiforov.services.university;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -8,42 +10,107 @@ import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dao.university.UniversityDAO;
 import ua.com.nikiforov.dto.UniversityDTO;
+import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.mappers_dto.UniversityMapperDTO;
 import ua.com.nikiforov.models.University;
+
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 
 @Service
 public class UniversityServiceImpl implements UniversityService {
 
-    @Autowired
+    private static final Logger LOGGER = LoggerFactory.getLogger(UniversityServiceImpl.class);
+
+    private static final String GETTING_MSG = "Getting '{}'";
+    private static final String SUCCESSFULLY_RETRIVED_MSG = "Successfully retrived {}";
+
     private UniversityDAO universityDAO;
+    private UniversityMapperDTO universityMapper;
+
+    @Autowired
+    public UniversityServiceImpl(UniversityDAO universityDAO, UniversityMapperDTO universityMapper) {
+        this.universityDAO = universityDAO;
+        this.universityMapper = universityMapper;
+    }
 
     @Override
-    public void addUniversity(String name) {
+    @Transactional
+    public UniversityDTO addUniversity(String name) {
+        String universityMessage = String.format("University with name %s", name);
+        LOGGER.debug("Adding {}", universityMessage);
+        UniversityDTO universityDTO;
         try {
-            universityDAO.addUniversity(name);
-        }catch (DataIntegrityViolationException e){
-            throw new DuplicateKeyException("University is already exists",e);
+           universityDTO = universityMapper.universityToUniversityDTO(universityDAO.save(new University(name)));
+            LOGGER.info("Successfully added {}", universityMessage);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateKeyException("University is already exists", e);
         }
+        return universityDTO;
     }
 
     @Override
-    public University getUniversityById(int id) {
-        return universityDAO.findUniversityById(id);
+    public UniversityDTO getUniversityById(int id) {
+        String universityMessage = String.format("University with ID %d", id);
+        LOGGER.debug(GETTING_MSG, universityMessage);
+        UniversityDTO university;
+        try {
+            university = universityMapper.universityToUniversityDTO(universityDAO.findUniversityById(id));
+            LOGGER.info("Successfully retrieved University '{}'", universityMessage);
+        } catch (NoResultException e) {
+            String failMessage = String.format("Fail to get room by Id %d from DB", id);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage, e);
+        }
+        return university;
     }
 
-    public University getUniversityByName(String universityName) {
-        return universityDAO.getUniversityByName(universityName);
+    public UniversityDTO getUniversityByName(String universityName) {
+        String subjectMessage = String.format("University by name %s", universityName);
+        LOGGER.debug(GETTING_MSG, subjectMessage);
+        UniversityDTO university;
+        try {
+            university = universityMapper.universityToUniversityDTO(universityDAO.getUniversityByUniversityName(universityName));
+        } catch (NoResultException e) {
+            String failMessage = String.format("Fail to get university by name %s from DB", universityName);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage, e);
+        }
+        LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, university);
+        return university;
     }
-
 
 
     @Override
     public void updateUniversity(UniversityDTO universityDTO) {
-        universityDAO.updateUniversity(universityDTO);
+       University university = universityMapper.universityDTOToUniversity(universityDTO);
+        String updateMessage = String.format("University with name %s by id %d", university.getName(), university.getId());
+        LOGGER.debug("Updating {}", updateMessage);
+        try {
+            universityDAO.save(university);
+            LOGGER.info("Successfully updated '{}'", updateMessage);
+        } catch (PersistenceException e) {
+            String failMessage = String.format("Couldn't update University with id %d name %s from DAO %s", university.getId(), university.getName(), e);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
+        }
     }
 
     @Override
     public void deleteUniversityById(int id) {
-        universityDAO.deleteUniversityById(id);
+        String deleteMessage = String.format("University by id %d", id);
+        LOGGER.debug("Deleting {}", deleteMessage);
+        try {
+            universityDAO.deleteUniversityById(id);
+            LOGGER.info("Successfully deleted '{}'", deleteMessage);
+        } catch (PersistenceException e) {
+            String failMessage = String.format("Couldn't delete %s", deleteMessage);
+            LOGGER.error(failMessage);
+            throw new DataOperationException(failMessage, e);
+        }
+
     }
 
 }

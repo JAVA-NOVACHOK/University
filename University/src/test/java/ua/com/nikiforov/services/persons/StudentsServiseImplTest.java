@@ -113,9 +113,9 @@ class StudentsServiceImplTest {
         return groupService.getGroupByName(groupName);
     }
 
-    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
+    public StudentDTO insertStudent(String firstName, String lastaName, long groupId) {
+        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupId));
+        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupId);
     }
 
 }

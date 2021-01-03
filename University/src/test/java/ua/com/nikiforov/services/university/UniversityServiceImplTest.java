@@ -32,53 +32,57 @@ class UniversityServiceImplTest {
     @Autowired
     private UniversityService universityService;
 
+    private UniversityDTO university_1;
+
+    @BeforeAll
+    void startup(){
+        university_1 = insertUniversity(UNIVERSITY_NAME_1);
+    }
+
     @Test
+    @Order(1)
     void whenAddUniversityIfSuccessShouldReturnTrue() {
-        assertDoesNotThrow(() -> universityService.addUniversity(UNIVERSITY_NAME_1));
+        assertDoesNotThrow(() -> universityService.addUniversity(UNIVERSITY_NAME_2));
     }
 
     @Test
+    @Order(2)
     void whenGetUniversityByNameReturnCorrectUniversity() {
-        universityService.addUniversity(UNIVERSITY_NAME_1);
-        assertEquals(UNIVERSITY_NAME_1, universityService.getUniversityByName(UNIVERSITY_NAME_1).getName());
+        assertEquals(university_1, universityService.getUniversityByName(UNIVERSITY_NAME_1));
     }
 
     @Test
+    @Order(3)
     void whenGetUniversityByIDReturnCorrectUniversity() {
-        int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        assertEquals(UNIVERSITY_NAME_1, universityService.getUniversityById(universityId).getName());
+        assertEquals(university_1, universityService.getUniversityById(university_1.getId()));
     }
 
 
     @Test
+    @Order(4)
     void whenUpdateUniversityByIdIfSuccessThenReturnTrue() {
-        int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        assertDoesNotThrow(() -> universityService.updateUniversity(new UniversityDTO(universityId,UNIVERSITY_NAME_1_UPDATED)));
+        assertDoesNotThrow(() -> universityService.updateUniversity(new UniversityDTO(university_1.getId(),UNIVERSITY_NAME_1_UPDATED)));
     }
 
     @Test
+    @Order(5)
     void whenUpdateUniversityByIdThenGetUniversityByIdAfterUpdateReturnChangedName() {
-        int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        universityService.updateUniversity(new UniversityDTO(universityId,UNIVERSITY_NAME_1_UPDATED));
-        University universityUpdated = universityService.getUniversityById(universityId);
-        assertEquals(UNIVERSITY_NAME_1_UPDATED, universityUpdated.getName());
+        assertEquals(new UniversityDTO(university_1.getId(),UNIVERSITY_NAME_1_UPDATED), universityService.getUniversityById(university_1.getId()));
     }
 
     @Test
+    @Order(6)
     void whenDeleteUniversityByIdIfSuccessThenReturnTrue() {
-        int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        assertDoesNotThrow(() -> universityService.deleteUniversityById(universityId));
+        assertDoesNotThrow(() -> universityService.deleteUniversityById(university_1.getId()));
     }
 
     @Test
+    @Order(7)
     void afterDeleteUniversityByIdIfSearchForItReturnEmptyResultDataAccessException() {
-        int universityId = insertUniversity(UNIVERSITY_NAME_1);
-        universityService.deleteUniversityById(universityId);
-        assertThrows(EntityNotFoundException.class, () -> universityService.getUniversityById(universityId));
+        assertThrows(EntityNotFoundException.class, () -> universityService.getUniversityById(university_1.getId()));
     }
 
-    private int insertUniversity(String UniversityName) {
-        universityService.addUniversity(UNIVERSITY_NAME_1);
-        return universityService.getUniversityByName(UNIVERSITY_NAME_1).getId();
+    private UniversityDTO insertUniversity(String UniversityName) {
+        return universityService.addUniversity(UNIVERSITY_NAME_1);
     }
 }

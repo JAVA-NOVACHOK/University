@@ -2,26 +2,34 @@ package ua.com.nikiforov.dao.persons;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 
-import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.models.persons.Student;
 
-@Component
-public interface StudentDAO {
+import javax.transaction.Transactional;
 
-    public void addStudent(StudentDTO student);
+@Component
+public interface StudentDAO extends JpaRepository<Student,Long> {
+
+    @Transactional
+    public Student save(Student student);
 
     public Student getStudentById(long studentId);
-    
-    public Student getStudentByNameGroupId(String firstName, String lastName, long groupId);
-    
+
+    @Query("SELECT s FROM Student s WHERE s.group.groupId = ?1 AND s.firstName = ?2 AND s.lastName = ?3")
+    public Student getStudentByNameGroupId(long groupId,String firstName, String lastName);
+
+
+    @Query("SELECT s FROM Student s WHERE s.firstName = ?1 AND s.lastName = ?2")
     public Student getStudentByName(String firstName, String lastName);
 
+
+    @Query("SELECT s FROM Student s ORDER BY s.lastName")
     public List<Student> getAllStudents();
 
-    public void updateStudent(StudentDTO student);
-
+    @Transactional
     public void deleteStudentById(long studentId);
     
 }

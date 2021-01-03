@@ -2,21 +2,25 @@ package ua.com.nikiforov.dao.group;
 
 import java.util.List;
 
-import ua.com.nikiforov.dto.GroupDTO;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ua.com.nikiforov.models.Group;
 
-public interface GroupDAO {
-    
-    public Group getGroupById(Long id);
-    
-    public Group getGroupByName(String groupName);
+import javax.transaction.Transactional;
 
-    public void deleteGroupById(Long id);
+public interface GroupDAO extends JpaRepository<Group, Long> {
 
+    @Transactional
+    public Group save(Group group);
+    
+    public Group getGroupByGroupId(Long groupId);
+    
+    public Group getGroupByGroupName(String groupName);
+
+    @Transactional
+    public void deleteGroupByGroupId(Long groupId);
+
+    @Query("SELECT g FROM Group g ORDER BY g.groupName")
     public List<Group> getAllGroups();
 
-    public void addGroup(String groupName);
-
-    public void updateGroup(GroupDTO group);
-    
 }

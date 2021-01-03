@@ -135,19 +135,14 @@ public class SubjectsController {
             teacherService.assignSubjectToTeacher(teacherId,subjectId);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Subject %s successfully assigned to %s!", subjectName, teachersName));
-            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-
         } catch (DuplicateKeyException e) {
-            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG,
                     String.format("Subject %s is already assigned to %s!", subjectName, teachersName));
-            return VIEW_SUBJECTS;
         } catch (DataOperationException e) {
-            model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
             model.addAttribute(FAIL_MSG,
                     String.format("Couldn't assign subject %s to teacher %s!", subjectName, teachersName));
-            return VIEW_SUBJECTS;
         }
+        model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         return VIEW_SUBJECTS;
     }
 

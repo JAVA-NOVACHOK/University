@@ -19,8 +19,11 @@ public interface GroupMapperDTO {
 
     public List<GroupDTO> getGroupDTOList(List<Group> groups);
 
+    public List<Group> getGroupList(List<GroupDTO> groups);
+
     @Mappings({
             @Mapping(target = "students", source = "groupStudents")
     })
     public GroupDTO groupToGroupDTO(Group group);
+
 }

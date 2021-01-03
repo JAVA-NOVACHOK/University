@@ -16,5 +16,5 @@ public interface RoomService {
 
     public void updateRoom(RoomDTO room);
 
-    public void deleteRoomById(int id);
+    public boolean deleteRoomById(int id);
 }

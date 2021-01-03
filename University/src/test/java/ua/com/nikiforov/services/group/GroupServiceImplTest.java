@@ -19,6 +19,7 @@ import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.exceptions.StudentsInGroupException;
 import ua.com.nikiforov.services.persons.StudentsService;
 
 import javax.transaction.Transactional;
@@ -114,12 +115,13 @@ class GroupServiceImplTest {
         assertEquals(expectedGroup, updatedGroup);
     }
 
-
     @Test
     @Order(5)
-    void whenDeleteGroupByWithStudentsThrowsDataOperationException() {
-        assertThrows(DataOperationException.class, () -> groupService.deleteGroup(group_1.getGroupId()));
+    void whenDeleteGroupWithStudents_ThrowsStudemtsImGroupException(){
+        assertThrows(StudentsInGroupException.class,() -> groupService.deleteGroup(group_1.getGroupId()));
     }
+
+
 
     @Test
     @Order(6)

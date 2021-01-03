@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.dto.GroupDTO;
-import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.exceptions.StudentsInGroupException;
 import ua.com.nikiforov.services.group.GroupService;
 
 @Controller
@@ -27,7 +27,6 @@ public class GroupsController {
     private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";
     private static final String VIEW_DELETE_GROUP = "groups/delete_group_form";
-    private static final String NEW_LINE = System.lineSeparator();
     private static final String GROUP_IN_ATTR = "groupIn";
     private static final String GROUP = "group";
     private static final String FAIL_MSG = "failMessage";
@@ -74,29 +73,25 @@ public class GroupsController {
 
     @PostMapping("/delete")
     public String processingDelete(@RequestParam long groupId, Model model) {
+        GroupDTO group = null;
         try {
             List<GroupDTO> groups = groupService.getAllGroups();
             model.addAttribute(GROUPS_ATTR, groups);
-            GroupDTO group = groupService.getGroupById(groupId);
-            List<StudentDTO> students = group.getStudents();
-            String groupName = group.getGroupName();
-            if (!students.isEmpty()) {
-                model.addAttribute(GROUP_IN_ATTR, group);
-                model.addAttribute(FAIL_MSG, String.format(
-                        "Warning! Cannot delete group '%s'.%sReason: still has students in it!%sSolution: Remove or transfer all students.",
-                        groupName, NEW_LINE, NEW_LINE));
-                return VIEW_STUDENTS;
-            }
+            group = groupService.getGroupById(groupId);
             groupService.deleteGroup(groupId);
-            model.addAttribute(SUCCESS_MSG, "Successfully deleted group " + groupName);
+            model.addAttribute(SUCCESS_MSG, "Successfully deleted group " + group.getGroupName());
             groups.remove(group);
             model.addAttribute(GROUPS_ATTR, groups);
+        } catch (StudentsInGroupException e) {
+            model.addAttribute(GROUP_IN_ATTR, group);
+            model.addAttribute(FAIL_MSG, String.format(
+                    "Warning! Cannot delete group '%s'.Reason: still has students in it! Solution: Remove or transfer all students.",
+                    group.getGroupName()));
+            return VIEW_STUDENTS;
         } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't find group with id " + groupId);
-            return VIEW_GROUPS;
-        }catch (DataOperationException e) {
+        } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't delete group. Try later.");
-            return VIEW_GROUPS;
         }
         return VIEW_GROUPS;
     }
@@ -104,12 +99,12 @@ public class GroupsController {
     @GetMapping("/edit")
     public String editGroup(@RequestParam long groupId, Model model) {
         try {
-        model.addAttribute(GROUP, groupService.getGroupById(groupId));
-        }catch (EntityNotFoundException e) {
+            model.addAttribute(GROUP, groupService.getGroupById(groupId));
+        } catch (EntityNotFoundException e) {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             model.addAttribute(FAIL_MSG, "Warning! Couldn't find group while editing!");
             return VIEW_GROUPS;
-        }catch (DataOperationException e) {
+        } catch (DataOperationException e) {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             model.addAttribute(FAIL_MSG, "ERROR! Something went wrong while editing group!");
             return VIEW_GROUPS;
