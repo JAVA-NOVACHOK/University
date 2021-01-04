@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.nikiforov.dao.timetables.TeacherTimetableDAO;
+import ua.com.nikiforov.repositories.timetables.TeacherTimetableRepository;
 import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.lesson.Lesson;
@@ -21,10 +21,10 @@ public class TeachersTimetableService extends PersonalTimetable {
 
     private static  final Logger LOGGER = LoggerFactory.getLogger(TeachersTimetableService.class);
 
-    private TeacherTimetableDAO teachersTimetable;
+    private TeacherTimetableRepository teachersTimetable;
 
     @Autowired
-    public TeachersTimetableService(TeacherTimetableDAO teachersTimetable) {
+    public TeachersTimetableService(TeacherTimetableRepository teachersTimetable) {
         this.teachersTimetable = teachersTimetable;
     }
 

@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
+
+import javax.persistence.EntityNotFoundException;
 
 @Controller
 @RequestMapping("/teachers")

@@ -5,14 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ua.com.nikiforov.dao.room.RoomDAO;
+import ua.com.nikiforov.repositories.room.RoomRepository;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers_dto.RoomMapperDTO;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +24,14 @@ public class RoomServiceImpl implements RoomService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomServiceImpl.class);
 
-    private RoomDAO roomDAO;
+    private static final Sort SORT_BY_ROOM_NUMBER = Sort.by(Sort.Direction.ASC,"roomNumber");
+
+    private RoomRepository roomRepository;
     private RoomMapperDTO roomMapper;
 
     @Autowired
-    public RoomServiceImpl(RoomDAO roomDAO, RoomMapperDTO roomMapper) {
-        this.roomDAO = roomDAO;
+    public RoomServiceImpl(RoomRepository roomRepository, RoomMapperDTO roomMapper) {
+        this.roomRepository = roomRepository;
         this.roomMapper = roomMapper;
     }
 
@@ -34,7 +39,7 @@ public class RoomServiceImpl implements RoomService {
     public void addRoom(RoomDTO roomDTO) {
         LOGGER.debug("Adding {}", roomDTO);
         try {
-            roomDAO.save(roomMapper.roomDTOToRoom(roomDTO));
+            roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
             LOGGER.debug("Successfully added {}", roomDTO);
         } catch (DataIntegrityViolationException e) {
             LOGGER.error("Couldn't add {}", roomDTO);
@@ -43,9 +48,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public RoomDTO getRoomById(int id) {
         LOGGER.debug("Getting Room by id '{}'", id);
-        RoomDTO room = roomMapper.roomToRoomDTO(roomDAO.getRoomById(id));
+        RoomDTO room = roomMapper.roomToRoomDTO(roomRepository.getOne(id));
         if (room == null) {
             String failMessage = String.format("Fail to get room by Id %d from DB", id);
             LOGGER.error(failMessage);
@@ -59,7 +65,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomDTO getRoomByRoomNumber(int roomNumber) {
         LOGGER.debug("Getting room by room number '{}'", roomNumber);
-        RoomDTO room = roomMapper.roomToRoomDTO(roomDAO.getRoomByRoomNumber(roomNumber));
+        RoomDTO room = roomMapper.roomToRoomDTO(roomRepository.getRoomByRoomNumber(roomNumber));
         if (room == null) {
             String failMessage = String.format("Fail to get roomNumber by roomNumber %d from DB", roomNumber);
             LOGGER.error(failMessage);
@@ -74,7 +80,7 @@ public class RoomServiceImpl implements RoomService {
         LOGGER.debug("Getting all rooms");
         List<RoomDTO> allRooms = new ArrayList<>();
         try {
-            allRooms.addAll(roomMapper.roomsToRoomsDTO(roomDAO.getAllRooms()));
+            allRooms.addAll(roomMapper.roomsToRoomsDTO(roomRepository.findAll(SORT_BY_ROOM_NUMBER)));
             LOGGER.info("Successfully query for all rooms");
         } catch (PersistenceException e) {
             String failMessage = "Fail to get all rooms from DB.";
@@ -85,12 +91,13 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public void updateRoom(RoomDTO roomDTO) {
         String updateMessage = String.format("Room with id = '%d', number = '%d' and '%d' seats", roomDTO.getId(),
                 roomDTO.getRoomNumber(), roomDTO.getSeatNumber());
         LOGGER.debug("Updating {}", updateMessage);
         try {
-            roomDAO.save(roomMapper.roomDTOToRoom(roomDTO));
+            roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
         } catch (DataIntegrityViolationException e) {
             String failMessage = String.format("ERROR! Couldn't update %s", updateMessage);
             LOGGER.error(failMessage);
@@ -99,16 +106,18 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public boolean deleteRoomById(int id) {
+    @Transactional
+    public void deleteRoomById(int id) {
         String deleteMessage = String.format("Room by ID %d", id);
         LOGGER.debug("Deleting {}", deleteMessage);
-        boolean actionResult = false;
-        actionResult = roomDAO.deleteRoomById(id) > 0;
-        if (!actionResult) {
+        try {
+            roomRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            throw new DataOperationException("Something went wrong!");
+        }catch (PersistenceException e){
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage);
+            throw new DataOperationException(failMessage,e);
         }
-        return actionResult;
     }
 }

@@ -3,14 +3,16 @@ package ua.com.nikiforov.services.lesson;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.*;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
+import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -183,8 +185,7 @@ class LessonServiceImplTest {
     @Test
     @Order(7)
     void afterDeleteLessonIfSearchReturnEntityNotFoundException() {
-        lessonService.deleteLessonById(lesson_4.getId());
-        assertThrows(EntityNotFoundException.class, () -> lessonService.getLessonById(lesson_4.getId()));
+        assertThrows(EntityNotFoundException.class, () -> lessonService.deleteLessonById(lesson_4.getId()));
     }
 
 

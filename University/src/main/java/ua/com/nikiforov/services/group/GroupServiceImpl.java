@@ -5,16 +5,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ua.com.nikiforov.dao.group.GroupDAO;
+import ua.com.nikiforov.repositories.group.GroupRepository;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.exceptions.StudentsInGroupException;
 import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
 import ua.com.nikiforov.models.Group;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,14 +25,16 @@ public class GroupServiceImpl implements GroupService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GroupServiceImpl.class);
 
+    private static final Sort SORT_BY_GROUP_NAME = Sort.by(Sort.Direction.ASC,"groupName");
+
     private static final String GETTING_MSG = "Getting {}";
 
-    private GroupDAO groupDAO;
+    private GroupRepository groupRepository;
     private GroupMapperDTO groupMapper;
 
     @Autowired
-    public GroupServiceImpl(GroupDAO groupDAO, GroupMapperDTO groupMapper) {
-        this.groupDAO = groupDAO;
+    public GroupServiceImpl(GroupRepository groupRepository, GroupMapperDTO groupMapper) {
+        this.groupRepository = groupRepository;
         this.groupMapper = groupMapper;
     }
 
@@ -39,7 +43,7 @@ public class GroupServiceImpl implements GroupService {
         String addMessage = String.format("Group with name %s", groupName);
         LOGGER.debug("Adding {}", addMessage);
         try {
-            groupDAO.save(new Group(groupName));
+            groupRepository.save(new Group(groupName));
             LOGGER.info("Successfully added {}", addMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
@@ -47,10 +51,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public GroupDTO getGroupById(long groupId) {
         String getMessage = String.format("Group by id %d", groupId);
         LOGGER.debug(GETTING_MSG, getMessage);
-        GroupDTO group = groupMapper.groupToGroupDTO(groupDAO.getGroupByGroupId(groupId));
+        GroupDTO group = groupMapper.groupToGroupDTO(groupRepository.getOne(groupId));
         if (group == null) {
             String failMessage = String.format("Fail to get group by Id %d from DB", groupId);
             LOGGER.error(failMessage);
@@ -64,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO getGroupByName(String groupName) {
         String getMessage = String.format("Group by name %s", groupName);
         LOGGER.debug(GETTING_MSG, getMessage);
-        GroupDTO group = groupMapper.groupToGroupDTO(groupDAO.getGroupByGroupName(groupName));
+        GroupDTO group = groupMapper.groupToGroupDTO(groupRepository.getGroupByGroupName(groupName));
         if (group == null) {
             String failMessage = String.format("Fail to get group by Id %s from DB", groupName);
             LOGGER.error(failMessage);
@@ -80,7 +85,7 @@ public class GroupServiceImpl implements GroupService {
         LOGGER.debug(GETTING_MSG, getAllMessage);
         List<GroupDTO> allGroups = new ArrayList<>();
         try {
-            allGroups.addAll(groupMapper.getGroupDTOList(groupDAO.getAllGroups()));
+            allGroups.addAll(groupMapper.getGroupDTOList(groupRepository.findAll(SORT_BY_GROUP_NAME)));
             LOGGER.info("Successfully query for all groups");
         } catch (PersistenceException e) {
             String failMessage = "Fail to get all groups from DB.";
@@ -91,13 +96,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void updateGroup(GroupDTO groupDTO) {
         LOGGER.debug("Updating group {}", groupDTO);
         Group newGroup = groupMapper.groupDTOToGroup(groupDTO);
-        Group groupWithStudents = groupDAO.getGroupByGroupId(newGroup.getGroupId());
+        Group groupWithStudents = groupRepository.getOne(newGroup.getGroupId());
         try {
             newGroup.setGroupStudents(groupWithStudents.getGroupStudents());
-            groupDAO.save(newGroup);
+            groupRepository.save(newGroup);
             LOGGER.info("Successful adding group {}", newGroup);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't update Group with id %d name %s", newGroup.getGroupId(), newGroup.getGroupName());
@@ -107,15 +113,16 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void deleteGroup(long id) {
         String deleteMessage = String.format("group with id %d.", id);
         LOGGER.debug("Deleting {}", deleteMessage);
-        if (!groupDAO.getGroupByGroupId(id).getGroupStudents().isEmpty()) {
+        if (!groupRepository.getOne(id).getGroupStudents().isEmpty()) {
             String message = String.format("There are students in group with id %d", id);
             throw new StudentsInGroupException(message);
         }
         try {
-            groupDAO.deleteGroupByGroupId(id);
+            groupRepository.deleteById(id);
             LOGGER.info("Successful deleting {}.", deleteMessage);
         } catch (PersistenceException e) {
             String failDeleteMessage = String.format("Couldn't delete %s", deleteMessage);

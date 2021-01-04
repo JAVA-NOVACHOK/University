@@ -4,20 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 
+
+import javax.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,7 +95,7 @@ class RoomServiceImplTest {
     @Test
     @Order(4)
     void afterDeleteRoomByIdIfSearchReturnEntityNotFoundException() {
-        assertThrows(DataOperationException.class, () -> roomService.deleteRoomById(room_2.getId()));
+        assertThrows(EntityNotFoundException.class, () -> roomService.deleteRoomById(room_2.getId()));
     }
 
     @Test

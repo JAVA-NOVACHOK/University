@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.exceptions.StudentsInGroupException;
 import ua.com.nikiforov.services.group.GroupService;
+
+import javax.persistence.EntityNotFoundException;
 
 @Controller
 @RequestMapping("/groups")
@@ -88,7 +89,7 @@ public class GroupsController {
                     "Warning! Cannot delete group '%s'.Reason: still has students in it! Solution: Remove or transfer all students.",
                     group.getGroupName()));
             return VIEW_STUDENTS;
-        } catch (EntityNotFoundException e) {
+        } catch (javax.persistence.EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't find group with id " + groupId);
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't delete group. Try later.");

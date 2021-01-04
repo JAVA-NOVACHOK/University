@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.com.nikiforov.dao.timetables.StudentTimetableDAO;
+import ua.com.nikiforov.repositories.timetables.StudentTimetableRepository;
 import ua.com.nikiforov.dto.TimetableDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.models.Group;
@@ -25,10 +25,10 @@ public class StudentTimetableService extends PersonalTimetable {
     private static final String GETTING_MSG = "Getting '{}'";
     private static final String SUCCESSFULLY_RETRIEVED_MSG = "Successfully retrieved {}";
 
-    private StudentTimetableDAO studentsTimetable;
+    private StudentTimetableRepository studentsTimetable;
 
     @Autowired
-    public StudentTimetableService(StudentTimetableDAO studentsTimetable) {
+    public StudentTimetableService(StudentTimetableRepository studentsTimetable) {
         this.studentsTimetable = studentsTimetable;
     }
 

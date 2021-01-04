@@ -3,17 +3,13 @@ package ua.com.nikiforov.services.university;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import ua.com.nikiforov.dto.UniversityDTO;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
-import ua.com.nikiforov.models.University;
+
+import javax.persistence.EntityNotFoundException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest

@@ -8,13 +8,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import ua.com.nikiforov.dao.university.UniversityDAO;
+import ua.com.nikiforov.repositories.university.UniversityRepository;
 import ua.com.nikiforov.dto.UniversityDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers_dto.UniversityMapperDTO;
 import ua.com.nikiforov.models.University;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -27,12 +27,12 @@ public class UniversityServiceImpl implements UniversityService {
     private static final String GETTING_MSG = "Getting '{}'";
     private static final String SUCCESSFULLY_RETRIVED_MSG = "Successfully retrived {}";
 
-    private UniversityDAO universityDAO;
+    private UniversityRepository universityRepository;
     private UniversityMapperDTO universityMapper;
 
     @Autowired
-    public UniversityServiceImpl(UniversityDAO universityDAO, UniversityMapperDTO universityMapper) {
-        this.universityDAO = universityDAO;
+    public UniversityServiceImpl(UniversityRepository universityRepository, UniversityMapperDTO universityMapper) {
+        this.universityRepository = universityRepository;
         this.universityMapper = universityMapper;
     }
 
@@ -43,7 +43,7 @@ public class UniversityServiceImpl implements UniversityService {
         LOGGER.debug("Adding {}", universityMessage);
         UniversityDTO universityDTO;
         try {
-           universityDTO = universityMapper.universityToUniversityDTO(universityDAO.save(new University(name)));
+           universityDTO = universityMapper.universityToUniversityDTO(universityRepository.save(new University(name)));
             LOGGER.info("Successfully added {}", universityMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("University is already exists", e);
@@ -57,12 +57,12 @@ public class UniversityServiceImpl implements UniversityService {
         LOGGER.debug(GETTING_MSG, universityMessage);
         UniversityDTO university;
         try {
-            university = universityMapper.universityToUniversityDTO(universityDAO.findUniversityById(id));
+            university = universityMapper.universityToUniversityDTO(universityRepository.getOne(id));
             LOGGER.info("Successfully retrieved University '{}'", universityMessage);
         } catch (NoResultException e) {
             String failMessage = String.format("Fail to get room by Id %d from DB", id);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage, e);
+            throw new EntityNotFoundException(failMessage);
         }
         return university;
     }
@@ -72,11 +72,11 @@ public class UniversityServiceImpl implements UniversityService {
         LOGGER.debug(GETTING_MSG, subjectMessage);
         UniversityDTO university;
         try {
-            university = universityMapper.universityToUniversityDTO(universityDAO.getUniversityByUniversityName(universityName));
+            university = universityMapper.universityToUniversityDTO(universityRepository.getUniversityByUniversityName(universityName));
         } catch (NoResultException e) {
             String failMessage = String.format("Fail to get university by name %s from DB", universityName);
             LOGGER.error(failMessage);
-            throw new EntityNotFoundException(failMessage, e);
+            throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIVED_MSG, university);
         return university;
@@ -89,7 +89,7 @@ public class UniversityServiceImpl implements UniversityService {
         String updateMessage = String.format("University with name %s by id %d", university.getName(), university.getId());
         LOGGER.debug("Updating {}", updateMessage);
         try {
-            universityDAO.save(university);
+            universityRepository.save(university);
             LOGGER.info("Successfully updated '{}'", updateMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't update University with id %d name %s from DAO %s", university.getId(), university.getName(), e);
@@ -103,7 +103,7 @@ public class UniversityServiceImpl implements UniversityService {
         String deleteMessage = String.format("University by id %d", id);
         LOGGER.debug("Deleting {}", deleteMessage);
         try {
-            universityDAO.deleteUniversityById(id);
+            universityRepository.deleteById(id);
             LOGGER.info("Successfully deleted '{}'", deleteMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);

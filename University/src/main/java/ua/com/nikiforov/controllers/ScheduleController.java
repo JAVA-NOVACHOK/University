@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -26,6 +25,8 @@ import ua.com.nikiforov.services.subject.SubjectService;
 import ua.com.nikiforov.services.timetables.DayTimetable;
 import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
+
+import javax.persistence.EntityNotFoundException;
 
 @Controller
 @RequestMapping("/schedules")

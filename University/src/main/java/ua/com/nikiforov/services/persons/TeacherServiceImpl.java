@@ -5,16 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ua.com.nikiforov.dao.persons.TeacherDAO;
-import ua.com.nikiforov.dao.subject.SubjectDAO;
+import ua.com.nikiforov.repositories.persons.TeacherRepository;
+import ua.com.nikiforov.repositories.subject.SubjectRepository;
 import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
-import ua.com.nikiforov.exceptions.EntityNotFoundException;
 import ua.com.nikiforov.mappers_dto.TeacherMapperDTO;
 import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
@@ -26,19 +27,21 @@ public class TeacherServiceImpl implements TeacherService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
+    private static final Sort SORT_BY_LAST_NAME = Sort.by(Sort.Direction.ASC,"lastName");
+
     private static final String GETTING_MSG = "Getting {}";
 
-    private TeacherDAO teacherDAO;
-    private SubjectDAO subjectDAO;
+    private TeacherRepository teacherRepository;
+    private SubjectRepository subjectRepository;
     private TeacherMapperDTO teacherMapper;
 
     @Autowired
-    public TeacherServiceImpl(TeacherDAO teacherDAO,
+    public TeacherServiceImpl(TeacherRepository teacherRepository,
                               TeacherMapperDTO teacherMapper,
-                              SubjectDAO subjectDAO) {
-        this.teacherDAO = teacherDAO;
+                              SubjectRepository subjectRepository) {
+        this.teacherRepository = teacherRepository;
         this.teacherMapper = teacherMapper;
-        this.subjectDAO = subjectDAO;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class TeacherServiceImpl implements TeacherService {
                 teacherDTO.getFirstName(), teacherDTO.getLastName());
         LOGGER.debug("Adding {}", teacherMessage);
         try {
-            teacherDAO.save(teacherMapper.teacherDTOToTeacher(teacherDTO));
+            teacherRepository.save(teacherMapper.teacherDTOToTeacher(teacherDTO));
             LOGGER.info("Successful added {}", teacherMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + teacherMessage, e);
@@ -59,7 +62,7 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDTO getTeacherById(long teacherId) {
         String getMessage = String.format("Teacher by id %d", teacherId);
         LOGGER.debug(GETTING_MSG, getMessage);
-        TeacherDTO teacher = teacherMapper.getTeacherDTO(teacherDAO.getTeacherById(teacherId));
+        TeacherDTO teacher = teacherMapper.getTeacherDTO(teacherRepository.getOne(teacherId));
         if (teacher == null) {
             String failMessage = String.format("Failed to get %s", getMessage);
             LOGGER.error(failMessage);
@@ -76,11 +79,11 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug(GETTING_MSG, teacherMessage);
         TeacherDTO teacher;
         try {
-            teacher = teacherMapper.getTeacherDTO(teacherDAO.getTeacherByName(firstName, lastName));
+            teacher = teacherMapper.getTeacherDTO(teacherRepository.getTeacherByFirstNameAndLastName(firstName, lastName));
         } catch (NoResultException e) {
             String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
             LOGGER.debug(failGetByIdMessage);
-            throw new EntityNotFoundException(failGetByIdMessage, e);
+            throw new EntityNotFoundException(failGetByIdMessage);
         }
         LOGGER.info("Successfully retrieved {}", teacherMessage);
         return teacher;
@@ -93,7 +96,7 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug(GETTING_MSG, teachersMSG);
         List<TeacherDTO> allTeachers = new ArrayList<>();
         try {
-            allTeachers.addAll(teacherMapper.getTeacherDTOList(teacherDAO.getAllTeachers()));
+            allTeachers.addAll(teacherMapper.getTeacherDTOList(teacherRepository.findAll(SORT_BY_LAST_NAME)));
             LOGGER.info("Successfully query for {}", teachersMSG);
         } catch (PersistenceException e) {
             String failMessage = "Fail to get all teachers from DB.";
@@ -104,15 +107,16 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public void updateTeacher(TeacherDTO teacherDTO) {
         Teacher newTeacher = teacherMapper.teacherDTOToTeacher(teacherDTO);
-        Teacher teacherWithSubjects = teacherDAO.getTeacherById(newTeacher.getId());
+        Teacher teacherWithSubjects = teacherRepository.getOne(newTeacher.getId());
         newTeacher.setSubjects(teacherWithSubjects.getSubjects());
         String teacherMessage = String.format("Teacher with ID = %d and firstName = %s, lastname = %s", newTeacher.getId(),
                 newTeacher.getFirstName(), newTeacher.getLastName());
         LOGGER.debug("Updating '{}'", teacherMessage);
         try {
-            teacherDAO.save(newTeacher);
+            teacherRepository.save(newTeacher);
             LOGGER.info("Successfully updated '{}'", teacherMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException(teacherMessage + " already exists", e);
@@ -124,11 +128,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Transactional
     public void deleteTeacherById(long teacherId) {
         String teacherMessage = String.format("Teacher by id %d", teacherId);
         LOGGER.debug("Deleting '{}'", teacherMessage);
         try {
-            teacherDAO.deleteTeacherById(teacherId);
+            teacherRepository.deleteById(teacherId);
             LOGGER.info("Successful deleting '{}'", teacherMessage);
         } catch (PersistenceException e) {
             String failDeleteMessage = "Failed to delete " + teacherMessage;
@@ -142,20 +147,20 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional
     public TeacherDTO assignSubjectToTeacher(long teacherId, int subjectId) {
         LOGGER.debug("Assigning subject with id %d to teacher with ");
-        Teacher teacher = teacherDAO.getTeacherById(teacherId);
-        Subject subject = subjectDAO.getSubjectById(subjectId);
+        Teacher teacher = teacherRepository.getOne(teacherId);
+        Subject subject = subjectRepository.getOne(subjectId);
         teacher.getSubjects().add(subject);
-        return teacherMapper.getTeacherDTO(teacherDAO.save(teacher));
+        return teacherMapper.getTeacherDTO(teacherRepository.save(teacher));
     }
 
     @Override
     @Transactional
     public TeacherDTO unassignSubjectFromTeacher(long teacherId, int subjectId) {
         LOGGER.debug("Unassigning subject with id %d to teacher with ");
-        Teacher teacher = teacherDAO.getTeacherById(teacherId);
-        Subject subject = subjectDAO.getSubjectById(subjectId);
+        Teacher teacher = teacherRepository.getOne(teacherId);
+        Subject subject = subjectRepository.getOne(subjectId);
         teacher.getSubjects().remove(subject);
-        return teacherMapper.getTeacherDTO(teacherDAO.save(teacher));
+        return teacherMapper.getTeacherDTO(teacherRepository.save(teacher));
     }
 
     @Override
@@ -165,7 +170,7 @@ public class TeacherServiceImpl implements TeacherService {
         LOGGER.debug(GETTING_MSG, teacherMessage);
         List<TeacherDTO> teachers = new ArrayList<>();
         try {
-            teachers.addAll(teacherMapper.getTeacherDTOList(teacherDAO.getTeacherByLikeName(firstName, lastName)));
+            teachers.addAll(teacherMapper.getTeacherDTOList(teacherRepository.getTeacherByLikeName(firstName, lastName)));
         } catch (PersistenceException e) {
             String failGetByIdMessage = String.format("Couldn't find %s", teacherMessage);
             throw new DataOperationException(failGetByIdMessage, e);
