@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         if(cause instanceof ConstraintViolationException){
             Set<ConstraintViolation<?>> violations = ((ConstraintViolationException)cause).getConstraintViolations();
             for(ConstraintViolation<?> violation : violations){
-                errors.append(violation.getMessage());
+                errors.append(violation.getMessage()).append(System.lineSeparator());
             }
         }
         modelAndView.addObject(ERROR_MESSAGES,errors.toString());

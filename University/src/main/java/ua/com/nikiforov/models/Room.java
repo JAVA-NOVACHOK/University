@@ -12,13 +12,9 @@ public class Room implements Comparable<Room> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Positive(message = "Room Number must be positive!")
-    @Max(value = 1000,message = "Room number cannot be greater then 1000!")
     @Column(name = "room_number")
     private int roomNumber;
 
-    @Positive(message = "Seats Number must be positive!")
-    @Max(value = 300, message = "Seats number cannot be greater then 300!")
     @Column(name = "seat_number")
     private int seatNumber;
 

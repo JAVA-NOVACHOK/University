@@ -16,15 +16,10 @@ public class Teacher implements Comparable<Teacher>{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "teacher_id")
     private long id;
-
-    @NotBlank(message = "Teacher's first name must not be empty!")
     @Column(name="first_name")
     private String firstName;
-
-    @NotBlank(message = "Teacher's last name must not be empty!")
     @Column(name="last_name")
     private String lastName;
-
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name="teachers_subjects",
             joinColumns = @JoinColumn(name = "teacher_id"),

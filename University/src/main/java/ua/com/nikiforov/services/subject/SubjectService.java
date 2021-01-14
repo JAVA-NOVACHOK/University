@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.SubjectDTO;
 
 public interface SubjectService {
 
-    public void addSubject(String subjectName);
+    public void addSubject(SubjectDTO subjectDTO);
 
     public SubjectDTO getSubjectById(int subjectId);
 

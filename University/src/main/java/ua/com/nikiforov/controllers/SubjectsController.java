@@ -53,20 +53,20 @@ public class SubjectsController {
     }
 
     @PostMapping("/add")
-    public String processSubject(@RequestParam String subjectName, Model model) {
+    public String processSubject(@Valid @ModelAttribute(SUBJECT_ATTR) SubjectDTO subject,Model model) {
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());
         try {
-            subjectService.addSubject(subjectName);
+            subjectService.addSubject(subject);
         } catch (DuplicateKeyException e) {
             model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-            model.addAttribute(FAIL_MSG, String.format("Warning! Subject with name'%s' already exists", subjectName));
+            model.addAttribute(FAIL_MSG, String.format("Warning! Subject with name'%s' already exists", subject.getName()));
             return VIEW_SUBJECTS;
         } catch (DataOperationException e) {
             model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
-            model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add subject with name '%s' ", subjectName));
+            model.addAttribute(FAIL_MSG, String.format("Warning! Failed to add subject with name '%s' ", subject.getName()));
             return VIEW_SUBJECTS;
         }
-        model.addAttribute(SUCCESS_MSG, String.format("Subject with name '%s' successfully added!", subjectName));
+        model.addAttribute(SUCCESS_MSG, String.format("Subject with name '%s' successfully added!", subject.getName()));
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
         return VIEW_SUBJECTS;
     }

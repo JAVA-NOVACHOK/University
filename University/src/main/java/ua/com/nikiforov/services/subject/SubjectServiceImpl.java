@@ -42,11 +42,11 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public void addSubject(String subjectName) {
-        String addMessage = String.format("subject with name %s", subjectName);
+    public void addSubject(SubjectDTO subjectDTO) {
+        String addMessage = String.format("subject with name %s", subjectDTO.getName());
         LOGGER.debug("Adding '{}'", addMessage);
         try {
-            subjectRepository.save(new Subject(subjectName));
+            subjectRepository.save(subjectMapper.subjectDTOToSubject(subjectDTO));
             LOGGER.debug("Successfully added '{}'", addMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
@@ -142,7 +142,6 @@ public class SubjectServiceImpl implements SubjectService {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
-        subjectRepository.deleteById(subjectId);
     }
 
 }

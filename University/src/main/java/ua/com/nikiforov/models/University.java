@@ -11,7 +11,6 @@ public class University {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @NotBlank(message = "University name cannot be empty!")
     @Column(name = "university_name")
     private String universityName;
 

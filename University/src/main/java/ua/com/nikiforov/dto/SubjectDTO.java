@@ -1,5 +1,7 @@
 package ua.com.nikiforov.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -10,20 +12,20 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
 
     private int id;
 
-    @Size(min = 2, max = 50,
+    @Length(min = 2, max = 50,
             message = "Subject's name length cannot be less then 2 and greater then 50!")
     @NotBlank(message = "Subject name cannot be empty!")
-    @Column(name = "subject_name")
     private String name;
     private Set<TeacherDTO> teachers = new TreeSet<>();
 
     public SubjectDTO() {
-
     }
 
-    public SubjectDTO(int id, @Size(min = 2, max = 50,
-            message = "Subject's name length cannot be less then 2 and greater then 50!")
-            @NotBlank(message = "Subject name cannot be empty!") String name) {
+    public SubjectDTO(String name) {
+        this.name = name;
+    }
+
+    public SubjectDTO(int id, String name) {
         this.id = id;
         this.name = name;
     }

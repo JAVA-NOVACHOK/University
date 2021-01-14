@@ -27,8 +27,8 @@
 		<form class="form-inline" action="/rooms/edit" method="post">
 			<div class="row">
 					<input type="text" class="form-control" hidden="true" th:value="${room.id}" placeholder="Room number" name="id">
-					<input type="text" class="form-control mr-2" required="required"  th:value="${room.roomNumber}" placeholder="Room number" name="roomNumber">
-					<input type="text" class="form-control mr-2" required="required" th:value="${room.seatNumber}" placeholder="Seats number" name="seatNumber">
+					<input type="text" class="form-control mr-2"   th:value="${room.roomNumber}" placeholder="Room number" name="roomNumber">
+					<input type="text" class="form-control mr-2"  th:value="${room.seatNumber}" placeholder="Seats number" name="seatNumber">
 					<button id="day" type="submit" class="btn mr-2 btn-outline-success">Edit</button>
 					<a type="button" th:href="@{/rooms}" class="btn mr-2 btn-outline-danger">Cancel</a>
 				</div>

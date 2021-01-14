@@ -16,8 +16,6 @@ public class Group implements Comparable<Group> {
     @Column(name = "group_id")
     private long groupId;
 
-    @Pattern(regexp = "^[A-Z]{2}-\\d{2}$",
-            message = "Group name must have first two capital letters, dash and two numbers!")
     @Column(name = "group_name")
     private String groupName;
 

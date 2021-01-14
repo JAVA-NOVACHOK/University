@@ -151,7 +151,7 @@ class TeacherServiceImplTest {
     }
 
     private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(subjectName);
+        subjectService.addSubject(new SubjectDTO(subjectName));
         return subjectService.getSubjectByName(subjectName);
     }
 

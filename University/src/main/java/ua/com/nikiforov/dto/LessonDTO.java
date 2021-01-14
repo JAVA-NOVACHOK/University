@@ -1,5 +1,6 @@
 package ua.com.nikiforov.dto;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
@@ -7,8 +8,8 @@ import java.time.LocalDate;
 public class LessonDTO {
 
     private long id;
-    @Max(value = 6,message = "Period must be equals or less then 6!")
-    @Min(value = 1,message = "Period must be equals or greater then 1!")
+//    @Max(value = 6,message = "Period must be equals or less then 6!")
+//    @Min(value = 1,message = "Period must be equals or greater then 1!")
     private int period;
     private long groupId;
     protected int subjectId;

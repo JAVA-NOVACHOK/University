@@ -17,9 +17,6 @@ public class Subject implements Comparable<Subject> {
     @Column(name = "subject_id")
     private int id;
 
-    @Size(min = 2, max = 50,
-            message = "Subject's name length cannot be less then 2 and greater then 50!")
-    @NotBlank(message = "Subject name cannot be empty!")
     @Column(name = "subject_name")
     private String name;
 
