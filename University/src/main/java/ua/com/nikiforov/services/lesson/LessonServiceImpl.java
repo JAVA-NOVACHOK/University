@@ -17,7 +17,6 @@ import ua.com.nikiforov.mappers_dto.LessonMapperDTO;
 import ua.com.nikiforov.models.lesson.Lesson;
 
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 

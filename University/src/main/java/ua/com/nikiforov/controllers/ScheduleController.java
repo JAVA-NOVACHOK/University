@@ -59,6 +59,7 @@ public class ScheduleController {
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
+    private static final String ERROR_MSG_FIND_BY_ID = "ERROR! Couldn't find teacher by id %d.";
 
     private StudentsService studentsService;
 
@@ -240,7 +241,7 @@ public class ScheduleController {
             lessonService.addLesson(lesson);
             model.addAttribute(SUCCESS_MSG, "Lesson successfully added to schedule!");
         } catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, String.format("ERROR! Couldn't find teacher by id %d.", teacherId));
+            model.addAttribute(FAIL_MSG, String.format(ERROR_MSG_FIND_BY_ID, teacherId));
             return VIEW_SCHEDULE;
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
@@ -262,7 +263,7 @@ public class ScheduleController {
             timetable.setDate(dateString);
             model.addAttribute(TIMETABLE_MODEL_ATTR, timetable);
         } catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, String.format("ERROR! Couldn't find teacher by id %d.", timetable.getTeacherId()));
+            model.addAttribute(FAIL_MSG, String.format(ERROR_MSG_FIND_BY_ID, timetable.getTeacherId()));
             return VIEW_SCHEDULE;
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, "Warning! Such lesson already exists in schedule.");
