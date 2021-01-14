@@ -43,11 +43,11 @@
 					<div class="row">
 						<input type="text" class="form-control mr-2"
 							th:value="${firstName != null} ? ${firstName} : ''"
-							required="required" placeholder="First name"
+							placeholder="First name"
 							autofocus="autofocus" name="firstName"> <input
 							type="text" class="form-control mr-2"
 							th:value="${lastName != null} ? ${lastName} : ''"
-							required="required" placeholder="Last name" name="lastName">
+							placeholder="Last name" name="lastName">
 						<select id="groupTo" class="form-control mr-2" required="required"
 							name="groupId">
 							<option th:selected="true" th:value=0>Choose group</option>

@@ -8,6 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.repositories.room.RoomRepository;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
@@ -18,13 +19,17 @@ import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomServiceImpl.class);
 
-    private static final Sort SORT_BY_ROOM_NUMBER = Sort.by(Sort.Direction.ASC,"roomNumber");
+    private static final Sort SORT_BY_ROOM_NUMBER = Sort.by(Sort.Direction.ASC, "roomNumber");
+
+    private static final String GETTING = "Getting '{}'";
 
     private RoomRepository roomRepository;
     private RoomMapperDTO roomMapper;
@@ -50,29 +55,32 @@ public class RoomServiceImpl implements RoomService {
     @Override
     @Transactional
     public RoomDTO getRoomById(int id) {
-        LOGGER.debug("Getting Room by id '{}'", id);
-        RoomDTO room = roomMapper.roomToRoomDTO(roomRepository.getOne(id));
-        if (room == null) {
-            String failMessage = String.format("Fail to get room by Id %d from DB", id);
+        String getMessage = String.format("Room by id %d", id);
+        LOGGER.debug(GETTING, getMessage);
+        Room room;
+        try {
+            room = roomRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        } catch (NoSuchElementException e) {
+            String failMessage = String.format("Couldn't get %s", getMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
-        LOGGER.info("Successfully retrieved room '{}'", room);
-        return room;
-
+        LOGGER.info("Successfully retrieved room '{}'", getMessage);
+        return roomMapper.roomToRoomDTO(room);
     }
+
 
     @Override
     public RoomDTO getRoomByRoomNumber(int roomNumber) {
         LOGGER.debug("Getting room by room number '{}'", roomNumber);
-        RoomDTO room = roomMapper.roomToRoomDTO(roomRepository.getRoomByRoomNumber(roomNumber));
+        Room room = roomRepository.getRoomByRoomNumber(roomNumber).orElseThrow(EntityNotFoundException::new);
         if (room == null) {
             String failMessage = String.format("Fail to get roomNumber by roomNumber %d from DB", roomNumber);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info("Successfully retrieved room '{}'", room);
-        return room;
+        return roomMapper.roomToRoomDTO(room);
     }
 
     @Override
@@ -112,12 +120,12 @@ public class RoomServiceImpl implements RoomService {
         LOGGER.debug("Deleting {}", deleteMessage);
         try {
             roomRepository.deleteById(id);
-        }catch (EmptyResultDataAccessException e){
-            throw new DataOperationException("Something went wrong!");
-        }catch (PersistenceException e){
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException("Something went wrong!");
+        } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage,e);
+            throw new DataOperationException(failMessage, e);
         }
     }
 }

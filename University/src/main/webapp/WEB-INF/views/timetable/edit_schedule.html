@@ -57,7 +57,7 @@
 						required="required" name="date" th:value="${timetable.date}">
 					<label class="font-weight-bold mr-2" for="period">Period</label> <select
 						class="form-control mr-2" id="period" name="period">
-						<option th:each="i : ${#numbers.sequence(1, 6)}" th:value="${i}"
+						<option th:each="i : ${#numbers.sequence(1, 7)}" th:value="${i}"
 							th:text="${i}" th:selected="${i==timetable.period}"></option>
 					</select> <label class="font-weight-bold mr-2" for="teacher">Teacher</label>
 					<select class="form-control mr-2" id="teacher" required="required"

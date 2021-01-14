@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.GroupDTO;
 
 public interface GroupService {
     
-    public void addGroup(String groupName);
+    public void addGroup(GroupDTO groupDTO);
     
     public GroupDTO getGroupById(long id);
     

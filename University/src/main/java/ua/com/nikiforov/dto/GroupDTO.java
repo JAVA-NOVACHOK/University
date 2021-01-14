@@ -1,13 +1,20 @@
 package ua.com.nikiforov.dto;
 
+import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
 public class GroupDTO {
-    
+
     private long groupId;
+
+    @Pattern(regexp = "^[A-Z]{2}-\\d{2}$",
+            message = "Group name must have first two capital letters, dash and two numbers!")
+    @Column(name = "group_name")
     private String groupName;
     private List<StudentDTO> students;
 
@@ -15,17 +22,21 @@ public class GroupDTO {
         students = new ArrayList<>();
     }
 
-    public GroupDTO(long groupId, String groupName) {
+    public GroupDTO(@NotBlank String groupName) {
+        this.groupName = groupName;
+    }
+
+    public GroupDTO(long groupId, @NotBlank String groupName) {
         this.groupId = groupId;
         this.groupName = groupName;
         students = new ArrayList<>();
     }
 
-    public GroupDTO(long groupId, String groupName, List<StudentDTO> students) {
+    public GroupDTO(long groupId, @NotBlank String groupName, List<StudentDTO> students) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.students = students;
-
+        students = new ArrayList<>();
     }
 
     public long getGroupId() {

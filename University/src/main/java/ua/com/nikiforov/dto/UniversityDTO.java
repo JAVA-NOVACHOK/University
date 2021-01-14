@@ -1,11 +1,14 @@
 package ua.com.nikiforov.dto;
 
 
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 public class UniversityDTO {
 
     private int id;
+
+    @NotBlank(message = "University name cannot be empty!")
     private String universityName;
 
     public UniversityDTO() {

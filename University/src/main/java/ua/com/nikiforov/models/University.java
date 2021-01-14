@@ -1,6 +1,7 @@
 package ua.com.nikiforov.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "universities", uniqueConstraints = @UniqueConstraint(columnNames ={"university_name"}))
@@ -9,6 +10,8 @@ public class University {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @NotBlank(message = "University name cannot be empty!")
     @Column(name = "university_name")
     private String universityName;
 

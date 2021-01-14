@@ -1,27 +1,32 @@
 package ua.com.nikiforov.controllers;
 
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.exceptions.StudentsInGroupException;
 import ua.com.nikiforov.services.group.GroupService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/groups")
 public class GroupsController {
+
+    Logger LOGGER = LoggerFactory.getLogger(GroupsController.class);
 
     private static final String GROUPS_ATTR = "groups";
     private static final String VIEW_GROUPS = "groups/groups";
@@ -52,14 +57,14 @@ public class GroupsController {
     }
 
     @PostMapping("/add")
-    public String addGroup(@RequestParam String groupName, Model model) {
+    public String addGroup(@Valid @ModelAttribute(GROUP) GroupDTO groupDTO, Model model) {
         try {
-            groupService.addGroup(groupName);
-            model.addAttribute(SUCCESS_MSG, String.format("Group with name '%s' was added successfully!", groupName));
+            groupService.addGroup(groupDTO);
+            model.addAttribute(SUCCESS_MSG, String.format("Group with name '%s' was added successfully!", groupDTO.getGroupName()));
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
-                    String.format("Cannot add group! Group with name '%s' already exists!", groupName));
+                    String.format("Cannot add group! Group with name '%s' already exists!", groupDTO.getGroupName()));
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             return VIEW_GROUPS;
         }
@@ -89,7 +94,7 @@ public class GroupsController {
                     "Warning! Cannot delete group '%s'.Reason: still has students in it! Solution: Remove or transfer all students.",
                     group.getGroupName()));
             return VIEW_STUDENTS;
-        } catch (javax.persistence.EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't find group with id " + groupId);
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error!Couldn't delete group. Try later.");
@@ -114,7 +119,7 @@ public class GroupsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(GROUP) GroupDTO group, Model model) {
+    public String processEdit(@Valid @ModelAttribute(GROUP) GroupDTO group, Model model) {
         String groupName = group.getGroupName();
         try {
             groupService.updateGroup(group);
@@ -122,7 +127,7 @@ public class GroupsController {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot edit group. Group with name '%s' already exists", groupName));
             return VIEW_EDIT_GROUP;
-        } catch (DataOperationException e) {
+        } catch (DataOperationException | EntityNotFoundException e) {
             e.printStackTrace();
             model.addAttribute(FAIL_MSG, String.format("Cannot edit group with name '%s'", groupName));
             return VIEW_EDIT_GROUP;

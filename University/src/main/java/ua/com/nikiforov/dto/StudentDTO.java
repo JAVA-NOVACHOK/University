@@ -1,10 +1,17 @@
 package ua.com.nikiforov.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StudentDTO implements Comparable<StudentDTO>{
 
     private long id;
+
+    @NotBlank(message = "First name cannot be empty!")
     private String firstName;
+
+    @NotBlank(message = "Last name cannot be empty!")
     private String lastName;
+
     private String groupName;
     private long groupId;
 

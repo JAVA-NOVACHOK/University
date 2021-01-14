@@ -6,29 +6,47 @@ import ua.com.nikiforov.models.Subject;
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
-@Table(name = "lessons",uniqueConstraints = @UniqueConstraint(columnNames = {"group_id","subject_id","room_id","lesson_date","period","teacher_id"}))
+@Table(name = "lessons", uniqueConstraints =
+@UniqueConstraint(columnNames = {"group_id", "subject_id", "room_id", "lesson_date", "period", "teacher_id"}))
 public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "lesson_id")
     private long id;
+
+    @NotNull(message = "Group must not be null!")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
+
+    @NotNull(message = "Subject must not be null!")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subject subject;
+
+    @NotNull(message = "Room must not be null!")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
+
+    @FutureOrPresent(message = "Date must be present or future!")
     @Column(name = "lesson_date")
     private LocalDate lessonDate;
+
+    @Max(value = 6, message = "Period must be equals or less then 6!")
+    @Min(value = 1, message = "Period must be equals or greater then 1!")
     private int period;
+
+    @NotNull(message = "Teacher must not be null!")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;

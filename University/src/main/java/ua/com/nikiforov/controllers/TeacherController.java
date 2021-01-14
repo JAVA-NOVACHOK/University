@@ -24,6 +24,7 @@ import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/teachers")
@@ -67,7 +68,13 @@ public class TeacherController {
 
     @GetMapping("/teacher")
     public String showTeacher(@RequestParam long id, Model model) {
-        TeacherDTO teacher = teacherService.getTeacherById(id);
+        TeacherDTO teacher;
+        try {
+             teacher = teacherService.getTeacherById(id);
+        }catch (EntityNotFoundException e){
+            model.addAttribute(FAIL_MSG, String.format("Error! Failed to get teacher by id %d", id));
+            return VIEW_TEACHERS;
+        }
         List<SubjectDTO> subjects = subjectService.getAllSubjects();
         subjects.removeAll(teacher.getSubjects());
         model.addAttribute(TEACHER_ATTR, teacher);
@@ -78,7 +85,7 @@ public class TeacherController {
     }
 
     @PostMapping("/add")
-    public String processAdding(@ModelAttribute(TEACHER_ATTR) TeacherDTO teacher, Model model) {
+    public String processAdding(@Valid @ModelAttribute(TEACHER_ATTR) TeacherDTO teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
         model.addAttribute(SUBJECTS_ATTR, subjectService.getAllSubjects());
@@ -100,7 +107,7 @@ public class TeacherController {
     }
 
     @PostMapping("/edit")
-    public String editTeacher(@ModelAttribute("teacher") TeacherDTO teacher, Model model) {
+    public String editTeacher(@Valid @ModelAttribute("teacher") TeacherDTO teacher, Model model) {
         String firstName = teacher.getFirstName();
         String lastName = teacher.getLastName();
         try {

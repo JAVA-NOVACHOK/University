@@ -1,13 +1,19 @@
 package ua.com.nikiforov.dto;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDTO implements  Comparable<TeacherDTO>{
 
     private long id;
+
+    @NotBlank(message = "Teacher's first name must not be empty!")
     private String firstName;
+
+    @NotBlank(message = "Teacher's last name must not be empty!")
     private String lastName;
+
     private List<SubjectDTO> subjects = new ArrayList<>();
 
     public TeacherDTO(String firstName, String lastName) {

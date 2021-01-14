@@ -3,6 +3,7 @@ package ua.com.nikiforov.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.services.room.RoomService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/rooms")
@@ -50,11 +52,11 @@ public class RoomsController {
     }
 
     @PostMapping("/add")
-    public String addRoom(@ModelAttribute(MODEL_ATTR_ROOM) RoomDTO roomDTO, Model model) {
+    public String addRoom(@Valid @ModelAttribute(MODEL_ATTR_ROOM)  RoomDTO roomDTO, Model model) {
         try {
             roomService.addRoom(roomDTO);
             model.addAttribute(SUCCESS_MSG,
-                    String.format("Room number '%d' with seats number '%d' added successfuly", roomDTO.getRoomNumber(), roomDTO.getSeatNumber()));
+                    String.format("Room number '%d' with seats number '%d' added successfully", roomDTO.getRoomNumber(), roomDTO.getSeatNumber()));
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG,
                     String.format("Cannot add room. Room with number '%d' already exists", roomDTO.getRoomNumber()));
@@ -68,7 +70,7 @@ public class RoomsController {
         try {
             roomService.deleteRoomById(id);
             model.addAttribute(SUCCESS_MSG,
-                    String.format("Room with '%d' deleted successfuly", id));
+                    String.format("Room with '%d' deleted successfully", id));
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, String.format("Failed to delete room with number and seets number %d",
                    id));
@@ -83,7 +85,7 @@ public class RoomsController {
             RoomDTO room = roomService.getRoomById(roomId);
             model.addAttribute("room", room);
         } catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, String.format("Warning! Couln't find room with id %d ", roomId));
+            model.addAttribute(FAIL_MSG, String.format("Warning! Couldn't find room with id %d ", roomId));
             model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
             return VIEW_ROOMS;
         }
@@ -91,12 +93,12 @@ public class RoomsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(MODEL_ATTR_ROOM) RoomDTO room, Model model) {
+    public String processEdit(@Valid @ModelAttribute(MODEL_ATTR_ROOM) RoomDTO room, Model model) {
         try {
             roomService.updateRoom(room);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Room number '%d' updated successfuly", room.getRoomNumber()));
-        } catch (DuplicateKeyException e) {
+        } catch (DataIntegrityViolationException e) {
             model.addAttribute(FAIL_MSG, String.format(
                     "Warning! Failed to update room with number '%d'. It already exists!", room.getRoomNumber()));
         }

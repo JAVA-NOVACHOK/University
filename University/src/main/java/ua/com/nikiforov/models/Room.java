@@ -1,6 +1,7 @@
 package ua.com.nikiforov.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "rooms", uniqueConstraints = @UniqueConstraint(columnNames = {"room_number"}))
@@ -10,9 +11,15 @@ public class Room implements Comparable<Room> {
     @Column(name = "room_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(name="room_number")
+
+    @Positive(message = "Room Number must be positive!")
+    @Max(value = 1000,message = "Room number cannot be greater then 1000!")
+    @Column(name = "room_number")
     private int roomNumber;
-    @Column(name="seat_number")
+
+    @Positive(message = "Seats Number must be positive!")
+    @Max(value = 300, message = "Seats number cannot be greater then 300!")
+    @Column(name = "seat_number")
     private int seatNumber;
 
     public Room() {
@@ -52,7 +59,6 @@ public class Room implements Comparable<Room> {
         this.seatNumber = seatNumber;
     }
 
-    
 
     @Override
     public int hashCode() {

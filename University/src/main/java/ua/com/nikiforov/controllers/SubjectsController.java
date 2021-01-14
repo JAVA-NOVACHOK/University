@@ -16,6 +16,8 @@ import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/subjects")
 public class SubjectsController {
@@ -76,7 +78,7 @@ public class SubjectsController {
     }
 
     @PostMapping("/edit")
-    public String processEditing(@ModelAttribute(SUBJECT_ATTR) SubjectDTO subject, Model model) {
+    public String processEditing(@Valid @ModelAttribute(SUBJECT_ATTR) SubjectDTO subject, Model model) {
         SubjectDTO oldSubject;
         String subjectName = subject.getName();
         model.addAttribute(TEACHERS_ATTR, teacherService.getAllTeachers());

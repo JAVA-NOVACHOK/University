@@ -109,7 +109,7 @@ class StudentsServiceImplTest {
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(groupName);
+        groupService.addGroup(new GroupDTO(groupName));
         return groupService.getGroupByName(groupName);
     }
 

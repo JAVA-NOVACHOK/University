@@ -53,32 +53,34 @@ public class LessonServiceImpl implements LessonService {
     public LessonDTO getLessonById(long id) {
         String getLessonMessage = String.format("Lesson by id %d", id);
         LOGGER.debug(GETTING_MSG, getLessonMessage);
-        LessonDTO lesson = lessonMapper.lessonToLessonDTO(lessonRepository.getOne(id));
-        if (lesson == null) {
-            String failGetByIdMessage = String.format("Couldn't get %s", getLessonMessage);
+        Lesson lesson;
+        try {
+            lesson = lessonRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
+            String failGetByIdMessage = String.format("Couldn't get lesson by id %d", id);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage);
         }
         LOGGER.info("Successfully retrieved Lesson {}", lesson);
-        return lesson;
+        return lessonMapper.lessonToLessonDTO(lesson);
     }
 
     @Override
     public LessonDTO getLessonByAllArgs(LessonDTO lessonDTO) {
         Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
         LOGGER.debug("Getting {}", lesson);
-        LessonDTO lessonNew;
+        Lesson lessonNew;
         try {
-            lessonNew = lessonMapper.lessonToLessonDTO(lessonRepository.getLessonByAllArgs(lesson.getPeriod(),
+            lessonNew = lessonRepository.getLessonByAllArgs(lesson.getPeriod(),
                     lesson.getSubject(), lesson.getRoom(), lesson.getGroup(),
-                    lesson.getLessonDate(), lesson.getTeacher()));
-        } catch (NoResultException e) {
+                    lesson.getLessonDate(), lesson.getTeacher()).orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
             String failGetByIdMessage = String.format("Couldn't get %s", lesson);
             LOGGER.error(failGetByIdMessage);
             throw new EntityNotFoundException(failGetByIdMessage);
         }
         LOGGER.info("Successfully retrieved Lesson {}", lessonNew);
-        return lessonNew;
+        return lessonMapper.lessonToLessonDTO(lessonNew);
     }
 
     @Override

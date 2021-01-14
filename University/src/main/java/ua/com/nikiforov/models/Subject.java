@@ -5,19 +5,25 @@ import java.util.*;
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="subjects",uniqueConstraints = @UniqueConstraint(columnNames = {"subject_name"}))
-public class Subject implements Comparable<Subject>{
+@Table(name = "subjects", uniqueConstraints = @UniqueConstraint(columnNames = {"subject_name"}))
+public class Subject implements Comparable<Subject> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "subject_id")
     private int id;
+
+    @Size(min = 2, max = 50,
+            message = "Subject's name length cannot be less then 2 and greater then 50!")
+    @NotBlank(message = "Subject name cannot be empty!")
     @Column(name = "subject_name")
     private String name;
 
-    @ManyToMany(mappedBy = "subjects",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "subjects", fetch = FetchType.LAZY)
     private Set<Teacher> teachers;
 
     public Subject() {
@@ -61,7 +67,7 @@ public class Subject implements Comparable<Subject>{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void addTeacher(Teacher teacher) {
         teachers.add(teacher);
     }
@@ -113,7 +119,7 @@ public class Subject implements Comparable<Subject>{
 
     @Override
     public int compareTo(Subject o) {
-        return this.getName().compareTo(o.getName()) ;
+        return this.getName().compareTo(o.getName());
     }
 
 }

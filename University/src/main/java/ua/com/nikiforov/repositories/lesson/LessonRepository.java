@@ -10,13 +10,14 @@ import ua.com.nikiforov.models.lesson.Lesson;
 import ua.com.nikiforov.models.persons.Teacher;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface LessonRepository extends JpaRepository<Lesson,Long> {
 
     @Query("SELECT l FROM Lesson l WHERE l.period = :period AND l.subject = :subject " +
             "AND l.room = :room  AND l.group = :group AND l.lessonDate = :date " +
             "AND l.teacher = :teacher")
-    public Lesson getLessonByAllArgs(
+    public Optional<Lesson> getLessonByAllArgs(
             @Param("period") int period,
             @Param("subject") Subject subject,
             @Param("room") Room room,

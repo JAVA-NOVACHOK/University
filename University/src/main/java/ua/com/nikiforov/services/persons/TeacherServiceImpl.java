@@ -62,14 +62,16 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDTO getTeacherById(long teacherId) {
         String getMessage = String.format("Teacher by id %d", teacherId);
         LOGGER.debug(GETTING_MSG, getMessage);
-        TeacherDTO teacher = teacherMapper.getTeacherDTO(teacherRepository.getOne(teacherId));
-        if (teacher == null) {
+        Teacher teacher;
+        try {
+            teacher = teacherRepository.findById(teacherId).orElseThrow(EntityNotFoundException::new);
+        }catch (EntityNotFoundException e){
             String failMessage = String.format("Failed to get %s", getMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info("Successfully retrieved {}", getMessage);
-        return teacher;
+        return teacherMapper.getTeacherDTO(teacher);
     }
 
     @Override

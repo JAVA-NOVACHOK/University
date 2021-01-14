@@ -58,28 +58,33 @@ public class StudentsServiceImpl implements StudentsService {
     public StudentDTO getStudentById(long studentId) {
         String getMessage = String.format("Student by id %s", studentId);
         LOGGER.debug(GETTING, getMessage);
-        StudentDTO student = studentMapper.studentToStudentDTO(studentRepository.getOne(studentId));
-        if (student == null) {
+        Student student;
+        try {
+            student = studentRepository.findById(studentId).orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Fail to get student by Id %d from DB", studentId);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
-        return student;
+        return studentMapper.studentToStudentDTO(student);
     }
 
     @Override
     public StudentDTO getStudentByName(String firstName, String lastName) {
         String studentMessage = String.format("Student with firstName = %s, lastName = %s", firstName, lastName);
         LOGGER.debug(GETTING, studentMessage);
-        StudentDTO student = studentMapper.studentToStudentDTO(studentRepository.getStudentByFirstNameAndLastName(firstName, lastName));
-        if (student == null) {
+        Student student;
+        try {
+            student = studentRepository.getStudentByFirstNameAndLastName(firstName, lastName)
+                    .orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Fail to get student by firstName = %s and lastName = %s from DB", firstName, lastName);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
-        return student;
+        return studentMapper.studentToStudentDTO(student);
     }
 
     @Override
@@ -88,8 +93,11 @@ public class StudentsServiceImpl implements StudentsService {
                 "Student with firstName = %s, lastname = %s, groupId = %d",
                 firstName, lastName, groupId);
         LOGGER.debug(GETTING, studentMessage);
-        StudentDTO student = studentMapper.studentToStudentDTO(studentRepository.getStudentByNameGroupId(groupId,firstName, lastName));
-        if (student == null) {
+        Student student;
+        try {
+            student = studentRepository.getStudentByNameGroupId(groupId, firstName, lastName)
+                    .orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format(
                     "Fail to get student by groupId %d, firstName = %s and lastName = %s from DB",
                     groupId, firstName, lastName);
@@ -97,7 +105,7 @@ public class StudentsServiceImpl implements StudentsService {
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
-        return student;
+        return studentMapper.studentToStudentDTO(student);
     }
 
     @Override

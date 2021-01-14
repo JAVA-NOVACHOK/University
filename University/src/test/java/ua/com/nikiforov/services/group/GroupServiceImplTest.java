@@ -85,7 +85,7 @@ class GroupServiceImplTest {
     @Test
     @Order(2)
     void whenAddGroupIfSuccessThenReturnTrue() {
-        assertDoesNotThrow(() -> groupService.addGroup(TEST_GROUP_NAME_6));
+        assertDoesNotThrow(() -> groupService.addGroup(new GroupDTO(TEST_GROUP_NAME_6)));
     }
 
     @Test
@@ -169,7 +169,7 @@ class GroupServiceImplTest {
     }
 
     public GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(groupName);
+        groupService.addGroup(new GroupDTO(groupName));
         return groupService.getGroupByName(groupName);
     }
 

@@ -53,22 +53,23 @@
                     <td>
                         <form action="/schedules/edit" method="get">
                             <input type="number" hidden="true"
-                                   th:value="${timetable.lessonId}" name="lessonId"> <input
-                                type="number" hidden="true" th:value="${timetable.period}"
-                                name="period"> <input type="text" hidden="true"
-                                                      name="subjectName" th:value="${timetable.subject.name}">
+                                   th:value="${timetable.lessonId}" name="lessonId">
+                            <input type="number" hidden="true" th:value="${timetable.period}"
+                                   name="period">
+                            <input type="text" hidden="true"
+                                   name="subjectName" th:value="${timetable.subject.name}">
                             <input type="text" hidden="true" name="roomNumber"
-                                   th:value="${timetable.room.roomNumber}"> <input type="text"
-                                                                                   hidden="true" name="groupName"
-                                                                                   th:value="${timetable.group.groupName}">
-                            <input
-                                    type="number" hidden="true" name="teacherId"
-                                    th:value="${timetable.teacher.id}"> <input type="text"
-                                                                               hidden="true" name="teachersName"
-                                                                               th:value="|${timetable.teacher.firstName} ${timetable.teacher.lastName}|">
-                            <input
-                                    type="date" hidden="true" name="dateString"
-                                    th:value="${timetable.date}">
+                                   th:value="${timetable.room.roomNumber}">
+                            <input type="text"
+                                   hidden="true" name="groupName"
+                                   th:value="${timetable.group.groupName}">
+                            <input type="number" hidden="true" name="teacherId"
+                                   th:value="${timetable.teacher.id}">
+                            <input type="text"
+                                   hidden="true" name="teachersName"
+                                   th:value="|${timetable.teacher.firstName} ${timetable.teacher.lastName}|">
+                            <input type="date" hidden="true" name="dateString"
+                                   th:value="${timetable.date}">
                             <button type="submit" class="btn btn-success">Edit</button>
                         </form>
                     </td>
@@ -84,7 +85,8 @@
             <div class="row justify-content-center">
                 <form class="form-inline" action="/teachers/teacher/" method="get">
                     <input type="number" hidden="true" th:value="${teacher.getId()}" name="id">
-                    <button id="day" type="submit" class="btn mr-2 btn-outline-success" th:text="|To ${teacher.firstName} ${teacher.lastName}|">
+                    <button id="day" type="submit" class="btn mr-2 btn-outline-success"
+                            th:text="|To ${teacher.firstName} ${teacher.lastName}|">
                     </button>
                 </form>
             </div>

@@ -21,6 +21,7 @@ import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/students")
@@ -38,12 +39,14 @@ public class StudentsController {
     private static final String VIEW_STUDENTS = "students/students";
     private static final String VIEW_TRANSFER_FORM = "students/transfer_form";
     private static final String VIEW_EDIT_FORM = "students/edit_form";
+    private static final String VIEW_GROUPS = "groups/groups";
 
     private static final String REDIRECT_TRANSFER = "redirect:/students/transfer/?id=";
     private static final String CHOOSE_GROUP_MSG = "&message=Choose group from list";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
+    private static final String ERROR_MSG = "Error! Something went wrong. Failed to ";
 
     private StudentsService studentService;
 
@@ -67,8 +70,16 @@ public class StudentsController {
 
     @GetMapping()
     public String showStudents(@RequestParam long groupId, Model model) {
-        model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupId));
-        model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+        try {
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupId));
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("%s find group by id %d.", ERROR_MSG, groupId));
+            return VIEW_GROUPS;
+        } catch (DataOperationException e) {
+            model.addAttribute(FAIL_MSG, String.format("%s show students!", ERROR_MSG));
+            return VIEW_GROUPS;
+        }
         return VIEW_STUDENTS;
     }
 
@@ -86,7 +97,7 @@ public class StudentsController {
     }
 
     @PostMapping("/edit")
-    public String processEdit(@ModelAttribute(STUDENT_ATTR) StudentDTO studentDTO, Model model) {
+    public String processEdit(@Valid @ModelAttribute(STUDENT_ATTR) StudentDTO studentDTO, Model model) {
         try {
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             GroupDTO groupDTO = groupService.getGroupById(studentDTO.getGroupId());
@@ -124,6 +135,9 @@ public class StudentsController {
             model.addAttribute(GROUP_ATTR, group);
             model.addAttribute(GROUPS_ATTR, groups);
             model.addAttribute(FAIL_MSG, message);
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("Error! Couldn't get student by id %d!", id));
+            return VIEW_STUDENTS;
         } catch (DataOperationException e) {
             model.addAttribute(FAIL_MSG, "Error! Something went wrong while transfering!");
             return VIEW_STUDENTS;
@@ -132,7 +146,7 @@ public class StudentsController {
     }
 
     @PostMapping("/transfer")
-    public String processTransfer(@ModelAttribute(STUDENT_ATTR) StudentDTO student,
+    public String processTransfer(@Valid @ModelAttribute(STUDENT_ATTR) StudentDTO student,
                                   @RequestParam long groupToId, Model model) {
         LOGGER.debug("GroupToId = {}", groupToId);
         long groupFromId = student.getGroupId();
@@ -151,7 +165,6 @@ public class StudentsController {
             studentService.transferStudent(studentId, groupToId);
             model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was transferd successfully to group %s",
                     firstName, lastName, groupTo.getGroupName()));
-
             model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(groupToId));
         } catch (DuplicateKeyException e) {
             model.addAttribute(GROUP_IN_ATTR, groupFrom);
@@ -169,25 +182,30 @@ public class StudentsController {
 
     @GetMapping("/delete")
     public String deleteStudent(@RequestParam long id, Model model) {
-        StudentDTO student = studentService.getStudentById(id);
-        GroupDTO group = groupService.getGroupById(student.getGroupId());
+        StudentDTO student;
+        GroupDTO group;
         try {
+            student = studentService.getStudentById(id);
+            group = groupService.getGroupById(student.getGroupId());
             studentService.deleteStudentById(id);
             model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
             model.addAttribute(GROUP_IN_ATTR, groupService.getGroupById(student.getGroupId()));
             model.addAttribute(SUCCESS_MSG, String.format("Student %s %s was deleted successfully from group %s",
                     student.getFirstName(), student.getLastName(), group.getGroupName()));
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete Student by id %d! %s", id, e.getMessage()));
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            return VIEW_GROUPS;
         } catch (DataOperationException e) {
-            model.addAttribute(GROUP_IN_ATTR, group);
-            model.addAttribute(FAIL_MSG, String.format("Failed to delete Student %s %s from group %s",
-                    student.getFirstName(), student.getLastName(), group.getGroupName()));
-            return VIEW_STUDENTS;
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete Student by id %d", id));
+            model.addAttribute(GROUPS_ATTR, groupService.getAllGroups());
+            return VIEW_GROUPS;
         }
         return VIEW_STUDENTS;
     }
 
     @PostMapping("/add")
-    public String processAdding(@ModelAttribute(STUDENT_ATTR) StudentDTO student, Model model) {
+    public String processAdding(@Valid @ModelAttribute(STUDENT_ATTR) StudentDTO student, Model model) {
         long groupId = student.getGroupId();
         String firstName = student.getFirstName();
         String lastName = student.getLastName();

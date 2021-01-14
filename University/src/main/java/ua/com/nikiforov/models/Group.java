@@ -5,6 +5,9 @@ import java.util.List;
 import ua.com.nikiforov.models.persons.Student;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -15,10 +18,13 @@ public class Group implements Comparable<Group> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "group_id")
     private long groupId;
+
+    @Pattern(regexp = "^[A-Z]{2}-\\d{2}$",
+            message = "Group name must have first two capital letters, dash and two numbers!")
     @Column(name = "group_name")
     private String groupName;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private List<Student> groupStudents;
 

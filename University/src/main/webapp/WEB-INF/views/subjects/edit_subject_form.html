@@ -28,7 +28,7 @@
 		<form class="form-inline" action="/subjects/edit" method="post">
 			<div class="row">
 					<input type="number" class="form-control" hidden="true" th:value="${subject.id}" name="id">
-					<input type="text" class="mr-2 form-control" required="required" th:value="${subject.name}" name="name">
+					<input type="text" class="mr-2 form-control" th:value="${subject.name}" name="name">
 					<button type="submit" class="btn mr-2 btn-outline-success">Edit subject</button>
 					<a type="button" th:href="@{/subjects}" class="btn btn-outline-danger">Cancel</a>
 			</div>
