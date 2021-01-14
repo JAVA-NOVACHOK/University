@@ -27,7 +27,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubjectServiceImpl.class);
 
-    private static final Sort SORT_BY_SUBJECT_NAME = Sort.by(Sort.Direction.ASC,"name");
+    private static final Sort SORT_BY_SUBJECT_NAME = Sort.by(Sort.Direction.ASC, "name");
 
     private static final String GETTING_MSG = "Getting '{}'";
     private static final String SUCCESSFULLY_RETRIEVED_MSG = "Successfully retrieved {}";
@@ -43,7 +43,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public void addSubject(String subjectName) {
-        String addMessage = String.format("subject with name %s",subjectName );
+        String addMessage = String.format("subject with name %s", subjectName);
         LOGGER.debug("Adding '{}'", addMessage);
         try {
             subjectRepository.save(new Subject(subjectName));
@@ -58,14 +58,16 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectDTO getSubjectById(int subjectId) {
         String subjectMessage = String.format("Subject by id %d", subjectId);
         LOGGER.debug(GETTING_MSG, subjectMessage);
-        SubjectDTO subject = subjectMapper.subjectToSubjectDTO(subjectRepository.getOne(subjectId));
-        if (subject == null) {
+        Subject subject;
+        try {
+            subject = subjectRepository.findById(subjectId).orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Fail to get subject by Id %d from DB", subjectId);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, subject);
-        return subject;
+        return subjectMapper.subjectToSubjectDTO(subject);
 
     }
 
@@ -74,14 +76,16 @@ public class SubjectServiceImpl implements SubjectService {
     public SubjectDTO getSubjectByName(String subjectName) {
         String subjectMessage = String.format("Subject by name %s", subjectName);
         LOGGER.debug(GETTING_MSG, subjectMessage);
-        SubjectDTO subject = subjectMapper.subjectToSubjectDTO(subjectRepository.getSubjectByName(subjectName));
-        if (subject == null) {
+        Subject subject;
+        try {
+            subject = subjectRepository.getSubjectByName(subjectName).orElseThrow(EntityNotFoundException::new);
+        }catch (EntityNotFoundException e) {
             String failMessage = String.format("Fail to get subject by name %s from DB", subjectName);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, subject);
-        return subject;
+        return subjectMapper.subjectToSubjectDTO(subject);
 
     }
 
@@ -106,7 +110,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Transactional
     public void updateSubject(SubjectDTO subjectDTO) {
         Subject newSubject = subjectMapper.subjectDTOToSubject(subjectDTO);
-        Subject subjectWithTeachers = subjectRepository.getOne(subjectDTO.getId());
+        Subject subjectWithTeachers = subjectMapper.subjectDTOToSubject(getSubjectById(subjectDTO.getId()));
         newSubject.setTeachers(subjectWithTeachers.getTeachers());
         String updateMessage = String.format("Subject with name %s by id %d", newSubject.getName(), newSubject.getId());
         LOGGER.debug("Updating {}", updateMessage);
@@ -131,7 +135,7 @@ public class SubjectServiceImpl implements SubjectService {
         try {
             subjectRepository.deleteById(subjectId);
             LOGGER.info("Successfully deleted '{}'", deleteMessage);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new DataOperationException("Something went wrong!", e);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
