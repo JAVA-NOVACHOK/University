@@ -45,16 +45,18 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void addTeacher(TeacherDTO teacherDTO) {
+    public TeacherDTO addTeacher(TeacherDTO teacherDTO) {
         String teacherMessage = String.format("Teacher with firstName = %s, lastName = %s",
                 teacherDTO.getFirstName(), teacherDTO.getLastName());
         LOGGER.debug("Adding {}", teacherMessage);
+        Teacher teacher;
         try {
-            teacherRepository.save(teacherMapper.teacherDTOToTeacher(teacherDTO));
+            teacher = teacherRepository.save(teacherMapper.teacherDTOToTeacher(teacherDTO));
             LOGGER.info("Successful added {}", teacherMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + teacherMessage, e);
         }
+        return teacherMapper.getTeacherDTO(teacher);
     }
 
     @Override
@@ -62,16 +64,21 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDTO getTeacherById(long teacherId) {
         String getMessage = String.format("Teacher by id %d", teacherId);
         LOGGER.debug(GETTING_MSG, getMessage);
+        Teacher teacher = findTeacherById(teacherId,getMessage);
+        LOGGER.info("Successfully retrieved {}", getMessage);
+        return teacherMapper.getTeacherDTO(teacher);
+    }
+
+    private Teacher findTeacherById(long teacherId,String message){
         Teacher teacher;
         try {
             teacher = teacherRepository.findById(teacherId).orElseThrow(EntityNotFoundException::new);
         }catch (EntityNotFoundException e){
-            String failMessage = String.format("Failed to get %s", getMessage);
+            String failMessage = String.format("Failed to get %s", message);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
-        LOGGER.info("Successfully retrieved {}", getMessage);
-        return teacherMapper.getTeacherDTO(teacher);
+        return teacher;
     }
 
     @Override
@@ -110,7 +117,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     @Transactional
-    public void updateTeacher(TeacherDTO teacherDTO) {
+    public TeacherDTO updateTeacher(TeacherDTO teacherDTO) {
         Teacher newTeacher = teacherMapper.teacherDTOToTeacher(teacherDTO);
         Teacher teacherWithSubjects = teacherRepository.getOne(newTeacher.getId());
         newTeacher.setSubjects(teacherWithSubjects.getSubjects());
@@ -127,6 +134,7 @@ public class TeacherServiceImpl implements TeacherService {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        return teacherMapper.getTeacherDTO(newTeacher);
     }
 
     @Override

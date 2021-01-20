@@ -51,7 +51,7 @@ public class GroupsController {
     }
 
     @PostMapping("/add")
-    public String addGroup(@Valid @ModelAttribute(GROUP) GroupDTO groupDTO, Model model) {
+    public String addGroup(@Valid @RequestBody GroupDTO groupDTO, Model model) {
         try {
             groupService.addGroup(groupDTO);
             model.addAttribute(SUCCESS_MSG, String.format("Group with name '%s' was added successfully!", groupDTO.getGroupName()));

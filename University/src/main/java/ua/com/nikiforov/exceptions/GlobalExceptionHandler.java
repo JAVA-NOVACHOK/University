@@ -29,7 +29,8 @@ public class GlobalExceptionHandler {
         List<FieldError> errors = e.getBindingResult().getFieldErrors();
         List<String> errorMessages = new ArrayList<>();
         for (int i = 1; i <= errors.size(); i++) {
-            errorMessages.add(String.format("%d. %s %s!", i, ERROR, errors.get(i - 1).getDefaultMessage()));
+            FieldError fieldError = errors.get(i - 1);
+            errorMessages.add(String.format("%d. %s%s", i, ERROR, fieldError.getDefaultMessage()));
         }
         modelAndView.addObject(ERROR_MESSAGES, errorMessages);
         return modelAndView;

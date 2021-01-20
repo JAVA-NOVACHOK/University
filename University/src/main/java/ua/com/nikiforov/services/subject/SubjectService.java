@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.SubjectDTO;
 
 public interface SubjectService {
 
-    public void addSubject(SubjectDTO subjectDTO);
+    public SubjectDTO addSubject(SubjectDTO subjectDTO);
 
     public SubjectDTO getSubjectById(int subjectId);
 
@@ -14,7 +14,7 @@ public interface SubjectService {
 
     public List<SubjectDTO> getAllSubjects();
 
-    public void updateSubject(SubjectDTO subject);
+    public SubjectDTO updateSubject(SubjectDTO subject);
 
     public void deleteSubjectById(int subjectId);
 

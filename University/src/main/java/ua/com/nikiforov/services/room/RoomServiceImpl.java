@@ -40,15 +40,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void addRoom(RoomDTO roomDTO) {
+    public RoomDTO addRoom(RoomDTO roomDTO) {
         LOGGER.debug("Adding {}", roomDTO);
+        Room room;
         try {
-            roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
+           room = roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
             LOGGER.debug("Successfully added {}", roomDTO);
         } catch (DataIntegrityViolationException e) {
             LOGGER.error("Couldn't add {}", roomDTO);
             throw new DuplicateKeyException("Error! Duplicate room while adding", e);
         }
+        return roomMapper.roomToRoomDTO(room);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
         Room room;
         try {
             room = roomRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        } catch (NoSuchElementException e) {
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Couldn't get %s", getMessage);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
@@ -99,17 +101,19 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void updateRoom(RoomDTO roomDTO) {
+    public RoomDTO updateRoom(RoomDTO roomDTO) {
         String updateMessage = String.format("Room with id = '%d', number = '%d' and '%d' seats", roomDTO.getId(),
                 roomDTO.getRoomNumber(), roomDTO.getSeatNumber());
         LOGGER.debug("Updating {}", updateMessage);
+        Room room;
         try {
-            roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
+            room = roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
         } catch (DataIntegrityViolationException e) {
             String failMessage = String.format("ERROR! Couldn't update %s", updateMessage);
             LOGGER.error(failMessage);
             throw new DuplicateKeyException(failMessage, e);
         }
+        return roomMapper.roomToRoomDTO(room);
     }
 
     @Override

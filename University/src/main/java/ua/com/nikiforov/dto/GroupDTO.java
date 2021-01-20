@@ -24,6 +24,7 @@ public class GroupDTO {
 
     public GroupDTO(@NotBlank String groupName) {
         this.groupName = groupName;
+        students = new ArrayList<>();
     }
 
     public GroupDTO(long groupId, @NotBlank String groupName) {

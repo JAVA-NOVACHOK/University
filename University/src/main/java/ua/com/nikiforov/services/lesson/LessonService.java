@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.LessonDTO;
 
 public interface LessonService {
     
-    public void addLesson(LessonDTO lesson);
+    public LessonDTO addLesson(LessonDTO lesson);
 
     public LessonDTO getLessonById(long id);
     
@@ -14,7 +14,7 @@ public interface LessonService {
 
     public List<LessonDTO> getAllLessons();
 
-    public void updateLesson(LessonDTO lesson);
+    public LessonDTO updateLesson(LessonDTO lesson);
 
     public void deleteLessonById(long id);
     

@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.RoomDTO;
 
 public interface RoomService {
 
-    public void addRoom(RoomDTO roomDTO);
+    public RoomDTO addRoom(RoomDTO roomDTO);
 
     public RoomDTO getRoomById(int id);
     
@@ -14,7 +14,7 @@ public interface RoomService {
 
     public List<RoomDTO> getAllRooms();
 
-    public void updateRoom(RoomDTO room);
+    public RoomDTO updateRoom(RoomDTO room);
 
     public void deleteRoomById(int id);
 }

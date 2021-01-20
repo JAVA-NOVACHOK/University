@@ -1,24 +1,18 @@
 package ua.com.nikiforov.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.*;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.services.room.RoomService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/rooms")
@@ -65,7 +59,7 @@ public class RoomsController {
         return VIEW_ROOMS;
     }
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteRoom(@RequestParam int id, Model model) {
         try {
             roomService.deleteRoomById(id);

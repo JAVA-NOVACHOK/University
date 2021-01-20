@@ -28,6 +28,7 @@ public class GroupServiceImpl implements GroupService {
     private static final Sort SORT_BY_GROUP_NAME = Sort.by(Sort.Direction.ASC, "groupName");
 
     private static final String GETTING_MSG = "Getting {}";
+    private static final String SUCCESS_GET_GROUP = "Successfully retrieved group '{}'";
 
     private GroupRepository groupRepository;
     private GroupMapperDTO groupMapper;
@@ -39,15 +40,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void addGroup(GroupDTO groupDTO) {
+    public GroupDTO addGroup(GroupDTO groupDTO) {
         String addMessage = String.format("Group with name %s", groupDTO.getGroupName());
         LOGGER.debug("Adding {}", addMessage);
+        Group group;
         try {
-            groupRepository.save(groupMapper.groupDTOToGroup(groupDTO));
+            group = groupRepository.save(groupMapper.groupDTOToGroup(groupDTO));
             LOGGER.info("Successfully added {}", addMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
         }
+        return groupMapper.groupToGroupDTO(group);
     }
 
     @Override
@@ -55,21 +58,30 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO getGroupById(long groupId) {
         String getMessage = String.format("Group by id %d", groupId);
         LOGGER.debug(GETTING_MSG, getMessage);
-        Group group = groupRepository.findById(groupId).orElseThrow(EntityNotFoundException::new);
-        LOGGER.info("Successfully retrieved group '{}'", group);
+        Group group;
+        try {
+            group = groupRepository.findById(groupId).orElseThrow(EntityNotFoundException::new);
+        } catch (EntityNotFoundException e) {
+            String failMessage = String.format("Couldn't get %s", getMessage);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
+        }
+        LOGGER.info(SUCCESS_GET_GROUP, group);
         return groupMapper.groupToGroupDTO(group);
     }
 
     @Override
+    @Transactional
     public GroupDTO getGroupByName(String groupName) {
         String getMessage = String.format("Group by name %s", groupName);
         LOGGER.debug(GETTING_MSG, getMessage);
         Group group = groupRepository.getGroupByGroupName(groupName).orElseThrow(EntityNotFoundException::new);
-        LOGGER.info("Successfully retrieved group '{}'", group);
+        LOGGER.info(SUCCESS_GET_GROUP, group);
         return groupMapper.groupToGroupDTO(group);
     }
 
     @Override
+    @Transactional
     public List<GroupDTO> getAllGroups() {
         String getAllMessage = "all groups";
         LOGGER.debug(GETTING_MSG, getAllMessage);
@@ -87,11 +99,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void updateGroup(GroupDTO groupDTO) {
+    public GroupDTO updateGroup(GroupDTO groupDTO) {
         LOGGER.debug("Updating group {}", groupDTO);
         Group newGroup = groupMapper.groupDTOToGroup(groupDTO);
         try {
-            Group groupWithStudents = groupRepository.getOne(newGroup.getGroupId());
+            Group groupWithStudents = groupRepository.findById(newGroup.getGroupId()).orElseThrow(EntityNotFoundException::new);
             newGroup.setGroupStudents(groupWithStudents.getGroupStudents());
             groupRepository.save(newGroup);
             LOGGER.info("Successful adding group {}", newGroup);
@@ -99,11 +111,12 @@ public class GroupServiceImpl implements GroupService {
             String duplicateMessage = String.format("Already exists %s", groupDTO);
             LOGGER.error("Error! {}", duplicateMessage);
             throw new DuplicateKeyException(duplicateMessage);
-        } catch (PersistenceException e) {
-            String failMessage = String.format("Couldn't update Group with id %d name %s", newGroup.getGroupId(), newGroup.getGroupName());
+        } catch (EntityNotFoundException e) {
+            String failMessage = String.format("There Group with id %d name %s", newGroup.getGroupId(), newGroup.getGroupName());
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        return groupMapper.groupToGroupDTO(newGroup);
     }
 
     @Override
@@ -125,6 +138,5 @@ public class GroupServiceImpl implements GroupService {
         }
 
     }
-
 
 }

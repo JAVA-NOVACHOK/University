@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TeacherService {
 
-    public void addTeacher(TeacherDTO teacher);
+    public TeacherDTO addTeacher(TeacherDTO teacher);
 
     public TeacherDTO getTeacherById(long id);
     
@@ -17,7 +17,7 @@ public interface TeacherService {
 
     public List<TeacherDTO> getAllTeachers();
     
-    public void updateTeacher(TeacherDTO teacher);
+    public TeacherDTO updateTeacher(TeacherDTO teacher);
 
     public void deleteTeacherById(long teacherId);
     

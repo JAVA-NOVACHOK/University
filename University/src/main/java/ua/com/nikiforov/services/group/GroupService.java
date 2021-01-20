@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.GroupDTO;
 
 public interface GroupService {
     
-    public void addGroup(GroupDTO groupDTO);
+    public GroupDTO addGroup(GroupDTO groupDTO);
     
     public GroupDTO getGroupById(long id);
     
@@ -14,7 +14,7 @@ public interface GroupService {
     
     public List<GroupDTO> getAllGroups();
     
-    public void updateGroup(GroupDTO group);
+    public GroupDTO updateGroup(GroupDTO group);
     
     public void deleteGroup(long id);
     

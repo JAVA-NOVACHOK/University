@@ -11,6 +11,9 @@ import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.services.group.GroupService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +34,7 @@ class GroupsControllerTest {
     private static final String TEST_GROUP_NAME_4 = "AA-15";
     private static final String TEST_GROUP_NAME_5 = "AA-16";
     private static final String TEST_GROUP_NAME_6 = "AB-16";
+    private static final String TEST_EMPTY_NAME = "";
 
     private static final long INVALID_GROUP_ID = 100500;
 
@@ -43,14 +47,17 @@ class GroupsControllerTest {
     private static final String GROUP_ID_ATTR = "groupId";
     private static final String GROUP_NAME_ATTR = "groupName";
     private static final String GROUPS_ATTR = "groups";
+    private static final String ERROR_ATTR = "errorMessages";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";
+    private static final String ERROR_MSG = "1. ERROR! Group name must have first two capital letters, dash and two numbers!";
     private static final String STR = "";
 
     private static final String VIEW_GROUPS = "groups/groups";
     private static final String VIEW_EDIT_GROUP = "groups/edit_group_form";
     private static final String VIEW_DELETE_GROUP = "groups/delete_group_form";
+    private static final String VIEW_ERROR = "errors/error";
 
     @Autowired
     private GroupService groupService;
@@ -85,7 +92,7 @@ class GroupsControllerTest {
 
     @Test
     @Order(2)
-    void givenGroupAddUriWithParams_AddGroup() throws Exception {
+    void whenAddGroupWithParams_GroupAddsSuccessfully() throws Exception {
         this.mockMvc
                 .perform(post("/groups/add/")
                         .param(GROUP_NAME_ATTR, TEST_GROUP_NAME_4))
@@ -93,6 +100,17 @@ class GroupsControllerTest {
                 .andExpect(model().attributeExists(GROUPS_ATTR))
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(view().name(VIEW_GROUPS));
+    }
+
+    @Test
+    void whenAddGroupWithEmptyName_ErrorHandles() throws Exception {
+        List<String> errorMessages = new ArrayList<>();
+        errorMessages.add(ERROR_MSG);
+        this.mockMvc
+                .perform(post("/groups/add/")
+                        .param(GROUP_NAME_ATTR, TEST_EMPTY_NAME))
+                .andExpect(model().attribute(ERROR_ATTR, errorMessages))
+                .andExpect(view().name(VIEW_ERROR));
     }
 
     @Test

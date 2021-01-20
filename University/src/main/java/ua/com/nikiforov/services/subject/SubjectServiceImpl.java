@@ -42,15 +42,17 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public void addSubject(SubjectDTO subjectDTO) {
+    public SubjectDTO addSubject(SubjectDTO subjectDTO) {
         String addMessage = String.format("subject with name %s", subjectDTO.getName());
         LOGGER.debug("Adding '{}'", addMessage);
+        Subject subject;
         try {
-            subjectRepository.save(subjectMapper.subjectDTOToSubject(subjectDTO));
+            subject = subjectRepository.save(subjectMapper.subjectDTOToSubject(subjectDTO));
             LOGGER.debug("Successfully added '{}'", addMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
         }
+        return subjectMapper.subjectToSubjectDTO(subject);
     }
 
     @Override
@@ -68,7 +70,6 @@ public class SubjectServiceImpl implements SubjectService {
         }
         LOGGER.info(SUCCESSFULLY_RETRIEVED_MSG, subject);
         return subjectMapper.subjectToSubjectDTO(subject);
-
     }
 
     @Override
@@ -79,7 +80,7 @@ public class SubjectServiceImpl implements SubjectService {
         Subject subject;
         try {
             subject = subjectRepository.getSubjectByName(subjectName).orElseThrow(EntityNotFoundException::new);
-        }catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Fail to get subject by name %s from DB", subjectName);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
@@ -108,7 +109,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     @Transactional
-    public void updateSubject(SubjectDTO subjectDTO) {
+    public SubjectDTO updateSubject(SubjectDTO subjectDTO) {
         Subject newSubject = subjectMapper.subjectDTOToSubject(subjectDTO);
         Subject subjectWithTeachers = subjectMapper.subjectDTOToSubject(getSubjectById(subjectDTO.getId()));
         newSubject.setTeachers(subjectWithTeachers.getTeachers());
@@ -124,6 +125,7 @@ public class SubjectServiceImpl implements SubjectService {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        return subjectMapper.subjectToSubjectDTO(newSubject);
     }
 
 

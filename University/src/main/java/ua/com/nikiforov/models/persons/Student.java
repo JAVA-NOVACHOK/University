@@ -3,6 +3,7 @@ package ua.com.nikiforov.models.persons;
 import ua.com.nikiforov.models.Group;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,7 @@ public class Student implements Comparable<Student> {
     private String lastName;
 
 
+    @NotNull(message = "Group is null. Student has to be assigned to group.")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;

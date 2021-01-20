@@ -37,14 +37,16 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public void addLesson(LessonDTO lessonDTO) {
+    public LessonDTO addLesson(LessonDTO lessonDTO) {
         LOGGER.debug("Adding {}", lessonDTO);
+        Lesson lesson;
         try {
-            lessonRepository.save(lessonMapper.lessonDTOToLesson(lessonDTO));
+            lesson = lessonRepository.save(lessonMapper.lessonDTOToLesson(lessonDTO));
             LOGGER.info("Successfully added {}", lessonDTO);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + lessonDTO, e);
         }
+        return lessonMapper.lessonToLessonDTO(lesson);
     }
 
     @Override
@@ -99,15 +101,16 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     @Transactional
-    public void updateLesson(LessonDTO lessonDTO) {
+    public LessonDTO updateLesson(LessonDTO lessonDTO) {
         Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
         LOGGER.debug("Updating {}", lesson);
         try {
-            lessonRepository.save(lesson);
+            lesson = lessonRepository.save(lesson);
             LOGGER.info("Successfully updated {}", lesson);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + lesson, e);
         }
+        return lessonMapper.lessonToLessonDTO(lesson);
     }
 
     @Override

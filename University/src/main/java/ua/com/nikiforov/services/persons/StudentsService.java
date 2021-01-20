@@ -6,7 +6,7 @@ import ua.com.nikiforov.dto.StudentDTO;
 
 public interface StudentsService {
 
-    public void addStudent(StudentDTO student);
+    public StudentDTO addStudent(StudentDTO student);
 
     public StudentDTO getStudentById(long studentId);
 
@@ -16,10 +16,10 @@ public interface StudentsService {
 
     public List<StudentDTO> getAllStudents();
 
-    public void updateStudent(StudentDTO student);
+    public StudentDTO updateStudent(StudentDTO student);
 
     public void deleteStudentById(long studentId);
 
-    public void transferStudent(long studentId, long groupIdTo);
+    public StudentDTO transferStudent(long studentId, long groupIdTo);
 
 }

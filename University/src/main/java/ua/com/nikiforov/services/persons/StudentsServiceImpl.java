@@ -12,10 +12,14 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
+import ua.com.nikiforov.models.Group;
+import ua.com.nikiforov.repositories.group.GroupRepository;
 import ua.com.nikiforov.repositories.persons.StudentRepository;
 import ua.com.nikiforov.exceptions.DataOperationException;
 import ua.com.nikiforov.mappers_dto.StudentMapperDTO;
 import ua.com.nikiforov.models.persons.Student;
+import ua.com.nikiforov.services.group.GroupService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
@@ -32,25 +36,33 @@ public class StudentsServiceImpl implements StudentsService {
 
     private StudentRepository studentRepository;
     private StudentMapperDTO studentMapper;
+    private GroupService groupService;
+    private GroupMapperDTO groupMapper;
 
     @Autowired
-    public StudentsServiceImpl(StudentRepository studentRepository, StudentMapperDTO studentMapper) {
+    public StudentsServiceImpl(StudentRepository studentRepository,
+                               StudentMapperDTO studentMapper,
+                               GroupService groupService,
+                               GroupMapperDTO groupMapper) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
+        this.groupService = groupService;
+        this.groupMapper = groupMapper;
     }
 
     @Override
-    public void addStudent(StudentDTO studentDTO) {
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+    public StudentDTO addStudent(StudentDTO studentDTO) {
         String studentMessage = String.format("Student with firstName = %s, lastName = %s, groupId = %d", studentDTO.getFirstName(),
                 studentDTO.getLastName(), studentDTO.getGroupId());
         LOGGER.debug("Adding {}", studentMessage);
+        Student student;
         try {
-            studentRepository.save(student);
+            student = studentRepository.save(studentMapper.studentDTOToStudent(studentDTO));
             LOGGER.debug("{} added successfully", studentMessage);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Already exists " + studentMessage);
         }
+        return studentMapper.studentToStudentDTO(student);
     }
 
     @Override
@@ -58,16 +70,21 @@ public class StudentsServiceImpl implements StudentsService {
     public StudentDTO getStudentById(long studentId) {
         String getMessage = String.format("Student by id %s", studentId);
         LOGGER.debug(GETTING, getMessage);
+        Student student = findStudentById(studentId, getMessage);
+        LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
+        return studentMapper.studentToStudentDTO(student);
+    }
+
+    private Student findStudentById(long id, String message) {
         Student student;
         try {
-            student = studentRepository.findById(studentId).orElseThrow(EntityNotFoundException::new);
+            student = studentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         } catch (EntityNotFoundException e) {
-            String failMessage = String.format("Fail to get student by Id %d from DB", studentId);
+            String failMessage = String.format("Fail to get %s", message, id);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
-        LOGGER.info(SUCCESSFULLY_RETRIEVED_STUDENT, student);
-        return studentMapper.studentToStudentDTO(student);
+        return student;
     }
 
     @Override
@@ -127,11 +144,11 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     @Transactional
-    public void updateStudent(StudentDTO studentDTO) {
-        Student student = studentMapper.studentDTOToStudent(studentDTO);
+    public StudentDTO updateStudent(StudentDTO studentDTO) {
+        Student student;
         LOGGER.debug("Updating {}", studentDTO);
         try {
-            studentRepository.save(student);
+            student = studentRepository.save(studentMapper.studentDTOToStudent(studentDTO));
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Couldn't update student, already exists!", e);
         } catch (PersistenceException e) {
@@ -139,6 +156,7 @@ public class StudentsServiceImpl implements StudentsService {
             LOGGER.error(failMessage);
             throw new DataOperationException(failMessage, e);
         }
+        return studentMapper.studentToStudentDTO(student);
     }
 
     @Override
@@ -154,19 +172,23 @@ public class StudentsServiceImpl implements StudentsService {
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }
-
     }
 
     @Override
     @Transactional
-    public void transferStudent(long studentId, long groupIdTo) {
-        Student student = studentRepository.getOne(studentId);
-        StudentDTO newStudent = new StudentDTO(studentId, student.getFirstName(), student.getLastName(), groupIdTo);
+    public StudentDTO transferStudent(long studentId, long groupIdTo) {
+        String message = String.format("Student by id %d transferring to group with id %d",studentId,groupIdTo);
+        LOGGER.debug("Get {}",message);
+        Student student = findStudentById(studentId,message);
+        Group groupTo = groupMapper.groupDTOToGroup(groupService.getGroupById(groupIdTo));
+        student.setGroup(groupTo);
+        Student transferredStudent;
         try {
-            studentRepository.save(studentMapper.studentDTOToStudent(newStudent));
+            transferredStudent = studentRepository.save(student);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateKeyException("Error! Duplicate student while transferring!", e);
         }
+        return studentMapper.studentToStudentDTO(transferredStudent);
     }
 
 }
