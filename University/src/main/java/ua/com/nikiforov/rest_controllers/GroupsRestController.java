@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest_groups")
+@RequestMapping("/api/groups")
 public class GroupsRestController {
 
     private static final String GROUP_ID = "groupId";

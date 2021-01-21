@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest_rooms")
+@RequestMapping("/api/rooms")
 public class RoomsRestController {
 
     private RoomService roomService;
@@ -26,8 +26,8 @@ public class RoomsRestController {
     }
 
     @GetMapping("/{roomId}")
-    public RoomDTO getRoomDTO(@PathVariable("roomId") int id){
-        return roomService.getRoomById(id);
+    public RoomDTO getRoomDTO(@PathVariable("roomId") int roomId){
+        return roomService.getRoomById(roomId);
     }
 
     @PostMapping
@@ -37,7 +37,7 @@ public class RoomsRestController {
 
     @PutMapping("/{roomId}")
     public RoomDTO updateRoom(@PathVariable("roomId") int roomId, @Valid @RequestBody RoomDTO roomDTO){
-        roomDTO.setId(roomId);
+//        roomDTO.setId(roomId);
         return roomService.updateRoom(roomDTO);
     }
 

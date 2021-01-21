@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest_teachers")
+@RequestMapping("/api/teachers")
 public class TeacherRestController {
 
     private TeacherService teacherService;
