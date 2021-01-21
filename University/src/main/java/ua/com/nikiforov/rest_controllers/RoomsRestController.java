@@ -7,7 +7,6 @@ import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.services.room.RoomService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
