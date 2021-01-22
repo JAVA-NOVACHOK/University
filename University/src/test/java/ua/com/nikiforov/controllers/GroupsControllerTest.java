@@ -41,9 +41,6 @@ class GroupsControllerTest {
     private static final long INVALID_GROUP_ID = 100500;
 
     private static final String URL_GROUPS = "/groups/";
-    private static final String URL_ADD = "/groups/add/";
-    private static final String URL_DELETE = "/groups/delete/";
-    private static final String URL_EDIT = "/groups/edit/";
 
     private static final String GROUP_ATTR = "group";
     private static final String GROUP_DTO_ATTR = "groupDTO";

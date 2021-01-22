@@ -49,9 +49,6 @@ class RoomsControllerTest {
     private static final String VIEW_EDIT_ROOM = "rooms/edit_room_form";
 
     private static final String URL_ROOMS = "/rooms/";
-    private static final String URL_ADD = "/rooms/add/";
-    private static final String URL_DELETE = "/rooms/delete/";
-    private static final String URL_EDIT = "/rooms/edit/";
 
     private static final String SUCCESS_MSG = "success";
     private static final String FAIL_MSG = "failMessage";

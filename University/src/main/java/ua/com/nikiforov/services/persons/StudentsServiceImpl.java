@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.StudentDTO;
@@ -144,14 +145,16 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
-    @Transactional
     public StudentDTO updateStudent(StudentDTO studentDTO) {
+        String studentMessage = String.format("Student with firstName = %s, lastName = %s, groupId = %d", studentDTO.getFirstName(),
+                studentDTO.getLastName(), studentDTO.getGroupId());
         Student student;
         LOGGER.debug("Updating {}", studentDTO);
         try {
             student = studentRepository.save(studentMapper.studentDTOToStudent(studentDTO));
-        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
-            throw new DuplicateKeyException("Error! Couldn't update student, already exists!", e);
+            LOGGER.debug("{} added successfully", studentMessage);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateKeyException("Error! Already exists " + studentMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Failed to update %s", studentDTO);
             LOGGER.error(failMessage);
@@ -168,6 +171,10 @@ public class StudentsServiceImpl implements StudentsService {
         try {
             studentRepository.deleteById(studentId);
             LOGGER.info("Successful deleting {}", studentMessage);
+        } catch (EmptyResultDataAccessException e) {
+            String failMessage = String.format("Fail to get %s", studentMessage);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
         } catch (PersistenceException e) {
             String failDeleteMessage = "Failed to delete " + studentMessage;
             LOGGER.error(failDeleteMessage);
@@ -178,9 +185,9 @@ public class StudentsServiceImpl implements StudentsService {
     @Override
     @Transactional
     public StudentDTO transferStudent(long studentId, long groupIdTo) {
-        String message = String.format("Student by id %d transferring to group with id %d",studentId,groupIdTo);
-        LOGGER.debug("Get {}",message);
-        Student student = findStudentById(studentId,message);
+        String message = String.format("Student by id %d transferring to group with id %d", studentId, groupIdTo);
+        LOGGER.debug("Get {}", message);
+        Student student = findStudentById(studentId, message);
         Group groupTo = groupMapper.groupDTOToGroup(groupService.getGroupById(groupIdTo));
         student.setGroup(groupTo);
         Student transferredStudent;

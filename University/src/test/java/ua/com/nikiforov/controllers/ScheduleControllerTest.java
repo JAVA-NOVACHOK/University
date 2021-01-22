@@ -72,19 +72,19 @@ class ScheduleControllerTest {
     private static final int PERIOD_2 = 2;
     private static final int PERIOD_3 = 3;
 
-    private static final String DATE_1 = "2020-09-15";
-    private static final String DATE_1_ADD_1_DAY = "2020-09-16";
-    private static final String DATE_1_ADD_3_DAYS = "2020-09-18";
-    private static final String DATE_1_ADD_13_DAYS = "2020-09-28";
-    private static final String DATE_1_ADD_21_DAYS = "2020-10-06";
-    private static final String DATE_1_ADD_33_DAYS = "2020-11-18";
-    private static final String DATE = "2020-10-13";
+    private static final String DATE_1 = "2021-09-15";
+    private static final String DATE_1_ADD_1_DAY = "2021-09-16";
+    private static final String DATE_1_ADD_3_DAYS = "2021-09-18";
+    private static final String DATE_1_ADD_13_DAYS = "2021-09-28";
+    private static final String DATE_1_ADD_21_DAYS = "2021-10-06";
+    private static final String DATE_1_ADD_33_DAYS = "2021-11-18";
+    private static final String DATE = "2021-10-13";
 
     private static final String WEEK_DAY_FOR_DATE_2020_10_13 = "Tuesday";
     private static final String MONTH_NAME_FOR_DATE_2020_10_13 = "OCTOBER";
 
     private static final int MONTH_DAY_FOR_DATE_2020_10_13 = 13;
-    private static final int YEAR_2020 = 2020;
+    private static final int YEAR_2020 = 2021;
 
     private static final String PERIOD_ATTR = "period";
     private static final String ID = "id";
@@ -317,8 +317,6 @@ class ScheduleControllerTest {
 
     @Test
     void addTimetableSchedule_Success() throws Exception {
-//        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-//        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
 
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_1.getId());
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_2.getId());
@@ -345,11 +343,6 @@ class ScheduleControllerTest {
 
     @Test
     void addTimetableSchedule_WithDuplicateData_FailAdding() throws Exception {
-//        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-//        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
-
-//        insertLesson(PERIOD_1, subject_1.getId(), room_1.getId(), group_1.getGroupId(),
-//                DATE_1_ADD_33_DAYS, teacher.getId());
 
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_1.getId());
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_2.getId());
@@ -376,8 +369,6 @@ class ScheduleControllerTest {
 
     @Test
     void editTimetableSchedule_ReturnEditForm() throws Exception {
-//        TeacherDTO teacher_2 = insertTeacher(TEACHERS_FIRST_NAME_2, TEACHERS_LAST_NAME_2);
-//        TeacherDTO teacher_3 = insertTeacher(TEACHERS_FIRST_NAME_3, TEACHERS_LAST_NAME_3);
 
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_1.getId());
         teacherService.assignSubjectToTeacher(teacher.getId(), subject_2.getId());
@@ -451,28 +442,23 @@ class ScheduleControllerTest {
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 
     public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
+        return studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
     }
 
     private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
+        return subjectService.addSubject(new SubjectDTO(subjectName));
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-        return roomService.getRoomByRoomNumber(roomNumber);
+        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
     }
 
     private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
+        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
     }
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {

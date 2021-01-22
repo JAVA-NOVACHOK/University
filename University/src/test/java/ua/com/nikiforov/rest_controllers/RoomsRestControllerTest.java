@@ -99,7 +99,7 @@ class RoomsRestControllerTest {
 
 
     @Test
-    void whenUpdateRoom_Status200_RoomUpdatesRoomAndSeatNumber() throws Exception {
+    void whenUpdateRoom_Status200_RoomUpdates() throws Exception {
         room_4.setRoomNumber(TEST_ROOM_NUMBER_5);
         this.mockMvc.perform(put("/api/rooms/{roomId}", room_4.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +117,6 @@ class RoomsRestControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 
     @Test

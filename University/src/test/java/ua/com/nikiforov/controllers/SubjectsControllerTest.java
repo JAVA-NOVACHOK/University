@@ -37,7 +37,6 @@ class SubjectsControllerTest {
     private static final String SUBJECT_NAME_4 = "Java";
     private static final String SUBJECT_NAME_5 = "WordPress";
 
-    private static final String SUBJECT_NAME_ATTR = "subjectName";
     private static final String NAME_ATTR = "name";
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String SUBJECT_ATTR = "subject";
