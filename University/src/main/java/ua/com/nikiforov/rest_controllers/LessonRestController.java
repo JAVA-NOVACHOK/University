@@ -20,6 +20,7 @@ public class LessonRestController {
     private TeachersTimetableService teachersTimetableService;
     private StudentTimetableService studentTimetableService;
 
+    @Autowired
     public LessonRestController(LessonService lessonService,
                                 TeachersTimetableService teachersTimetableService,
                                 StudentTimetableService studentTimetableService) {
@@ -27,9 +28,6 @@ public class LessonRestController {
         this.teachersTimetableService = teachersTimetableService;
         this.studentTimetableService = studentTimetableService;
     }
-
-    @Autowired
-
 
     @GetMapping
     public List<LessonDTO> allLessons() {
@@ -76,7 +74,7 @@ public class LessonRestController {
 
     }
 
-    @GetMapping("/{date}/student_month/{teacherId}")
+    @GetMapping("/{date}/student_month/{groupId}")
     public List<DayTimetable> getStudentsMonthTimetable(@PathVariable("date") String date,
                                                         @PathVariable("groupId") long groupId) {
         return studentTimetableService.getMonthTimetable(date, groupId);

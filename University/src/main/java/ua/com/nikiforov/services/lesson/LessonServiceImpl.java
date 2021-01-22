@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import ua.com.nikiforov.dto.LessonDTO;
@@ -37,6 +38,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @Transactional
     public LessonDTO addLesson(LessonDTO lessonDTO) {
         LOGGER.debug("Adding {}", lessonDTO);
         Lesson lesson;
@@ -120,10 +122,10 @@ public class LessonServiceImpl implements LessonService {
         LOGGER.debug("Deleting {}", lessonMessage);
         try {
             lessonRepository.deleteById(id);
-        } catch (EntityNotFoundException e) {
+        } catch (EmptyResultDataAccessException e) {
             String failDeleteMessage = "Failed to delete " + lessonMessage;
             LOGGER.error(failDeleteMessage);
-            throw new DataOperationException(failDeleteMessage, e);
+            throw new EntityNotFoundException(failDeleteMessage);
         }
     }
 

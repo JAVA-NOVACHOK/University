@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.exceptions.DataOperationException;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class LessonServiceImplTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -57,15 +59,16 @@ class LessonServiceImplTest {
     private static final int PERIOD_2 = 2;
     private static final int PERIOD_3 = 3;
 
-    private static final String DATE_1_ADD_1_DAY = "2020-10-14";
-    private static final String DATE_1_ADD_3_DAYS = "2020-10-16";
-    private static final String DATE_1_ADD_13_DAYS = "2020-10-26";
-    private static final String DATE_1_ADD_21_DAYS = "2020-11-03";
-    private static final String DATE_1_ADD_33_DAYS = "2020-11-15";
+    private static final String DATE_1_ADD_1_DAY = "2021-10-14";
+    private static final String DATE_1_ADD_3_DAYS = "2021-10-16";
+    private static final String DATE_1_ADD_13_DAYS = "2021-10-26";
+    private static final String DATE_1_ADD_21_DAYS = "2021-11-03";
+    private static final String DATE_1_ADD_33_DAYS = "2021-11-15";
 
     private static final long TEACHER_ID_1 = 1;
+    private static final long INVALID_ID = 100500;
 
-    private static final String DATE = "2020-10-15";
+    private static final String DATE = "2021-10-15";
 
     @Autowired
     private RoomService roomService;
@@ -107,7 +110,7 @@ class LessonServiceImplTest {
     private LessonDTO lesson_7;
     private LessonDTO lesson_8;
 
-    @BeforeAll
+    @BeforeEach
     void init() {
         room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
@@ -135,7 +138,6 @@ class LessonServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllLessonsIfPresentReturnListOfAllLessons() {
         List<LessonDTO> expectedLessons = new ArrayList<>();
         expectedLessons.add(lesson_1);
@@ -147,14 +149,12 @@ class LessonServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void whenAddLessonIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> lessonService.addLesson(new LessonDTO(PERIOD_3, group_1.getGroupId(), subject_1.getId(), room_1.getId(), DATE_1_ADD_33_DAYS,
                 teacher_1.getId())));
     }
 
     @Test
-    @Order(3)
     void whenGetLessonByIdReturnCorrectLesson() {
         assertEquals(lesson_1, lessonService.getLessonById(lesson_1.getId()));
     }
@@ -162,71 +162,61 @@ class LessonServiceImplTest {
 
 
     @Test
-    @Order(4)
     void whenUpdateLessonIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> lessonService.updateLesson(new LessonDTO(lesson_1.getId(), PERIOD_2, group_1.getGroupId(), subject_2.getId(), room_1.getId(), DATE_1_ADD_3_DAYS, teacher_1.getId())));
     }
 
     @Test
-    @Order(5)
     void whenUpdateLessonThenLessonIsChanged() {
-        LessonDTO updatedLesson = new LessonDTO(lesson_1.getId(), PERIOD_1, group_1.getGroupId(), subject_1.getId(), room_1.getId(), DATE, teacher_1.getId());
+        LessonDTO updatedLesson = new LessonDTO(lesson_1.getId(), PERIOD_1, group_2.getGroupId(), subject_3.getId(), room_1.getId(), DATE, teacher_1.getId());
         lessonService.updateLesson(updatedLesson);
         LessonDTO actualUpdatedLesson = lessonService.getLessonById(lesson_1.getId());
         assertEquals(updatedLesson, actualUpdatedLesson);
     }
 
     @Test
-    @Order(6)
     void whenDeleteLessonByIdIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> lessonService.deleteLessonById(lesson_4.getId()));
     }
 
     @Test
-    @Order(7)
     void afterDeleteLessonIfSearchReturnEntityNotFoundException() {
+        lessonService.deleteLessonById(lesson_4.getId());
         assertThrows(EntityNotFoundException.class, () -> lessonService.deleteLessonById(lesson_4.getId()));
     }
 
 
     @Test
-    @Order(8)
     void whenDeleteLessons_NoLessonInLessonsList() {
         lessonService.deleteLessonById(lesson_1.getId());
 
         List<LessonDTO> expectedLessons = new ArrayList<>();
         expectedLessons.add(lesson_2);
         expectedLessons.add(lesson_3);
-        expectedLessons.add(lessonService.getLessonByAllArgs(new LessonDTO(PERIOD_3, group_1.getGroupId(), subject_1.getId(), room_1.getId(), DATE_1_ADD_33_DAYS,
-                teacher_1.getId())));
+        expectedLessons.add(lesson_4);
 
         List<LessonDTO> actualLessons = lessonService.getAllLessons();
         assertIterableEquals(expectedLessons, actualLessons);
     }
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(new LessonDTO(0, period, groupId, subjectId, roomId, date, teacherId));
-        return lessonService.getLessonByAllArgs(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
+        return lessonService.addLesson(new LessonDTO(0, period, groupId, subjectId, roomId, date, teacherId));
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 
     private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
+        return subjectService.addSubject(new SubjectDTO(subjectName));
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-        return roomService.getRoomByRoomNumber(roomNumber);
+        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
     }
 
     private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
+        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
     }
 
 }

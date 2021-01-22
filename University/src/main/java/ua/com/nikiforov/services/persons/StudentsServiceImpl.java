@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,7 +150,7 @@ public class StudentsServiceImpl implements StudentsService {
         LOGGER.debug("Updating {}", studentDTO);
         try {
             student = studentRepository.save(studentMapper.studentDTOToStudent(studentDTO));
-        } catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException | ConstraintViolationException e) {
             throw new DuplicateKeyException("Error! Couldn't update student, already exists!", e);
         } catch (PersistenceException e) {
             String failMessage = String.format("Failed to update %s", studentDTO);

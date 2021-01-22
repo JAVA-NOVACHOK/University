@@ -230,7 +230,6 @@ class StudentTimetableServiceTest {
         assertIterableEquals(expectedTimetables, actualTimetable);
     }
 
-    //
     @Test
     void whenGetMonthTimetableByDateAndStudentGroupIdShouldReturnListOfTimetables() {
 

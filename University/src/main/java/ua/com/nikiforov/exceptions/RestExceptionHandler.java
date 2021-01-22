@@ -1,5 +1,6 @@
 package ua.com.nikiforov.exceptions;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,10 +42,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, headers, status);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public void constraintViolationException(HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+    @ExceptionHandler({EntityNotFoundException.class, DuplicateKeyException.class})
+    public ResponseEntity<Object> itemNotFoundExceptionHandler(WebRequest webRequest, Exception exception) {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put(TIMESTAMP, new Date());
+        body.put(STATUS, HttpStatus.NOT_FOUND.value());
+        body.put(ERRORS, exception.getMessage());
+
+        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
-
-
 }
+
+
+

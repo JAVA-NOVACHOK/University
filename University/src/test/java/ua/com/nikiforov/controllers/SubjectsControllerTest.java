@@ -5,6 +5,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SubjectsControllerTest {
 
     private static final String SUBJECT_NAME_1 = "Math";
@@ -39,6 +41,7 @@ class SubjectsControllerTest {
     private static final String NAME_ATTR = "name";
     private static final String SUBJECTS_ATTR = "subjects";
     private static final String SUBJECT_ATTR = "subject";
+    private static final String SUBJECT_DTO_ATTR = "subjectDTO";
     private static final String ID_ATTR = "id";
     private static final String SUBJECT_ID_ATTR = "subjectId";
     private static final String TEACHER_ID_ATTR = "teacherId";
@@ -72,7 +75,7 @@ class SubjectsControllerTest {
 
     private TeacherDTO teacher;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         subject_1 = insertSubject(SUBJECT_NAME_1);
@@ -85,15 +88,16 @@ class SubjectsControllerTest {
     void allSubjects_ReturnsSubjectsView_WithSubjectsAttrs() throws Exception {
         this.mockMvc.perform(get("/subjects/"))
                 .andDo(print())
-                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_5, subject_3)))
+                .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1, subject_2, subject_3)))
                 .andExpect(view().name(SUBJECTS_VIEW));
     }
     
     @Test
     void addSubject_SuccessAddSubjects_WithSubjectsAttrs() throws Exception {
+        SubjectDTO subjectDTO = new SubjectDTO(SUBJECT_NAME_4);
         this.mockMvc
         .perform(post("/subjects/add/")
-                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_4))
+                .param(NAME_ATTR,SUBJECT_NAME_4))
         .andDo(print())
         .andExpect(model().attributeExists(SUCCESS_MSG))
         .andExpect(model().attributeExists(SUBJECTS_ATTR))
@@ -103,10 +107,10 @@ class SubjectsControllerTest {
     
     @Test
     void addSubject_IfAddExistingSubject_FailAdding() throws Exception {
-        subject_5 = subjectService.getSubjectByName(SUBJECT_NAME_5);
+        subject_5 = insertSubject(SUBJECT_NAME_5);
         this.mockMvc
         .perform(post("/subjects/add/")
-                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+                .param(NAME_ATTR,SUBJECT_NAME_1))
         .andDo(print())
         .andExpect(model().attributeExists(FAIL_MSG))
         .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_5,subject_3)))
@@ -114,10 +118,10 @@ class SubjectsControllerTest {
     }
     
     @Test
-    void addSubject_ifAddinExistingSubject_WithSubjectsAttrs() throws Exception {
+    void whenAddingExistingSubject_FailAdding() throws Exception {
         this.mockMvc
         .perform(post("/subjects/add/")
-                .param(SUBJECT_NAME_ATTR,SUBJECT_NAME_1))
+                .param(NAME_ATTR,SUBJECT_NAME_1))
         .andDo(print())
         .andExpect(model().attribute(SUBJECTS_ATTR,hasItems(subject_1,subject_2,subject_3)))
         .andExpect(model().attributeExists(FAIL_MSG))
@@ -150,8 +154,8 @@ class SubjectsControllerTest {
     }
     
     @Test
-    void deleteSubjectURIWithSubjectIdParam_thenReturnSuccessDelete() throws Exception {
-        SubjectDTO subject_4 = subjectService.getSubjectByName(SUBJECT_NAME_4);
+    void whenDeleteSubjectByValidSubjectIdParam_SuccessDelete() throws Exception {
+        SubjectDTO subject_4 = insertSubject(SUBJECT_NAME_4);
         this.mockMvc
             .perform(get("/subjects/delete")
                     .param(ID_ATTR, subject_4.getId() + STR))
@@ -169,7 +173,7 @@ class SubjectsControllerTest {
                     .param(TEACHER_ID_ATTR, teacher.getId() + STR))
             .andExpect(status().isOk())
             .andExpect(model().attributeExists(SUCCESS_MSG))
-            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_5,subject_3)))
+            .andExpect(model().attribute(SUBJECTS_ATTR, hasItems(subject_1,subject_2,subject_3)))
             .andExpect(view().name(SUBJECTS_VIEW));
     }
     
@@ -187,13 +191,11 @@ class SubjectsControllerTest {
     
 
     private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
+        return subjectService.addSubject(new SubjectDTO(subjectName));
     }
     
     private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
+        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
     }
 
 }

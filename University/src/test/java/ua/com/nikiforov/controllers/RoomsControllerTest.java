@@ -3,6 +3,7 @@ package ua.com.nikiforov.controllers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class RoomsControllerTest {
 
     private static final int TEST_ROOM_NUMBER_1 = 12;
@@ -67,7 +69,7 @@ class RoomsControllerTest {
     private RoomDTO room_2;
     private RoomDTO room_3;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
@@ -77,7 +79,6 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(1)
     void givenRoomsPageURI_ReturnsRoomsViewName_WithRoomsModelAttribute() throws Exception {
         this.mockMvc.perform(get(URL_ROOMS))
                 .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1, room_2, room_3)))
@@ -86,7 +87,6 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(2)
     void addRoomWithParams_AddsRoom() throws Exception {
         this.mockMvc
                 .perform(post("/rooms/add/")
@@ -100,7 +100,6 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(3)
     void addRoomWithDuplicateParams_FailAddRoom() throws Exception {
         this.mockMvc
                 .perform(post("/rooms/add/")
@@ -114,21 +113,19 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(4)
     void whenDeleteRoomWithValidId_DeletesRoom() throws Exception {
         this.mockMvc
-                .perform(get("/rooms/delete/").param(ROOM_ID, room_1.getId() + STR))
+                .perform(post("/rooms/delete/").param(ROOM_ID, room_1.getId() + STR))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_2, room_3, roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_4))))
+                .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_2, room_3)))
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(view().name(VIEW_ROOMS));
     }
 
     @Test
-    @Order(5)
-    void givenRoomDeleteUriWithInvalidId_FailMessage() throws Exception {
+    void whenDeleteRoomUriWithInvalidId_FailMessage() throws Exception {
         this.mockMvc
-                .perform(get("/rooms/delete/")
+                .perform(post("/rooms/delete/")
                         .param(ROOM_ID, INVALID_ID + STR))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ROOMS_ATTR))
@@ -137,8 +134,7 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(6)
-    void editRoomWithValidRoomId_ReturnsEditForm() throws Exception {
+    void whenEditRoomWithValidRoomId_ReturnsEditForm() throws Exception {
         this.mockMvc
                 .perform(
                         get("/rooms/edit/")
@@ -149,20 +145,19 @@ class RoomsControllerTest {
     }
 
     @Test
-    @Order(7)
     void editRoomWithInvalidRoomId_FailEdit_ReturnsRoomsView() throws Exception {
         this.mockMvc
                 .perform(get("/rooms/edit/")
                         .param(ROOM_ID_ATTR, INVALID_ID + STR))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_2, room_3, roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_4))))
+                .andExpect(model().attribute(ROOMS_ATTR, hasItems(room_1,room_2, room_3)))
                 .andExpect(model().attributeExists(FAIL_MSG))
                 .andExpect(view().name(VIEW_ROOMS));
     }
 
     @Test
-    @Order(8)
-    void givenRoomEditPostUriWithRoomAttr_EditsRoom() throws Exception {
+    void whenEditRoom_Success_EditsRoom() throws Exception {
+        RoomDTO updatedRoom = new RoomDTO(room_2.getId(),TEST_ROOM_NUMBER_5,room_2.getSeatNumber());
         this.mockMvc
                 .perform(post("/rooms/edit")
                         .param(ID, room_2.getId() + STR)
@@ -170,12 +165,12 @@ class RoomsControllerTest {
                         .param(ROOM_SEAT_ATTR, room_2.getSeatNumber() + STR)
                         .sessionAttr(ROOM_ATTR, new Room()))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute(ROOM_ATTR, updatedRoom))
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(view().name(VIEW_ROOMS));
     }
 
     @Test
-    @Order(9)
     void editRoomWithDuplicateRoomAttr_FailUpdate_EditsRoom() throws Exception {
         this.mockMvc
                 .perform(post("/rooms/edit")

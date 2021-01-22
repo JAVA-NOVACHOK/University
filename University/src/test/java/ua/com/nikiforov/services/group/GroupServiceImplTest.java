@@ -3,6 +3,7 @@ package ua.com.nikiforov.services.group;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class GroupServiceImplTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -57,7 +59,7 @@ class GroupServiceImplTest {
     @Autowired
     private StudentsService studentsService;
 
-    @BeforeAll
+    @BeforeEach
     void setup() {
         group_1 = insertGroup(TEST_GROUP_NAME_1);
         group_2 = insertGroup(TEST_GROUP_NAME_2);
@@ -72,7 +74,6 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllGroupsIfPresentReturnListOfAllGroups() {
         List<GroupDTO> expectedGroups = new ArrayList<>();
         expectedGroups.add(group_1);
@@ -83,20 +84,17 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void whenAddGroupIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> groupService.addGroup(new GroupDTO(TEST_GROUP_NAME_6)));
     }
 
     @Test
-    @Order(3)
     void whenGetGroupByIdReturnCorrectGroup() {
         assertEquals(group_1, groupService.getGroupById(group_1.getGroupId()));
     }
 
 
     @Test
-    @Order(4)
     void whenUpdateGroupByIdIfSuccessThenReturnTrue() {
         GroupDTO expectedGroup = new GroupDTO(group_3.getGroupId(), TEST_GROUP_NAME_5);
         groupService.updateGroup(expectedGroup);
@@ -105,22 +103,19 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Order(5)
-    void whenDeleteGroupWithStudents_ThrowsStudemtsImGroupException(){
+    void whenDeleteGroupWithStudents_ThrowsStudentsImGroupException(){
         assertThrows(StudentsInGroupException.class,() -> groupService.deleteGroup(group_1.getGroupId()));
     }
 
 
 
     @Test
-    @Order(6)
     void afterDeleteGroupIfSearchReturnEntityNotFoundException() {
         groupService.deleteGroup(group_2.getGroupId());
         assertThrows(EntityNotFoundException.class, () -> groupService.getGroupById(group_2.getGroupId()));
     }
 
     @Test
-    @Order(7)
     void whenGetStudentsFromGroupByIdReturnListOfStudentsInGroup() {
 
         List<StudentDTO> expectedStudents = new ArrayList<>();
@@ -134,7 +129,6 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Order(8)
     void whenDeleteStudentListOfStudents_StudentNotInList() {
 
         studentsService.deleteStudentById(student_1.getId());
@@ -149,8 +143,7 @@ class GroupServiceImplTest {
     }
 
     @Test
-    @Order(9)
-    void whenTransferStudentListOfStudentsInGroupWithTransferedStudent() {
+    void whenTransferStudent_SuccessTransferStudent() {
 
         studentsService.transferStudent(student_2.getId(), group_4.getGroupId());
 
@@ -159,6 +152,7 @@ class GroupServiceImplTest {
 
         List<StudentDTO> expectedStudentsGroupFrom = new ArrayList<>();
         expectedStudentsGroupFrom.add(student_4);
+        expectedStudentsGroupFrom.add(student_1);
         expectedStudentsGroupFrom.add(student_3);
 
         List<StudentDTO> actualStudentsGroupFrom = groupService.getGroupById(group_1.getGroupId()).getStudents();

@@ -58,16 +58,21 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO getGroupById(long groupId) {
         String getMessage = String.format("Group by id %d", groupId);
         LOGGER.debug(GETTING_MSG, getMessage);
+        Group group = findGroupById(groupId,getMessage);
+        LOGGER.info(SUCCESS_GET_GROUP, group);
+        return groupMapper.groupToGroupDTO(group);
+    }
+
+    private Group findGroupById(long groupId,String message){
         Group group;
         try {
             group = groupRepository.findById(groupId).orElseThrow(EntityNotFoundException::new);
         } catch (EntityNotFoundException e) {
-            String failMessage = String.format("Couldn't get %s", getMessage);
+            String failMessage = String.format("Couldn't get %s", message);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
         }
-        LOGGER.info(SUCCESS_GET_GROUP, group);
-        return groupMapper.groupToGroupDTO(group);
+        return group;
     }
 
     @Override
@@ -100,10 +105,11 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public GroupDTO updateGroup(GroupDTO groupDTO) {
-        LOGGER.debug("Updating group {}", groupDTO);
+        String message = String.format("Group %s when update",groupDTO);
+        LOGGER.debug(message);
         Group newGroup = groupMapper.groupDTOToGroup(groupDTO);
         try {
-            Group groupWithStudents = groupRepository.findById(newGroup.getGroupId()).orElseThrow(EntityNotFoundException::new);
+            Group groupWithStudents = findGroupById(newGroup.getGroupId(),message);
             newGroup.setGroupStudents(groupWithStudents.getGroupStudents());
             groupRepository.save(newGroup);
             LOGGER.info("Successful adding group {}", newGroup);
@@ -111,10 +117,6 @@ public class GroupServiceImpl implements GroupService {
             String duplicateMessage = String.format("Already exists %s", groupDTO);
             LOGGER.error("Error! {}", duplicateMessage);
             throw new DuplicateKeyException(duplicateMessage);
-        } catch (EntityNotFoundException e) {
-            String failMessage = String.format("There Group with id %d name %s", newGroup.getGroupId(), newGroup.getGroupName());
-            LOGGER.error(failMessage);
-            throw new DataOperationException(failMessage, e);
         }
         return groupMapper.groupToGroupDTO(newGroup);
     }
@@ -122,9 +124,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void deleteGroup(long id) {
-        String deleteMessage = String.format("group with id %d.", id);
+        String deleteMessage = String.format("Group with id %d", id);
         LOGGER.debug("Deleting {}", deleteMessage);
-        if (!groupRepository.getOne(id).getGroupStudents().isEmpty()) {
+        if (!findGroupById(id,deleteMessage).getGroupStudents().isEmpty()) {
             String message = String.format("There are students in group with id %d", id);
             throw new StudentsInGroupException(message);
         }

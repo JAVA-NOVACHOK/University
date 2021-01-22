@@ -5,6 +5,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -32,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class TeacherControllerTest {
 
     private static final String FIRST_NAME_1 = "Tom";
@@ -55,8 +57,6 @@ class TeacherControllerTest {
     private static final int TEST_ROOM_NUMBER_3 = 14;
 
     private static final int TEST_SEAT_NUMBER_1 = 20;
-    private static final int TEST_SEAT_NUMBER_2 = 25;
-    private static final int TEST_SEAT_NUMBER_3 = 30;
 
     private static final long INVALID_ID = 100500l;
 
@@ -118,7 +118,7 @@ class TeacherControllerTest {
 
     private MockMvc mockMvc;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
@@ -139,13 +139,11 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(1)
     void getTeachersURI_ReturnTeachersView() throws Exception {
         this.mockMvc.perform(get("/teachers")).andExpect(view().name(TEACHERS_VIEW));
     }
 
     @Test
-    @Order(2)
     void deleteTeacher_ifGiveValidId_ReturnTeachersView_DeleteTeacher() throws Exception {
 
         this.mockMvc.perform(get("/teachers/delete").param(ID, teacher_2.getId() + STR)).andExpect(status().isOk())
@@ -156,7 +154,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(3)
     void getTeacherURI_ReturnOneTeacherView_WithAttrs() throws Exception {
         this.mockMvc.perform(get("/teachers/teacher").param(ID, teacher_1.getId() + STR)).andDo(print())
                 .andExpect(status().isOk()).andExpect(model().attribute(TEACHER_ATTR, teacher_1))
@@ -167,7 +164,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(4)
     void addTeacherURI_ReturnTeachersView_Teachers() throws Exception {
         this.mockMvc
                 .perform(
@@ -183,7 +179,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(5)
     void editTeacherURI_ReturnTeachersView_EditedTeacher() throws Exception {
         TeacherDTO updatedTeacher = new TeacherDTO(teacher_1.getId(), FIRST_NAME_2, LAST_NAME_1);
         this.mockMvc
@@ -201,7 +196,6 @@ class TeacherControllerTest {
 
 
     @Test
-    @Order(6)
     void assignSubjectToTeacher_thenReturnSuccessAssignedSubject() throws Exception {
         teacher_1.addSubject(subject_1);
 
@@ -214,7 +208,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(7)
     void unassignSubjectFromTeacher() throws Exception {
         teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_1.getId());
         teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_2.getId());
@@ -228,7 +221,6 @@ class TeacherControllerTest {
     }
 
     @Test
-    @Order(8)
     void findTeacherByLikeNames() throws Exception {
         TeacherDTO searchingTeacher = insertTeacher(MICHEL_FIRST_NAME, JACKSON_LAST_NAME);
 
@@ -238,23 +230,19 @@ class TeacherControllerTest {
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 
     private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
+        return subjectService.addSubject(new SubjectDTO(subjectName));
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-        return roomService.getRoomByRoomNumber(roomNumber);
+        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
     }
 
     private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
+        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
     }
 
 }

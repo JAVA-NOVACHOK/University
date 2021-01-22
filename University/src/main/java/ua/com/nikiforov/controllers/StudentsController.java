@@ -21,6 +21,7 @@ import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @Controller
@@ -112,7 +113,8 @@ public class StudentsController {
         return VIEW_STUDENTS;
     }
 
-    private void updateStudent(GroupDTO groupDTO, StudentDTO studentDTO, Model model) {
+    @Transactional
+     void updateStudent(GroupDTO groupDTO, StudentDTO studentDTO, Model model) {
         try {
             studentService.updateStudent(studentDTO);
             model.addAttribute(SUCCESS_MSG,

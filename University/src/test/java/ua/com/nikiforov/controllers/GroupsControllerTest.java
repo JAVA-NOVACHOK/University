@@ -3,6 +3,7 @@ package ua.com.nikiforov.controllers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class GroupsControllerTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
@@ -44,6 +46,7 @@ class GroupsControllerTest {
     private static final String URL_EDIT = "/groups/edit/";
 
     private static final String GROUP_ATTR = "group";
+    private static final String GROUP_DTO_ATTR = "groupDTO";
     private static final String GROUP_ID_ATTR = "groupId";
     private static final String GROUP_NAME_ATTR = "groupName";
     private static final String GROUPS_ATTR = "groups";
@@ -72,17 +75,15 @@ class GroupsControllerTest {
     private GroupDTO group_3;
 
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         group_1 = insertGroup(TEST_GROUP_NAME_1);
         group_2 = insertGroup(TEST_GROUP_NAME_2);
         group_3 = insertGroup(TEST_GROUP_NAME_3);
-
     }
 
     @Test
-    @Order(1)
     void givenGroupPageURI_whenMockMVC_thenReturnsGroupsViewName() throws Exception {
 
         this.mockMvc.perform(get(URL_GROUPS))
@@ -91,11 +92,12 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(2)
     void whenAddGroupWithParams_GroupAddsSuccessfully() throws Exception {
+        GroupDTO groupDTO = new GroupDTO(TEST_GROUP_NAME_4);
         this.mockMvc
                 .perform(post("/groups/add/")
-                        .param(GROUP_NAME_ATTR, TEST_GROUP_NAME_4))
+                        .param(GROUP_ATTR, TEST_GROUP_NAME_4)
+                .sessionAttr(GROUP_DTO_ATTR, new GroupDTO()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(GROUPS_ATTR))
                 .andExpect(model().attributeExists(SUCCESS_MSG))
@@ -114,7 +116,6 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(3)
     void addGroupWithDuplicateParams_FailMSG() throws Exception {
         this.mockMvc
                 .perform(post("/groups/add/")
@@ -127,7 +128,6 @@ class GroupsControllerTest {
 
 
     @Test
-    @Order(4)
     void givenDeleteUtlForGetMapping_ReturnDeleteFormView() throws Exception {
         this.mockMvc.perform(
                 get("/groups/delete/"))
@@ -138,8 +138,7 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(5)
-    void deleteGroupByValidId_SuccessDeletGroup() throws Exception {
+    void deleteGroupByValidId_SuccessDeleteGroup() throws Exception {
         this.mockMvc
                 .perform(post("/groups/delete/")
                         .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
@@ -150,7 +149,6 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(6)
     void deleteGroupByInvalidId_FailDeleteGroup() throws Exception {
         this.mockMvc
                 .perform(post("/groups/delete/")
@@ -163,8 +161,7 @@ class GroupsControllerTest {
 
 
     @Test
-    @Order(7)
-    void editGroupByValidId_ReturnsSuccesss_GroupEditViewForm() throws Exception {
+    void editGroupByValidId_ReturnsSuccess_GroupEditViewForm() throws Exception {
         this.mockMvc
                 .perform(get("/groups/edit/").param(GROUP_ID_ATTR, group_2.getGroupId() + STR))
                 .andExpect(model().attribute(GROUP_ATTR, group_2))
@@ -173,7 +170,6 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(8)
     void editGroupByInvalidId_FailEdit_ReturnsGroupsList() throws Exception {
         this.mockMvc
                 .perform(get("/groups/edit/")
@@ -185,7 +181,6 @@ class GroupsControllerTest {
     }
 
     @Test
-    @Order(9)
     void givenGroupEditPostURI_EditGroupAndReturnsGroupsView() throws Exception {
         GroupDTO updatedGroup = new GroupDTO(group_2.getGroupId(), TEST_GROUP_NAME_6);
         this.mockMvc
@@ -200,7 +195,6 @@ class GroupsControllerTest {
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 }

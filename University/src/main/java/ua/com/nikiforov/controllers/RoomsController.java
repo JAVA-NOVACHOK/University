@@ -46,7 +46,7 @@ public class RoomsController {
     }
 
     @PostMapping("/add")
-    public String addRoom(@Valid @ModelAttribute(MODEL_ATTR_ROOM)  RoomDTO roomDTO, Model model) {
+    public String addRoom(@Valid @ModelAttribute(MODEL_ATTR_ROOM) RoomDTO roomDTO, Model model) {
         try {
             roomService.addRoom(roomDTO);
             model.addAttribute(SUCCESS_MSG,
@@ -59,15 +59,17 @@ public class RoomsController {
         return VIEW_ROOMS;
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public String deleteRoom(@RequestParam int id, Model model) {
         try {
             roomService.deleteRoomById(id);
             model.addAttribute(SUCCESS_MSG,
                     String.format("Room with '%d' deleted successfully", id));
+        } catch (EntityNotFoundException e) {
+            model.addAttribute(FAIL_MSG, String.format("Warning! Couldn't find room with id %d ", id));
         } catch (DataOperationException e) {
-            model.addAttribute(FAIL_MSG, String.format("Failed to delete room with number and seets number %d",
-                   id));
+            model.addAttribute(FAIL_MSG, String.format("Failed to delete room by id %d",
+                    id));
         }
         model.addAttribute(ROOMS_ATTR, roomService.getAllRooms());
         return VIEW_ROOMS;

@@ -64,7 +64,6 @@ class RoomServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllRoomsThenReturnGroupList() {
         List<RoomDTO> expectedRooms = new ArrayList<>();
         expectedRooms.add(room_1);
@@ -80,32 +79,28 @@ class RoomServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void afterAddRoomGetRoomByIdReturnCorrectRoom() {
         assertEquals(room_2, roomService.getRoomById(room_2.getId()));
     }
 
 
     @Test
-    @Order(3)
-    void whenDeleteRoomByIdIfSuccessThenReturnTrue() {
+    void whenDeleteRoomByIdIfSuccessDoesNotThrow() {
         assertDoesNotThrow(() -> roomService.deleteRoomById(room_2.getId()));
     }
 
     @Test
-    @Order(4)
     void afterDeleteRoomByIdIfSearchReturnEntityNotFoundException() {
         assertThrows(EntityNotFoundException.class, () -> roomService.deleteRoomById(room_2.getId()));
     }
 
     @Test
-    @Order(5)
     void whenUpdateRoomThenGroupHasUpdatedName() {
         int roomId = room_7.getId();
-        roomService.updateRoom(new RoomDTO(roomId, TEST_ROOM_NUMBER_8, TEST_SEAT_NUMBER_2));
-        RoomDTO expectedRoom = roomService.getRoomByRoomNumber(TEST_ROOM_NUMBER_8);
+        RoomDTO updatedRoom = new RoomDTO(roomId, TEST_ROOM_NUMBER_8, TEST_SEAT_NUMBER_2);
+        roomService.updateRoom(updatedRoom);
         RoomDTO actualRoom = roomService.getRoomById(roomId);
-        assertEquals(expectedRoom, actualRoom);
+        assertEquals(updatedRoom, actualRoom);
     }
 
     private RoomDTO insertRoom(int roomNumber, int seatNumber) {

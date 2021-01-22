@@ -124,7 +124,7 @@ public class RoomServiceImpl implements RoomService {
         try {
             roomRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException("Something went wrong!");
+            throw new EntityNotFoundException(String.format("Couldn't get %s",deleteMessage));
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);

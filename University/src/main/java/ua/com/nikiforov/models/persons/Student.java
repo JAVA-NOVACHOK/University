@@ -22,7 +22,7 @@ public class Student implements Comparable<Student> {
 
     @NotNull(message = "Group is null. Student has to be assigned to group.")
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(nullable = false,name = "group_id")
     private Group group;
 
     public Student() {

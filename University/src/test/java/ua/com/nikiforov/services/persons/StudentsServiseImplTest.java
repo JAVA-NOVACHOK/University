@@ -3,6 +3,7 @@ package ua.com.nikiforov.services.persons;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class StudentsServiceImplTest {
 
     private static final String FIRST_NAME_1 = "Tom";
@@ -47,7 +49,7 @@ class StudentsServiceImplTest {
     private StudentDTO student_2;
     private StudentDTO student_3;
 
-    @BeforeAll
+    @BeforeEach
     void init() {
         group_1 = insertGroup(TEST_GROUP_NAME_1);
 
@@ -57,7 +59,6 @@ class StudentsServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllStudentsIfPresentReturnListOfAllStudents() {
         List<StudentDTO> expectedStudents = new ArrayList<>();
         expectedStudents.add(student_2);
@@ -67,27 +68,23 @@ class StudentsServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void whenAddStudentIfSuccessReturnTrue() {
         assertDoesNotThrow(() -> studentsService.addStudent(new StudentDTO(FIRST_NAME_4, LAST_NAME_4, group_1.getGroupId())));
     }
 
     @Test
-    @Order(3)
     void afterAddStudentReturnCorrectStudentObject() {
         assertEquals(student_1, studentsService.getStudentById(student_1.getId()));
     }
 
 
     @Test
-    @Order(4)
     void whenUpdateStudentIfSuccessThenDontThrowAnything() {
 
         assertDoesNotThrow(() -> studentsService.updateStudent(new StudentDTO(student_1.getId(), FIRST_NAME_1, LAST_NAME_2, group_1.getGroupId())));
     }
 
     @Test
-    @Order(5)
     void afterUpdateStudentIfSuccessThenGetStudentByIdReturnUpdatedStudent() {
         StudentDTO updatedStudent = new StudentDTO(student_1.getId(), FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         studentsService.updateStudent(updatedStudent);
@@ -96,26 +93,22 @@ class StudentsServiceImplTest {
     }
 
     @Test
-    @Order(6)
     void whenDeleteStudentByIdIfSuccessThenDontThrowExceptions() {
         assertDoesNotThrow(() -> studentsService.deleteStudentById(student_2.getId()));
     }
 
     @Test
-    @Order(7)
     void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
         studentsService.deleteStudentById(student_1.getId());
         assertThrows(EntityNotFoundException.class, () -> studentsService.getStudentById(student_1.getId()));
     }
 
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 
-    public StudentDTO insertStudent(String firstName, String lastaName, long groupId) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupId));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupId);
+    public StudentDTO insertStudent(String firstName, String lastName, long groupId) {
+        return studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
     }
 
 }

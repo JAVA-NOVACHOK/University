@@ -5,6 +5,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -27,15 +28,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class StudentsControllerTest {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
     private static final String FIRST_NAME_3 = "Jack";
+    private static final String FIRST_NAME_4 = "Manny";
 
     private static final String LAST_NAME_1 = "Hanks";
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
+    private static final String LAST_NAME_4 = "Alba";
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AB-13";
@@ -80,7 +84,7 @@ class StudentsControllerTest {
     private MockMvc mockMvc;
 
 
-    @BeforeAll
+    @BeforeEach
     void init() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         group_1 = insertGroup(TEST_GROUP_NAME_2);
@@ -104,12 +108,12 @@ class StudentsControllerTest {
     
     @Test
     void editStudent_IfEditOnExistingStudent_FailMSGAttr() throws Exception{
-        insertStudent(FIRST_NAME_2, LAST_NAME_2, group_1.getGroupId());
+        insertStudent(FIRST_NAME_4,LAST_NAME_4,group_1.getGroupId());
         this.mockMvc
             .perform(post("/students/edit")
                     .param(ID, student_1.getId() + "")
-                    .param(FIRST_NAME_ATTR, FIRST_NAME_2)
-                    .param(LAST_NAME_ATTR, LAST_NAME_2)
+                    .param(FIRST_NAME_ATTR, FIRST_NAME_4)
+                    .param(LAST_NAME_ATTR, LAST_NAME_4)
                     .param(GROUP_ID_ATTR, group_1.getGroupId() + STR))
             .andDo(print())
             .andExpect(status().isOk())
@@ -155,7 +159,6 @@ class StudentsControllerTest {
     
     @Test
     void addStudent_IfAddExistingStudent_FailMSGAttr() throws Exception {
-        insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         this.mockMvc
         .perform(post("/students/add")
                 .param(FIRST_NAME_ATTR, FIRST_NAME_1)
@@ -216,13 +219,11 @@ class StudentsControllerTest {
     }
     
     private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
+        return groupService.addGroup(new GroupDTO(groupName));
     }
 
     private StudentDTO insertStudent(String firstName, String lastName, long groupId) {
-        studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
-        return studentsService.getStudentByNameGroupId(firstName, lastName, groupId);
+        return studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
     }
 
 }

@@ -3,6 +3,7 @@ package ua.com.nikiforov.services.subject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SubjectServiceImplTest {
 
     private static final String SUBJECT_NAME_1 = "Math";
@@ -50,7 +52,7 @@ class SubjectServiceImplTest {
     private SubjectDTO subject_2;
     private SubjectDTO subject_3;
 
-    @BeforeAll
+    @BeforeEach
     void startup() {
 
         teacher_1 = insertTeacher(FIRST_NAME_1, LAST_NAME_1);
@@ -64,7 +66,6 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllSubjectsIfPresentReturnListOfAllSubjects() {
 
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
@@ -77,25 +78,21 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void whenAddSubjectIfSuccessReturnTrue() {
         assertDoesNotThrow(() -> subjectService.addSubject(new SubjectDTO(SUBJECT_NAME_4)));
     }
 
     @Test
-    @Order(3)
     void afetrAddSubjectGetSubjectByIdReturnCorrectSubject() {
         assertEquals(subject_1, subjectService.getSubjectById(subject_1.getId()));
     }
 
     @Test
-    @Order(4)
     void whenUpdateSubjectByIdIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> subjectService.updateSubject(new SubjectDTO(subject_2.getId(), SUBJECT_NAME_5)));
     }
 
     @Test
-    @Order(5)
     void whenUpdateSubjectThenSubjectHasUpdatedName() {
         SubjectDTO updatedSubject = new SubjectDTO(subject_2.getId(), SUBJECT_NAME_2);
         subjectService.updateSubject(updatedSubject);
@@ -104,17 +101,15 @@ class SubjectServiceImplTest {
     }
 
     @Test
-    @Order(6)
     void whenDeleteSubjectByIdIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> subjectService.deleteSubjectById(subject_2.getId()));
     }
 
     @Test
-    @Order(7)
     void afterDeleteSubjectByIdNoSubjectInAllSubjects() {
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
-        expectedSubjects.add(subjectService.getSubjectByName(SUBJECT_NAME_4));
         expectedSubjects.add(subject_1);
+        expectedSubjects.add(subject_2);
 
         subjectService.deleteSubjectById(subject_3.getId());
         List<SubjectDTO> actualSubjects = subjectService.getAllSubjects();
@@ -123,7 +118,6 @@ class SubjectServiceImplTest {
 
 
     @Test
-    @Order(8)
     void afterAssignSubjectsToTeachers_SubjectHasListOfTeachers() {
 
         Set<TeacherDTO> expectedTeachers = new TreeSet<>();
