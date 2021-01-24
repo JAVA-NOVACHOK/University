@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.com.nikiforov.repositories.persons.TeacherRepository;
@@ -27,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TeacherServiceImpl.class);
 
-    private static final Sort SORT_BY_LAST_NAME = Sort.by(Sort.Direction.ASC,"lastName");
+    private static final Sort SORT_BY_LAST_NAME = Sort.by(Sort.Direction.ASC, "lastName");
 
     private static final String GETTING_MSG = "Getting {}";
 
@@ -54,7 +55,7 @@ public class TeacherServiceImpl implements TeacherService {
             teacher = teacherRepository.save(teacherMapper.teacherDTOToTeacher(teacherDTO));
             LOGGER.info("Successful added {}", teacherMessage);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Already exists " + teacherMessage, e);
+            throw new DuplicateKeyException("Error! Already exists " + teacherMessage);
         }
         return teacherMapper.getTeacherDTO(teacher);
     }
@@ -64,16 +65,16 @@ public class TeacherServiceImpl implements TeacherService {
     public TeacherDTO getTeacherById(long teacherId) {
         String getMessage = String.format("Teacher by id %d", teacherId);
         LOGGER.debug(GETTING_MSG, getMessage);
-        Teacher teacher = findTeacherById(teacherId,getMessage);
+        Teacher teacher = findTeacherById(teacherId, getMessage);
         LOGGER.info("Successfully retrieved {}", getMessage);
         return teacherMapper.getTeacherDTO(teacher);
     }
 
-    private Teacher findTeacherById(long teacherId,String message){
+    private Teacher findTeacherById(long teacherId, String message) {
         Teacher teacher;
         try {
             teacher = teacherRepository.findById(teacherId).orElseThrow(EntityNotFoundException::new);
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             String failMessage = String.format("Failed to get %s", message);
             LOGGER.error(failMessage);
             throw new EntityNotFoundException(failMessage);
@@ -116,7 +117,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @Transactional
     public TeacherDTO updateTeacher(TeacherDTO teacherDTO) {
         Teacher newTeacher = teacherMapper.teacherDTOToTeacher(teacherDTO);
         Teacher teacherWithSubjects = teacherRepository.getOne(newTeacher.getId());
@@ -128,7 +128,9 @@ public class TeacherServiceImpl implements TeacherService {
             teacherRepository.save(newTeacher);
             LOGGER.info("Successfully updated '{}'", teacherMessage);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException(teacherMessage + " already exists", e);
+            throw new DuplicateKeyException(
+                    String.format("Error! Already exists Teacher with firstName = %s, lastName = %s",
+                            teacherDTO.getFirstName(), teacherDTO.getLastName()));
         } catch (PersistenceException e) {
             String failMessage = String.format("Failed to update %s", teacherMessage);
             LOGGER.error(failMessage);
@@ -145,12 +147,15 @@ public class TeacherServiceImpl implements TeacherService {
         try {
             teacherRepository.deleteById(teacherId);
             LOGGER.info("Successful deleting '{}'", teacherMessage);
+        }catch (EmptyResultDataAccessException e) {
+            String failMessage = String.format("Failed to delete %s", teacherMessage);
+            LOGGER.error(failMessage);
+            throw new EntityNotFoundException(failMessage);
         } catch (PersistenceException e) {
             String failDeleteMessage = "Failed to delete " + teacherMessage;
             LOGGER.error(failDeleteMessage);
             throw new DataOperationException(failDeleteMessage, e);
         }
-
     }
 
     @Override

@@ -114,14 +114,14 @@ public class TimetableDTO implements Comparable<TimetableDTO> {
 
     @Override
     public String toString() {
-        return "TimetableDTO{" +
+        return "{" +
                 "lessonId=" + lessonId +
                 ", period=" + period +
                 ", subject=" + subject +
                 ", group=" + group +
                 ", room=" + room +
                 ", teacher=" + teacher +
-                ", time_=" + lessonDate +
+                ", lessonDate=" + lessonDate +
                 '}';
     }
 

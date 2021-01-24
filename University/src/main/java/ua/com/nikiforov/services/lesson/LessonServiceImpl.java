@@ -38,7 +38,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    @Transactional
     public LessonDTO addLesson(LessonDTO lessonDTO) {
         LOGGER.debug("Adding {}", lessonDTO);
         Lesson lesson;
@@ -46,7 +45,7 @@ public class LessonServiceImpl implements LessonService {
             lesson = lessonRepository.save(lessonMapper.lessonDTOToLesson(lessonDTO));
             LOGGER.info("Successfully added {}", lessonDTO);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Already exists " + lessonDTO, e);
+            throw new DuplicateKeyException("Error! Already exists Lesson " + lessonDTO);
         }
         return lessonMapper.lessonToLessonDTO(lesson);
     }
@@ -102,15 +101,14 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    @Transactional
     public LessonDTO updateLesson(LessonDTO lessonDTO) {
-        Lesson lesson = lessonMapper.lessonDTOToLesson(lessonDTO);
-        LOGGER.debug("Updating {}", lesson);
+        Lesson lesson;
+        LOGGER.debug("Updating {}", lessonDTO);
         try {
-            lesson = lessonRepository.save(lesson);
-            LOGGER.info("Successfully updated {}", lesson);
+            lesson = lessonRepository.save(lessonMapper.lessonDTOToLesson(lessonDTO));
+            LOGGER.info("Successfully updated {}", lessonDTO);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Already exists " + lesson, e);
+            throw new DuplicateKeyException("Error! Already exists Lesson " + lessonDTO);
         }
         return lessonMapper.lessonToLessonDTO(lesson);
     }

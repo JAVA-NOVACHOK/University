@@ -35,14 +35,14 @@ public class LessonDTO {
         this.teacherId = teacherId;
     }
 
-    public LessonDTO(int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId, String date) {
+    public LessonDTO(int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
         this.period = period;
         this.groupId = groupId;
         this.subjectId = subjectId;
         this.roomId = roomId;
         this.teacherId = teacherId;
         this.time = time;
-        this.date = date;
+        this.date = getDate();
     }
 
     public LessonDTO(long id, int period, long groupId, int subjectId, int roomId, LocalDate time, long teacherId) {
@@ -112,17 +112,16 @@ public class LessonDTO {
         this.teacherId = teacherId;
     }
 
-    public String getDate() {
-        return date;
-    }
-
     public void setDate(String date) {
         this.date = date;
     }
 
-    public String getDateFromLocalDate() {
-        String[] dateArr = time.toString().split("T");
-        return dateArr[0];
+    public String getDate() {
+        if(date == null) {
+            String[] dateArr = time.toString().split("T");
+            date = dateArr[0];
+        }
+        return date;
     }
 
     @Override
@@ -176,7 +175,7 @@ public class LessonDTO {
 
     @Override
     public String toString() {
-        return "LessonDTO{" +
+        return "{" +
                 "id=" + id +
                 ", period=" + period +
                 ", groupId=" + groupId +
@@ -184,7 +183,6 @@ public class LessonDTO {
                 ", roomId=" + roomId +
                 ", time=" + time +
                 ", teacherId=" + teacherId +
-                ", date='" + date + '\'' +
-                '}';
+                ", date=" + getDate() + "}";
     }
 }

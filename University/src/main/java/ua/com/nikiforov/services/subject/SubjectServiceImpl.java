@@ -43,14 +43,14 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public SubjectDTO addSubject(SubjectDTO subjectDTO) {
-        String addMessage = String.format("subject with name %s", subjectDTO.getName());
+        String addMessage = String.format("Subject with name %s", subjectDTO.getName());
         LOGGER.debug("Adding '{}'", addMessage);
         Subject subject;
         try {
             subject = subjectRepository.save(subjectMapper.subjectDTOToSubject(subjectDTO));
             LOGGER.debug("Successfully added '{}'", addMessage);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
+            throw new DuplicateKeyException("Error! Already exists " + addMessage);
         }
         return subjectMapper.subjectToSubjectDTO(subject);
     }
@@ -106,20 +106,18 @@ public class SubjectServiceImpl implements SubjectService {
         return allSubjects;
     }
 
-
     @Override
-    @Transactional
     public SubjectDTO updateSubject(SubjectDTO subjectDTO) {
         Subject newSubject = subjectMapper.subjectDTOToSubject(subjectDTO);
         Subject subjectWithTeachers = subjectMapper.subjectDTOToSubject(getSubjectById(subjectDTO.getId()));
         newSubject.setTeachers(subjectWithTeachers.getTeachers());
-        String updateMessage = String.format("Subject with name %s by id %d", newSubject.getName(), newSubject.getId());
+        String updateMessage = String.format("Subject with name %s", newSubject.getName());
         LOGGER.debug("Updating {}", updateMessage);
         try {
             subjectRepository.save(newSubject);
             LOGGER.info("Successfully updated '{}'", updateMessage);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Duplicate group while editing!", e);
+            throw new DuplicateKeyException("Error! Already exists " + updateMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't update Subject with id %d name %s from DAO %s", subjectDTO.getId(), subjectDTO.getName(), e);
             LOGGER.error(failMessage);
@@ -138,7 +136,7 @@ public class SubjectServiceImpl implements SubjectService {
             subjectRepository.deleteById(subjectId);
             LOGGER.info("Successfully deleted '{}'", deleteMessage);
         } catch (EmptyResultDataAccessException e) {
-            throw new DataOperationException("Something went wrong!", e);
+            throw new EntityNotFoundException("Error! Couldn't find " + deleteMessage);
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);

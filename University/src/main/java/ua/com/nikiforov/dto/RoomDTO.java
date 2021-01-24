@@ -81,7 +81,7 @@ public class RoomDTO {
 
     @Override
     public String toString() {
-        return "RoomDTO{" +
+        return "{" +
                 "id=" + id +
                 ", roomNumber=" + roomNumber +
                 ", seatNumber=" + seatNumber +

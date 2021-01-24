@@ -282,7 +282,7 @@ public class ScheduleController {
             model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDate(), lesson.getTeacherId()));
             model.addAttribute(SUCCESS_MSG, "Seccess updating timetable!!!!");
         }catch (EntityNotFoundException e) {
-            model.addAttribute(FAIL_MSG, String.format("ERROR! Couldn't find teacher by id %d.", lesson.getTeacherId()));
+            model.addAttribute(FAIL_MSG, String.format(ERROR_MSG_FIND_BY_ID, lesson.getTeacherId()));
             return VIEW_SCHEDULE;
         } catch (DuplicateKeyException e) {
             model.addAttribute(FAIL_MSG, "Warning! Failed to update timetsble, already exists!!!!");
@@ -300,7 +300,7 @@ public class ScheduleController {
             LessonDTO lesson = lessonService.getLessonById(lessonId);
             model.addAttribute(TEACHER_ATTR, teacherService.getTeacherById(lesson.getTeacherId()));
             lessonService.deleteLessonById(lessonId);
-            model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDateFromLocalDate(), lesson.getTeacherId()));
+            model.addAttribute(DAY_TIMETABLE, teachersTimetableService.getDayTimetable(lesson.getDate(), lesson.getTeacherId()));
             model.addAttribute(SUCCESS_MSG, "Successfully deleted timetable!");
         } catch (EntityNotFoundException e) {
             model.addAttribute(FAIL_MSG, String.format("ERROR! Couldn't find lesson by id %d.", lessonId));

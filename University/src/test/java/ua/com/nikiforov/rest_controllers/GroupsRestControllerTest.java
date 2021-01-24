@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 
 import java.util.ArrayList;
@@ -31,20 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GroupsRestControllerTest {
+class GroupsRestControllerTest extends SetupTestHelper {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
     private static final String TEST_GROUP_NAME_3 = "AA-14";
     private static final String TEST_GROUP_NAME_4 = "AA-15";
-    private static final String TEST_WRONG_PATTERN_NAME = "A-1";
-
-    private static final long INVALID_ID = 100500;
-
-    private static final String JSON_ROOT = "$";
-
-    @Autowired
-    private GroupService groupService;
+    private static final String TEST_WRONG_PATTERN_NAME = "AA-111";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -93,6 +87,18 @@ class GroupsRestControllerTest {
     }
 
     @Test
+    void whenAddGroupWithInvalidPatternName_Status400_ErrorMessage() throws Exception {
+        List<String> errors = new ArrayList<>();
+        errors.add("Group name must have first two capital letters, dash and two numbers!");
+        GroupDTO groupDTO = new GroupDTO(TEST_WRONG_PATTERN_NAME);
+        this.mockMvc.perform(post("/api/groups/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(groupDTO)))
+                .andExpect(jsonPath(STATUS, is(HttpStatus.BAD_REQUEST.value())))
+                .andExpect(jsonPath(ERRORS, is(errors)));
+    }
+
+    @Test
     void whenUpdateGroupName_Status200_GroupUpdate() throws Exception {
         GroupDTO groupDTO = insertGroup(TEST_GROUP_NAME_4);
         this.mockMvc.perform(put("/api/groups/{groupId}", groupDTO.getGroupId())
@@ -112,60 +118,33 @@ class GroupsRestControllerTest {
     }
 
     @Test
-    void whenAddGroupWithWrongPattern_Status400() throws Exception {
-        GroupDTO groupDTO = new GroupDTO(TEST_WRONG_PATTERN_NAME);
-        List<String> errors = new ArrayList<>();
-        errors.add("Group name must have first two capital letters, dash and two numbers!");
-        this.mockMvc.perform(post("/api/groups/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(groupDTO)))
-                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
-                .andExpect(jsonPath("$.errors", is(errors)));
-    }
-
-    @Test
     void whenGetGroupByInValidId_Stats404_ReturnError() throws Exception {
-
         this.mockMvc.perform(get("/api/groups/{groupId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.errors").value("Couldn't get Group by id " + INVALID_ID));
+                .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath(ERRORS).value("Couldn't get Group by id " + INVALID_ID));
     }
 
     @Test
     void whenDeleteGroupWithInvalidId_Status404() throws Exception {
-
         this.mockMvc.perform(delete("/api/groups/{groupId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.errors").value("Couldn't get Group with id " + INVALID_ID));
+                .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath(ERRORS).value("Couldn't get Group with id " + INVALID_ID));
     }
 
     @Test
     void whenUpdateGroupWithInvalidId_Status404() throws Exception {
-
         GroupDTO groupDTO = insertGroup(TEST_GROUP_NAME_4);
         this.mockMvc.perform(put("/api/groups/{groupId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(groupDTO))
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath("$.errors").value("Couldn't get Group GroupDTO{groupId=100500, groupName='AA-15', students=[]} when update"));
-    }
-
-    private String asJsonString(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
+                .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath(ERRORS).value("Couldn't get Group GroupDTO{groupId=100500, groupName='AA-15', students=[]} when update"));
     }
 
 }

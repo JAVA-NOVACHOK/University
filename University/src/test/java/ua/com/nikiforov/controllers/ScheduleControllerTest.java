@@ -9,19 +9,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import ua.com.nikiforov.dto.*;
-import ua.com.nikiforov.services.group.GroupService;
-import ua.com.nikiforov.services.lesson.LessonService;
-import ua.com.nikiforov.services.persons.StudentsService;
-import ua.com.nikiforov.services.persons.TeacherService;
-import ua.com.nikiforov.services.room.RoomService;
-import ua.com.nikiforov.services.subject.SubjectService;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.timetables.DateInfo;
 import ua.com.nikiforov.services.timetables.DayTimetable;
-import ua.com.nikiforov.services.timetables.StudentTimetableService;
-import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
-class ScheduleControllerTest {
+class ScheduleControllerTest extends SetupTestHelper {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
@@ -123,30 +114,6 @@ class ScheduleControllerTest {
     private static final String FAIL_MSG = "failMessage";
 
     private static final String STR = "";
-
-    @Autowired
-    private RoomService roomService;
-
-    @Autowired
-    private GroupService groupService;
-
-    @Autowired
-    private SubjectService subjectService;
-
-    @Autowired
-    private TeacherService teacherService;
-
-    @Autowired
-    private StudentsService studentsService;
-
-    @Autowired
-    private StudentTimetableService studentTimetableService;
-
-    @Autowired
-    private TeachersTimetableService teacherTimetableService;
-
-    @Autowired
-    private LessonService lessonService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -265,7 +232,6 @@ class ScheduleControllerTest {
     @Test
     void ScheduleTeachersMonthURI_ReturnsTeacherTimetable_WithDateInfo_DayTimetable_Models()
             throws Exception {
-
         this.mockMvc
                 .perform(post("/schedules/teachers_month")
                         .param(FIRST_NAME_PARAM, TEACHERS_FIRST_NAME_1)
@@ -300,7 +266,6 @@ class ScheduleControllerTest {
     @Test
     void givenScheduleStudentsMonthPageURI_ThenReturnsTimetableStudentScheduleViewName_WithDateInfo_DayTimetable_Models()
             throws Exception {
-
         this.mockMvc
                 .perform(post("/schedules/students_month")
                         .param(FIRST_NAME_PARAM, STUDENTS_FIRST_NAME_1)
@@ -440,34 +405,4 @@ class ScheduleControllerTest {
                 .andExpect(model().attributeExists(SUCCESS_MSG))
                 .andExpect(view().name(TEACHER_SCHEDULE_VIEW));
     }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
-        return studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        return subjectService.addSubject(new SubjectDTO(subjectName));
-    }
-
-    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-    }
-
-    private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        return lessonService.addLesson(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
-    }
-
-    private LocalDate getLocalDateFromString(String date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, dateTimeFormatter);
-    }
-
 }

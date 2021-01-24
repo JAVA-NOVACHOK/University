@@ -19,7 +19,6 @@ import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class RoomServiceImpl implements RoomService {
@@ -41,6 +40,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO addRoom(RoomDTO roomDTO) {
+        String message = String.format("Room with number %d",roomDTO.getRoomNumber());
         LOGGER.debug("Adding {}", roomDTO);
         Room room;
         try {
@@ -48,7 +48,7 @@ public class RoomServiceImpl implements RoomService {
             LOGGER.debug("Successfully added {}", roomDTO);
         } catch (DataIntegrityViolationException e) {
             LOGGER.error("Couldn't add {}", roomDTO);
-            throw new DuplicateKeyException("Error! Duplicate room while adding", e);
+            throw new DuplicateKeyException(String.format("ERROR! Already exists %s", message));
         }
         return roomMapper.roomToRoomDTO(room);
     }
@@ -100,18 +100,16 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    @Transactional
     public RoomDTO updateRoom(RoomDTO roomDTO) {
-        String updateMessage = String.format("Room with id = '%d', number = '%d' and '%d' seats", roomDTO.getId(),
-                roomDTO.getRoomNumber(), roomDTO.getSeatNumber());
+        String updateMessage = String.format("Room with number %d", roomDTO.getRoomNumber());
         LOGGER.debug("Updating {}", updateMessage);
         Room room;
         try {
             room = roomRepository.save(roomMapper.roomDTOToRoom(roomDTO));
         } catch (DataIntegrityViolationException e) {
-            String failMessage = String.format("ERROR! Couldn't update %s", updateMessage);
+            String failMessage = String.format("ERROR! Already exists %s", updateMessage);
             LOGGER.error(failMessage);
-            throw new DuplicateKeyException(failMessage, e);
+            throw new DuplicateKeyException(failMessage);
         }
         return roomMapper.roomToRoomDTO(room);
     }
@@ -124,7 +122,7 @@ public class RoomServiceImpl implements RoomService {
         try {
             roomRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(String.format("Couldn't get %s",deleteMessage));
+            throw new EntityNotFoundException(String.format("Couldn't delete %s",deleteMessage));
         } catch (PersistenceException e) {
             String failMessage = String.format("Couldn't delete %s", deleteMessage);
             LOGGER.error(failMessage);

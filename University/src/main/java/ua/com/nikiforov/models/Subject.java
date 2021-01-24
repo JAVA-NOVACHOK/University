@@ -1,12 +1,10 @@
 package ua.com.nikiforov.models;
 
-import java.util.*;
-
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "subjects", uniqueConstraints = @UniqueConstraint(columnNames = {"subject_name"}))

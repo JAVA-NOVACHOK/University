@@ -125,7 +125,7 @@ public class StudentDTO implements Comparable<StudentDTO>{
 
     @Override
     public String toString() {
-        return "StudentDTO{" +
+        return "{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

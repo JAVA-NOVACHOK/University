@@ -34,8 +34,9 @@ public class SubjectsRestController {
         return subjectService.addSubject(subjectDTO);
     }
 
-    @PutMapping
-    public SubjectDTO updateSubject(@Valid @RequestBody SubjectDTO subjectDTO){
+    @PutMapping("/{subjectId}")
+    public SubjectDTO updateSubject(@PathVariable int subjectId,@Valid @RequestBody SubjectDTO subjectDTO){
+        subjectDTO.setId(subjectId);
         return subjectService.updateSubject(subjectDTO);
     }
 

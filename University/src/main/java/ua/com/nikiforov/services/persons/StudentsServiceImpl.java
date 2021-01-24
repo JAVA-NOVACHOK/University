@@ -1,10 +1,5 @@
 package ua.com.nikiforov.services.persons;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +7,21 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
 import ua.com.nikiforov.dto.StudentDTO;
-import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
-import ua.com.nikiforov.models.Group;
-import ua.com.nikiforov.repositories.group.GroupRepository;
-import ua.com.nikiforov.repositories.persons.StudentRepository;
 import ua.com.nikiforov.exceptions.DataOperationException;
+import ua.com.nikiforov.mappers_dto.GroupMapperDTO;
 import ua.com.nikiforov.mappers_dto.StudentMapperDTO;
+import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.models.persons.Student;
+import ua.com.nikiforov.repositories.persons.StudentRepository;
 import ua.com.nikiforov.services.group.GroupService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class StudentsServiceImpl implements StudentsService {

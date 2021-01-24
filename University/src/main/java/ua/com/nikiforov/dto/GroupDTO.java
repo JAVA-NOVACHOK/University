@@ -103,7 +103,7 @@ public class GroupDTO {
 
     @Override
     public String toString() {
-        return "GroupDTO{" +
+        return "{" +
                 "groupId=" + groupId +
                 ", groupName='" + groupName + '\'' +
                 ", students=" + students +

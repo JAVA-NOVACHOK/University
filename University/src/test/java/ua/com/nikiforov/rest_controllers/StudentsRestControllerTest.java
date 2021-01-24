@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 
@@ -32,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class StudentsRestControllerTest {
+class StudentsRestControllerTest extends SetupTestHelper {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -48,10 +49,6 @@ class StudentsRestControllerTest {
     private static final String TEST_GROUP_NAME_2 = "AB-13";
     private static final String TEST_GROUP_NAME_3 = "AB-14";
 
-    private static final String JSON_ROOT = "$";
-
-    private static final long INVALID_ID = 100500;
-
     private GroupDTO groupFrom;
     private GroupDTO group_1;
     private GroupDTO group_2;
@@ -60,16 +57,9 @@ class StudentsRestControllerTest {
     private StudentDTO student_3;
 
     @Autowired
-    private StudentsService studentsService;
-
-    @Autowired
-    private GroupService groupService;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
-
 
     @BeforeEach
     void init() {
@@ -118,13 +108,13 @@ class StudentsRestControllerTest {
     }
 
     @Test
-    void whenAddStudentWithDuplicateNames_Status404() throws Exception {
+    void whenAddStudentWithDuplicateNames_Status400() throws Exception {
         String errorMessage = "Error! Already exists Student with firstName = Tom, lastName = Hanks, groupId = 1";
         StudentDTO newStudent = new StudentDTO(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         this.mockMvc.perform(post("/api/students/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(newStudent)))
-                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
                 .andExpect(jsonPath("$.errors", is(errorMessage)));
     }
 
@@ -140,13 +130,12 @@ class StudentsRestControllerTest {
     }
 
     @Test
-    void whenUpdateStudentWithDuplicateNames_IfSuccessStatus404() throws Exception {
-
+    void whenUpdateStudentWithDuplicateNames_IfSuccessStatus400() throws Exception {
         StudentDTO updatedStudent = new StudentDTO(student_3.getId(), FIRST_NAME_2, LAST_NAME_2, group_1.getGroupId());
         this.mockMvc.perform(put("/api/students/{studentId}", student_3.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(updatedStudent)))
-                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.status", is(HttpStatus.BAD_REQUEST.value())))
                 .andExpect(jsonPath("$.errors", is("Error! Already exists Student with firstName = Bill, lastName = Clinton, groupId = 1")));
     }
 
@@ -166,23 +155,6 @@ class StudentsRestControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.status").value(HttpStatus.NOT_FOUND.value()));
 
-    }
-
-
-    private String asJsonString(Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    private StudentDTO insertStudent(String firstName, String lastName, long groupId) {
-        return studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
     }
 
 }

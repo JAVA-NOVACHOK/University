@@ -2,9 +2,7 @@ package ua.com.nikiforov.dto;
 
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -98,7 +96,7 @@ public class SubjectDTO implements Comparable<SubjectDTO> {
 
     @Override
     public String toString() {
-        return "SubjectDTO{" +
+        return "{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", teachers=" + teachers +
