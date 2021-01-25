@@ -27,7 +27,7 @@ public class StudentsRestController {
     }
 
     @GetMapping("/{studentId}")
-    public StudentDTO getStudent(@PathVariable("studentId") long studentId){
+    public StudentDTO getStudent(@PathVariable long studentId){
         return studentsService.getStudentById(studentId);
     }
 
@@ -37,19 +37,19 @@ public class StudentsRestController {
     }
 
     @PutMapping("/{studentId}")
-    public StudentDTO updateStudent(@PathVariable("studentId") long studentId, @Valid @RequestBody StudentDTO studentDTO){
+    public StudentDTO updateStudent(@PathVariable long studentId, @Valid @RequestBody StudentDTO studentDTO){
         studentDTO.setId(studentId);
         return studentsService.updateStudent(studentDTO);
     }
 
     @DeleteMapping("/{studentId}")
-    public void deleteStudent(@PathVariable("studentId") long studentId){
+    public void deleteStudent(@PathVariable long studentId){
         studentsService.deleteStudentById(studentId);
     }
 
     @PutMapping("/{studentId}/{groupToId}")
-    public StudentDTO transferStudent(@PathVariable("studentId") long studentId,
-                                      @PathVariable("groupToId") long groupToId){
+    public StudentDTO transferStudent(@PathVariable long studentId,
+                                      @PathVariable long groupToId){
        return studentsService.transferStudent(studentId,groupToId);
     }
 }

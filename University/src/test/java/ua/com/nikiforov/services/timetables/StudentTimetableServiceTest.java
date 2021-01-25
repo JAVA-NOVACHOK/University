@@ -14,14 +14,12 @@ import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static ua.com.nikiforov.services.timetables.PersonalTimetable.*;
+import static ua.com.nikiforov.services.timetables.PersonalTimetable.getLocalDate;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest

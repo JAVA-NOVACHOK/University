@@ -24,23 +24,24 @@ public class Lesson {
     private long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(nullable = false,name = "group_id")
     private Group group;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
+    @JoinColumn(nullable = false,name = "subject_id")
     private Subject subject;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @JoinColumn(nullable = false,name = "room_id")
     private Room room;
     @FutureOrPresent(message = "Date must be present or future!")
-    @Column(name = "lesson_date")
+    @Column(nullable = false,name = "lesson_date")
     private LocalDate lessonDate;
     @Max(value = 6,message = "Period must be equals or less then 6!")
     @Min(value = 1,message = "Period must be equals or greater then 1!")
+    @Column(nullable = false)
     private int period;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(nullable = false,name = "teacher_id")
     private Teacher teacher;
 
     public Lesson() {

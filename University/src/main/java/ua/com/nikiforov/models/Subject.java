@@ -3,6 +3,7 @@ package ua.com.nikiforov.models;
 import ua.com.nikiforov.models.persons.Teacher;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -15,9 +16,10 @@ public class Subject implements Comparable<Subject> {
     @Column(name = "subject_id")
     private int id;
 
-    @Column(name = "subject_name")
+    @Column(nullable = false,name = "subject_name")
     private String name;
 
+    @NotNull
     @ManyToMany(mappedBy = "subjects", fetch = FetchType.LAZY)
     private Set<Teacher> teachers;
 

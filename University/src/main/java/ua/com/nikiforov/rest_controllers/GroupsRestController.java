@@ -12,8 +12,6 @@ import java.util.List;
 @RequestMapping("/api/groups")
 public class GroupsRestController {
 
-    private static final String GROUP_ID = "groupId";
-
     private GroupService groupService;
 
     @Autowired
@@ -21,29 +19,29 @@ public class GroupsRestController {
         this.groupService = groupService;
     }
 
-    @GetMapping()
+    @GetMapping
     public List<GroupDTO> getGroups(){
         return groupService.getAllGroups();
     }
 
     @GetMapping("/{groupId}")
-    public GroupDTO getGroup(@PathVariable(GROUP_ID) long groupId){
+    public GroupDTO getGroup(@PathVariable long groupId){
         return groupService.getGroupById(groupId);
     }
 
-    @PostMapping()
+    @PostMapping
     public GroupDTO addGroup(@Valid @RequestBody GroupDTO groupDTO){
         return groupService.addGroup(groupDTO);
     }
 
     @PutMapping("/{groupId}")
-    public GroupDTO updateGroup(@PathVariable(GROUP_ID) long groupId, @Valid @RequestBody GroupDTO groupDTO){
+    public GroupDTO updateGroup(@PathVariable long groupId, @Valid @RequestBody GroupDTO groupDTO){
         groupDTO.setGroupId(groupId);
         return groupService.updateGroup(groupDTO);
     }
 
     @DeleteMapping("/{groupId}")
-    public void deleteGroup(@PathVariable(GROUP_ID) long groupId){
+    public void deleteGroup(@PathVariable long groupId){
         groupService.deleteGroup(groupId);
     }
 }

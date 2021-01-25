@@ -26,7 +26,7 @@ public class RoomsRestController {
     }
 
     @GetMapping("/{roomId}")
-    public RoomDTO getRoomDTO(@PathVariable("roomId") int roomId){
+    public RoomDTO getRoomDTO(@PathVariable int roomId){
         return roomService.getRoomById(roomId);
     }
 
@@ -36,13 +36,13 @@ public class RoomsRestController {
     }
 
     @PutMapping("/{roomId}")
-    public RoomDTO updateRoom(@PathVariable("roomId") int roomId, @Valid @RequestBody RoomDTO roomDTO){
+    public RoomDTO updateRoom(@PathVariable int roomId, @Valid @RequestBody RoomDTO roomDTO){
         roomDTO.setId(roomId);
         return roomService.updateRoom(roomDTO);
     }
 
     @DeleteMapping("/{roomId}")
-    public void deleteRoom(@PathVariable("roomId") int roomId){
+    public void deleteRoom(@PathVariable int roomId){
         roomService.deleteRoomById(roomId);
     }
 

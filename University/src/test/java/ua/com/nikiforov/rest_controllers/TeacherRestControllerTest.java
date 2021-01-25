@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -147,12 +146,12 @@ class TeacherRestControllerTest extends SetupTestHelper {
     }
 
     @Test
-    void whenUpdateTeacherWithDuplicateNames_IfSuccessStatus404() throws Exception {
+    void whenUpdateTeacherWithDuplicateNames_IfSuccessStatus400() throws Exception {
         TeacherDTO updatedTeacher = new TeacherDTO(teacher_3.getId(), FIRST_NAME_2, LAST_NAME_2);
         this.mockMvc.perform(put("/api/teachers/{teacherId}", teacher_3.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(updatedTeacher)))
-                .andExpect(jsonPath("$.status", is(404)))
+                .andExpect(jsonPath("$.status", is(400)))
                 .andExpect(jsonPath("$.errors", is("Error! Already exists Teacher with firstName = Bill, lastName = Clinton")));
     }
 
@@ -185,7 +184,7 @@ class TeacherRestControllerTest extends SetupTestHelper {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is(FIRST_NAME_1)))
                 .andExpect(jsonPath("$.lastName", is(LAST_NAME_1)))
-                .andExpect(jsonPath("$.subjects", is(subjectToStringTransformer(subjects))));
+                .andExpect(jsonPath("$.subjects", is(subjects)));
     }
 
     @Test
@@ -198,7 +197,7 @@ class TeacherRestControllerTest extends SetupTestHelper {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is(FIRST_NAME_1)))
                 .andExpect(jsonPath("$.lastName", is(LAST_NAME_1)))
-                .andExpect(jsonPath("$.subjects", is(subjectToStringTransformer(subjects))));
+                .andExpect(jsonPath("$.subjects", is(subjects)));
     }
 
     private String subjectToStringTransformer(List<SubjectDTO> subjects) {

@@ -25,26 +25,26 @@ public class ScheduleRestController {
     }
 
     @GetMapping("/teacher/{teacherId}/day/{date}")
-    public List<DayTimetable> getTeachersDayTimetable(@PathVariable("date") String date,
-                                                      @PathVariable("teacherId") long teacherId) {
+    public List<DayTimetable> getTeachersDayTimetable(@PathVariable String date,
+                                                      @PathVariable long teacherId) {
         return teachersTimetableService.getDayTimetable(date, teacherId);
     }
 
     @GetMapping("/teacher/{teacherId}/month/{date}")
-    public List<DayTimetable> getTeachersMonthTimetable(@PathVariable("date") String date,
-                                                        @PathVariable("teacherId") long teacherId) {
+    public List<DayTimetable> getTeachersMonthTimetable(@PathVariable String date,
+                                                        @PathVariable long teacherId) {
         return teachersTimetableService.getMonthTimetable(date, teacherId);
     }
 
     @GetMapping("/student/{groupId}/day/{date}")
-    public List<DayTimetable> getStudentsDayTimetable(@PathVariable("date") String date,
-                                                      @PathVariable("groupId") long groupId) {
+    public List<DayTimetable> getStudentsDayTimetable(@PathVariable String date,
+                                                      @PathVariable long groupId) {
         return studentTimetableService.getDayTimetable(date, groupId);
     }
 
     @GetMapping("/student/{groupId}/month/{date}")
-    public List<DayTimetable> getStudentsMonthTimetable(@PathVariable("date") String date,
-                                                        @PathVariable("groupId") long groupId) {
+    public List<DayTimetable> getStudentsMonthTimetable(@PathVariable String date,
+                                                        @PathVariable long groupId) {
         return studentTimetableService.getMonthTimetable(date, groupId);
     }
 }

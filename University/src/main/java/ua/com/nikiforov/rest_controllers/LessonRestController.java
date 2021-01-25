@@ -25,7 +25,7 @@ public class LessonRestController {
     }
 
     @GetMapping("/{lessonId}")
-    public LessonDTO getLesson(@PathVariable("lessonId") long lessonId) {
+    public LessonDTO getLesson(@PathVariable long lessonId) {
         return lessonService.getLessonById(lessonId);
     }
 
@@ -35,13 +35,13 @@ public class LessonRestController {
     }
 
     @PutMapping("/{lessonId}")
-    public LessonDTO updateLesson(@PathVariable("lessonId") long lessonId, @RequestBody LessonDTO lessonDTO) {
+    public LessonDTO updateLesson(@PathVariable long lessonId, @RequestBody LessonDTO lessonDTO) {
         lessonDTO.setId(lessonId);
         return lessonService.updateLesson(lessonDTO);
     }
 
     @DeleteMapping("/{lessonId}")
-    public void deleteLesson(@PathVariable("lessonId") long lessonId) {
+    public void deleteLesson(@PathVariable long lessonId) {
         lessonService.deleteLessonById(lessonId);
     }
 

@@ -14,9 +14,9 @@ public class Student implements Comparable<Student> {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "student_id")
     private long id;
-    @Column(name = "first_name")
+    @Column(nullable = false,name = "first_name")
     private String firstName;
-    @Column(name = "last_name")
+    @Column(nullable = false,name = "last_name")
     private String lastName;
 
 

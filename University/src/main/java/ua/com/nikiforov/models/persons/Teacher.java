@@ -16,14 +16,14 @@ public class Teacher implements Comparable<Teacher>{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "teacher_id")
     private long id;
-    @Column(name="first_name")
+    @Column(nullable = false,name="first_name")
     private String firstName;
-    @Column(name="last_name")
+    @Column(nullable = false,name="last_name")
     private String lastName;
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name="teachers_subjects",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+            joinColumns = @JoinColumn(nullable = false,name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(nullable = false,name = "subject_id"))
     private Set<Subject> subjects = new TreeSet<>();
 
     public Teacher() {

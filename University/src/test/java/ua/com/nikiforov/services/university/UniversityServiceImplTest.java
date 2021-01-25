@@ -60,6 +60,7 @@ class UniversityServiceImplTest {
 
     @Test
     void whenUpdateUniversityByIdThenGetUniversityByIdAfterUpdateReturnChangedName() {
+        universityService.updateUniversity(new UniversityDTO(university_1.getId(),UNIVERSITY_NAME_1_UPDATED));
         assertEquals(new UniversityDTO(university_1.getId(),UNIVERSITY_NAME_1_UPDATED), universityService.getUniversityById(university_1.getId()));
     }
 
@@ -70,6 +71,7 @@ class UniversityServiceImplTest {
 
     @Test
     void afterDeleteUniversityByIdIfSearchForItReturnEmptyResultDataAccessException() {
+        universityService.deleteUniversityById(university_1.getId());
         assertThrows(EntityNotFoundException.class, () -> universityService.getUniversityById(university_1.getId()));
     }
 

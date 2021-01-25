@@ -25,7 +25,7 @@ public class SubjectsRestController {
     }
 
     @GetMapping("/{subjectId}")
-    public SubjectDTO getSubject(@PathVariable("subjectId") int subjectId){
+    public SubjectDTO getSubject(@PathVariable int subjectId){
         return subjectService.getSubjectById(subjectId);
     }
 
@@ -41,7 +41,7 @@ public class SubjectsRestController {
     }
 
     @DeleteMapping("/{subjectId}")
-    public void deleteSubject(@PathVariable("subjectId") int subjectId){
+    public void deleteSubject(@PathVariable int subjectId){
         subjectService.deleteSubjectById(subjectId);
     }
 }

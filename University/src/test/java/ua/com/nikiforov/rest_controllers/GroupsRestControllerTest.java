@@ -28,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -144,7 +143,8 @@ class GroupsRestControllerTest extends SetupTestHelper {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath(ERRORS).value("Couldn't get Group GroupDTO{groupId=100500, groupName='AA-15', students=[]} when update"));
+                .andExpect(jsonPath(ERRORS).value(String.format("Couldn't get Group {groupId=%d, groupName='%s', students=[]} when update",
+                        INVALID_ID,groupDTO.getGroupName())));
     }
 
 }

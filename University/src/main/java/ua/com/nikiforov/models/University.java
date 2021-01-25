@@ -1,7 +1,6 @@
 package ua.com.nikiforov.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "universities", uniqueConstraints = @UniqueConstraint(columnNames ={"university_name"}))
@@ -11,7 +10,7 @@ public class University {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "university_name")
+    @Column(nullable = false,name = "university_name")
     private String universityName;
 
     public University() {

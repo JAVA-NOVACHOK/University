@@ -25,7 +25,7 @@ public class TeacherRestController {
     }
 
     @GetMapping("/{teacherId}")
-    public TeacherDTO getTeacher(@PathVariable("teacherId") long teacherId) {
+    public TeacherDTO getTeacher(@PathVariable long teacherId) {
         return teacherService.getTeacherById(teacherId);
     }
 
@@ -35,26 +35,26 @@ public class TeacherRestController {
     }
 
     @PutMapping("/{teacherId}")
-    public TeacherDTO updateTeacher(@PathVariable("teacherId") long teacherId,
+    public TeacherDTO updateTeacher(@PathVariable long teacherId,
                                     @Valid @RequestBody TeacherDTO teacherDTO) {
         teacherDTO.setId(teacherId);
         return teacherService.updateTeacher(teacherDTO);
     }
 
     @DeleteMapping("/{teacherId}")
-    public void deleteTeacher(@PathVariable("teacherId") long teacherId) {
+    public void deleteTeacher(@PathVariable long teacherId) {
         teacherService.deleteTeacherById(teacherId);
     }
 
     @PostMapping("/{teacherId}/{subjectId}")
-    public TeacherDTO assignSubjectToTeacher(@PathVariable("teacherId") long teacherId,
-                                             @PathVariable("subjectId") int subjectId) {
+    public TeacherDTO assignSubjectToTeacher(@PathVariable long teacherId,
+                                             @PathVariable int subjectId) {
         return teacherService.assignSubjectToTeacher(teacherId, subjectId);
     }
 
     @PostMapping("/{teacherId}/subject/{subjectId}")
-    public TeacherDTO unassignSubjectFromTeacher(@PathVariable("teacherId") long teacherId,
-                                                 @PathVariable("subjectId") int subjectId) {
+    public TeacherDTO unassignSubjectFromTeacher(@PathVariable long teacherId,
+                                                 @PathVariable int subjectId) {
         return teacherService.unassignSubjectFromTeacher(teacherId, subjectId);
     }
 }

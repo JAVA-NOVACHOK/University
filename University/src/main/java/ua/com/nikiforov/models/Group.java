@@ -13,14 +13,14 @@ public class Group implements Comparable<Group> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "group_id")
+    @Column(nullable = false,name = "group_id")
     private long groupId;
 
-    @Column(name = "group_name")
+    @Column(nullable = false,name = "group_name")
     private String groupName;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
+    @JoinColumn(nullable = false,name = "group_id")
     private List<Student> groupStudents;
 
     public Group() {

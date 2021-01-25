@@ -1,6 +1,5 @@
 package ua.com.nikiforov.rest_controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.SubjectDTO;
-import ua.com.nikiforov.dto.TeacherDTO;
 import ua.com.nikiforov.helper.SetupTestHelper;
-import ua.com.nikiforov.services.persons.TeacherService;
-import ua.com.nikiforov.services.subject.SubjectService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestPropertySource(
         locations = "classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
