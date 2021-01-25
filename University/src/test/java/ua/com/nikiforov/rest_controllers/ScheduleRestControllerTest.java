@@ -153,7 +153,6 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                         teacher.getId(),DATE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].timetables", hasSize(3)))
                 .andExpect(jsonPath("$[0].timetables.[0].lessonId", is(lesson_1.getId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[0].period", is(lesson_1.getPeriod())))
