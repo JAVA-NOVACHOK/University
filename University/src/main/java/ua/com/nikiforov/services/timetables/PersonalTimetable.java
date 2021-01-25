@@ -17,22 +17,22 @@ public abstract class PersonalTimetable {
     @Autowired
     private TimetableMapperDTO timetableMapper;
 
-    public abstract List<DayTimetable>  getDayTimetable(String date, long personId);
-    
-    public abstract List<DayTimetable>  getMonthTimetable(String stringDate, long studentId);
+    public abstract List<DayTimetable> getDayTimetable(String date, long personId);
+
+    public abstract List<DayTimetable> getMonthTimetable(String stringDate, long studentId);
 
     public TimetableMapperDTO getTimetableMapper() {
         return timetableMapper;
     }
 
-    public List<DayTimetable> createMonthTimetable(List<TimetableDTO> allTimetablesList){
+    public List<DayTimetable> createMonthTimetable(List<TimetableDTO> allTimetablesList) {
         List<DayTimetable> monthTimetable = new ArrayList<>();
         if (!allTimetablesList.isEmpty()) {
             for (int i = 1; i <= allTimetablesList.size(); i++) {
                 DayTimetable dayTimetable = new DayTimetable();
                 TimetableDTO previousTimetable = allTimetablesList.get(i - 1);
                 dayTimetable.addTimetable(previousTimetable);
-                dayTimetable.setDateInfo(parseInstantToDateInfo(previousTimetable));
+                dayTimetable.setDateInfo(parseInstantToDateInfo(previousTimetable.getLessonDate()));
                 monthTimetable.add(dayTimetable);
                 while (i < allTimetablesList.size()) {
                     TimetableDTO currentTimetable = allTimetablesList.get(i);
@@ -48,9 +48,8 @@ public abstract class PersonalTimetable {
         }
         return monthTimetable;
     }
-    
-    public static DateInfo parseInstantToDateInfo( TimetableDTO timetable) {
-        LocalDate date = timetable.getLessonDate();
+
+    public static DateInfo parseInstantToDateInfo(LocalDate date) {
         ZonedDateTime zonedDateTime = date.atStartOfDay(ZoneId.systemDefault());
         String weekDay = zonedDateTime.getDayOfWeek().name();
         int monthDay = zonedDateTime.getDayOfMonth();
@@ -58,7 +57,7 @@ public abstract class PersonalTimetable {
         int year = zonedDateTime.getYear();
         return new DateInfo(weekDay, monthDay, month, year);
     }
-    
+
     public static LocalDate getLocalDate(String date) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, dateTimeFormatter);

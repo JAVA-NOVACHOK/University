@@ -1,36 +1,27 @@
 package ua.com.nikiforov.services.timetables;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
-
-import ua.com.nikiforov.dto.GroupDTO;
-import ua.com.nikiforov.dto.LessonDTO;
-import ua.com.nikiforov.dto.RoomDTO;
-import ua.com.nikiforov.dto.StudentDTO;
-import ua.com.nikiforov.dto.SubjectDTO;
-import ua.com.nikiforov.dto.TeacherDTO;
-import ua.com.nikiforov.dto.TimetableDTO;
+import ua.com.nikiforov.dto.*;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
 import ua.com.nikiforov.services.subject.SubjectService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static ua.com.nikiforov.services.timetables.PersonalTimetable.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -219,11 +210,11 @@ class StudentTimetableServiceTest {
     void whenGetDayTimetableByDateAndGroupIdShouldReturnListOfTimetables() {
         List<TimetableDTO> expectedTimetables = new ArrayList<>();
         expectedTimetables.add(new TimetableDTO(lesson_1_date.getId(), PERIOD_1, subject_1, group_1, room_1, teacher_1,
-                getLocalDateFromString(DATE)));
+                getLocalDate(DATE)));
         expectedTimetables.add(new TimetableDTO(lesson_2_date.getId(), PERIOD_2, subject_2, group_1, room_2, teacher_2,
-                getLocalDateFromString(DATE)));
+                getLocalDate(DATE)));
         expectedTimetables.add(new TimetableDTO(lesson_3_date.getId(), PERIOD_3, subject_3, group_1, room_3, teacher_3,
-                getLocalDateFromString(DATE)));
+                getLocalDate(DATE)));
 
         List<DayTimetable> dayTimetables = studentTimetableService.getDayTimetable(DATE, student.getGroupId());
         List<TimetableDTO> actualTimetable = dayTimetables.get(0).getTimetables();
@@ -237,52 +228,52 @@ class StudentTimetableServiceTest {
 
         List<TimetableDTO> expectedTimetables_DATE = new ArrayList<>();
         expectedTimetables_DATE.add(new TimetableDTO(lesson_1_date.getId(), PERIOD_1, subject_1, group_1, room_1, teacher_1,
-                getLocalDateFromString(DATE)));
+                getLocalDate(DATE)));
         expectedTimetables_DATE.add(new TimetableDTO(lesson_2_date.getId(), PERIOD_2, subject_2, group_1, room_2, teacher_2,
-                getLocalDateFromString(DATE)));
+                getLocalDate(DATE)));
         expectedTimetables_DATE.add(new TimetableDTO(lesson_3_date.getId(), PERIOD_3, subject_3, group_1, room_3, teacher_3,
-                getLocalDateFromString(DATE)));
-        DateInfo dateInfo_DATE = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
+                getLocalDate(DATE)));
+        DateInfo dateInfo_DATE = PersonalTimetable.parseInstantToDateInfo(getLocalDate(DATE));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE, dateInfo_DATE));
 
         List<TimetableDTO> expectedTimetables_DATE_ADD_1_DAY = new ArrayList<>();
         expectedTimetables_DATE_ADD_1_DAY.add(new TimetableDTO(lesson_1_date_day_1.getId(), PERIOD_1, subject_3, group_1, room_2,
-                teacher_1, getLocalDateFromString(DATE_1_ADD_1_DAY)));
+                teacher_1, getLocalDate(DATE_1_ADD_1_DAY)));
         expectedTimetables_DATE_ADD_1_DAY.add(new TimetableDTO(lesson_2_date_day_1.getId(), PERIOD_2, subject_2, group_1, room_2,
-                teacher_2, getLocalDateFromString(DATE_1_ADD_1_DAY)));
+                teacher_2, getLocalDate(DATE_1_ADD_1_DAY)));
         expectedTimetables_DATE_ADD_1_DAY.add(new TimetableDTO(lesson_3_date_day_1.getId(), PERIOD_3, subject_3, group_1, room_3,
-                teacher_3, getLocalDateFromString(DATE_1_ADD_1_DAY)));
-        DateInfo dateInfo_DATE_ADD_1_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
+                teacher_3, getLocalDate(DATE_1_ADD_1_DAY)));
+        DateInfo dateInfo_DATE_ADD_1_DAY = PersonalTimetable.parseInstantToDateInfo(getLocalDate(DATE_1_ADD_1_DAY));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_1_DAY, dateInfo_DATE_ADD_1_DAY));
 
         List<TimetableDTO> expectedTimetables_DATE_ADD_3_DAYS = new ArrayList<>();
         expectedTimetables_DATE_ADD_3_DAYS.add(new TimetableDTO(lesson_1_date_day_3.getId(), PERIOD_1, subject_1, group_1, room_1,
-                teacher_1, getLocalDateFromString(DATE_1_ADD_3_DAYS)));
+                teacher_1, getLocalDate(DATE_1_ADD_3_DAYS)));
         expectedTimetables_DATE_ADD_3_DAYS.add(new TimetableDTO(lesson_2_date_day_3.getId(), PERIOD_2, subject_1,group_1,room_1,
-                teacher_1, getLocalDateFromString(DATE_1_ADD_3_DAYS)));
+                teacher_1, getLocalDate(DATE_1_ADD_3_DAYS)));
         expectedTimetables_DATE_ADD_3_DAYS.add(new TimetableDTO(lesson_3_date_day_3.getId(), PERIOD_3, subject_2,group_1,room_3,
-                teacher_3, getLocalDateFromString(DATE_1_ADD_3_DAYS)));
-        DateInfo dateInfo_DATE_ADD_3_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
+                teacher_3, getLocalDate(DATE_1_ADD_3_DAYS)));
+        DateInfo dateInfo_DATE_ADD_3_DAY = PersonalTimetable.parseInstantToDateInfo(getLocalDate(DATE_1_ADD_3_DAYS));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_3_DAYS, dateInfo_DATE_ADD_3_DAY));
 
         List<TimetableDTO> expectedTimetables_DATE_ADD_13_DAYS = new ArrayList<>();
         expectedTimetables_DATE_ADD_13_DAYS.add(new TimetableDTO(lesson_1_date_day_13.getId(), PERIOD_1, subject_3,group_1,room_3,
-                teacher_3, getLocalDateFromString(DATE_1_ADD_13_DAYS)));
+                teacher_3, getLocalDate(DATE_1_ADD_13_DAYS)));
         expectedTimetables_DATE_ADD_13_DAYS.add(new TimetableDTO(lesson_2_date_day_13.getId(), PERIOD_2, subject_1,group_1,room_2,
-                teacher_2, getLocalDateFromString(DATE_1_ADD_13_DAYS)));
+                teacher_2, getLocalDate(DATE_1_ADD_13_DAYS)));
         expectedTimetables_DATE_ADD_13_DAYS.add(new TimetableDTO(lesson_3_date_day_13.getId(), PERIOD_3, subject_2,group_1,room_2,
-                teacher_2, getLocalDateFromString(DATE_1_ADD_13_DAYS)));
-        DateInfo dateInfo_DATE_ADD_13_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
+                teacher_2, getLocalDate(DATE_1_ADD_13_DAYS)));
+        DateInfo dateInfo_DATE_ADD_13_DAY = PersonalTimetable.parseInstantToDateInfo(getLocalDate(DATE_1_ADD_13_DAYS));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_13_DAYS, dateInfo_DATE_ADD_13_DAY));
 
         List<TimetableDTO> expectedTimetables_DATE_ADD_21_DAYS = new ArrayList<>();
         expectedTimetables_DATE_ADD_21_DAYS.add(new TimetableDTO(lesson_1_date_day_21.getId(), PERIOD_1, subject_1,group_1,room_1,
-                teacher_1, getLocalDateFromString(DATE_1_ADD_21_DAYS)));
+                teacher_1, getLocalDate(DATE_1_ADD_21_DAYS)));
         expectedTimetables_DATE_ADD_21_DAYS.add(new TimetableDTO(lesson_2_date_day_21.getId(), PERIOD_2, subject_2,group_1,room_2,
-               teacher_2, getLocalDateFromString(DATE_1_ADD_21_DAYS)));
+               teacher_2, getLocalDate(DATE_1_ADD_21_DAYS)));
         expectedTimetables_DATE_ADD_21_DAYS.add(new TimetableDTO(lesson_3_date_day_21.getId(), PERIOD_3, subject_3,group_1,room_3,
-                teacher_3, getLocalDateFromString(DATE_1_ADD_21_DAYS)));
-        DateInfo dateInfo_DATE_ADD_21_DAY = PersonalTimetable.parseInstantToDateInfo(expectedTimetables_DATE.get(0));
+                teacher_3, getLocalDate(DATE_1_ADD_21_DAYS)));
+        DateInfo dateInfo_DATE_ADD_21_DAY = PersonalTimetable.parseInstantToDateInfo(getLocalDate(DATE_1_ADD_21_DAYS));
         expectedMonthTimetable.add(new DayTimetable(expectedTimetables_DATE_ADD_21_DAYS, dateInfo_DATE_ADD_21_DAY));
 
         List<DayTimetable> actualMonthTimetables = studentTimetableService.getMonthTimetable(DATE,
@@ -293,11 +284,6 @@ class StudentTimetableServiceTest {
             assertIterableEquals(expectedMonthTimetable.get(i).getTimetables(),
                     actualMonthTimetables.get(i).getTimetables());
         }
-    }
-
-    private LocalDate getLocalDateFromString(String date) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, dateTimeFormatter);
     }
 
     private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {

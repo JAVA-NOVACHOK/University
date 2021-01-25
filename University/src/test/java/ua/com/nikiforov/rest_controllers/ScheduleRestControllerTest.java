@@ -68,7 +68,7 @@ class ScheduleRestControllerTest extends SetupTestHelper {
     private static final String DATE_1_ADD_13_DAYS = "2021-09-28";
     private static final String DATE_1_ADD_21_DAYS = "2021-10-06";
     private static final String DATE_1_ADD_33_DAYS = "2021-11-18";
-    private static final String DATE = "2021-10-13";
+    private static final String DATE = "2021-09-13";
 
 
     @Autowired
@@ -153,6 +153,7 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                         teacher.getId(),DATE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+//                .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].timetables", hasSize(3)))
                 .andExpect(jsonPath("$[0].timetables.[0].lessonId", is(lesson_1.getId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[0].period", is(lesson_1.getPeriod())))
@@ -187,7 +188,8 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                         teacher.getId(),DATE)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].timetables", hasSize(6)))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].timetables", hasSize(3)))
                 .andExpect(jsonPath("$[0].timetables.[0].lessonId", is(lesson_1.getId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[0].period", is(lesson_1.getPeriod())))
                 .andExpect(jsonPath("$[0].timetables.[0].subject.id", is(lesson_1.getSubjectId())))
@@ -212,29 +214,23 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                 .andExpect(jsonPath("$[0].timetables.[2].group.groupId", is(lesson_3.getGroupId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[2].lessonDate", is(lesson_3.getDate())))
 
-                .andExpect(jsonPath("$[0].timetables.[3].lessonId", is(lesson_4.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].period", is(lesson_4.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[3].subject.id", is(lesson_4.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[3].room.id", is(lesson_4.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[3].teacher.id", is(lesson_4.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].group.groupId", is(lesson_4.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].lessonDate", is(lesson_4.getDate())))
+                .andExpect(jsonPath("$[1].timetables", hasSize(1)))
+                .andExpect(jsonPath("$[1].timetables.[0].lessonId", is(lesson_4.getId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].period", is(lesson_4.getPeriod())))
+                .andExpect(jsonPath("$[1].timetables.[0].subject.id", is(lesson_4.getSubjectId())))
+                .andExpect(jsonPath("$[1].timetables.[0].room.id", is(lesson_4.getRoomId())))
+                .andExpect(jsonPath("$[1].timetables.[0].teacher.id", is(lesson_4.getTeacherId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].group.groupId", is(lesson_4.getGroupId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].lessonDate", is(lesson_4.getDate())))
 
-                .andExpect(jsonPath("$[0].timetables.[4].lessonId", is(lesson_5.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].period", is(lesson_5.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[4].subject.id", is(lesson_5.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[4].room.id", is(lesson_5.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[4].teacher.id", is(lesson_5.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].group.groupId", is(lesson_5.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].lessonDate", is(lesson_5.getDate())))
-
-                .andExpect(jsonPath("$[0].timetables.[5].lessonId", is(lesson_6.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].period", is(lesson_6.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[5].subject.id", is(lesson_6.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[5].room.id", is(lesson_6.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[5].teacher.id", is(lesson_6.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].group.groupId", is(lesson_6.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].lessonDate", is(lesson_6.getDate())));
+                .andExpect(jsonPath("$[2].timetables", hasSize(1)))
+                .andExpect(jsonPath("$[2].timetables.[0].lessonId", is(lesson_5.getId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].period", is(lesson_5.getPeriod())))
+                .andExpect(jsonPath("$[2].timetables.[0].subject.id", is(lesson_5.getSubjectId())))
+                .andExpect(jsonPath("$[2].timetables.[0].room.id", is(lesson_5.getRoomId())))
+                .andExpect(jsonPath("$[2].timetables.[0].teacher.id", is(lesson_5.getTeacherId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].group.groupId", is(lesson_5.getGroupId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].lessonDate", is(lesson_5.getDate())));
 
     }
 
@@ -279,7 +275,8 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                         group_1.getGroupId(),DATE)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].timetables", hasSize(6)))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].timetables", hasSize(3)))
                 .andExpect(jsonPath("$[0].timetables.[0].lessonId", is(lesson_1.getId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[0].period", is(lesson_1.getPeriod())))
                 .andExpect(jsonPath("$[0].timetables.[0].subject.id", is(lesson_1.getSubjectId())))
@@ -304,29 +301,23 @@ class ScheduleRestControllerTest extends SetupTestHelper {
                 .andExpect(jsonPath("$[0].timetables.[2].group.groupId", is(lesson_3.getGroupId()),Long.class))
                 .andExpect(jsonPath("$[0].timetables.[2].lessonDate", is(lesson_3.getDate())))
 
-                .andExpect(jsonPath("$[0].timetables.[3].lessonId", is(lesson_4.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].period", is(lesson_4.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[3].subject.id", is(lesson_4.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[3].room.id", is(lesson_4.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[3].teacher.id", is(lesson_4.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].group.groupId", is(lesson_4.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[3].lessonDate", is(lesson_4.getDate())))
+                .andExpect(jsonPath("$[1].timetables", hasSize(1)))
+                .andExpect(jsonPath("$[1].timetables.[0].lessonId", is(lesson_4.getId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].period", is(lesson_4.getPeriod())))
+                .andExpect(jsonPath("$[1].timetables.[0].subject.id", is(lesson_4.getSubjectId())))
+                .andExpect(jsonPath("$[1].timetables.[0].room.id", is(lesson_4.getRoomId())))
+                .andExpect(jsonPath("$[1].timetables.[0].teacher.id", is(lesson_4.getTeacherId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].group.groupId", is(lesson_4.getGroupId()),Long.class))
+                .andExpect(jsonPath("$[1].timetables.[0].lessonDate", is(lesson_4.getDate())))
 
-                .andExpect(jsonPath("$[0].timetables.[4].lessonId", is(lesson_5.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].period", is(lesson_5.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[4].subject.id", is(lesson_5.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[4].room.id", is(lesson_5.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[4].teacher.id", is(lesson_5.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].group.groupId", is(lesson_5.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[4].lessonDate", is(lesson_5.getDate())))
-
-                .andExpect(jsonPath("$[0].timetables.[5].lessonId", is(lesson_6.getId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].period", is(lesson_6.getPeriod())))
-                .andExpect(jsonPath("$[0].timetables.[5].subject.id", is(lesson_6.getSubjectId())))
-                .andExpect(jsonPath("$[0].timetables.[5].room.id", is(lesson_6.getRoomId())))
-                .andExpect(jsonPath("$[0].timetables.[5].teacher.id", is(lesson_6.getTeacherId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].group.groupId", is(lesson_6.getGroupId()),Long.class))
-                .andExpect(jsonPath("$[0].timetables.[5].lessonDate", is(lesson_6.getDate())));
+                .andExpect(jsonPath("$[2].timetables", hasSize(1)))
+                .andExpect(jsonPath("$[2].timetables.[0].lessonId", is(lesson_5.getId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].period", is(lesson_5.getPeriod())))
+                .andExpect(jsonPath("$[2].timetables.[0].subject.id", is(lesson_5.getSubjectId())))
+                .andExpect(jsonPath("$[2].timetables.[0].room.id", is(lesson_5.getRoomId())))
+                .andExpect(jsonPath("$[2].timetables.[0].teacher.id", is(lesson_5.getTeacherId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].group.groupId", is(lesson_5.getGroupId()),Long.class))
+                .andExpect(jsonPath("$[2].timetables.[0].lessonDate", is(lesson_5.getDate())));
 
     }
 

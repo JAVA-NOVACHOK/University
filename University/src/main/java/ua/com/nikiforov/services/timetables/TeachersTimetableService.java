@@ -69,7 +69,9 @@ public class TeachersTimetableService extends PersonalTimetable {
             throw new DataOperationException(failMessage, e);
         }
         List<TimetableDTO> allTimetablesList = getTimetableMapper().getTimetableDTOs(monthTimetable);
-        return createMonthTimetable(allTimetablesList);
+        List<DayTimetable> t = createMonthTimetable(allTimetablesList);
+        LOGGER.debug("++++++++++++++{}",t);
+        return t;
     }
 
 

@@ -145,7 +145,7 @@ class LessonRestControllerTest extends SetupTestHelper {
 
     @Test
     void whenGetAllLessons_Status200_LessonList() throws Exception {
-        this.mockMvc.perform(get("/teacher/{teacherId}/day/{date}")
+        this.mockMvc.perform(get("/api/lessons/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(JSON_ROOT, hasSize(6)))
@@ -156,14 +156,14 @@ class LessonRestControllerTest extends SetupTestHelper {
                 .andExpect(jsonPath("$[0].roomId", is(lesson_1.getRoomId())))
                 .andExpect(jsonPath("$[0].date", is(lesson_1.getDate())))
                 .andExpect(jsonPath("$[0].time", is(lesson_1.getTime().toString())))
-//
+
                 .andExpect(jsonPath("$[1].id", is(lesson_2.getId()), Long.class))
                 .andExpect(jsonPath("$[1].teacherId", is(lesson_2.getTeacherId()), Long.class))
                 .andExpect(jsonPath("$[1].subjectId", is(lesson_2.getSubjectId())))
                 .andExpect(jsonPath("$[1].groupId", is(lesson_2.getGroupId()), Long.class))
                 .andExpect(jsonPath("$[1].roomId", is(lesson_2.getRoomId())))
                 .andExpect(jsonPath("$[1].date", is(lesson_2.getDate())))
-//
+
                 .andExpect(jsonPath("$[2].id", is(lesson_3.getId()), Long.class))
                 .andExpect(jsonPath("$[2].teacherId", is(lesson_3.getTeacherId()), Long.class))
                 .andExpect(jsonPath("$[2].subjectId", is(lesson_3.getSubjectId())))
