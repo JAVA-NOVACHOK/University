@@ -20,7 +20,7 @@ public class Group implements Comparable<Group> {
     private String groupName;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,name = "group_id")
+    @JoinColumn(name = "group_id")
     private List<Student> groupStudents;
 
     public Group() {
