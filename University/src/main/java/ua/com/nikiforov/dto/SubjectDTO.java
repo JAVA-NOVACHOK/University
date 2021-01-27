@@ -1,5 +1,6 @@
 package ua.com.nikiforov.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -8,12 +9,16 @@ import java.util.TreeSet;
 
 public class SubjectDTO implements Comparable<SubjectDTO> {
 
+    @ApiModelProperty(notes = "Unique id of the SubjectDTO")
     private int id;
 
+    @ApiModelProperty(notes = "Subject's name")
     @Length(min = 2, max = 50,
             message = "Subject's name length cannot be less then 2 and greater then 50!")
     @NotBlank(message = "Subject name cannot be empty!")
     private String name;
+
+    @ApiModelProperty(notes = "Teachers assigned to current subject")
     private Set<TeacherDTO> teachers = new TreeSet<>();
 
     public SubjectDTO() {

@@ -1,18 +1,26 @@
 package ua.com.nikiforov.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 
 public class StudentDTO implements Comparable<StudentDTO>{
 
+    @ApiModelProperty(notes = "Unique id of the StudentDTO")
     private long id;
 
+    @ApiModelProperty(notes = "Student's first name")
     @NotBlank(message = "First name cannot be empty!")
     private String firstName;
 
+    @ApiModelProperty(notes = "Student's last name")
     @NotBlank(message = "Last name cannot be empty!")
     private String lastName;
 
+    @ApiModelProperty(notes = "Student's group name")
     private String groupName;
+
+    @ApiModelProperty(notes = "Student's group ID")
     private long groupId;
 
     public StudentDTO() {

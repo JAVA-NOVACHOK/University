@@ -1,16 +1,26 @@
 package ua.com.nikiforov.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.time.LocalDate;
 
 public class LessonDTO {
 
+    @ApiModelProperty(notes = "Unique id of the LessonDTO")
     private long id;
+    @ApiModelProperty(notes = "Period of the lesson")
     private int period;
+    @ApiModelProperty(notes = "Lesson's group ID ")
     private long groupId;
+    @ApiModelProperty(notes = "Lesson's subject ID")
     protected int subjectId;
+    @ApiModelProperty(notes = "Lesson's room ID")
     private int roomId;
+    @ApiModelProperty(notes = "Time when lesson starts")
     private LocalDate time;
+    @ApiModelProperty(notes = "Lesson's teacher ID")
     private long teacherId;
+    @ApiModelProperty(notes = "Date of the lesson as string")
     private String date;
 
     public LessonDTO() {

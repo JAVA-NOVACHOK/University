@@ -1,19 +1,25 @@
 package ua.com.nikiforov.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDTO implements  Comparable<TeacherDTO>{
 
+    @ApiModelProperty(notes = "Unique id of the TeacherDTO")
     private long id;
 
+    @ApiModelProperty(notes = "Teacher's first name")
     @NotBlank(message = "Teacher's first name must not be empty!")
     private String firstName;
 
+    @ApiModelProperty(notes = "Teacher's last name")
     @NotBlank(message = "Teacher's last name must not be empty!")
     private String lastName;
 
+    @ApiModelProperty(notes = "Teacher's subjects")
     private List<SubjectDTO> subjects = new ArrayList<>();
 
     public TeacherDTO(String firstName, String lastName) {
