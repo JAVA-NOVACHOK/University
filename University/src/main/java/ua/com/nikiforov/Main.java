@@ -11,7 +11,6 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @SpringBootApplication
@@ -36,7 +35,8 @@ public class Main {
     private ApiInfo getApiInfo(){
         return  new ApiInfo(
                 "University",
-                "Students or teachers can get their timetable for a day or for a month.",
+                "Application allows to CRUD rooms, subjects, groups, students, teachers." + System.lineSeparator() +
+                        " Students and teachers can get their timetable for a day or for a month.",
                 "1.0",
                 "Free to use",
                 new Contact("Artem Nikiforov", "linkedin.com/in/artem-nikiforov-4387981a0","nikiforov.artem.125@gmail.com"),

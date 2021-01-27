@@ -1,5 +1,7 @@
 package ua.com.nikiforov.rest_controllers;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ua.com.nikiforov.dto.GroupDTO;
@@ -20,28 +22,54 @@ public class GroupsRestController {
     }
 
     @GetMapping
-    public List<GroupDTO> getGroups(){
+    @ApiOperation(
+            value = "Retrieves all existing groups",
+            responseContainer = "List",
+            response = GroupDTO.class
+    )
+    public List<GroupDTO> getGroups() {
         return groupService.getAllGroups();
     }
 
     @GetMapping("/{groupId}")
-    public GroupDTO getGroup(@PathVariable long groupId){
+    @ApiOperation(
+            value = "Retrieves group by ID",
+            notes = "Provide ID of the group to retrieve",
+            response = GroupDTO.class
+    )
+    public GroupDTO getGroup(@ApiParam(value = "ID of the group to find", required = true) @PathVariable long groupId) {
         return groupService.getGroupById(groupId);
     }
 
     @PostMapping
-    public GroupDTO addGroup(@Valid @RequestBody GroupDTO groupDTO){
+    @ApiOperation(
+            value = "Adds new group to university",
+            notes = "Provide GroupDTO Request Body to record group to university",
+            response = GroupDTO.class
+    )
+    public GroupDTO addGroup(@ApiParam(value = "GroupDTO object with id=0 to add group to university", required = true)
+                             @Valid @RequestBody GroupDTO groupDTO) {
         return groupService.addGroup(groupDTO);
     }
 
     @PutMapping("/{groupId}")
-    public GroupDTO updateGroup(@PathVariable long groupId, @Valid @RequestBody GroupDTO groupDTO){
+    @ApiOperation(
+            value = "Updates existing group",
+            notes = "Provide GroupDTO request body with id = 0 to update",
+            response = GroupDTO.class
+    )
+    public GroupDTO updateGroup(@ApiParam(value = "ID of the group to update", required = true) @PathVariable long groupId,
+                                @ApiParam(value = "Updated GroupDTO request body", required = true) @Valid @RequestBody GroupDTO groupDTO) {
         groupDTO.setGroupId(groupId);
         return groupService.updateGroup(groupDTO);
     }
 
     @DeleteMapping("/{groupId}")
-    public void deleteGroup(@PathVariable long groupId){
+    @ApiOperation(
+            value = "Deletes group from university",
+            notes = "Provide ID to delete group"
+    )
+    public void deleteGroup(@ApiParam(value = "ID of the group to delete", required = true) @PathVariable long groupId) {
         groupService.deleteGroup(groupId);
     }
 }
