@@ -1,6 +1,8 @@
 package ua.com.nikiforov.dto;
 
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
@@ -8,6 +10,7 @@ public class UniversityDTO {
 
     private int id;
 
+    @ApiModelProperty(notes = "University name")
     @NotBlank(message = "University name cannot be empty!")
     private String universityName;
 

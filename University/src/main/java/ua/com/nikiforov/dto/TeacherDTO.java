@@ -8,7 +8,6 @@ import java.util.List;
 
 public class TeacherDTO implements  Comparable<TeacherDTO>{
 
-    @ApiModelProperty(notes = "Unique id of the TeacherDTO")
     private long id;
 
     @ApiModelProperty(notes = "Teacher's first name")

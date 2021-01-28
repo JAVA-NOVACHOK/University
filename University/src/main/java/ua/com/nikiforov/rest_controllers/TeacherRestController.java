@@ -2,6 +2,8 @@ package ua.com.nikiforov.rest_controllers;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ua.com.nikiforov.dto.TeacherDTO;
@@ -9,6 +11,8 @@ import ua.com.nikiforov.services.persons.TeacherService;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static ua.com.nikiforov.error_holder.ErrorMessage.*;
 
 @RestController
 @RequestMapping("/api/teachers")
@@ -27,6 +31,12 @@ public class TeacherRestController {
             responseContainer = "List",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved all teachers"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public List<TeacherDTO> getTeachers() {
         return teacherService.getAllTeachers();
     }
@@ -37,6 +47,12 @@ public class TeacherRestController {
             notes = "Provide teacher ID to get it",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved teacher by ID"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public TeacherDTO getTeacher(
             @ApiParam(value = "Teacher ID to get in university", required = true) @PathVariable long teacherId) {
         return teacherService.getTeacherById(teacherId);
@@ -48,6 +64,12 @@ public class TeacherRestController {
             notes = "Provide new teacher response body to add to university",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully added new teacher"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public TeacherDTO addTeacher(
             @ApiParam(value = "TeacherDTO response body with id=0") @Valid @RequestBody TeacherDTO teacherDTO) {
         return teacherService.addTeacher(teacherDTO);
@@ -59,6 +81,12 @@ public class TeacherRestController {
             notes = "Provide teacher ID and updated teacher response body",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully updated existing teacher"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public TeacherDTO updateTeacher(
             @ApiParam(value = "ID of existing teacher to update", required = true) @PathVariable long teacherId,
             @ApiParam(value = "Updated TeacherDTO request body", required = true) @Valid @RequestBody TeacherDTO teacherDTO) {
@@ -71,6 +99,12 @@ public class TeacherRestController {
             value = "Deletes existing teacher from university by ID",
             notes = "Provide ID of teacher to delete"
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully deleted teacher"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public void deleteTeacher(
             @ApiParam(value = "Teacher ID to delete from university") @PathVariable long teacherId) {
         teacherService.deleteTeacherById(teacherId);
@@ -82,6 +116,12 @@ public class TeacherRestController {
             notes = "Provide ID's of existing teacher and subject for assigning",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully assigned subject to teacher"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public TeacherDTO assignSubjectToTeacher(
             @ApiParam(value = "Teacher ID who to assign to") @PathVariable long teacherId,
             @ApiParam(value = "Subject ID what to assign") @PathVariable int subjectId) {
@@ -94,6 +134,12 @@ public class TeacherRestController {
             notes = "Provide ID's of existing teacher and subject for unassigning",
             response = TeacherDTO.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully unassigned subject from teacher"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public TeacherDTO unassignSubjectFromTeacher(
             @ApiParam(value = "Teacher ID who to unassign from") @PathVariable long teacherId,
             @ApiParam(value = "Subject ID what to unassign") @PathVariable int subjectId) {

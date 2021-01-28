@@ -13,18 +13,11 @@ import ua.com.nikiforov.services.room.RoomService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ua.com.nikiforov.error_holder.ErrorMessage.*;
+
 @RestController
 @RequestMapping("/api/rooms")
 public class RoomsRestController {
-
-    private static final String ERROR_400 = "Request is wrong. Check for errors.";
-    private static final String ERROR_404 = "Cannot find resource according to request";
-
-    private static final int CODE_200 = 200;
-    private static final int CODE_201 = 201;
-    private static final int CODE_204 = 204;
-    private static final int CODE_400 = 400;
-    private static final int CODE_404 = 404;
 
     private RoomService roomService;
 
@@ -35,11 +28,12 @@ public class RoomsRestController {
 
     @GetMapping
     @ApiOperation(value = "Retrieves all existing rooms",
-                responseContainer = "List",
-                response = RoomDTO.class)
+            responseContainer = "List",
+            response = RoomDTO.class)
     @ApiResponses({
-            @ApiResponse(code = CODE_200,message = "Successfully retrieved all rooms"),
-            @ApiResponse(code = CODE_400,message = ERROR_400),
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved all rooms"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
             @ApiResponse(code = CODE_404, message = ERROR_404)
     })
     public List<RoomDTO> getAll() {
@@ -52,8 +46,9 @@ public class RoomsRestController {
             response = RoomDTO.class
     )
     @ApiResponses({
-            @ApiResponse(code = CODE_200,message = "Successfully retrieved room by ID"),
-            @ApiResponse(code = CODE_400,message = ERROR_400),
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved room by ID"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
             @ApiResponse(code = CODE_404, message = ERROR_404)
     })
     public RoomDTO getRoomDTO(@ApiParam(value = "ID value for Room to retrieve") @PathVariable int roomId) {
@@ -66,12 +61,12 @@ public class RoomsRestController {
             response = RoomDTO.class
     )
     @ApiResponses({
-            @ApiResponse(code = CODE_200,message = "Successfully added room to university"),
-            @ApiResponse(code = CODE_201,message = "Successfully created room and inserted in university"),
-            @ApiResponse(code = CODE_400,message = ERROR_400),
+            @ApiResponse(code = CODE_200, message = "Successfully created room and inserted in university"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
             @ApiResponse(code = CODE_404, message = ERROR_404)
     })
-    public RoomDTO addRoomDTO(@ApiParam(value = "RoomDTO object with id=0 to add to university",required = true) @Valid @RequestBody RoomDTO roomDTO) {
+    public RoomDTO addRoomDTO(@ApiParam(value = "RoomDTO object with id=0 to add to university", required = true) @Valid @RequestBody RoomDTO roomDTO) {
         return roomService.addRoom(roomDTO);
     }
 
@@ -81,13 +76,13 @@ public class RoomsRestController {
             response = RoomDTO.class
     )
     @ApiResponses({
-            @ApiResponse(code = CODE_200,message = "Successfully updated existing room"),
-            @ApiResponse(code = CODE_201,message = "Successfully updated room in university"),
-            @ApiResponse(code = CODE_400,message = ERROR_400),
+            @ApiResponse(code = CODE_200, message = "Successfully updated existing room"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
             @ApiResponse(code = CODE_404, message = ERROR_404)
     })
-    public RoomDTO updateRoom(@ApiParam(value = "ID value for Room to update",required = true) @PathVariable int roomId,
-                              @ApiParam(value = "Updated RoomDTO request body",required = true) @Valid @RequestBody RoomDTO roomDTO) {
+    public RoomDTO updateRoom(@ApiParam(value = "ID value for Room to update", required = true) @PathVariable int roomId,
+                              @ApiParam(value = "Updated RoomDTO request body", required = true) @Valid @RequestBody RoomDTO roomDTO) {
         roomDTO.setId(roomId);
         return roomService.updateRoom(roomDTO);
     }
@@ -97,11 +92,12 @@ public class RoomsRestController {
             notes = "Provide room id to delete from university"
     )
     @ApiResponses({
-            @ApiResponse(code = CODE_204,message = "Successfully deleted room from university"),
-            @ApiResponse(code = CODE_400,message = ERROR_400),
+            @ApiResponse(code = CODE_200, message = "Successfully deleted room from university"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
             @ApiResponse(code = CODE_404, message = ERROR_404)
     })
-    public void deleteRoom(@ApiParam(value = "ID value for Room to delete",required = true) @PathVariable int roomId) {
+    public void deleteRoom(@ApiParam(value = "ID value for Room to delete", required = true) @PathVariable int roomId) {
         roomService.deleteRoomById(roomId);
     }
 

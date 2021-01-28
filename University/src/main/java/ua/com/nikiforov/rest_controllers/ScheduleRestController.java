@@ -2,6 +2,8 @@ package ua.com.nikiforov.rest_controllers;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,8 @@ import ua.com.nikiforov.services.timetables.StudentTimetableService;
 import ua.com.nikiforov.services.timetables.TeachersTimetableService;
 
 import java.util.List;
+
+import static ua.com.nikiforov.error_holder.ErrorMessage.*;
 
 @RestController
 @RequestMapping("/api/schedule")
@@ -36,6 +40,12 @@ public class ScheduleRestController {
             notes = "Provide date and teacher ID for teacher's one day schedule",
             response = DayTimetable.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved teachers day schedule"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public List<DayTimetable> getTeachersDayTimetable(
             @ApiParam(value = DATE_PARAM_VALUE, required = true) @PathVariable String date,
             @ApiParam(value = TEACHER_PARAM_VALUE, required = true) @PathVariable long teacherId) {
@@ -48,6 +58,12 @@ public class ScheduleRestController {
             notes = "Provide date and teacher ID to look up for teacher's month schedule",
             response = DayTimetable.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved teachers month schedule"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public List<DayTimetable> getTeachersMonthTimetable(
             @ApiParam(value = DATE_PARAM_VALUE, required = true) @PathVariable String date,
             @ApiParam(value = TEACHER_PARAM_VALUE, required = true) @PathVariable long teacherId) {
@@ -60,6 +76,12 @@ public class ScheduleRestController {
             notes = "Provide date and group ID to look up for students's one day schedule",
             response = DayTimetable.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved students day schedule"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public List<DayTimetable> getStudentsDayTimetable(
             @ApiParam(value = DATE_PARAM_VALUE, required = true) @PathVariable String date,
             @ApiParam(value = GROUP_PARAM_VALUE, required = true) @PathVariable long groupId) {
@@ -72,6 +94,12 @@ public class ScheduleRestController {
             notes = "Provide date and group ID to look up for students's month schedule",
             response = DayTimetable.class
     )
+    @ApiResponses({
+            @ApiResponse(code = CODE_200, message = "Successfully retrieved students month schedule"),
+            @ApiResponse(code = CODE_400, message = ERROR_400),
+            @ApiResponse(code = CODE_401, message = ERROR_401),
+            @ApiResponse(code = CODE_404, message = ERROR_404)
+    })
     public List<DayTimetable> getStudentsMonthTimetable(
             @ApiParam(value = DATE_PARAM_VALUE, required = true) @PathVariable String date,
             @ApiParam(value = GROUP_PARAM_VALUE, required = true) @PathVariable long groupId) {

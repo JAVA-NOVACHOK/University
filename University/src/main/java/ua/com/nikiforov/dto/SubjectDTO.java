@@ -9,7 +9,6 @@ import java.util.TreeSet;
 
 public class SubjectDTO implements Comparable<SubjectDTO> {
 
-    @ApiModelProperty(notes = "Unique id of the SubjectDTO")
     private int id;
 
     @ApiModelProperty(notes = "Subject's name")

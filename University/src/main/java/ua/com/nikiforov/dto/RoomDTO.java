@@ -3,13 +3,11 @@ package ua.com.nikiforov.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
 import javax.validation.constraints.*;
 
 @ApiModel(description = "Details about RoomDTO")
 public class RoomDTO {
 
-    @ApiModelProperty(notes = "Unique id of the RoomDTO")
     private int id;
 
     @ApiModelProperty(notes = "Number of the room")

@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 
 public class StudentDTO implements Comparable<StudentDTO>{
 
-    @ApiModelProperty(notes = "Unique id of the StudentDTO")
     private long id;
 
     @ApiModelProperty(notes = "Student's first name")

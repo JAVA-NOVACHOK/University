@@ -2,7 +2,6 @@ package ua.com.nikiforov.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
@@ -12,13 +11,11 @@ import java.util.List;
 
 public class GroupDTO {
 
-    @ApiModelProperty(notes = "Unique id of the GroupDTO")
     private long groupId;
 
     @ApiModelProperty(notes = "Name of the group")
     @Pattern(regexp = "^[A-Z]{2}-\\d{2}$",
             message = "Group name must have first two capital letters, dash and two numbers!")
-    @Column(name = "group_name")
     private String groupName;
     @ApiModelProperty(notes = "Students in the current group")
     private List<StudentDTO> students;

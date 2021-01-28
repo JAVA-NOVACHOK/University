@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 public class LessonDTO {
 
-    @ApiModelProperty(notes = "Unique id of the LessonDTO")
     private long id;
     @ApiModelProperty(notes = "Period of the lesson")
     private int period;
