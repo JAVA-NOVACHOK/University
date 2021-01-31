@@ -1,0 +1,9 @@
+<!DOCTYPE dataset [
+        <!ELEMENT dataset (rooms)*>
+        <!ELEMENT rooms (#PCDATA)>
+        <!ATTLIST rooms
+                id CDATA
+                room_number CDATA #REQUIRED
+                seat_number CDATA #REQUIRED>
+        ]>
+

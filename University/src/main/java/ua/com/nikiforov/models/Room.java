@@ -8,7 +8,7 @@ public class Room implements Comparable<Room> {
 
     @Id
     @Column(name = "room_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(nullable = false,name = "room_number")

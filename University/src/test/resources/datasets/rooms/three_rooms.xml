@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <rooms room_number="1" seat_number="10"/>
+    <rooms room_number="2" seat_number="15"/>
+    <rooms room_number="3" seat_number="20"/>
+</dataset>
+

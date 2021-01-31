@@ -1,6 +1,9 @@
 package ua.com.nikiforov.rest_controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.SeedStrategy;
+import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,15 +22,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
+//@DBRider
 @TestPropertySource(
         locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class RoomsRestControllerTest extends SetupTestHelper {
 
     private static final int TEST_ROOM_NUMBER_1 = 12;
@@ -53,11 +56,23 @@ class RoomsRestControllerTest extends SetupTestHelper {
     @BeforeEach
     public void init() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-        room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
-        room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
-        room_4 = insertRoom(TEST_ROOM_NUMBER_4, TEST_SEAT_NUMBER_2);
+//        room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+//        room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
+//        room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
+//        room_4 = insertRoom(TEST_ROOM_NUMBER_4, TEST_SEAT_NUMBER_2);
     }
+
+
+    @Test
+    @DataSet(value = "three_rooms.xml",strategy = SeedStrategy.CLEAN_INSERT)
+    void whenGetAllGroups_Status200_ReturnsRoomsSize() throws Exception {
+        this.mockMvc.perform(get("/api/rooms/").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(JSON_ROOT, hasSize(1)))
+                .andExpect(content().json("[1, 10]"));
+//                .andExpect(jsonPath("$[0].roomNumber", is(room_1.getRoomNumber())))
+    }
+
 
     @Test
     void whenGetAllGroups_Status200_ReturnsRoomsSize_RoomsNames() throws Exception {
