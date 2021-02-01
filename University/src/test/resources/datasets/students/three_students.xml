@@ -1,0 +1,7 @@
+<!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
+
+<dataset>
+    <students first_name="Tom" last_name="Hanks" group_id="1"/>
+    <students first_name="Bill" last_name="Clinton" group_id="1"/>
+    <students first_name="Jack" last_name="Sparrow" group_id="1"/>
+</dataset>

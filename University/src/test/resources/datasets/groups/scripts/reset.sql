@@ -1,0 +1,1 @@
+ALTER TABLE groups ALTER COLUMN group_id RESTART WITH 1;

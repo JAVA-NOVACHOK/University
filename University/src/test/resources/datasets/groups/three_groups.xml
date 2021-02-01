@@ -1,0 +1,8 @@
+<!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
+
+<dataset>
+    <groups group_name = "AA-12"/>
+    <groups group_name = "AA-13"/>
+    <groups group_name = "AA-14"/>
+</dataset>
+

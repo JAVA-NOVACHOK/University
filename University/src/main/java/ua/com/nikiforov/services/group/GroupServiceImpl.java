@@ -48,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
             group = groupRepository.save(groupMapper.groupDTOToGroup(groupDTO));
             LOGGER.info("Successfully added {}", addMessage);
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateKeyException("Error! Already exists " + addMessage, e);
+            throw new DuplicateKeyException("Error! Already exists " + addMessage);
         }
         return groupMapper.groupToGroupDTO(group);
     }
@@ -103,7 +103,6 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
     public GroupDTO updateGroup(GroupDTO groupDTO) {
         String message = String.format("Group %s when update",groupDTO);
         LOGGER.debug(message);
@@ -112,9 +111,9 @@ public class GroupServiceImpl implements GroupService {
             Group groupWithStudents = findGroupById(newGroup.getGroupId(),message);
             newGroup.setGroupStudents(groupWithStudents.getGroupStudents());
             groupRepository.save(newGroup);
-            LOGGER.info("Successful adding group {}", newGroup);
+            LOGGER.info("Successfully updated group {}", newGroup);
         } catch (DataIntegrityViolationException e) {
-            String duplicateMessage = String.format("Already exists %s", groupDTO);
+            String duplicateMessage = String.format("ERROR! Already exists group with name %s", groupDTO.getGroupName());
             LOGGER.error("Error! {}", duplicateMessage);
             throw new DuplicateKeyException(duplicateMessage);
         }

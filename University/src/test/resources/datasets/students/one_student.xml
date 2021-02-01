@@ -1,6 +1,5 @@
 <!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
 
 <dataset>
-    <rooms room_id="1" room_number="1" seat_number="10"/>
+    <students first_name="Tom" last_name="Hanks" group_id="1"/>
 </dataset>
-

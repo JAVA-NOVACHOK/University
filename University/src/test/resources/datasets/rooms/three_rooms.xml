@@ -1,4 +1,5 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
+
 <dataset>
     <rooms room_number="1" seat_number="10"/>
     <rooms room_number="2" seat_number="15"/>

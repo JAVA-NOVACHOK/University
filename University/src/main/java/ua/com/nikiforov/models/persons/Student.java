@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Student implements Comparable<Student> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
     private long id;
     @Column(nullable = false,name = "first_name")

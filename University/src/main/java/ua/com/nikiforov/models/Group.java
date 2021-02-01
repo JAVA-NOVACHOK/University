@@ -3,7 +3,6 @@ package ua.com.nikiforov.models;
 import ua.com.nikiforov.models.persons.Student;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 
@@ -12,7 +11,7 @@ import java.util.List;
 public class Group implements Comparable<Group> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false,name = "group_id")
     private long groupId;
 

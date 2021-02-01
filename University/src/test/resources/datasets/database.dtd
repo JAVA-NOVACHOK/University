@@ -1,9 +1,18 @@
-<!DOCTYPE dataset [
-        <!ELEMENT dataset (rooms)*>
+<!ELEMENT dataset (rooms| groups| students)*>
         <!ELEMENT rooms (#PCDATA)>
         <!ATTLIST rooms
-                id CDATA
+                room_id CDATA #IMPLIED
                 room_number CDATA #REQUIRED
                 seat_number CDATA #REQUIRED>
-        ]>
+        <!ELEMENT groups (#PCDATA)>
+        <!ATTLIST groups
+                group_id CDATA #IMPLIED
+                group_name CDATA #REQUIRED>
+        <!ELEMENT students (#PCDATA)>
+        <!ATTLIST students
+                student_id CDATA #IMPLIED
+                first_name CDATA #REQUIRED
+                last_name CDATA #REQUIRED
+                group_id CDATA #REQUIRED>
+
 

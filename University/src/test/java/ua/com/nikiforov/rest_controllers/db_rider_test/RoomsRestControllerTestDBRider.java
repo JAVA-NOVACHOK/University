@@ -2,36 +2,21 @@ package ua.com.nikiforov.rest_controllers.db_rider_test;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.ExpectedDataSet;
-import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.helper.SetupTestHelper;
 
-import javax.transaction.Transactional;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@RunWith(SpringRunner.class)
-@DBRider
-@Transactional
-@SpringBootTest
-@TestPropertySource("classpath:application-test.properties")
 class RoomsRestControllerTestDBRider extends SetupTestHelper {
 
     @Autowired
@@ -51,9 +36,7 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
 
     private static final int ID_1 = 1;
 
-    private static final String ONE_ROOM_XML = "rooms/one_room.xml";
-    private static final String THREE_ROOMS_XML = "rooms/three_rooms.xml";
-    private static final String RESET_SQL = "datasets/rooms/scripts/reset.sql";
+
 
     private static final int INVALID_ID = 100500;
 
@@ -63,8 +46,8 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = THREE_ROOMS_XML, cleanAfter = true)
-    @ExpectedDataSet(value = THREE_ROOMS_XML, ignoreCols = "id")
+    @DataSet(value = ADD_THREE_ROOMS_XML, cleanAfter = true)
+    @ExpectedDataSet(value = ADD_THREE_ROOMS_XML, ignoreCols = "room_id")
     void whenGetAllGroups_Status200_ReturnsRoomsSize() throws Exception {
         this.mockMvc.perform(get("/api/rooms/").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -72,8 +55,8 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = ONE_ROOM_XML, executeScriptsBefore = RESET_SQL, cleanAfter = true)
-    @ExpectedDataSet(value = ONE_ROOM_XML)
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
+    @ExpectedDataSet(value = ADD_ONE_ROOM_ID_XML)
     void whenGetRoomById_Status200_ReturnRoom() throws Exception {
         this.mockMvc.perform(get("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -83,7 +66,7 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = ONE_ROOM_XML, cleanAfter = true)
+    @DataSet(value = ADD_ONE_ROOM_XML, cleanAfter = true)
     void whenGetRoomWithInvalidId_Status404() throws Exception {
         this.mockMvc.perform(get("/api/rooms/{roomId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +88,7 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = THREE_ROOMS_XML, cleanAfter = true)
+    @DataSet(value = ADD_THREE_ROOMS_XML, cleanAfter = true)
     void whenAddRoomWithDuplicateName_Status400() throws Exception {
         RoomDTO newDuplicateRoom = new RoomDTO(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         this.mockMvc.perform(post("/api/rooms/")
@@ -116,9 +99,8 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
 
     }
 
-
     @Test
-    @DataSet(value = ONE_ROOM_XML, executeScriptsBefore = RESET_SQL, cleanAfter = true)
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenUpdateRoom_Status200_RoomUpdates() throws Exception {
         RoomDTO updatedRoom = new RoomDTO(ID_1, TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
         this.mockMvc.perform(put("/api/rooms/{roomId}", ID_1)
@@ -130,19 +112,19 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = THREE_ROOMS_XML, executeScriptsBefore = RESET_SQL, cleanAfter = true)
+    @DataSet(value = ADD_THREE_ROOMS_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenUpdateRoomWithDuplicateName_Status400() throws Exception {
-        RoomDTO updatedRoom = new RoomDTO( TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
+        RoomDTO updatedRoom = new RoomDTO(ID_1, TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_1);
         this.mockMvc.perform(put("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(updatedRoom)))
-                .andExpect(jsonPath(STATUS).value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", updatedRoom.getRoomNumber())));
+                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", updatedRoom.getRoomNumber())))
+                .andExpect(jsonPath(STATUS).value(HttpStatus.BAD_REQUEST.value()));
 
     }
 
     @Test
-    @DataSet(value = ONE_ROOM_XML, executeScriptsBefore = RESET_SQL, cleanAfter = true)
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenDeleteRoom_Status200_RoomDeletes() throws Exception {
         this.mockMvc.perform(delete("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +137,7 @@ class RoomsRestControllerTestDBRider extends SetupTestHelper {
     }
 
     @Test
-    @DataSet(value = ONE_ROOM_XML, executeScriptsBefore = RESET_SQL, cleanAfter = true)
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenDeleteRoomWithInvalidId_Status404() throws Exception {
         this.mockMvc.perform(delete("/api/rooms/{roomId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
