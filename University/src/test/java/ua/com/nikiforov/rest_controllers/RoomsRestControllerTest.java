@@ -1,170 +1,140 @@
 package ua.com.nikiforov.rest_controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.core.api.dataset.SeedStrategy;
-import com.github.database.rider.spring.api.DBRider;
-import org.junit.jupiter.api.*;
+import com.github.database.rider.core.api.dataset.ExpectedDataSet;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.helper.SetupTestHelper;
-import ua.com.nikiforov.services.room.RoomServiceImpl;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-//@DBRider
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class RoomsRestControllerTest extends SetupTestHelper {
 
-    private static final int TEST_ROOM_NUMBER_1 = 12;
-    private static final int TEST_ROOM_NUMBER_2 = 13;
-    private static final int TEST_ROOM_NUMBER_3 = 14;
-    private static final int TEST_ROOM_NUMBER_4 = 15;
-    private static final int TEST_ROOM_NUMBER_5 = 16;
-
-    private static final int TEST_SEAT_NUMBER_1 = 20;
-    private static final int TEST_SEAT_NUMBER_2 = 25;
-    private static final int TEST_SEAT_NUMBER_3 = 30;
+    private static final String ROOM_NUMBER = "$.roomNumber";
+    private static final String SEAT_NUMBER = "$.seatNumber";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
 
-    private RoomDTO room_1;
-    private RoomDTO room_2;
-    private RoomDTO room_3;
-    private RoomDTO room_4;
-
-    @BeforeEach
+    @BeforeAll
     public void init() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-//        room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
-//        room_2 = insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
-//        room_3 = insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
-//        room_4 = insertRoom(TEST_ROOM_NUMBER_4, TEST_SEAT_NUMBER_2);
     }
 
-
     @Test
-    @DataSet(value = "three_rooms.xml",strategy = SeedStrategy.CLEAN_INSERT)
+    @DataSet(value = ADD_THREE_ROOMS_XML, cleanAfter = true)
+    @ExpectedDataSet(value = ADD_THREE_ROOMS_XML, ignoreCols = "room_id")
     void whenGetAllGroups_Status200_ReturnsRoomsSize() throws Exception {
         this.mockMvc.perform(get("/api/rooms/").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath(JSON_ROOT, hasSize(1)))
-                .andExpect(content().json("[1, 10]"));
-//                .andExpect(jsonPath("$[0].roomNumber", is(room_1.getRoomNumber())))
-    }
-
-
-    @Test
-    void whenGetAllGroups_Status200_ReturnsRoomsSize_RoomsNames() throws Exception {
-        this.mockMvc.perform(get("/api/rooms/").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(JSON_ROOT, hasSize(4)))
-                .andExpect(jsonPath("$[0].roomNumber", is(room_1.getRoomNumber())))
-                .andExpect(jsonPath("$[1].roomNumber", is(room_2.getRoomNumber())))
-                .andExpect(jsonPath("$[2].roomNumber", is(room_3.getRoomNumber())));
+                .andExpect(jsonPath(JSON_ROOT, hasSize(3)));
     }
 
     @Test
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
+    @ExpectedDataSet(value = ADD_ONE_ROOM_ID_XML)
     void whenGetRoomById_Status200_ReturnRoom() throws Exception {
-        this.mockMvc.perform(get("/api/rooms/{roomId}", room_1.getId())
+        this.mockMvc.perform(get("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roomNumber").value(room_1.getRoomNumber()))
-                .andExpect(jsonPath("$.seatNumber").value(room_1.getSeatNumber()));
+                .andExpect(jsonPath(ROOM_NUMBER).value(TEST_ROOM_NUMBER_1))
+                .andExpect(jsonPath(SEAT_NUMBER).value(TEST_SEAT_NUMBER_1));
     }
 
     @Test
+    @DataSet(value = ADD_ONE_ROOM_XML, cleanAfter = true)
     void whenGetRoomWithInvalidId_Status404() throws Exception {
         this.mockMvc.perform(get("/api/rooms/{roomId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
-                .andExpect(jsonPath(ERRORS).value(String.format("Couldn't get Room by id %d", INVALID_ID)));
+                .andExpect(jsonPath("status").value(HttpStatus.NOT_FOUND.value()))
+                .andExpect(jsonPath("errors").value(String.format("Couldn't get Room by id %d", INVALID_ID)));
     }
 
     @Test
+    @DataSet(cleanAfter = true)
     void whenAddRoom_Status200_ReturnAddedRoom() throws Exception {
-        RoomDTO newRoom = new RoomDTO(TEST_ROOM_NUMBER_5, TEST_SEAT_NUMBER_1);
+        RoomDTO newRoom = new RoomDTO(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
         this.mockMvc.perform(post("/api/rooms/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(newRoom)))
-                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roomNumber").value(TEST_ROOM_NUMBER_5))
-                .andExpect(jsonPath("$.seatNumber").value(TEST_SEAT_NUMBER_1));
+                .andExpect(jsonPath(ROOM_NUMBER).value(TEST_ROOM_NUMBER_1))
+                .andExpect(jsonPath(SEAT_NUMBER).value(TEST_SEAT_NUMBER_1));
     }
 
     @Test
+    @DataSet(value = ADD_THREE_ROOMS_XML, cleanAfter = true)
     void whenAddRoomWithDuplicateName_Status400() throws Exception {
-        RoomDTO updatedRoom = new RoomDTO(room_1.getId(), TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
+        RoomDTO newDuplicateRoom = new RoomDTO(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
         this.mockMvc.perform(post("/api/rooms/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(updatedRoom)))
+                .content(asJsonString(newDuplicateRoom)))
                 .andExpect(jsonPath(STATUS).value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", updatedRoom.getRoomNumber())));
+                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", newDuplicateRoom.getRoomNumber())));
 
     }
 
-
     @Test
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenUpdateRoom_Status200_RoomUpdates() throws Exception {
-        room_3.setRoomNumber(TEST_ROOM_NUMBER_5);
-        this.mockMvc.perform(put("/api/rooms/{roomId}", room_3.getId())
+        RoomDTO updatedRoom = new RoomDTO(ID_1, TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
+        this.mockMvc.perform(put("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(room_3)))
-                .andDo(print())
+                .content(asJsonString(updatedRoom)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roomNumber").value(TEST_ROOM_NUMBER_5))
-                .andExpect(jsonPath("$.seatNumber").value(TEST_SEAT_NUMBER_3));
+                .andExpect(jsonPath(ROOM_NUMBER).value(TEST_ROOM_NUMBER_2))
+                .andExpect(jsonPath(SEAT_NUMBER).value(TEST_SEAT_NUMBER_2));
     }
 
     @Test
+    @DataSet(transactional = true, executeScriptsBefore = RESET_ROOM_ID, cleanBefore = true,cleanAfter = true)
     void whenUpdateRoomWithDuplicateName_Status400() throws Exception {
-        RoomDTO updatedRoom = new RoomDTO(room_1.getId(), TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_1);
-        this.mockMvc.perform(put("/api/rooms/{roomId}",updatedRoom.getId())
+        RoomDTO room_1 = insertRoom(TEST_ROOM_NUMBER_1, TEST_SEAT_NUMBER_1);
+        insertRoom(TEST_ROOM_NUMBER_2, TEST_SEAT_NUMBER_2);
+        insertRoom(TEST_ROOM_NUMBER_3, TEST_SEAT_NUMBER_3);
+        room_1.setRoomNumber(TEST_ROOM_NUMBER_3);
+        RoomDTO updatedRoom = room_1;
+        this.mockMvc.perform(put("/api/rooms/{roomId}", updatedRoom.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(updatedRoom)))
                 .andDo(print())
-                .andExpect(jsonPath(STATUS).value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", updatedRoom.getRoomNumber())));
+                .andExpect(jsonPath(ERRORS).value(String.format("ERROR! Already exists Room with number %d", updatedRoom.getRoomNumber())))
+                .andExpect(jsonPath(STATUS).value(HttpStatus.BAD_REQUEST.value()));
 
     }
 
     @Test
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenDeleteRoom_Status200_RoomDeletes() throws Exception {
-        this.mockMvc.perform(delete("/api/rooms/{roomId}", room_1.getId())
+        this.mockMvc.perform(delete("/api/rooms/{roomId}", ID_1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isOk());
+        this.mockMvc.perform(get("/api/rooms/").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(JSON_ROOT, hasSize(0)));
     }
 
     @Test
+    @DataSet(value = ADD_ONE_ROOM_XML, executeScriptsBefore = RESET_ROOM_ID, cleanAfter = true)
     void whenDeleteRoomWithInvalidId_Status404() throws Exception {
         this.mockMvc.perform(delete("/api/rooms/{roomId}", INVALID_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(jsonPath(STATUS).value(HttpStatus.NOT_FOUND.value()))
                 .andExpect(jsonPath(ERRORS).value(String.format("Couldn't delete Room by ID %d", INVALID_ID)));
 

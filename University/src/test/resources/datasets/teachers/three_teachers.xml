@@ -1,0 +1,7 @@
+<!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
+
+<dataset>
+    <teachers first_name="Bob" last_name="Harris"/>
+    <teachers first_name="Mike" last_name="Smith"/>
+    <teachers first_name="Will" last_name="Spike"/>
+</dataset>

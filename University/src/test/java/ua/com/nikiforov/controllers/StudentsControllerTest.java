@@ -1,19 +1,14 @@
 package ua.com.nikiforov.controllers;
 
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 
@@ -23,12 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class StudentsControllerTest {
+class StudentsControllerTest extends SetupTestHelper {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -216,13 +206,4 @@ class StudentsControllerTest {
         .andExpect(model().attribute(GROUPS_ATTR,hasItems(groupFrom,group_1,group_2)))
         .andExpect(view().name(VIEW_STUDENTS));
     }
-    
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    private StudentDTO insertStudent(String firstName, String lastName, long groupId) {
-        return studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
-    }
-
 }

@@ -1,14 +1,8 @@
 package ua.com.nikiforov.controllers;
 
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -16,6 +10,7 @@ import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.RoomDTO;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.StudentsService;
 import ua.com.nikiforov.services.persons.TeacherService;
@@ -28,12 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class TeacherControllerTest {
+
+class TeacherControllerTest extends SetupTestHelper {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -226,22 +217,6 @@ class TeacherControllerTest {
         this.mockMvc.perform(post("/teachers/find/").param(FIRST_NAME_PARAM, "Mi").param(LAST_NAME_PARAM, "ja"))
                 .andExpect(status().isOk()).andExpect(model().attribute(TEACHERS_ATTR, hasItems(searchingTeacher)))
                 .andExpect(view().name(TEACHERS_VIEW));
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        return subjectService.addSubject(new SubjectDTO(subjectName));
-    }
-
-    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
     }
 
 }

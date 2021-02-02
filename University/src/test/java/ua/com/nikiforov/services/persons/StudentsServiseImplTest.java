@@ -7,6 +7,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 
 import javax.persistence.EntityNotFoundException;
@@ -15,12 +16,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class StudentsServiceImplTest {
+
+class StudentsServiceImplTest extends SetupTestHelper {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -34,7 +31,6 @@ class StudentsServiceImplTest {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
-
 
     @Autowired
     private StudentsService studentsService;
@@ -51,7 +47,6 @@ class StudentsServiceImplTest {
     @BeforeEach
     void init() {
         group_1 = insertGroup(TEST_GROUP_NAME_1);
-
         student_1 = insertStudent(FIRST_NAME_1, LAST_NAME_1, group_1.getGroupId());
         student_2 = insertStudent(FIRST_NAME_2, LAST_NAME_2, group_1.getGroupId());
         student_3 = insertStudent(FIRST_NAME_3, LAST_NAME_3, group_1.getGroupId());
@@ -79,7 +74,6 @@ class StudentsServiceImplTest {
 
     @Test
     void whenUpdateStudentIfSuccessThenDontThrowAnything() {
-
         assertDoesNotThrow(() -> studentsService.updateStudent(new StudentDTO(student_1.getId(), FIRST_NAME_1, LAST_NAME_2, group_1.getGroupId())));
     }
 
@@ -100,14 +94,6 @@ class StudentsServiceImplTest {
     void afterDeleteStudentByIdIfSearchReturnEntityNotFoundException() {
         studentsService.deleteStudentById(student_1.getId());
         assertThrows(EntityNotFoundException.class, () -> studentsService.getStudentById(student_1.getId()));
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    public StudentDTO insertStudent(String firstName, String lastName, long groupId) {
-        return studentsService.addStudent(new StudentDTO(firstName, lastName, groupId));
     }
 
 }

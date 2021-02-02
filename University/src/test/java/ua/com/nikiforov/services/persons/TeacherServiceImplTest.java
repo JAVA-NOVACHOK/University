@@ -10,17 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.subject.SubjectService;
 
 import javax.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-class TeacherServiceImplTest {
+class TeacherServiceImplTest extends SetupTestHelper {
 
     private static final String FIRST_NAME_1 = "Tom";
     private static final String FIRST_NAME_2 = "Bill";
@@ -29,10 +26,6 @@ class TeacherServiceImplTest {
     private static final String LAST_NAME_1 = "Hanks";
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
-
-    private static final String SUBJECT_NAME_1 = "Math";
-    private static final String SUBJECT_NAME_2 = "Programming";
-    private static final String SUBJECT_NAME_3 = "Cybersecurity";
 
     @Autowired
     private TeacherService teacherService;
@@ -62,7 +55,6 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    @Order(1)
     void whenGetAllTeachersReturnListOfAllTeachers() {
         List<TeacherDTO> expectedTeachers = new ArrayList<>();
         expectedTeachers.add(teacher_2);
@@ -72,26 +64,22 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    @Order(2)
     void whenAddTEacherIfSuccessReturnTrue() {
         assertDoesNotThrow(() -> teacherService.addTeacher(new TeacherDTO(FIRST_NAME_1, LAST_NAME_2)));
     }
 
     @Test
-    @Order(3)
     void afterAddTeacherReturnCorrectTeacherObject() {
         assertEquals(teacher_1, teacherService.getTeacherById(teacher_1.getId()));
     }
 
 
     @Test
-    @Order(4)
     void whenUpdateTeacherIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> teacherService.updateTeacher(new TeacherDTO(teacher_2.getId(), FIRST_NAME_2, LAST_NAME_1)));
     }
 
     @Test
-    @Order(5)
     void afterUpdateTeacherThenTeacherHasUpdatedTeacher() {
         TeacherDTO updatedTeacher = new TeacherDTO(teacher_2.getId(), FIRST_NAME_2, LAST_NAME_2);
         teacherService.updateTeacher(updatedTeacher);
@@ -100,26 +88,22 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    @Order(6)
     void whenDeleteTeacherByIdIfSuccessNoException() {
         assertDoesNotThrow(() -> teacherService.deleteTeacherById(teacher_2.getId()));
     }
 
     @Test
-    @Order(7)
     void afterDeleteTeacherByIdIfSearchReturnEntityNotFoundException() {
         teacherService.deleteTeacherById(teacher_3.getId());
         assertThrows(EntityNotFoundException.class, () -> teacherService.getTeacherById(teacher_3.getId()));
     }
 
     @Test
-    @Order(8)
     void whenAssignSubjectToTeacherIfSuccessNoException() {
         assertDoesNotThrow(() -> teacherService.assignSubjectToTeacher(teacher_1.getId(), subject_1.getId()));
     }
 
     @Test
-    @Order(9)
     void afterAssignSubjectsToTeacher_ItHasListOfSubjects() {
 
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
@@ -137,7 +121,6 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    @Order(10)
     void afterUnAssignSubjectsFromTeacher_HeHasNoSubjectInListOfSubjects() {
         List<SubjectDTO> expectedSubjects = new ArrayList<>();
         expectedSubjects.add(subject_2);
@@ -147,16 +130,6 @@ class TeacherServiceImplTest {
         TeacherDTO teacherAfterUnassignSubjects = teacherService.getTeacherById(teacher_1.getId());
         List<SubjectDTO> actualSubjects = teacherAfterUnassignSubjects.getSubjects();
         assertIterableEquals(expectedSubjects, actualSubjects);
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }

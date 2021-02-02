@@ -2,12 +2,9 @@ package ua.com.nikiforov.services.lesson;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.*;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.persons.TeacherService;
 import ua.com.nikiforov.services.room.RoomService;
@@ -19,12 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class LessonServiceImplTest {
+class LessonServiceImplTest extends SetupTestHelper {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
@@ -158,8 +150,6 @@ class LessonServiceImplTest {
         assertEquals(lesson_1, lessonService.getLessonById(lesson_1.getId()));
     }
 
-
-
     @Test
     void whenUpdateLessonIfSuccessThenReturnTrue() {
         assertDoesNotThrow(() -> lessonService.updateLesson(new LessonDTO(lesson_1.getId(), PERIOD_2, group_1.getGroupId(), subject_2.getId(), room_1.getId(), DATE_1_ADD_3_DAYS, teacher_1.getId())));
@@ -184,7 +174,6 @@ class LessonServiceImplTest {
         assertThrows(EntityNotFoundException.class, () -> lessonService.deleteLessonById(lesson_4.getId()));
     }
 
-
     @Test
     void whenDeleteLessons_NoLessonInLessonsList() {
         lessonService.deleteLessonById(lesson_1.getId());
@@ -198,24 +187,5 @@ class LessonServiceImplTest {
         assertIterableEquals(expectedLessons, actualLessons);
     }
 
-    private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        return lessonService.addLesson(new LessonDTO(0, period, groupId, subjectId, roomId, date, teacherId));
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        return subjectService.addSubject(new SubjectDTO(subjectName));
-    }
-
-    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        return teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-    }
 
 }

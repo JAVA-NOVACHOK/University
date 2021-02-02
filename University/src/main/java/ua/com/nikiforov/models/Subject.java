@@ -12,7 +12,7 @@ import java.util.TreeSet;
 public class Subject implements Comparable<Subject> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subject_id")
     private int id;
 

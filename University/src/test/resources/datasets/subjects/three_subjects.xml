@@ -1,0 +1,7 @@
+<!DOCTYPE dataset SYSTEM "src\test\resources\datasets\database.dtd">
+
+<dataset>
+    <subjects subject_name="Math"/>
+    <subjects subject_name="Programming"/>
+    <subjects subject_name="Cybersecurity"/>
+</dataset>

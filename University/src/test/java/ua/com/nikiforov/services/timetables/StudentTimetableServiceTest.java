@@ -2,11 +2,9 @@ package ua.com.nikiforov.services.timetables;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.*;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.group.GroupService;
 import ua.com.nikiforov.services.lesson.LessonService;
 import ua.com.nikiforov.services.persons.StudentsService;
@@ -21,11 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static ua.com.nikiforov.services.timetables.PersonalTimetable.getLocalDate;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-class StudentTimetableServiceTest {
+
+class StudentTimetableServiceTest extends SetupTestHelper {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
@@ -282,36 +277,6 @@ class StudentTimetableServiceTest {
             assertIterableEquals(expectedMonthTimetable.get(i).getTimetables(),
                     actualMonthTimetables.get(i).getTimetables());
         }
-    }
-
-    private LessonDTO insertLesson(int period, int subjectId, int roomId, long groupId, String date, long teacherId) {
-        lessonService.addLesson(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
-        return lessonService.getLessonByAllArgs(new LessonDTO(period, groupId, subjectId, roomId, date, teacherId));
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
-    }
-
-    public StudentDTO insertStudent(String firstName, String lastaName, long groupName) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupName));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupName);
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
-    }
-
-    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
-        return roomService.getRoomByRoomNumber(roomNumber);
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }

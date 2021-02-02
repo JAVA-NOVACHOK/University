@@ -1,12 +1,11 @@
 package ua.com.nikiforov.services.subject;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.SubjectDTO;
 import ua.com.nikiforov.dto.TeacherDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.persons.TeacherService;
 
 import java.util.ArrayList;
@@ -16,12 +15,7 @@ import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class SubjectServiceImplTest {
+class SubjectServiceImplTest extends SetupTestHelper {
 
     private static final String SUBJECT_NAME_1 = "Math";
     private static final String SUBJECT_NAME_2 = "Programming";
@@ -115,7 +109,6 @@ class SubjectServiceImplTest {
         assertIterableEquals(expectedSubjects, actualSubjects);
     }
 
-
     @Test
     void afterAssignSubjectsToTeachers_SubjectHasListOfTeachers() {
 
@@ -131,16 +124,6 @@ class SubjectServiceImplTest {
         subject_1 = subjectService.getSubjectById(subject_1.getId());
         Set<TeacherDTO> actualTeachers = subject_1.getTeachers();
         assertIterableEquals(expectedTeachers, actualTeachers);
-    }
-
-    private SubjectDTO insertSubject(String subjectName) {
-        subjectService.addSubject(new SubjectDTO(subjectName));
-        return subjectService.getSubjectByName(subjectName);
-    }
-
-    private TeacherDTO insertTeacher(String firstName, String lastName) {
-        teacherService.addTeacher(new TeacherDTO(firstName, lastName));
-        return teacherService.getTeacherByName(firstName, lastName);
     }
 
 }

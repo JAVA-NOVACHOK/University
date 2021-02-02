@@ -1,14 +1,13 @@
 package ua.com.nikiforov.controllers;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.RoomDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.models.Room;
 import ua.com.nikiforov.services.room.RoomServiceImpl;
 
@@ -18,12 +17,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class RoomsControllerTest {
+
+class RoomsControllerTest extends SetupTestHelper {
 
     private static final int TEST_ROOM_NUMBER_1 = 12;
     private static final int TEST_ROOM_NUMBER_2 = 13;
@@ -177,11 +172,6 @@ class RoomsControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(FAIL_MSG))
                 .andExpect(view().name(VIEW_ROOMS));
-    }
-
-
-    private RoomDTO insertRoom(int roomNumber, int seatNumber) {
-        return roomService.addRoom(new RoomDTO(roomNumber, seatNumber));
     }
 
 }

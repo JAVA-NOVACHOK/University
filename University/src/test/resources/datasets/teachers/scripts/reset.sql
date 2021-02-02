@@ -1,0 +1,1 @@
+ALTER TABLE teachers ALTER COLUMN teacher_id RESTART WITH 1;

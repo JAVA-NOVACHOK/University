@@ -1,0 +1,1 @@
+ALTER TABLE lessons ALTER COLUMN lesson_id RESTART WITH 1;

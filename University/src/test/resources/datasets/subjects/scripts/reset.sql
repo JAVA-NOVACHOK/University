@@ -1,0 +1,1 @@
+ALTER TABLE subjects ALTER COLUMN subject_id RESTART WITH 1;

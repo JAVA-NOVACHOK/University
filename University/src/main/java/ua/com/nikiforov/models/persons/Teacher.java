@@ -6,14 +6,13 @@ import java.util.TreeSet;
 import ua.com.nikiforov.models.Subject;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "teachers",uniqueConstraints = @UniqueConstraint(columnNames = {"first_name","last_name"}))
 public class Teacher implements Comparable<Teacher>{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "teacher_id")
     private long id;
     @Column(nullable = false,name="first_name")

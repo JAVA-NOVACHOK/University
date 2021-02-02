@@ -1,13 +1,12 @@
 package ua.com.nikiforov.services.group;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import ua.com.nikiforov.dto.GroupDTO;
 import ua.com.nikiforov.dto.StudentDTO;
 import ua.com.nikiforov.exceptions.StudentsInGroupException;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.services.persons.StudentsService;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,17 +15,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GroupServiceImplTest {
 
-    private static final String TEST_GROUP_NAME_1 = "AA-12";
-    private static final String TEST_GROUP_NAME_2 = "AA-13";
-    private static final String TEST_GROUP_NAME_3 = "AA-14";
-    private static final String TEST_GROUP_NAME_4 = "AA-15";
+class GroupServiceImplTest extends SetupTestHelper {
+
     private static final String TEST_GROUP_NAME_5 = "AA-16";
     private static final String TEST_GROUP_NAME_6 = "AA-17";
 
@@ -34,13 +25,11 @@ class GroupServiceImplTest {
     private static final String FIRST_NAME_2 = "Bill";
     private static final String FIRST_NAME_3 = "Jack";
     private static final String FIRST_NAME_4 = "Frank";
-    private static final String FIRST_NAME_5 = "Bob";
 
     private static final String LAST_NAME_1 = "Hanks";
     private static final String LAST_NAME_2 = "Clinton";
     private static final String LAST_NAME_3 = "Sparrow";
     private static final String LAST_NAME_4 = "Bird";
-    private static final String LAST_NAME_5 = "Crow";
 
     private GroupDTO group_1;
     private GroupDTO group_2;
@@ -159,16 +148,6 @@ class GroupServiceImplTest {
 
         List<StudentDTO> actualStudentsGroupTo = groupService.getGroupById(group_4.getGroupId()).getStudents();
         assertIterableEquals(expectedStudentsGroupTo, actualStudentsGroupTo);
-    }
-
-    public GroupDTO insertGroup(String groupName) {
-        groupService.addGroup(new GroupDTO(groupName));
-        return groupService.getGroupByName(groupName);
-    }
-
-    private StudentDTO insertStudent(String firstName, String lastaName, long groupId) {
-        studentsService.addStudent(new StudentDTO(firstName, lastaName, groupId));
-        return studentsService.getStudentByNameGroupId(firstName, lastaName, groupId);
     }
 
 }

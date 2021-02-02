@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import ua.com.nikiforov.dto.GroupDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 import ua.com.nikiforov.models.Group;
 import ua.com.nikiforov.services.group.GroupService;
 
@@ -22,12 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GroupsControllerTest {
+
+class GroupsControllerTest extends SetupTestHelper {
 
     private static final String TEST_GROUP_NAME_1 = "AA-12";
     private static final String TEST_GROUP_NAME_2 = "AA-13";
@@ -188,9 +185,5 @@ class GroupsControllerTest {
                 .andExpect(model().attribute(GROUPS_ATTR, hasItem(updatedGroup)))
                 .andDo(print())
                 .andExpect(view().name(VIEW_GROUPS));
-    }
-
-    private GroupDTO insertGroup(String groupName) {
-        return groupService.addGroup(new GroupDTO(groupName));
     }
 }

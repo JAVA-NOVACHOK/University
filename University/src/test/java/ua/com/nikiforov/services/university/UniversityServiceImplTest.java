@@ -9,16 +9,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import ua.com.nikiforov.dto.UniversityDTO;
+import ua.com.nikiforov.helper.SetupTestHelper;
 
 import javax.persistence.EntityNotFoundException;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@TestPropertySource(
-        locations = "classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class UniversityServiceImplTest {
+
+class UniversityServiceImplTest extends SetupTestHelper {
 
     private static final String UNIVERSITY_NAME_1 = "Foxminded";
     private static final String UNIVERSITY_NAME_1_UPDATED = "Foxminded LTD.";
